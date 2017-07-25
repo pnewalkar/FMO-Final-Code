@@ -78,6 +78,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             using (loggingHelper.RMTraceManager.StartTrace("Middleware.Invoke"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
                 // If the request path doesn't match, skip
                 if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
                 {
@@ -91,6 +92,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                     context.Response.StatusCode = 400;
                     return context.Response.WriteAsync("Bad request.");
                 }
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return GenerateToken(context);
             }

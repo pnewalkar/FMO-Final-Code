@@ -20,14 +20,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Integration.Inter
         Task<Guid> GetReferenceDataGuId(string categoryName, string itemName);
 
         /// <summary>
-        /// Gets the name of the reference data categories by category. 
+        /// Gets the name of the reference data categories by category.
         /// </summary>
         /// <param name="listName"></param>
         /// <returns>ReferenceDataCategoryDTO</returns>
         Task<ReferenceDataCategoryDTO> GetReferenceDataSimpleLists(string listName);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="postcode"></param>
         /// <param name="fields"></param>

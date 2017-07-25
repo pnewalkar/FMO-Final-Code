@@ -10,7 +10,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.LoggingMiddleware;
     using Data.DeliveryPoint.WebAPI.DataDTO;
@@ -492,6 +491,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         public RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
         {
             RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO addDeliveryPointDto = default(RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO);
+
             //var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
             //                      join pa in DataContext.PostalAddresses.AsNoTracking() on dp.PostalAddressID equals pa.ID
             //                      join al in DataContext.NetworkNodes.AsNoTracking() on pa.UDPRN equals al.UDPRN
@@ -521,7 +521,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             //        PostalAddressDTO = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
             //    };
             //}
-
             return addDeliveryPointDto;
         }
 
@@ -629,11 +628,13 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
                     DataContext.NetworkNodes.Remove(location.NetworkNode);
                     DataContext.Locations.Remove(location);
+                    await DataContext.SaveChangesAsync();
+                    return true;
                 }
-
-                await DataContext.SaveChangesAsync();
-
-                return true;
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {

@@ -25,10 +25,13 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         private Mock<IBlockSequenceDataService> mockBlockSequenceDataService;
         private List<RouteDataDTO> actualDeliveryRouteResult = null;
         private int actualRoueCount = 0;
+
         // private RouteDTO actualRouteDTO = null;
         private RouteDataDTO actualRouteDataDTO = null;
+
         // private List<RouteDataDTO> actualRoutesResult = null;
         private List<RouteLogSequencedPointsDataDTO> actualRouteLogSequencedPointsDataDTO = null;
+
         private List<Common.ReferenceDataDTO> actualReferenceDataCategoryResult = null;
         private Mock<ILoggingHelper> mockLoggingHelper;
 
@@ -270,11 +273,10 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
 
             actualRouteLogSequencedPointsDataDTO = new List<RouteLogSequencedPointsDataDTO>()
             {
-               new RouteLogSequencedPointsDataDTO() { StreetName ="Street001", BuildingNumber =001},
-                new RouteLogSequencedPointsDataDTO() { StreetName ="Street001",BuildingNumber =002 },
+               new RouteLogSequencedPointsDataDTO() { StreetName = "Street001", BuildingNumber = 001 },
+                new RouteLogSequencedPointsDataDTO() { StreetName = "Street001", BuildingNumber = 002 },
             };
 
-            actualRoueCount = new int();
             actualRoueCount = 5;
 
             actualReferenceDataCategoryResult = new List<Common.ReferenceDataDTO>() { new Common.ReferenceDataDTO() { DataDescription = "Live", DisplayText = "Live", ReferenceDataName = "Live" } };

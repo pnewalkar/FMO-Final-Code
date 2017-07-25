@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.Common.Notification.WebAPI.BusinessService;
+using RM.Common.Notification.WebAPI.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.Common.Notification.WebAPI.DTO;
 
 namespace RM.Common.Notification.WebAPI.Controllers
 {
@@ -176,7 +176,6 @@ namespace RM.Common.Notification.WebAPI.Controllers
                 throw realExceptions;
             }
         }
-
 
         [Route("notifications/postaladdress/{udprn}/{newaction}")]
         [HttpPut]

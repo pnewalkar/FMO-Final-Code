@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using RM.CommonLibrary.EntityFramework.DTO.UIDropdowns;
 
 namespace RM.Data.UnitManager.WebAPI.DTO
 {
@@ -82,6 +81,5 @@ namespace RM.Data.UnitManager.WebAPI.DTO
         public List<BindingDTO> NybAddressDetails { get; set; }
 
         public List<BindingDTO> RouteDetails { get; set; }
-
     }
 }

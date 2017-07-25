@@ -4,7 +4,7 @@ using System.Linq;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
 
-namespace RM.CommonLibrary.EntityFramework.Utilities.ReferenceData
+namespace RM.Data.AccessLink.WebAPI.Utils.ReferenceData
 {
     public class ReferenceDataHelper
     {

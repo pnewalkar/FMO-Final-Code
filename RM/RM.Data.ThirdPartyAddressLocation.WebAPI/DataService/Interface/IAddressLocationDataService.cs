@@ -1,5 +1,5 @@
-﻿using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 {

@@ -1,9 +1,6 @@
 namespace RM.DataManagement.UnitManager.WebAPI.Entity
 {
-    using System;
     using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
 
     public class UnitManagerDbContext : DbContext
     {
@@ -13,20 +10,35 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
         }
 
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
+
         public virtual DbSet<Location> Locations { get; set; }
+
         public virtual DbSet<LocationOffering> LocationOfferings { get; set; }
+
         public virtual DbSet<LocationPostcodeHierarchy> LocationPostcodeHierarchies { get; set; }
+
         public virtual DbSet<LocationReferenceData> LocationReferenceDatas { get; set; }
+
         public virtual DbSet<LocationRelationship> LocationRelationships { get; set; }
+
         public virtual DbSet<NetworkNode> NetworkNodes { get; set; }
+
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
+
         public virtual DbSet<PostalAddressIdentifier> PostalAddressIdentifiers { get; set; }
+
         public virtual DbSet<Postcode> Postcodes { get; set; }
+
         public virtual DbSet<PostcodeHierarchy> PostcodeHierarchies { get; set; }
+
         public virtual DbSet<Route> Routes { get; set; }
+
         public virtual DbSet<Scenario> Scenarios { get; set; }
+
         public virtual DbSet<ScenarioDayOfTheWeek> ScenarioDayOfTheWeeks { get; set; }
+
         public virtual DbSet<ScenarioStatus> ScenarioStatus { get; set; }
+
         public virtual DbSet<UserRoleLocation> UserRoleLocations { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

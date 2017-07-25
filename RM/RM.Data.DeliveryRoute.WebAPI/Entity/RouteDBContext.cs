@@ -4,7 +4,8 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
 {
     public partial class RouteDBContext : DbContext
     {
-        public RouteDBContext() : base("name=RouteDBContext")
+        public RouteDBContext()
+            : base("name=RouteDBContext")
         {
         }
 

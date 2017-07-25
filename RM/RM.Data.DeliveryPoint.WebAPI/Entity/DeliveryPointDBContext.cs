@@ -1,9 +1,6 @@
 namespace RM.Data.DeliveryPoint.WebAPI.Entities
 {
-    using System;
     using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
 
     public partial class DeliveryPointDBContext : DbContext
     {
@@ -13,12 +10,19 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
         }
 
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
+
         public virtual DbSet<DeliveryPointStatus> DeliveryPointStatus { get; set; }
+
         public virtual DbSet<Location> Locations { get; set; }
+
         public virtual DbSet<LocationOffering> LocationOfferings { get; set; }
+
         public virtual DbSet<LocationRelationship> LocationRelationships { get; set; }
+
         public virtual DbSet<NetworkNode> NetworkNodes { get; set; }
+
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
+
         public virtual DbSet<SupportingDeliveryPoint> SupportingDeliveryPoints { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

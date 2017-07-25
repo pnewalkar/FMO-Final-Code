@@ -10,11 +10,17 @@
         }
 
         public virtual DbSet<AccessLink> AccessLinks { get; set; }
+
         public virtual DbSet<AccessLinkStatus> AccessLinkStatus { get; set; }
+
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
+
         public virtual DbSet<Location> Locations { get; set; }
+
         public virtual DbSet<NetworkLink> NetworkLinks { get; set; }
+
         public virtual DbSet<NetworkNode> NetworkNodes { get; set; }
+
         public virtual DbSet<OSRoadLink> OSRoadLinks { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

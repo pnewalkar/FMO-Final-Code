@@ -38,6 +38,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
             {
                 throw new ArgumentNullException(nameof(scenarioId));
             }
+
             if (string.IsNullOrEmpty(fields))
             {
                 throw new ArgumentNullException(nameof(fields));
@@ -272,6 +273,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
             {
                 throw new ArgumentNullException(nameof(postcodeunit));
             }
+
             if (string.IsNullOrEmpty(fields))
             {
                 throw new ArgumentNullException(nameof(fields));
@@ -321,6 +323,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
             {
                 throw new ArgumentNullException(nameof(routeId));
             }
+
             if (deliveryPointId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(deliveryPointId));

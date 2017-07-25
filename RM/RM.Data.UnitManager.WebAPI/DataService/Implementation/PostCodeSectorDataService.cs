@@ -54,14 +54,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                               where ph.PostcodeTypeGUID == postcodeDistrictTypeGuid && pa.UDPRN == udprn
                                               select ph.ParentPostcode).FirstOrDefaultAsync();
 
-                PostcodeSectorDataDTO PostCodeSectorDataDTO = new PostcodeSectorDataDTO
+                PostcodeSectorDataDTO postCodeSectorDataDTO = new PostcodeSectorDataDTO
                 {
                     District = postcodeDistrict,
                     Sector = postcodeSector
                 };
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeSectorDataServiceMethodExitEventId);
-                return PostCodeSectorDataDTO;
+                return postCodeSectorDataDTO;
             }
         }
     }

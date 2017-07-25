@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Moq;
-using NUnit.Framework;
-using RM.CommonLibrary.ConfigurationMiddleware;
+﻿using NUnit.Framework;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.Interfaces;
-using RM.CommonLibrary.LoggingMiddleware;
-using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
-using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
-using RM.DataManagement.PostalAddress.WebAPI.DTO;
-using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
-using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 
 namespace RM.Data.PostalAddress.WebAPI.Test
 {
@@ -183,7 +171,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         //    var result = testCandidate.GetPostalAddresses(new List<Guid>() { Guid.NewGuid() });
         //    Assert.IsNotNull(result);
         //}
-
         protected override void OnSetup()
         {
             //OnSetup to be configured

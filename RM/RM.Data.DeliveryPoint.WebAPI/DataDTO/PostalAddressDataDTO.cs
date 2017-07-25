@@ -55,7 +55,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
         public Guid AddressType_GUID { get; set; }
 
         //  public List<PostalAddressStatusDTO> PostalAddressStatus { get; set; }
-
         public List<BindingEntity> NybAddressDetails { get; set; }
 
         public List<BindingEntity> RouteDetails { get; set; }
