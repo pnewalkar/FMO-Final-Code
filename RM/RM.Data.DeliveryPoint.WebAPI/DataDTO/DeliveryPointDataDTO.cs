@@ -31,7 +31,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 
         public virtual PostalAddressDataDTO PostalAddress { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<DeliveryPointStatusDataDTO> DeliveryPointStatus { get; set; }
 
         public virtual SupportingDeliveryPointDataDTO SupportingDeliveryPoint { get; set; }

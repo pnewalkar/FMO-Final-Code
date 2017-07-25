@@ -46,24 +46,9 @@
                 string methodName = typeof(AccessLinkDataService) + "." + nameof(GetAccessLinks);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
-
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<AccessLink, AccessLinkDataDTO>();
-                    cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
-                });
-
-                Mapper.Configuration.CreateMapper();
-
                 var resultValue = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<AccessLink, AccessLinkDataDTO>();
-                    cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
                 var accesslink = Mapper.Map<List<AccessLink>, List<AccessLinkDataDTO>>(resultValue);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -137,7 +122,7 @@
                     NetworkLink networkLink = new Entities.NetworkLink();
 
                     NetworkLink networkLink1 = DataContext.NetworkLinks.Where(n => n.ID == networkLinkDataDTO.ID).SingleOrDefault();
-                    AccessLinkDataDTO accessLinkDataDTO = networkLinkDataDTO.AccessLinkDataDTOs;
+                    AccessLinkDataDTO accessLinkDataDTO = null; //networkLinkDataDTO.AccessLink;
 
                     accessLink.ID = accessLinkDataDTO.ID;
                     accessLink.WorkloadLengthMeter = accessLinkDataDTO.WorkloadLengthMeter;
@@ -149,7 +134,7 @@
 
                     // networkLink.AccessLink = accessLink;
 
-                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatus;
+                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatus.First();
                     AccessLinkStatus accessLinkStatus = new AccessLinkStatus
                     {
                         ID = accessLinkStatusDataDTO.ID,
@@ -250,6 +235,21 @@
             }
 
             return null;
+        }
+
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<AccessLink, AccessLinkDataDTO>();
+                cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
+                cfg.CreateMap<AccessLinkStatus, AccessLinkStatusDataDTO>();
+                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>();
+                cfg.CreateMap<Location, LocationDataDTO>();
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
+            });
+
+            Mapper.Configuration.CreateMapper();
         }
     }
 }
