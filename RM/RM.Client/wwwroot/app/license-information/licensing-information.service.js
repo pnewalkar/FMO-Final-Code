@@ -73,10 +73,9 @@ function licensingInfoService($q, mapService, referencedataApiService, $rootScop
 
     function getLicensingText(selectedLayer) {
         LicensingInfo().then(function (response) {
-
-            if (response!=null){
-                mapService.baseLayerLicensing();        
+            if (selectedLayer === GlobalSettings.baseLayerName) {
+                mapService.baseLayerLicensing(selectedLayer);
             }
-        });
+        });        
     }
 };
