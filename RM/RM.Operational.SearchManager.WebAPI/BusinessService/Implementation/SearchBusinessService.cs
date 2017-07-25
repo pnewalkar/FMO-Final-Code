@@ -1,16 +1,15 @@
-﻿using System;
+﻿using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.DataManagement.SearchManager.WebAPI.DTO;
+using RM.Operational.SearchManager.WebAPI.Integration;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Linq;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.Operational.SearchManager.WebAPI.Integration;
-using RM.DataManagement.SearchManager.WebAPI.DTO;
 
 namespace RM.Operational.SearchManager.WebAPI.BusinessService
 {
@@ -298,6 +297,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
                     var referenceData = referenceDataCategoryList.SingleOrDefault().ReferenceDatas;
                     unitName = referenceData.Where(n => n.ID == locationtypeId).SingleOrDefault().ReferenceDataValue;
                 }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return unitName;
             }

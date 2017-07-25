@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace RM.Operational.SearchManager.WebAPI.Controllers.BaseController
 {
@@ -67,7 +67,7 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers.BaseController
             {
                 var userUnitType = User.Claims.Where(c => c.Type == ClaimTypes.Upn)
                                .Select(c => c.Value).SingleOrDefault();
-                
+
                 return userUnitType;
             }
         }

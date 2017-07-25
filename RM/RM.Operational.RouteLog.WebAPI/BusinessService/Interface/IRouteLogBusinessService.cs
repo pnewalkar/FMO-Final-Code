@@ -1,5 +1,5 @@
-﻿using RM.Operational.RouteLog.WebAPI.DTO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using RM.Operational.RouteLog.WebAPI.DTO;
 
 namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
