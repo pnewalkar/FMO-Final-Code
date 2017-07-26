@@ -73,15 +73,7 @@
                     AccessLink entity = new  AccessLink();
                     bool isAccessLinkCreationSuccess = false;
 
-                    Mapper.Initialize(cfg =>
-                    {
-                        cfg.CreateMap<AccessLinkDataDTO, AccessLink>().MaxDepth(1);
-                        cfg.CreateMap<AccessLinkStatusDataDTO, AccessLinkStatus>().MaxDepth(2);
-                        cfg.CreateMap<NetworkLinkDataDTO, NetworkLink>().MaxDepth(1);
-                        cfg.CreateMap<NetworkNodeDataDTO, NetworkNode>().MaxDepth(1);
-                        cfg.CreateMap<LocationDataDTO, Location>().MaxDepth(2);
-                    });
-                    Mapper.Configuration.CreateMapper();
+                    ConfigureMapper();
 
                     entity = Mapper.Map<AccessLinkDataDTO, AccessLink>(accessLinkDto);
 
@@ -237,16 +229,19 @@
             return null;
         }
 
+        /// <summary>
+        /// Automapper to convert DataDto to Entity
+        /// </summary>
         private static void ConfigureMapper()
         {
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<AccessLink, AccessLinkDataDTO>();
-                cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
-                cfg.CreateMap<AccessLinkStatus, AccessLinkStatusDataDTO>();
-                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>();
-                cfg.CreateMap<Location, LocationDataDTO>();
-                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
+                cfg.CreateMap<AccessLink, AccessLinkDataDTO>().MaxDepth(1);
+                cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>().MaxDepth(1);
+                cfg.CreateMap<AccessLinkStatus, AccessLinkStatusDataDTO>().MaxDepth(2);
+                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().MaxDepth(1);
+                cfg.CreateMap<Location, LocationDataDTO>().MaxDepth(2);
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
             });
 
             Mapper.Configuration.CreateMapper();
