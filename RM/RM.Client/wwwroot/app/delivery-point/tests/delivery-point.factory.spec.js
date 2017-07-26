@@ -6,9 +6,9 @@ describe('Delivery Point : Factory', function() {
     var $rootScope;    
     var stringFormatService;
     var MockGlobalSettings = {
-        postalAddressApiUrl: "http://172.18.5.7/PostalAddress/api",
-        thirdPartyAddressLocationApiUrl: "http://172.18.5.7/ThirdPartyAddressLocation/api",
-        deliveryPointApiUrl: "http://172.18.5.7/DeliveryPoint/api",
+        postalAddressApiUrl: "http://localhost:43423/PostalAddress/api",
+        thirdPartyAddressLocationApiUrl: "http://localhost:43423/ThirdPartyAddressLocation/api",
+        deliveryPointApiUrl: "http://localhost:43423/DeliveryPoint/api",
         getDeliveryPointsResultSet: "/postaladdressmanager/postaladdress/search/{0}",
         getAddressByPostCode: "/postaladdressmanager/postaladdress/filter?selectedItem={0}",
         getAddressLocation: "/thirdpartyaddresslocationmanager/addresslocation/geojson/udprn:",

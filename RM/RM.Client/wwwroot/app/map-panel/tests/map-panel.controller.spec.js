@@ -1,7 +1,6 @@
 ﻿'use strict';
 describe('Map Panel: Controller', function() {
-    var vm;
-       
+    var vm;       
     beforeEach(function() {
         module('mapPanel');
         inject(function (_$controller_,_$timeout_) {

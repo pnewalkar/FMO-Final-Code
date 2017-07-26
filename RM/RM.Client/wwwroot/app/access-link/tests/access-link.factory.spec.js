@@ -7,7 +7,7 @@ describe('Access LInk : Factory', function() {
     var accessLinkAPIService;
     var $rootScope;    
     var MockGlobalSettings = {
-        accessLinkApiUrl: "http://172.18.5.7/AccessLink/api",
+        accessLinkApiUrl: "http://localhost:43423/AccessLink/api",
         createAccessLink: "/accessLink/CreateManual/",
         getAdjustedPathLength: "/accessLink/GetWorkloadLength/",
         checkAccessLinkIsValid: "/accessLink/CheckAccessLinkIsValid/"

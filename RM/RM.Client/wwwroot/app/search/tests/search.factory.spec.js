@@ -2,16 +2,14 @@
 describe('Search: Factory', function() {
 	var $httpBackend;
 	var GlobalSettings;
-	var $q;
-	var deferred;
+	var $q;	
 	var stringFormatService;
-	var $rootScope;
 	var searchService; 
     var MockGlobalSettings = {
-    	searchManagerApiUrl: "http://172.18.5.7/SearchManager/api",
+    	searchManagerApiUrl: "http://localhost:43423/SearchManager/api",
         fetchBasicSearchResults: "/searchmanager/basic/",
         fetchAdvanceSearchResults: "/searchmanager/advance/",
-        deliveryPointApiUrl: "http://172.18.5.7/DeliveryPoint/api",
+        deliveryPointApiUrl: "http://localhost:43423/DeliveryPoint/api",
 		getDeliveryPointById: "/DeliveryPointManager/deliverypoint/Guid/{0}"
     };
 
@@ -33,8 +31,13 @@ describe('Search: Factory', function() {
             $provide.value('stringFormatService', MockStringFormatService);
 		});
 
-		inject(function(_$rootScope_,_$httpBackend_,_$q_,_GlobalSettings_,_stringFormatService_,_searchService_){
-			$rootScope = _$rootScope_;
+		inject(function(
+            _$httpBackend_,
+            _$q_,
+            _GlobalSettings_,
+            _stringFormatService_,
+            _searchService_){
+
 			$httpBackend = _$httpBackend_;
 			$q = _$q_;
 			GlobalSettings = _GlobalSettings_;

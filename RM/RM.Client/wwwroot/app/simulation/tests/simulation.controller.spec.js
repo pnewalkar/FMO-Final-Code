@@ -109,12 +109,18 @@ describe('Simulation: Controller', function () {
 
     it('should call loadDeliveryRoute once scenarioChange method called', function() {
         var deffer = $q.defer();
+        var loadDeliveryRouteMockData = [{"id":"9c1e56d7-5397-4984-9cf0-cd9ee7093c88","name":null,"value":"Live","displayText":null,"description":"Live"},{"id":"bee6048d-79b3-49a4-ad26-e4f5b988b7ab","name":null,"value":"Not Live","displayText":null,"description":"Not Live"}];        
+        vm.selectedRouteStatusObj = "9c1e56d7-5397-4984-9cf0-cd9ee7093c88";;
         vm.selectedRouteScenario = {id:"9c1e56d7-5397-4984-9cf0-cd9ee7093c88"};
         spyOn(simulationService,'loadDeliveryRoute').and.returnValue(deffer.promise);               
 
         vm.scenarioChange();
+        deffer.resolve(loadDeliveryRouteMockData);
+        $rootScope.$apply();
+
         expect(vm.isDeliveryRouteDisabled).toBe(false);
-        expect(simulationService.loadDeliveryRoute).toHaveBeenCalled();
+        expect(simulationService.loadDeliveryRoute).toHaveBeenCalledWith('9c1e56d7-5397-4984-9cf0-cd9ee7093c88','9c1e56d7-5397-4984-9cf0-cd9ee7093c88');
+        expect(vm.deliveryRoute).toEqual([{"id":"9c1e56d7-5397-4984-9cf0-cd9ee7093c88","name":null,"value":"Live","displayText":null,"description":"Live"},{"id":"bee6048d-79b3-49a4-ad26-e4f5b988b7ab","name":null,"value":"Not Live","displayText":null,"description":"Not Live"}]);
     });
 
     it('should promise to return a success response once loadScenario method is called', function() {

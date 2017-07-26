@@ -30,6 +30,7 @@ describe('Route-Log: Controller', function () {
                 }
                 function loadDeliveryRoute() {
                     var deferred = $q.defer();
+
                     return deferred.promise;
                 }
 
@@ -113,21 +114,10 @@ describe('Route-Log: Controller', function () {
         });       
     });
 
-
     it('should be set md-text class is selected', function() {
         expect(vm.selectClass).toContain("routeSearch md-text");
     });
  
-    it('Should be call method selectionType and routelogstatus once initialize method called', function () {
-        spyOn(vm, 'loadSelectionType');
-        spyOn(vm, 'loadRouteLogStatus');
-
-        vm.initialize();
-
-        expect(vm.loadSelectionType).toHaveBeenCalled();
-        expect(vm.loadRouteLogStatus).toHaveBeenCalled();
-    });
-
     it('Should be close dialog-window once closeWindow method called', function () {
         spyOn(routeLogService, 'closeWindow').and.callThrough();
         vm.closeWindow();
@@ -186,7 +176,7 @@ describe('Route-Log: Controller', function () {
         expect(vm.selectedRouteSelectionObj.referenceDataValue).toBe(loadSelectionTypeMockData[0].selectedRouteSelectionObj.referenceDataValue);
     });
 
-     it('should promise to return a success response true once selectedRouteStatus method is called', function () {
+    it('should promise to return a success response true once selectedRouteStatus method is called', function () {
         vm.selectedRouteStatusObj = {id: "b51aa229-c984-4ca6-9c12-510187b81050"};
 
         vm.selectedRouteStatus();
@@ -217,18 +207,63 @@ describe('Route-Log: Controller', function () {
         expect(vm.RouteScenario).toEqual([{scenarioName: 'Worthing Delivery Office - Baseline weekday', id: 'b51aa229-c984-4ca6-9c12-510187b81050'}]);
     });
 
-    it('should be load delivery route and after clear delivery route once scenarioChange method called', function() {
-        vm.selectedRouteSelectionObj = {value:true};
+    it('should call loadDeliveryRoute and after clearDeliveryRoute once scenarioChange method called', function() {
+        var deffer = $q.defer();
+        vm.selectedRouteSelectionObj = {value:"Multiple"};
         vm.selectedRouteStatusObj = { id:'b51aa229-c984-4ca6-9c12-510187b81050'};
         vm.selectedRouteScenario = { id:'9c1e56d7-5397-4984-9cf0-cd9ee7093c88'};
 
-        spyOn(routeLogService,'loadScenario').and.returnValue(false);
-        vm.scenarioChange();
+        spyOn(routeLogService,'loadDeliveryRoute').and.returnValue(deffer.promise);
+        spyOn(routeLogService,'scenarioChange').and.returnValue({isDeliveryRouteDisabled:true});
+        var result = vm.scenarioChange();
             
-        expect(vm.multiSelectiondeliveryRoute).toBeUndefined();        
-        expect(vm.deliveryRoute).toBe(null);
+        deffer.resolve([{"deliveryRoute":[],"multiSelectiondeliveryRoute":[]}]);
+        $rootScope.$apply();
+
+        expect(vm.isDeliveryRouteDisabled).toBe(true);
+        expect(routeLogService.loadDeliveryRoute).toHaveBeenCalledWith('b51aa229-c984-4ca6-9c12-510187b81050', '9c1e56d7-5397-4984-9cf0-cd9ee7093c88', 'Multiple');
+        expect(vm.multiSelectiondeliveryRoute).toEqual([]);
+        expect(vm.deliveryRoute).toEqual([]);   
+        expect(vm.isShowMultiSelectionRoute).toBe(false);
+        expect(vm.isDeliveryRouteDisabled).toBe(true);
         expect(vm.routeDetails).toBe(false);
         expect(vm.generateSummaryReport).toBe(false);
+    });
+
+    it('should call loadDeliveryRoute and check `multiSelectiondeliveryRoute` length greater then 1 once scenarioChange method called', function() {
+        var deffer = $q.defer();
+        vm.selectedRouteSelectionObj = {value:"Multiple"};
+        vm.selectedRouteStatusObj = { id:'b51aa229-c984-4ca6-9c12-510187b81050'};
+        vm.selectedRouteScenario = { id:'9c1e56d7-5397-4984-9cf0-cd9ee7093c88'};
+
+        spyOn(routeLogService,'loadDeliveryRoute').and.returnValue(deffer.promise);
+        var result = vm.scenarioChange();
+            
+        deffer.resolve([{"deliveryRoute":[],"multiSelectiondeliveryRoute":['9c1e56d7-5397-4984-9cf0-cd9ee7093c88']}]);
+        $rootScope.$apply();
+
+        expect(vm.multiSelectiondeliveryRoute).toEqual(['9c1e56d7-5397-4984-9cf0-cd9ee7093c88']);
+        expect(vm.deliveryRoute).toBe(null);   
+        expect(vm.isShowMultiSelectionRoute).toBe(true);
+        expect(vm.isDeliveryRouteDisabled).toBe(true);
+    });
+
+    it('should call loadDeliveryRoute and check `deliveryRoute` length 0 once scenarioChange method called', function() {
+        var deffer = $q.defer();
+        vm.selectedRouteSelectionObj = {value:"Multiple"};
+        vm.selectedRouteStatusObj = { id:'b51aa229-c984-4ca6-9c12-510187b81050'};
+        vm.selectedRouteScenario = { id:'9c1e56d7-5397-4984-9cf0-cd9ee7093c88'};
+
+        spyOn(routeLogService,'loadDeliveryRoute').and.returnValue(deffer.promise);
+        var result = vm.scenarioChange();
+            
+        deffer.resolve([{"deliveryRoute":[],"multiSelectiondeliveryRoute":[]}]);
+        $rootScope.$apply();
+
+        expect(vm.multiSelectiondeliveryRoute).toEqual([]);
+        expect(vm.deliveryRoute).toEqual([]);   
+        expect(vm.isShowMultiSelectionRoute).toBe(false);
+        expect(vm.isDeliveryRouteDisabled).toBe(true);
     });
 
     it('should promise to return a success response once loadScenario method is called', function () {        
@@ -263,12 +298,11 @@ describe('Route-Log: Controller', function () {
         expect(vm.selectedRoute).toBe(null);
         expect(vm.isDeliveryRouteDisabled).toBe(true);
         expect(vm.isShowMultiSelectionRoute).toBe(false);
-    });
-    
+    });    
 
     it('should promise to return a success response once deliveryRouteChange method is called', function () {        
         var deffer = $q.defer();
-        var deliveryRouteChangeMockData = {"id":"33bc42ed-42bd-4456-a3f6-33a10efc8bd3","externalId":null,"routeName":"1102 UPPER HIGH STREET        ","routeNumber":"102       ","operationalStatus_Id":0,"routeMethodType_Id":0,"travelOutTransportType_Id":null,"travelInTransportType_Id":null,"travelOutTimeMin":null,"travelInTimeMin":null,"spanTimeMin":null,"deliveryScenario_Id":null,"deliveryRouteBarcode":null,"displayText":"(102)1102 UPPER HIGH STREET        ","methodReferenceGuid":"c168f46e-561b-e711-9f8c-28d244aef9ed","method":"High Capacity Trolley","deliveryOffice":null,"aliases":0,"blocks":2,"scenarioName":"Worthing Delivery Office - Baseline weekday","dPs":524,"businessDPs":8,"residentialDPs":516,"travelOutTransportType_GUID":"c168f46e-561b-e711-9f8c-28d244aef9ed","travelInTransportType_GUID":"c168f46e-561b-e711-9f8c-28d244aef9ed","accelarationIn":"High Capacity Trolley","accelarationOut":"High Capacity Trolley","pairedRoute":"","totaltime":"0:07 mins"};
+        var deliveryRouteChangeMockData = {"id":"33bc42ed-42bd-4456-a3f6-33a10efc8bd3","travelOutTimeMin":null,"travelInTimeMin":null,"spanTimeMin":null,"deliveryScenario_Id":null,"deliveryRouteBarcode":null,"deliveryOffice":undefined};        
         var selectedRouteValue = {id:'33bc42ed-42bd-4456-a3f6-33a10efc8bd3'};
 
         spyOn(routeLogService, 'deliveryRouteChange').and.returnValue(deffer.promise);
@@ -278,9 +312,8 @@ describe('Route-Log: Controller', function () {
         deffer.resolve(deliveryRouteChangeMockData);
         $rootScope.$apply();
 
-        expect(routeLogService.deliveryRouteChange).toHaveBeenCalled();
         expect(routeLogService.deliveryRouteChange).toHaveBeenCalledWith('33bc42ed-42bd-4456-a3f6-33a10efc8bd3');
-        expect(vm.routeDetails).toEqual({"id":"33bc42ed-42bd-4456-a3f6-33a10efc8bd3","externalId":null,"routeName":"1102 UPPER HIGH STREET        ","routeNumber":"102       ","operationalStatus_Id":0,"routeMethodType_Id":0,"travelOutTransportType_Id":null,"travelInTransportType_Id":null,"travelOutTimeMin":null,"travelInTimeMin":null,"spanTimeMin":null,"deliveryScenario_Id":null,"deliveryRouteBarcode":null,"displayText":"(102)1102 UPPER HIGH STREET        ","methodReferenceGuid":"c168f46e-561b-e711-9f8c-28d244aef9ed","method":"High Capacity Trolley","deliveryOffice":null,"aliases":0,"blocks":2,"scenarioName":"Worthing Delivery Office - Baseline weekday","dPs":524,"businessDPs":8,"residentialDPs":516,"travelOutTransportType_GUID":"c168f46e-561b-e711-9f8c-28d244aef9ed","travelInTransportType_GUID":"c168f46e-561b-e711-9f8c-28d244aef9ed","accelarationIn":"High Capacity Trolley","accelarationOut":"High Capacity Trolley","pairedRoute":"","totaltime":"0:07 mins"});
+        expect(vm.routeDetails.deliveryOffice).toEqual('');
         expect(vm.generateSummaryReport).toEqual(false);
     }); 
 

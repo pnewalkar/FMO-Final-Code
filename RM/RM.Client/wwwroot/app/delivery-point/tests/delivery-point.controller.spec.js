@@ -249,13 +249,12 @@ describe('Delivery Point: Controller', function () {
         vm.deliveryPoint();        
 
         expect(deliveryPointService.openModalPopup).toHaveBeenCalled();
-        expect(popUpSettingService.deliveryPoint).toHaveBeenCalled();
-        expect($scope.$emit).toHaveBeenCalled();
+        expect(popUpSettingService.deliveryPoint).toHaveBeenCalled();        
         expect($scope.$emit).toHaveBeenCalledWith('dialogOpen','deliveryPoint');
 
     });
 
-    it('should be close window', function() {
+    it('should close dialog window', function() {
         vm.closeWindow();
         spyOn(deliveryPointService,'closeModalPopup');
         deliveryPointService.closeModalPopup();
@@ -274,8 +273,7 @@ describe('Delivery Point: Controller', function () {
 
         deferred.resolve(response);
         $scope.$digest();
-
-        expect(deliveryPointService.resultSet).toHaveBeenCalled();
+        
         expect(deliveryPointService.resultSet).toHaveBeenCalledWith({});
         expect(response).toEqual({deliveryPointTypes:'single',dpUseType:'circle'});        
     });
@@ -297,7 +295,6 @@ describe('Delivery Point: Controller', function () {
         deferred.resolve(response);
         $scope.$digest();
 
-        expect(deliveryPointService.getPostalAddress).toHaveBeenCalled();
         expect(deliveryPointService.getPostalAddress).toHaveBeenCalledWith('mapSearch');
         expect(vm.addressDetails).toEqual(response.postalAddressData);
         expect(vm.nybAddressDetails).toBe(response.postalAddressData.nybAddressDetails);

@@ -301,7 +301,5 @@ describe('Route-Log: Factory', function () {
         $httpBackend.flush();
         expect(response).toEqual('Error!');
     });
-
-
 });
 
