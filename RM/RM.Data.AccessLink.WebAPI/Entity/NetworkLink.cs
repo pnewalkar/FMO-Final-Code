@@ -47,7 +47,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Entities
 
         public virtual AccessLink AccessLink { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification ="justification")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "justification")]
         public virtual ICollection<AccessLink> AccessLinks { get; set; }
 
         public virtual NetworkNode NetworkNode { get; set; }

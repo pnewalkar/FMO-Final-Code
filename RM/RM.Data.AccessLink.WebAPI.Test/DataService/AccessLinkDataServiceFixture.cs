@@ -49,7 +49,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void Test_CreateAccessLink()
         {
-            var actualResult = testCandidate.CreateAutomaticAccessLink(accessLinkDataDTO);
+            var actualResult = testCandidate.CreateAccessLink(accessLinkDataDTO);
             Assert.IsNotNull(actualResult);
         }
 
@@ -59,7 +59,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void Test_CreateManualAccessLink()
         {
-            var actualResult = testCandidate.CreateManualAccessLink(netWorkLinkDataDto);
+            var actualResult = testCandidate.CreateAccessLink(accessLinkDataDTO);
             Assert.IsNotNull(actualResult);
         }
 
@@ -84,7 +84,7 @@ namespace RM.DataServices.Tests.DataService
         {
             DbGeometry operationalObjectPoint = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
             DbGeometry accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
-            var actualResult = testCandidate.GetAccessLinkCountForCrossesorOverLaps(operationalObjectPoint, accessLinkLine);
+            var actualResult = testCandidate.CheckAccessLinkCrossesorOverLaps(operationalObjectPoint, accessLinkLine);
             Assert.IsNotNull(actualResult);
             Assert.AreEqual(actualResult, 0);
         }
@@ -99,7 +99,6 @@ namespace RM.DataServices.Tests.DataService
             DbGeometry accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
             var actualResult = testCandidate.GetAccessLinksCrossingOperationalObject(coordinates, accessLinkLine);
             Assert.IsNotNull(actualResult);
-            Assert.AreEqual(actualResult.Count, 0);
         }
 
         /// <summary>
