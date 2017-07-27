@@ -169,22 +169,22 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                   .SingleOrDefault();
 
                     Guid addressTypePAF = referenceDataCategoryList
-                 .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressType)
-                 .SelectMany(x => x.ReferenceDatas)
-                 .Where(x => x.ReferenceDataValue.Equals(FileType.Paf.ToString(), StringComparison.OrdinalIgnoreCase)).Select(x => x.ID)
-                 .SingleOrDefault();
+                  .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressType)
+                  .SelectMany(x => x.ReferenceDatas)
+                  .Where(x => x.ReferenceDataValue.Equals(FileType.Paf.ToString(), StringComparison.OrdinalIgnoreCase)).Select(x => x.ID)
+                  .SingleOrDefault();
 
                     Guid addressTypeNYB = referenceDataCategoryList
-                 .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressType)
-                 .SelectMany(x => x.ReferenceDatas)
-                 .Where(x => x.ReferenceDataValue.Equals(FileType.Nyb.ToString(), StringComparison.OrdinalIgnoreCase)).Select(x => x.ID)
-                 .SingleOrDefault();
+                  .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressType)
+                  .SelectMany(x => x.ReferenceDatas)
+                  .Where(x => x.ReferenceDataValue.Equals(FileType.Nyb.ToString(), StringComparison.OrdinalIgnoreCase)).Select(x => x.ID)
+                  .SingleOrDefault();
 
                     Guid pendingDelete = referenceDataCategoryList
-               .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressStatus)
-               .SelectMany(x => x.ReferenceDatas)
-               .Where(x => x.ReferenceDataValue == PostalAddressConstants.PendingDeleteInFMO).Select(x => x.ID)
-               .SingleOrDefault();
+                  .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressStatus)
+                  .SelectMany(x => x.ReferenceDatas)
+                  .Where(x => x.ReferenceDataValue == PostalAddressConstants.PendingDeleteInFMO).Select(x => x.ID)
+                  .SingleOrDefault();
 
                     foreach (var item in lstPostalAddress)
                     {
@@ -994,6 +994,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             return postalAddressDTO;
         }
 
+        /// <summary>
+        /// Method to modify postal address record and DPUse for PAF record
+        /// </summary>
+        /// <param name="postalAddressDetails">postal address record in PAF</param>
         private void ModifyPAFRecords(PostalAddressDTO postalAddressDetails)
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.ModifyPAFRecords"))
@@ -1001,6 +1005,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ModifyPAFRecords);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
+                //Update DPUse in delivery point for matching UDPRN
                 var isDPUseUpdated = postalAddressIntegrationService.UpdateDPUse(postalAddressDetails).Result;
                 if (!isDPUseUpdated)
                 {

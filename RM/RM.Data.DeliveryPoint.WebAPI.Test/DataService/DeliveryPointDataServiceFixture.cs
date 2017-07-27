@@ -325,6 +325,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(expectedResult);
         }
 
+        /// <summary>
+        /// Delievery point exists for given UDPRN
+        /// </summary>
         [Test]
         public async Task Test_UpdateDPUse()
         {
@@ -333,6 +336,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsTrue(result);
         }
 
+        /// <summary>
+        /// Delievery point does not exist for given UDPRN
+        /// </summary>
         [Test]
         public async Task Test_UpdateDPUse_NegativeScenario()
         {

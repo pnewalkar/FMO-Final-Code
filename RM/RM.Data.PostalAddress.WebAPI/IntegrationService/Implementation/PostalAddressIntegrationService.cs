@@ -460,6 +460,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
+        /// <summary>
+        /// Update DPUse in delivery point for matching UDPRN 
+        /// </summary>
+        /// <param name="postalAddressDetails">postal address record in PAF</param>
+        /// <returns>Flag to indicate DPUse updated or not</returns>
         public async Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.UpdateDPUse"))

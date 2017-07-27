@@ -98,6 +98,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             Assert.IsTrue(result.Result);
         }
 
+        /// <summary>
+        /// Update record in Postal address
+        /// </summary>
         [Test]
         public void SavePAFDetails_Check_MatchPostalAddressOnAddress_Update()
         {

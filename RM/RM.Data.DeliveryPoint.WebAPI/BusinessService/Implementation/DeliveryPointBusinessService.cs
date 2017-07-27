@@ -665,6 +665,11 @@
             return ConvertToDTO(await deliveryPointsDataService.GetDeliveryPointByPostalAddressWithLocation(addressId));
         }
 
+        /// <summary>
+        /// Update DPUse in delivery point for matching UDPRN
+        /// </summary>
+        /// <param name="postalAddressDetails">postal address record in PAF</param>
+        /// <returns>Flag to indicate DPUse updated or not</returns>
         public async Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPointsCrossingOperationalObject"))
@@ -685,8 +690,8 @@
                 Guid deliveryPointUseIndicatorGUID = Guid.Empty;
                 List<string> listNames = new List<string> { ReferenceDataCategoryNames.DeliveryPointUseIndicator };
 
+                //Get IDs for DeliveryPointUseIndicatorGUID from reference data
                 var referenceDataCategoryList = deliveryPointIntegrationService.GetReferenceDataSimpleLists(listNames).Result;
-
                 if (referenceDataCategoryList != null && referenceDataCategoryList.Count > 0)
                 {
                     if (!string.IsNullOrEmpty(postalAddressDetails.OrganisationName))
@@ -705,6 +710,7 @@
                                                         .SingleOrDefault();
                     }
                 }
+
                 dpUseStatusUpdated = await deliveryPointsDataService.UpdateDPUse(postalAddressDetails.UDPRN.Value, deliveryPointUseIndicatorGUID);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return dpUseStatusUpdated;

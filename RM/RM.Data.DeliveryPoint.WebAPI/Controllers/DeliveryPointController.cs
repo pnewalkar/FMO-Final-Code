@@ -658,6 +658,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Update DPUse in delivery point for matching UDPRN
+        /// </summary>
+        /// <param name="postalAddressDetails">postal address record in PAF</param>
+        /// <returns>Flag to indicate DPUse updated or not</returns>
         [HttpPost("deliverypoint/UpdateDPUse")]
         public async Task<IActionResult> UpdateDPUse([FromBody] PostalAddressDTO postalAddressDetails)
         {

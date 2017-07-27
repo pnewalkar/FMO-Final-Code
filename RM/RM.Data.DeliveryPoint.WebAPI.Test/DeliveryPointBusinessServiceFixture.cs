@@ -211,10 +211,10 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public async Task Test_UpdateDPUse_NegativeScenario1()
         {
-            mockDeliveryPointsDataService.Setup(x => x.UpdateDPUse(It.IsAny<int>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            mockDeliveryPointsDataService.Setup(x => x.UpdateDPUse(It.IsAny<int>(), It.IsAny<Guid>())).ReturnsAsync(false);
             bool result = await testCandidate.UpdateDPUse(postalAddressesDTO[0]);
             Assert.IsNotNull(result);
-            Assert.IsTrue(result);
+            Assert.IsFalse(result);
         }
 
         /// <summary>
