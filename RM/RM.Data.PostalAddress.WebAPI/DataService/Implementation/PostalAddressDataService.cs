@@ -43,9 +43,11 @@
 
         /// <summary>
         /// Delete postal Address records do not have an associated Delivery Point
+        /// Log error in Database for each postal Address records having an associated Delivery Point
         /// </summary>
         /// <param name="lstUDPRN">List of UDPRN</param>
         /// <param name="addressType">NYB</param>
+        /// <param name="fileName">Name of the NYB file</param>
         /// <returns>true or false</returns>
         public async Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType, string fileName)
         {
