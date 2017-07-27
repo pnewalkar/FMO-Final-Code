@@ -163,25 +163,25 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
 
                     Guid addressTypeUSR = referenceDataCategoryList
-                  .Where(x => x.CategoryName.Replace(" ", string.Empty) == PostalAddressConstants.PostalAddressType)
+                  .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressType)
                   .SelectMany(x => x.ReferenceDatas)
                   .Where(x => x.ReferenceDataValue.Equals(FileType.Usr.ToString(), StringComparison.OrdinalIgnoreCase)).Select(x => x.ID)
                   .SingleOrDefault();
 
                     Guid addressTypePAF = referenceDataCategoryList
-                 .Where(x => x.CategoryName.Replace(" ", string.Empty) == PostalAddressConstants.PostalAddressType)
+                 .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressType)
                  .SelectMany(x => x.ReferenceDatas)
                  .Where(x => x.ReferenceDataValue.Equals(FileType.Paf.ToString(), StringComparison.OrdinalIgnoreCase)).Select(x => x.ID)
                  .SingleOrDefault();
 
                     Guid addressTypeNYB = referenceDataCategoryList
-                 .Where(x => x.CategoryName.Replace(" ", string.Empty) == PostalAddressConstants.PostalAddressType)
+                 .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressType)
                  .SelectMany(x => x.ReferenceDatas)
-                 .Where(x => x.ReferenceDataValue.Equals(FileType.Paf.ToString(), StringComparison.OrdinalIgnoreCase)).Select(x => x.ID)
+                 .Where(x => x.ReferenceDataValue.Equals(FileType.Nyb.ToString(), StringComparison.OrdinalIgnoreCase)).Select(x => x.ID)
                  .SingleOrDefault();
 
                     Guid pendingDelete = referenceDataCategoryList
-               .Where(x => x.CategoryName.Replace(" ", string.Empty) == PostalAddressConstants.PostalAddressStatus)
+               .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressStatus)
                .SelectMany(x => x.ReferenceDatas)
                .Where(x => x.ReferenceDataValue == PostalAddressConstants.PendingDeleteInFMO).Select(x => x.ID)
                .SingleOrDefault();
@@ -190,20 +190,21 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     {
                         loggingHelper.Log("record no " + lstPostalAddress.IndexOf(item) + " , Udprn :" + item.UDPRN, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                        if (string.Equals(item.AmendmentType, PostalAddressConstants.UPDATE, StringComparison.OrdinalIgnoreCase))
+                        if (!string.IsNullOrEmpty(item.AmendmentType))
                         {
-                            ModifyPAFRecords(item);
-                        }
-                        else if (string.Equals(item.AmendmentType, PostalAddressConstants.INSERT, StringComparison.OrdinalIgnoreCase))
-                        {
-                            await SavePAFRecords(item, addressTypeUSR, addressTypeNYB, addressTypePAF, item.FileName);
-                        }
-                        else
-                        {
-                            if (MatchAddressOnUdprn(item.UDPRN.Value, addressTypePAF))
+                            AmmendmentType ammendmentType = (AmmendmentType)Enum.Parse(typeof(AmmendmentType), item.AmendmentType.ToUpper());
+
+                            switch (ammendmentType)
                             {
-                                await addressDataService.UpdatePostalAddressStatus(item.ID, pendingDelete);
-                                // TO DO delete delivery point and postal address 264,266
+                                case AmmendmentType.C:
+                                    ModifyPAFRecords(item);
+                                    break;
+                                case AmmendmentType.I:
+                                    await SavePAFRecords(item, addressTypeUSR, addressTypeNYB, addressTypePAF, item.FileName);
+                                    break;
+                                case AmmendmentType.D:
+                                    MatchAddressOnUdprn(item.UDPRN.Value, addressTypePAF, pendingDelete);
+                                    break;
                             }
                         }
                     }
@@ -999,26 +1000,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             {
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ModifyPAFRecords);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
-                FileProcessingLogDTO objFileProcessingLog = null;
-
-                //logic to update postal address
 
                 var isDPUseUpdated = postalAddressIntegrationService.UpdateDPUse(postalAddressDetails).Result;
                 if (!isDPUseUpdated)
                 {
-                    objFileProcessingLog = new FileProcessingLogDTO
-                    {
-                        FileID = Guid.NewGuid(),
-                        UDPRN = postalAddressDetails.UDPRN ?? default(int),
-                        AmendmentType = postalAddressDetails.AmendmentType,
-                        FileName = postalAddressDetails.FileName,
-                        FileProcessing_TimeStamp = DateTime.UtcNow,
-                        FileType = FileType.Paf.ToString(),
-                        ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound,
-                        SuccessFlag = false
-                    };
-
-                    fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                    loggingHelper.Log(string.Format(PostalAddressConstants.NoMatchingDP, postalAddressDetails.UDPRN), TraceEventType.Information);
                 }
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
@@ -1040,24 +1026,23 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="udprn">Postal address UDPRN</param>
         /// <param name="pafAddressType">Address type as PAF</param>
-        /// <returns>boolean value as true, if PAF address type exists.</returns>
-        private bool MatchAddressOnUdprn(int udprn, Guid pafAddressType)
+        /// <param name="postalAddressStatus">Address status</param>
+        private void MatchAddressOnUdprn(int udprn, Guid pafAddressType, Guid postalAddressStatus)
         {
-            bool addressMatched = true;
             var postalAddress = addressDataService.GetPostalAddress(udprn).Result;
 
             if (postalAddress == null)
             {
-                addressMatched = false;
                 loggingHelper.Log(string.Format(PostalAddressConstants.NoMatchToAddressOnUDPRN, udprn), TraceEventType.Information);
             }
             else if (postalAddress != null && postalAddress.AddressType_GUID != pafAddressType)
             {
-                addressMatched = false;
                 loggingHelper.Log(string.Format(PostalAddressConstants.WrongAddressType, udprn), TraceEventType.Information);
             }
-
-            return addressMatched;
+            else
+            {
+                addressDataService.UpdatePostalAddressStatus(postalAddress.ID, postalAddressStatus);
+            }
         }
 
         #endregion private methods

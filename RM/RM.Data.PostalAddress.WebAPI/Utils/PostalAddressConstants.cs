@@ -37,5 +37,6 @@
         internal const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";
         internal const string NoMatchToAddressOnUDPRN = "No Match to Address on UDPRN : {0}";
         internal const string WrongAddressType = "Wrong Address Type UDPRN : {0}";
+        internal const string NoMatchingDP = "No matching Delivery Point for UDPRN :{0}";
     }
 }
