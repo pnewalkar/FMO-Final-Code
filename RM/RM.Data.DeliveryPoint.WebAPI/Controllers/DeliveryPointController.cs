@@ -658,6 +658,33 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+        [HttpPost("deliverypoint/UpdateDPUse")]
+        public async Task<IActionResult> UpdateDPUse([FromBody] PostalAddressDTO postalAddressDetails)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDPUse"))
+                {
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(UpdateDPUse);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    bool success = await businessService.UpdateDPUse(postalAddressDetails);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return Ok(success);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
         #endregion Methods
     }
 }

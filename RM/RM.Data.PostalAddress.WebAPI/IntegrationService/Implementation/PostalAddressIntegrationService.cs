@@ -460,6 +460,27 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
+        public async Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.UpdateDPUse"))
+            {
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(UpdateDPUse);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/UpdateDPUse/" ,postalAddressDetails);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                var isDPUseUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return isDPUseUpdated;
+            }
+        }
+
         /// <summary>
         /// Delete delivery point
         /// </summary>

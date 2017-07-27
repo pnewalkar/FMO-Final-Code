@@ -665,6 +665,52 @@
             return ConvertToDTO(await deliveryPointsDataService.GetDeliveryPointByPostalAddressWithLocation(addressId));
         }
 
+        public async Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPointsCrossingOperationalObject"))
+            {
+                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(GetDeliveryPointsCrossingOperationalObject);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                if (postalAddressDetails == null)
+                {
+                    throw new ArgumentNullException(nameof(postalAddressDetails));
+                }
+
+                if (postalAddressDetails.UDPRN == null)
+                {
+                    throw new ArgumentNullException(nameof(postalAddressDetails));
+                }
+
+                bool dpUseStatusUpdated = false;
+                Guid deliveryPointUseIndicatorGUID = Guid.Empty;
+                List<string> listNames = new List<string> { ReferenceDataCategoryNames.DeliveryPointUseIndicator };
+
+                var referenceDataCategoryList = deliveryPointIntegrationService.GetReferenceDataSimpleLists(listNames).Result;
+
+                if (referenceDataCategoryList != null && referenceDataCategoryList.Count > 0)
+                {
+                    if (!string.IsNullOrEmpty(postalAddressDetails.OrganisationName))
+                    {
+                        deliveryPointUseIndicatorGUID = referenceDataCategoryList.Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+                                                        .SelectMany(x => x.ReferenceDatas)
+                                                        .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
+                                                        .SingleOrDefault();
+
+                    }
+                    else
+                    {
+                        deliveryPointUseIndicatorGUID = referenceDataCategoryList.Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+                                                        .SelectMany(x => x.ReferenceDatas)
+                                                        .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID)
+                                                        .SingleOrDefault();
+                    }
+                }
+                dpUseStatusUpdated = await deliveryPointsDataService.UpdateDPUse(postalAddressDetails.UDPRN.Value, deliveryPointUseIndicatorGUID);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return dpUseStatusUpdated;
+            }
+        }
+
         #endregion Public Methods
 
         #region Private Methods

@@ -25,8 +25,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
     /// </summary>
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
-        private const string Comma = ", ";
-
         #region Property Declarations
 
         private IPostalAddressDataService addressDataService = default(IPostalAddressDataService);
@@ -149,11 +147,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="lstPostalAddress">list of PostalAddress DTO</param>
         /// <returns>returns true or false</returns>
-        public async Task<bool> SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
+        public async Task<bool> ProcessPAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.SavePAFDetails"))
             {
-                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(SavePAFDetails);
+                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ProcessPAFDetails);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
                 bool isPostalAddressProcessed = false;
@@ -194,7 +192,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                         if (string.Equals(item.AmendmentType, PostalAddressConstants.UPDATE, StringComparison.OrdinalIgnoreCase))
                         {
-                            // ModifyPAFRecords(item);
+                            ModifyPAFRecords(item);
                         }
                         else if (string.Equals(item.AmendmentType, PostalAddressConstants.INSERT, StringComparison.OrdinalIgnoreCase))
                         {
@@ -721,16 +719,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
                 string pafMessage = PostalAddressConstants.PAFTaskBodyPreText +
-                        objPostalAddress.OrganisationName + Comma +
-                        objPostalAddress.DepartmentName + Comma +
-                        objPostalAddress.BuildingName + Comma +
-                        objPostalAddress.BuildingNumber + Comma +
-                        objPostalAddress.SubBuildingName + Comma +
-                        objPostalAddress.Thoroughfare + Comma +
-                        objPostalAddress.DependentThoroughfare + Comma +
-                        objPostalAddress.DependentLocality + Comma +
-                        objPostalAddress.DoubleDependentLocality + Comma +
-                        objPostalAddress.PostTown + Comma +
+                        objPostalAddress.OrganisationName + PostalAddressConstants.Comma +
+                        objPostalAddress.DepartmentName + PostalAddressConstants.Comma +
+                        objPostalAddress.BuildingName + PostalAddressConstants.Comma +
+                        objPostalAddress.BuildingNumber + PostalAddressConstants.Comma +
+                        objPostalAddress.SubBuildingName + PostalAddressConstants.Comma +
+                        objPostalAddress.Thoroughfare + PostalAddressConstants.Comma +
+                        objPostalAddress.DependentThoroughfare + PostalAddressConstants.Comma +
+                        objPostalAddress.DependentLocality + PostalAddressConstants.Comma +
+                        objPostalAddress.DoubleDependentLocality + PostalAddressConstants.Comma +
+                        objPostalAddress.PostTown + PostalAddressConstants.Comma +
                         objPostalAddress.Postcode;
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
@@ -993,6 +991,38 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
 
             return postalAddressDTO;
+        }
+
+        private void ModifyPAFRecords(PostalAddressDTO postalAddressDetails)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.ModifyPAFRecords"))
+            {
+                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ModifyPAFRecords);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
+                FileProcessingLogDTO objFileProcessingLog = null;
+
+                //logic to update postal address
+
+                var isDPUseUpdated = postalAddressIntegrationService.UpdateDPUse(postalAddressDetails).Result;
+                if (!isDPUseUpdated)
+                {
+                    objFileProcessingLog = new FileProcessingLogDTO
+                    {
+                        FileID = Guid.NewGuid(),
+                        UDPRN = postalAddressDetails.UDPRN ?? default(int),
+                        AmendmentType = postalAddressDetails.AmendmentType,
+                        FileName = postalAddressDetails.FileName,
+                        FileProcessing_TimeStamp = DateTime.UtcNow,
+                        FileType = FileType.Paf.ToString(),
+                        ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound,
+                        SuccessFlag = false
+                    };
+
+                    fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                }
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
+            }
         }
 
         /// <summary>

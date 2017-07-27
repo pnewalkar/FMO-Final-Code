@@ -80,6 +80,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <returns>The approx location/</returns>
         Task<DbGeometry> GetApproxLocation(string postcode);
 
+        Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails);
+
         /// <summary>
         /// Delete delivery point
         /// </summary>

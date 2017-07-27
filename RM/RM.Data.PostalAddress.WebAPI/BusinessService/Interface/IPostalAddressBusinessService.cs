@@ -24,7 +24,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// </summary>
         /// <param name="postalAddress">list of PostalAddress DTO</param>
         /// <returns>returns true or false</returns>
-        Task<bool> SavePAFDetails(List<PostalAddressDTO> postalAddress);
+        Task<bool> ProcessPAFDetails(List<PostalAddressDTO> postalAddress);
 
         // TODO : To be moved to Unit Manager
         /*

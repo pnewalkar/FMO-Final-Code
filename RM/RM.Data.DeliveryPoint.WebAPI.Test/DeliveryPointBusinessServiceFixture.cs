@@ -190,6 +190,28 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             Assert.IsNotNull(expectedresult);
             Assert.IsTrue(expectedresult);
         }
+        
+        [Test]
+        public async Task Test_UpdateDPUse()
+        {            
+            bool result = await testCandidate.UpdateDPUse(postalAddressesDTO[0]);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public async Task Test_UpdateDPUse_NegativeScenario1()
+        {
+            try
+            {
+                bool result = await testCandidate.UpdateDPUse(null);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: postalAddressDetails", ae.Message.Replace("\r\n", string.Empty));
+            }
+        }
 
         /// <summary>
         /// Setup data
@@ -393,7 +415,39 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             var locationXy = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700);
             DbGeometry location = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
 
-            List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceData = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>() { new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO { CategoryName = "Delivery Point" } };
+
+
+            List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceData = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>()
+            {
+                new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO
+                {
+                    CategoryName = "Delivery Point"
+                },
+                new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO
+                {                   
+                    CategoryName = ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+                    ReferenceDatas = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataDTO>()
+                    {
+                        new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
+                        {
+                            ID = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED"),
+                            ReferenceDataValue = ReferenceDataValues.Organisation
+                        }
+                    }
+                },
+                new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO
+                {                  
+                    CategoryName = ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+                    ReferenceDatas = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataDTO>()
+                    {
+                        new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
+                        {
+                            ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"),
+                            ReferenceDataValue = ReferenceDataValues.Residential
+                        }
+                    }
+                }
+            };
             double xLocation = 399545.5590911182;
             double yLocation = 649744.6394892789;
             routeDTO = new RouteDTO
@@ -444,7 +498,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(actualDeliveryPointDataDto);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).Returns(actualDeliveryPointDTO);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointByPostalAddressWithLocation(It.IsAny<Guid>())).ReturnsAsync(actualDeliveryPointDTO);
-            mockDeliveryPointsDataService.Setup(x => x.DeleteDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(true);
+            mockDeliveryPointsDataService.Setup(x => x.UpdateDPUse(It.IsAny<int>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsDataService.Object, mockLoggingDataService.Object, mockConfigurationDataService.Object, mockDeliveryPointIntegrationService.Object);
         }
