@@ -637,19 +637,24 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete delivery point.
+        /// </summary>
+        /// <param name="deliveryPointid">Delivery point unique identifier.</param>
+        /// <returns>Boolean flag indicating success of operation.</returns>
         [HttpDelete("deliverypoint/batch/delete/id:{id}")]
-        public Task<bool> DeleteDeliveryPoint(Guid id)
+        public async Task<IActionResult> DeleteDeliveryPoint(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteDeliveryPoint"))
             {
                 string methodName = typeof(DeliveryPointController) + "." + nameof(DeleteDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var isDeliveryPointUpdated = businessService.DeleteDeliveryPoint(id);
+                var isDeliveryPointDeleted = await businessService.DeleteDeliveryPoint(id);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return isDeliveryPointUpdated;
+                return Ok(isDeliveryPointDeleted);
             }
         }
 

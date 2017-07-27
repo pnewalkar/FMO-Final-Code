@@ -460,6 +460,33 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
+        /// <summary>
+        /// Delete delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        /// <returns>boolean</returns>
+        public async Task<bool> DeleteDeliveryPoint(Guid deliveryPointId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.DeleteDeliveryPoint"))
+            {
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(DeleteDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.DeleteAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/delete/id:" + deliveryPointId);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isDeleted = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return isDeleted;
+            }
+        }
+
         #endregion public methods
     }
 }

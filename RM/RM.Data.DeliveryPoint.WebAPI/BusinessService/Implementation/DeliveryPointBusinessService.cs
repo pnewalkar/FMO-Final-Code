@@ -639,11 +639,25 @@
         /// <summary>
         /// Delete delivery point.
         /// </summary>
-        /// <param name="id">Delivery point unique identifier.</param>
+        /// <param name="deliveryPointid">Delivery point unique identifier.</param>
         /// <returns>Boolean flag indicating success of operation.</returns>
-        public Task<bool> DeleteDeliveryPoint(Guid id)
+        public async Task<bool> DeleteDeliveryPoint(Guid deliveryPointid)
         {
-            return deliveryPointsDataService.DeleteDeliveryPoint(id);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.DeleteDeliveryPoint"))
+            {
+                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(DeleteDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                await deliveryPointIntegrationService.DeleteDeliveryPointRouteMapping(deliveryPointid);
+
+                await deliveryPointIntegrationService.DeleteAccesslink(deliveryPointid);
+
+                bool deliveryPointDeleted = await deliveryPointsDataService.DeleteDeliveryPoint(deliveryPointid);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return deliveryPointDeleted;
+            }
         }
 
         public async Task<DeliveryPointDTO> GetDeliveryPointByPostalAddressWithLocation(Guid addressId)
