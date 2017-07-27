@@ -295,7 +295,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                             var intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, interscetionPoint.ToDbGeometry());
                             var isAccessLinkCrossesorOverLaps = accessLinkDataService.CheckAccessLinkCrossesorOverLaps(operationalObjectPoint, interscetionPoint.ToDbGeometry());
 
-                            if (intersectionCountForDeliveryPoint == 0 && isAccessLinkCrossesorOverLaps)
+                            if (intersectionCountForDeliveryPoint == 0 && !isAccessLinkCrossesorOverLaps)
                             {
                                 networkLink = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;
                                 networkIntersectionPoint = interscetionPoint.STEndPoint();
