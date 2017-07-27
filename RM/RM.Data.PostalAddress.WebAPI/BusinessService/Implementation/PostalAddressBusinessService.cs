@@ -127,7 +127,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                 await addressDataService.SaveAddress(postalAddress, strFileName);
                             }
 
-                            isPostalAddressInserted = await addressDataService.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
+                            isPostalAddressInserted = await addressDataService.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId, strFileName);
                         }
                     }
 

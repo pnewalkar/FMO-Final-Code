@@ -43,11 +43,13 @@
 
         /// <summary>
         /// Delete postal Address records do not have an associated Delivery Point
+        /// Log error in Database for each postal Address records having an associated Delivery Point
         /// </summary>
         /// <param name="lstUDPRN">List of UDPRN</param>
         /// <param name="addressType">NYB</param>
+        /// <param name="fileName">Name of the NYB file</param>
         /// <returns>true or false</returns>
-        public async Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
+        public async Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType, string fileName)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteNYBPostalAddress"))
             {
@@ -68,7 +70,12 @@
                                 if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                                 {
                                     isPostalAddressDeleted = false;
-                                    this.loggingHelper.Log(string.Format(nybDeleteMsg, postalAddressEntity.UDPRN), TraceEventType.Information);
+
+                                    // Log an entry in DataBase FileProcessingLog table for each NYB Postal Address records with Delivery Point
+                                    LogFileException(postalAddressEntity.UDPRN ?? default(int),
+                                                     fileName,
+                                                     FileType.Nyb.ToString(),
+                                                     string.Format(nybDeleteMsg, postalAddressEntity.UDPRN));
                                 }
                                 else
                                 {

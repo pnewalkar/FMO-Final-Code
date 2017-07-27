@@ -57,7 +57,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="lstUDPRN">List of UDPRN</param>
         /// <param name="addressType">NYB</param>
         /// <returns>true or false</returns>
-        Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType);
+        Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType, string fileName);
 
         /*
         To be moved to Unit manager
