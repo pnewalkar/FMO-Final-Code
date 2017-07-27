@@ -682,6 +682,32 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             return deliveryPointDTOs;
         }
 
+        public async Task<bool> UpdateDPUse(int udprn, Guid deliveryPointUseIndicatorGUID)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Data.InsertDeliveryPoint"))
+            {
+                string methodName = typeof(DeliveryPointsDataService) + "." + nameof(InsertDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                bool dpUseStatusUpdated = false;
+                var deliveryPointDetails = (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                            join dp in DataContext.DeliveryPoints.AsNoTracking() on pa.ID equals dp.PostalAddressID
+                                            where pa.UDPRN == udprn
+                                            select dp).ToList();
+                if (deliveryPointDetails != null && deliveryPointDetails.Count > 0)
+                {
+                    foreach (var deliveryPoint in deliveryPointDetails)
+                    {
+                        deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointUseIndicatorGUID;
+                    }
+                    await DataContext.SaveChangesAsync();
+                    dpUseStatusUpdated = true;
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return dpUseStatusUpdated;
+            }
+        }
+       
         #endregion Public Methods
 
         #region Private Methods

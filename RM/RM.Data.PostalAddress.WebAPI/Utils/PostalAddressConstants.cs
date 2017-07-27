@@ -15,6 +15,7 @@
         internal const string TASKSOURCE = "SYSTEM";
         internal const string PostalAddressStatus = "Postal Address Status";
         internal const string PostalAddressType = "Postal Address Type";
+        internal const string Comma = ", ";
 
         internal const string LiveAddressStatus = "Live";
         internal const string OperationalStatusGUIDLive = "Live";
@@ -23,7 +24,7 @@
         internal const string NOTIFICATIONCLOSED = "Closed";
 
         internal const string INSERT = "I";
-        internal const string UPDATE = "U";
+        internal const string UPDATE = "C";
         internal const string DELETE = "D";
         internal const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
 

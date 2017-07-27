@@ -79,5 +79,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <param name="postcode"></param>
         /// <returns>The approx location/</returns>
         Task<DbGeometry> GetApproxLocation(string postcode);
+
+        Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails);
     }
 }

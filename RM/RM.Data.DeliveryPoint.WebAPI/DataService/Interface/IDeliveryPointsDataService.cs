@@ -136,5 +136,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="id">Delivery point unique identifier.</param>
         /// <returns>Boolean value indicating the success of delete operation.</returns>
         Task<bool> DeleteDeliveryPoint(Guid id);
+
+        Task<bool> UpdateDPUse(int udprn, Guid deliveryPointUseIndicatorGUID);
     }
 }

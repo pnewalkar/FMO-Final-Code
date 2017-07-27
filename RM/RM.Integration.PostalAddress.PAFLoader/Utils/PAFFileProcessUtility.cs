@@ -279,7 +279,7 @@
                 {
                     isMessageQueued = true;
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodEntryEventId, LoggerTraceConstants.Title);
-                    var lstPAFInsertEvents = lstPostalAddress.Where(insertFiles => insertFiles.AmendmentType == PAFLoaderConstants.PAFINSERT).ToList();
+                    var lstPAFInsertEvents = lstPostalAddress.Where(insertFiles => insertFiles.AmendmentType != PAFLoaderConstants.PAFNOACTION).ToList();
 
                     lstPAFInsertEvents.ForEach(postalAddress =>
                         {
