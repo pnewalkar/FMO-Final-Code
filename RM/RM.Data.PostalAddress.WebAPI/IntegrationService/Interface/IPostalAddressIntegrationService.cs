@@ -73,7 +73,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
 
         Task<bool> UpdateNotificationMessageByUDPRN(int udprn, string action, string message);
 
-        // <summary>
+        /// <summary>
         /// Gets approx location based on the postal code.
         /// </summary>
         /// <param name="postcode"></param>
@@ -81,5 +81,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         Task<DbGeometry> GetApproxLocation(string postcode);
 
         Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails);
+
+        /// <summary>
+        /// Delete delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        /// <returns>boolean</returns>
+        Task<bool> DeleteDeliveryPoint(Guid deliveryPointId);
     }
 }
