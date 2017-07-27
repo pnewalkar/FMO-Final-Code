@@ -15,7 +15,6 @@
     using Data.AccessLink.WebAPI.Utils;
     using Entities;
     using Interfaces;
-    using MappingConfiguration;
 
     /// <summary>
     /// This class contains methods of Access Link DataService for fetching Access Link data.
@@ -83,7 +82,6 @@
                     DataContext.SaveChanges();
                     isAccessLinkCreationSuccess = true;
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-
 
                     return isAccessLinkCreationSuccess;
                 }
@@ -219,7 +217,7 @@
         public bool CheckAccessLinkCrossesorOverLaps(DbGeometry operationalObjectPoint, DbGeometry accessLink)
         {
             // var accesslinkCount = DataContext.NetworkLinks.AsNoTracking().Where(al => al.LinkGeometry != null && al.LinkGeometry.Intersects(accessLink) && al.LinkGeometry.Crosses(accessLink)).ToList();
-            var isAccessLinkCountForCrossesorOverLaps = DataContext.NetworkLinks.AsNoTracking().Any(a => a.LinkGeometry.Intersects(accessLink) 
+            var isAccessLinkCountForCrossesorOverLaps = DataContext.NetworkLinks.AsNoTracking().Any(a => a.LinkGeometry.Intersects(accessLink)
                                                      && !a.LinkGeometry.Intersection(accessLink).SpatialEquals(a.NetworkNode.Location.Shape));
 
             return isAccessLinkCountForCrossesorOverLaps;

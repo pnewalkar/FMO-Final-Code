@@ -339,9 +339,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                     // Create NetworkNode
                     accessLinkDataDto.NetworkLink.NetworkNode.ID = locationGuid;
-                    accessLinkDataDto.NetworkLink.NetworkNode.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true); // ReferenceDataValue(Internal)	CategoryName(Data Provider)
+                    accessLinkDataDto.NetworkLink.NetworkNode.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true);
 
-                    accessLinkDataDto.NetworkLink.NetworkNode.NetworkNodeType_GUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, AccessLinkConstants.AccessLinkDataProviderGUID, true); // ReferenceDataValue(Access Link Intersection Node)	CategoryName(Network Node Type)
+                    accessLinkDataDto.NetworkLink.NetworkNode.NetworkNodeType_GUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, AccessLinkConstants.AccessLinkDataProviderGUID, true);
                     accessLinkDataDto.NetworkLink.NetworkNode.RowCreateDateTime = DateTime.UtcNow;
 
                     // Create AccessLink
@@ -355,6 +355,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                         DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
                         accessLinkDataDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, actualLength, networkLink, referenceDataCategoryList));
                     }
+
                     accessLinkDataDto.AccessLinkTypeGUID = referenceDataCategoryList
                         .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkType)
                         .SelectMany(x => x.ReferenceDatas)
@@ -369,8 +370,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                     // Create NetworkLink
                     accessLinkDataDto.NetworkLink.ID = accessLinkGuid;
-                    accessLinkDataDto.NetworkLink.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true); // ReferenceDataValue(Internal)	CategoryName(Data Provider)
-                    accessLinkDataDto.NetworkLink.NetworkLinkTypeGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkLinkType, AccessLinkConstants.AccessLink, true);// ReferenceDataValue(Access Link)	CategoryName(Network Link Type)
+                    accessLinkDataDto.NetworkLink.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true);
+                    accessLinkDataDto.NetworkLink.NetworkLinkTypeGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkLinkType, AccessLinkConstants.AccessLink, true);
                     accessLinkDataDto.NetworkLink.LinkGeometry =
                         operationalObjectPoint.ToSqlGeometry()
                             .ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry())
@@ -490,7 +491,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 // Create NetworkNode
                 accessLinkDataDto.NetworkLink.NetworkNode.ID = locationGuid;
-                accessLinkDataDto.NetworkLink.NetworkNode.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true); 
+                accessLinkDataDto.NetworkLink.NetworkNode.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true);
 
                 accessLinkDataDto.NetworkLink.NetworkNode.NetworkNodeType_GUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, AccessLinkConstants.AccessLinkDataProviderGUID, true);
                 accessLinkDataDto.NetworkLink.NetworkNode.RowCreateDateTime = DateTime.UtcNow;
@@ -607,7 +608,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 referenceDataCategoryList.AddRange(
                    accessLinkIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
 
-                Guid OperationalObjectTypeGUID = referenceDataCategoryList
+                Guid operationalObjectTypeGUID = referenceDataCategoryList
                         .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
@@ -625,7 +626,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 if (referenceDataCategoryList
                   .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
-                  .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == OperationalObjectTypeGUID)
+                  .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationalObjectTypeGUID)
                 {
                     DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
 
@@ -646,12 +647,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>bool</returns>
         public bool CheckManualAccessLinkIsValid(string boundingBoxCoordinates, string accessLinkCoordinates)
         {
-            // TODO
             using (loggingHelper.RMTraceManager.StartTrace("Business.CheckManualAccessLinkIsValid"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
 
                 string parsedAccessLink = ObjectParser.GetGeometry(accessLinkCoordinates, AccessLinkConstants.LinestringObject);
 
@@ -795,6 +794,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 return referenceDataGuid;
             }
         }
+
         #endregion Methods
     }
 }
