@@ -34,11 +34,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// Gets the all delivery units for an user.
         /// </summary>
         /// <param name="userId">The user identifier.</param>
-        /// <param name="postcodeAreaGUID">The post code area unique identifier.</param>
+        /// <param name="postcodeTypeDistrictGUID">The postcode type district  unique identifier.</param>
         /// <returns>
         /// List of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        public async Task<IEnumerable<UnitLocationDataDTO>> GetUnitsByUser(Guid userId, Guid postcodeAreaGUID)
+        public async Task<IEnumerable<UnitLocationDataDTO>> GetUnitsByUser(Guid userId, Guid postcodeTypeDistrictGUID)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetUnitsByUser);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUnitsByUser"))
@@ -55,10 +55,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                               Name = postalAddressIdentifier.Name,
                                               Shape = location.Shape,
                                               Area = (
-                                                      from postcodeHierarchy in DataContext.PostcodeHierarchies
-                                                      join lh in DataContext.LocationPostcodeHierarchies on postcodeHierarchy.ID equals lh.PostcodeHierarchyID
-                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID && location.ID == lh.LocationID
-                                                      select postcodeHierarchy.Postcode).FirstOrDefault() ?? string.Empty,
+                                                      from postcode in DataContext.PostcodeHierarchies
+                                                      join sector in DataContext.PostcodeHierarchies on postcode.ParentPostcode equals sector.Postcode
+                                                      join district in DataContext.PostcodeHierarchies on sector.ParentPostcode equals district.Postcode
+                                                      join lh in DataContext.LocationPostcodeHierarchies on postcode.ID equals lh.PostcodeHierarchyID
+                                                      where postcode.ID == lh.PostcodeHierarchyID && district.PostcodeTypeGUID == postcodeTypeDistrictGUID && location.ID == lh.LocationID
+                                                      select district.ParentPostcode).FirstOrDefault() ?? string.Empty,
                                           }).ToListAsync();
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId);
