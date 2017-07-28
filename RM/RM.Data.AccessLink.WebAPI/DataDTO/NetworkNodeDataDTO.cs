@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RM.Data.AccessLink.WebAPI.DataDTOs
 {
@@ -25,6 +22,5 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         public DeliveryPointDataDTO DeliveryPoint { get; set; }
 
         public LocationDataDTO Location { get; set; }
-
     }
 }
