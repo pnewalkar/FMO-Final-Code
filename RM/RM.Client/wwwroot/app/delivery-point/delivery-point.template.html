@@ -184,9 +184,8 @@
                         </div>
 
                     </fieldset>
-                </div>
-                <span flex="5"></span>
-                <div layout="column" flex="40" ng-show="false">
+                </div>                
+                <!-- <div layout="column" flex="40" ng-show="false">
                     <div layout="row" class="addressRow">
                         <md-input-container flex="90">
                             <label>{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}</label>
@@ -210,8 +209,41 @@
                             </div>
                         </div>
                     </div>
+                </div> -->
+                <!--Alias-->
+                <div layout="column" flex="40" ng-show="vm.display" class="DPAliasBox">
+                    <!--AddAlias start-->
+                    <div layout="row">
+                        <md-input-container md-no-float class="md-block" flex-gt-sm>
+                            <label>{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}</label>
+                            <input ng-model="vm.alias" type="text" ng-maxlength="60" >
+                        </md-input-container>                       
+                        <md-button class="md-icon-button" id="DPAliasBoxBtn" aria-label="Add DP Alias" ng-click="vm.addAlias()" title="{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}">
+                            <i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i>
+                        </md-button>
+                    </div>
+                    <!--AddAlias End-->
+                    <!--List Alias Start-->
+                    <div layout="column">
+                        <div class="listAliasHeader">
+                            <label>{{ 'DELIVERY_POINTS.ALIAS' | translate }}</label>
+                            <span class="listAliasStar"><i class="fa fa-star" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="">
+                            <md-list class="listAliasMdlist" style="padding: 0px;">
+                                <md-list-item ng-repeat="item in vm.items" class="listAlias">
+                                    <p>{{ item.DPAlias }}</p>
+                                    <input type="radio" class="listAliasRadioBtn" name="check" value="inline" ng-model="item.Preferred">
+                                    <md-button class="md-icon-button" aria-label="Remove DP Alias" ng-click="vm.removeAlias()" title="{{ 'DELIVERY_POINTS.REMOVE_DP_ALIAS' | translate }}">
+                                    <i class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
+                                </md-button>
+                                </md-list-item>                                                
+                            </md-list>
+                        </div>
+                    </div>
+                    <!--List Alias End-->
                 </div>
-
+                <!--Alias End-->
             </div>
 
 
@@ -227,13 +259,7 @@
                     </div>
                 </md-input-container>
                 <span flex="5"></span>
-                <!--
-                        <label>DP Use<sub>*</sub></label>
-                        <input type="text" ng-model="vm.dpUse[0].displayText">-->
-
-             
-
-
+                
                 <md-input-container>
                     <label> {{ 'DELIVERY_POINTS.MAIL_VOL' | translate }} </label>
                     <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="6" required>

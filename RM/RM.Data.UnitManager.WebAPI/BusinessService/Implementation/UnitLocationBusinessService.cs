@@ -101,12 +101,19 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
 
                 foreach (var unitLocationDto in unitLocationDtoList)
                 {
-                    // take the unit boundry plus 1 mile envelope
-                    var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(unitLocationDto.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
+                    try
+                    {
+                        // take the unit boundry plus 1 mile envelope
+                        var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(unitLocationDto.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
 
-                    unitLocationDto.BoundingBoxCenter = new List<double> { unitBoundary.STCentroid().STPointN(1).STX.Value, unitBoundary.STCentroid().STPointN(1).STY.Value };
+                        unitLocationDto.BoundingBoxCenter = new List<double> { unitBoundary.STCentroid().STPointN(1).STX.Value, unitBoundary.STCentroid().STPointN(1).STY.Value };
 
-                    unitLocationDto.BoundingBox = new List<double> { unitBoundary.STPointN(1).STX.Value, unitBoundary.STPointN(1).STY.Value, unitBoundary.STPointN(3).STX.Value, unitBoundary.STPointN(3).STY.Value };
+                        unitLocationDto.BoundingBox = new List<double> { unitBoundary.STPointN(1).STX.Value, unitBoundary.STPointN(1).STY.Value, unitBoundary.STPointN(3).STX.Value, unitBoundary.STPointN(3).STY.Value };
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
