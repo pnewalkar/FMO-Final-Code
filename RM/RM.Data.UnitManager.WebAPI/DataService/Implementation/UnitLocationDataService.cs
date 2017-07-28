@@ -59,7 +59,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                                       join sector in DataContext.PostcodeHierarchies on postcode.ParentPostcode equals sector.Postcode
                                                       join district in DataContext.PostcodeHierarchies on sector.ParentPostcode equals district.Postcode
                                                       join lh in DataContext.LocationPostcodeHierarchies on postcode.ID equals lh.PostcodeHierarchyID
-                                                      where postcode.ID == lh.PostcodeHierarchyID && postcode.PostcodeTypeGUID == postcodeTypeDistrictGUID && location.ID == lh.LocationID
+                                                      where postcode.ID == lh.PostcodeHierarchyID && district.PostcodeTypeGUID == postcodeTypeDistrictGUID && location.ID == lh.LocationID
                                                       select district.ParentPostcode).FirstOrDefault() ?? string.Empty,
                                           }).ToListAsync();
 
