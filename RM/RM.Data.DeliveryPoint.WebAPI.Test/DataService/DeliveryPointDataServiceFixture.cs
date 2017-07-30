@@ -325,6 +325,28 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(expectedResult);
         }
 
+        /// <summary>
+        /// Delievery point exists for given UDPRN
+        /// </summary>
+        [Test]
+        public async Task Test_UpdateDPUse()
+        {
+            bool result = await testCandidate.UpdateDPUse(12345, new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"));
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result);
+        }
+
+        /// <summary>
+        /// Delievery point does not exist for given UDPRN
+        /// </summary>
+        [Test]
+        public async Task Test_UpdateDPUse_NegativeScenario()
+        {
+            bool result = await testCandidate.UpdateDPUse(1234, new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"));
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result);
+        }
+
         protected override void OnSetup()
         {
             var deliveryPoint = new List<DeliveryPoint>()
@@ -334,7 +356,7 @@ namespace RM.DataServices.Tests.DataService
                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                    PostalAddressID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"),
                    DeliveryPointUseIndicatorGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A14"),
-                    RowVersion = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 },
+                   RowVersion = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 },
                    PostalAddress = new PostalAddress()
                    {
                     BuildingName = "road bldg2",
@@ -352,7 +374,7 @@ namespace RM.DataServices.Tests.DataService
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
-                    ID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA")
+                    ID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"),                  
         },
                    DeliveryPointStatus = new List<DeliveryPointStatus>()
                 {

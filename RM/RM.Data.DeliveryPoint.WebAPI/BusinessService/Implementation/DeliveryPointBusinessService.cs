@@ -639,16 +639,82 @@
         /// <summary>
         /// Delete delivery point.
         /// </summary>
-        /// <param name="id">Delivery point unique identifier.</param>
+        /// <param name="deliveryPointid">Delivery point unique identifier.</param>
         /// <returns>Boolean flag indicating success of operation.</returns>
-        public Task<bool> DeleteDeliveryPoint(Guid id)
+        public async Task<bool> DeleteDeliveryPoint(Guid deliveryPointid)
         {
-            return deliveryPointsDataService.DeleteDeliveryPoint(id);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.DeleteDeliveryPoint"))
+            {
+                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(DeleteDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                await deliveryPointIntegrationService.DeleteDeliveryPointRouteMapping(deliveryPointid);
+
+                await deliveryPointIntegrationService.DeleteAccesslink(deliveryPointid);
+
+                bool deliveryPointDeleted = await deliveryPointsDataService.DeleteDeliveryPoint(deliveryPointid);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return deliveryPointDeleted;
+            }
         }
 
         public async Task<DeliveryPointDTO> GetDeliveryPointByPostalAddressWithLocation(Guid addressId)
         {
             return ConvertToDTO(await deliveryPointsDataService.GetDeliveryPointByPostalAddressWithLocation(addressId));
+        }
+
+        /// <summary>
+        /// Update DPUse in delivery point for matching UDPRN
+        /// </summary>
+        /// <param name="postalAddressDetails">postal address record in PAF</param>
+        /// <returns>Flag to indicate DPUse updated or not</returns>
+        public async Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPointsCrossingOperationalObject"))
+            {
+                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(GetDeliveryPointsCrossingOperationalObject);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                if (postalAddressDetails == null)
+                {
+                    throw new ArgumentNullException(nameof(postalAddressDetails));
+                }
+
+                if (postalAddressDetails.UDPRN == null)
+                {
+                    throw new ArgumentNullException(nameof(postalAddressDetails));
+                }
+
+                bool dpUseStatusUpdated = false;
+                Guid deliveryPointUseIndicatorGUID = Guid.Empty;
+                List<string> listNames = new List<string> { ReferenceDataCategoryNames.DeliveryPointUseIndicator };
+
+                //Get IDs for DeliveryPointUseIndicatorGUID from reference data
+                var referenceDataCategoryList = deliveryPointIntegrationService.GetReferenceDataSimpleLists(listNames).Result;
+                if (referenceDataCategoryList != null && referenceDataCategoryList.Count > 0)
+                {
+                    if (!string.IsNullOrEmpty(postalAddressDetails.OrganisationName))
+                    {
+                        deliveryPointUseIndicatorGUID = referenceDataCategoryList.Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+                                                        .SelectMany(x => x.ReferenceDatas)
+                                                        .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
+                                                        .SingleOrDefault();
+
+                    }
+                    else
+                    {
+                        deliveryPointUseIndicatorGUID = referenceDataCategoryList.Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+                                                        .SelectMany(x => x.ReferenceDatas)
+                                                        .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID)
+                                                        .SingleOrDefault();
+                    }
+                }
+
+                dpUseStatusUpdated = await deliveryPointsDataService.UpdateDPUse(postalAddressDetails.UDPRN.Value, deliveryPointUseIndicatorGUID);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return dpUseStatusUpdated;
+            }
         }
 
         #endregion Public Methods

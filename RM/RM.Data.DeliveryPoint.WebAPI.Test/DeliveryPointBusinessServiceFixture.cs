@@ -190,6 +190,73 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             Assert.IsNotNull(expectedresult);
             Assert.IsTrue(expectedresult);
         }
+        
+        /// <summary>
+        /// Delivery point with the matching postal address exists
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_UpdateDPUse_PositiveScenario1()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.UpdateDPUse(It.IsAny<int>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            bool result = await testCandidate.UpdateDPUse(postalAddressesDTO[0]);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result);
+        }
+
+        /// <summary>
+        /// Delivery point with the matching postal address does not exist
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_UpdateDPUse_NegativeScenario1()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.UpdateDPUse(It.IsAny<int>(), It.IsAny<Guid>())).ReturnsAsync(false);
+            bool result = await testCandidate.UpdateDPUse(postalAddressesDTO[0]);
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Received null argument
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_UpdateDPUse_NegativeScenario2()
+        {
+            try
+            {
+                bool result = await testCandidate.UpdateDPUse(null);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: postalAddressDetails", ae.Message.Replace("\r\n", string.Empty));
+            }
+        }
+
+        /// <summary>
+        /// Received postal address details with null UDPRN
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_UpdateDPUse_NegativeScenario3()
+        {
+            try
+            {
+                var PostalAddressDTO = new PostalAddressDTO()
+                {
+                    UDPRN = null,
+                    OrganisationName = "abc"
+                };
+                bool result = await testCandidate.UpdateDPUse(PostalAddressDTO);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: postalAddressDetails", ae.Message.Replace("\r\n", string.Empty));
+            }
+        }
 
         /// <summary>
         /// Setup data
@@ -393,7 +460,39 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             var locationXy = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700);
             DbGeometry location = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
 
-            List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceData = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>() { new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO { CategoryName = "Delivery Point" } };
+
+
+            List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceData = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>()
+            {
+                new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO
+                {
+                    CategoryName = "Delivery Point"
+                },
+                new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO
+                {                   
+                    CategoryName = ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+                    ReferenceDatas = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataDTO>()
+                    {
+                        new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
+                        {
+                            ID = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED"),
+                            ReferenceDataValue = ReferenceDataValues.Organisation
+                        }
+                    }
+                },
+                new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO
+                {                  
+                    CategoryName = ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+                    ReferenceDatas = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataDTO>()
+                    {
+                        new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
+                        {
+                            ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"),
+                            ReferenceDataValue = ReferenceDataValues.Residential
+                        }
+                    }
+                }
+            };
             double xLocation = 399545.5590911182;
             double yLocation = 649744.6394892789;
             routeDTO = new RouteDTO
@@ -412,9 +511,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             // GetDeliveryPointsForAdvanceSearch
             mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDataDTO>())).Returns(Task.FromResult(1));
 
-            // mockDeliveryPointsDataService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
-
-            //    mockDeliveryPointsDataService.Setup(x => x.GetDPUse(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns("Org");
             mockDeliveryPointsDataService.Setup(x => x.UpdatePAFIndicator(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns(Task.FromResult("ABC"));
@@ -434,18 +530,15 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
 
             mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDataDTO>())).ReturnsAsync(5);
 
-            // mockDeliveryPointIntegrationService.Setup(x => x.CreateBlockSequenceForDeliveryPoint(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             mockDeliveryPointIntegrationService.Setup(x => x.CreateAccessLink(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(true);
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).ReturnsAsync("123");
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).ReturnsAsync(actualDeliveryPointDTO);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(actualDeliveryPointDTO);
 
-            // mockDeliveryPointIntegrationService.Setup(x => x.GetPostalAddress(It.IsAny<List<Guid>>())).ReturnsAsync(new List<PostalAddressDTO>() { new PostalAddressDTO() {ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11") } });
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(actualDeliveryPointDataDto);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).Returns(actualDeliveryPointDTO);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointByPostalAddressWithLocation(It.IsAny<Guid>())).ReturnsAsync(actualDeliveryPointDTO);
-            mockDeliveryPointsDataService.Setup(x => x.DeleteDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(true);
-
+           
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsDataService.Object, mockLoggingDataService.Object, mockConfigurationDataService.Object, mockDeliveryPointIntegrationService.Object);
         }
     }

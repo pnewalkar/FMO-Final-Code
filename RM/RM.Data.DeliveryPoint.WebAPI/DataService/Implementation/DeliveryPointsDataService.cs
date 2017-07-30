@@ -682,6 +682,41 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             return deliveryPointDTOs;
         }
 
+        /// <summary>
+        /// Update DPUse in delivery point for matching UDPRN
+        /// </summary>
+        /// <param name="udprn">UDPRN for postal address</param>
+        /// <param name="deliveryPointUseIndicatorGUID">DeliveryPointUseIndicatorGUID to be updated for the matching delivery point</param>
+        /// <returns>Flag to indicate DPUse updated or not</returns>
+        public async Task<bool> UpdateDPUse(int udprn, Guid deliveryPointUseIndicatorGUID)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Data.InsertDeliveryPoint"))
+            {
+                string methodName = typeof(DeliveryPointsDataService) + "." + nameof(InsertDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                bool dpUseStatusUpdated = false;
+
+                //Get delivery point details for matching UDPRN
+                var deliveryPointDetails = (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                            join dp in DataContext.DeliveryPoints.AsNoTracking() on pa.ID equals dp.PostalAddressID
+                                            where pa.UDPRN == udprn
+                                            select dp).ToList();
+                if (deliveryPointDetails != null && deliveryPointDetails.Count > 0)
+                {
+                    //Update DPUse in delivery point for matching UDPRN
+                    foreach (var deliveryPoint in deliveryPointDetails)
+                    {
+                        deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointUseIndicatorGUID;
+                    }
+                    await DataContext.SaveChangesAsync();
+                    dpUseStatusUpdated = true;
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return dpUseStatusUpdated;
+            }
+        }
+       
         #endregion Public Methods
 
         #region Private Methods
