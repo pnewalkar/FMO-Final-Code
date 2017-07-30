@@ -149,11 +149,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="lstPostalAddress">list of PostalAddress DTO</param>
         /// <returns>returns true or false</returns>
-        public async Task<bool> SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
+        public async Task<bool> ProcessPAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.SavePAFDetails"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.ProcessPAFDetails"))
             {
-                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(SavePAFDetails);
+                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ProcessPAFDetails);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
                 bool isPostalAddressProcessed = false;
@@ -170,7 +170,18 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     {
                         loggingHelper.Log("record no " + lstPostalAddress.IndexOf(item) + " , Udprn :" + item.UDPRN, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                        await SavePAFRecords(item, addressTypeUSR, addressTypeNYB, addressTypePAF, item.FileName);
+                        if (string.Equals(item.AmendmentType, PostalAddressConstants.UPDATE, StringComparison.OrdinalIgnoreCase))
+                        {
+                            await ModifyPAFRecords(item, addressTypePAF, item.FileName);
+                        }
+                        else if (string.Equals(item.AmendmentType, PostalAddressConstants.INSERT, StringComparison.OrdinalIgnoreCase))
+                        {
+                            await SavePAFRecords(item, addressTypeUSR, addressTypeNYB, addressTypePAF, item.FileName);
+                        }
+                        else
+                        {
+                            // throw BusinessLogicException("Invalid Event");
+                        }
                     }
 
                     isPostalAddressProcessed = true;
@@ -956,6 +967,99 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
 
             return postalAddressDTO;
+        }
+
+        /// <summary>
+        /// Business rule implementation for PAF modify events
+        /// </summary>
+        /// <param name="postalAddressDetails">Postal Address Details</param>
+        private async Task ModifyPAFRecords(PostalAddressDTO postalAddressDetails, Guid addressTypePAF, string strFileName)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.ModifyPAFRecords"))
+            {
+                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ModifyPAFRecords);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
+
+                FileProcessingLogDTO objFileProcessingLog = null;
+                Guid deliveryPointUseIndicatorPAF = Guid.Empty;
+                Guid postCodeGuid = Guid.Empty;
+
+                // Construct New PostalAddressDTO
+                PostalAddressDataDTO objPostalAddress = new PostalAddressDataDTO
+                {
+                    Postcode = postalAddressDetails.Postcode,
+                    PostTown = postalAddressDetails.PostTown,
+                    DependentLocality = postalAddressDetails.DependentLocality,
+                    DoubleDependentLocality = postalAddressDetails.DoubleDependentLocality,
+                    Thoroughfare = postalAddressDetails.Thoroughfare,
+                    DependentThoroughfare = postalAddressDetails.DependentThoroughfare,
+                    BuildingNumber = postalAddressDetails.BuildingNumber,
+                    BuildingName = postalAddressDetails.BuildingName,
+                    SubBuildingName = postalAddressDetails.SubBuildingName,
+                    POBoxNumber = postalAddressDetails.POBoxNumber,
+                    DepartmentName = postalAddressDetails.DepartmentName,
+                    OrganisationName = postalAddressDetails.OrganisationName,
+                    UDPRN = postalAddressDetails.UDPRN,
+                    PostcodeType = postalAddressDetails.PostcodeType,
+                    SmallUserOrganisationIndicator = postalAddressDetails.SmallUserOrganisationIndicator,
+                    DeliveryPointSuffix = postalAddressDetails.DeliveryPointSuffix,
+                    RowCreateDateTime = DateTime.UtcNow
+                };
+                
+                // matching UDPRN
+                PostalAddressDataDTO objPostalAddressMatchedUDPRN = await addressDataService.GetPostalAddress(objPostalAddress.UDPRN);
+                
+                // If UDPRN match
+                if (objPostalAddressMatchedUDPRN != null)
+                {
+                    if (objPostalAddressMatchedUDPRN.AddressType_GUID == addressTypePAF)
+                    {
+                        objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
+
+                        await addressDataService.UpdateAddress(objPostalAddress, strFileName);
+
+                        // TODO Swapna's logic
+                        //if (await addressDataService.UpdateAddress(objPostalAddress, strFileName))
+                        //{
+                            
+                        //}
+                    }
+                    else
+                    {
+                        objFileProcessingLog = new FileProcessingLogDTO
+                        {
+                            FileID = Guid.NewGuid(),
+                            UDPRN = objPostalAddress.UDPRN ?? default(int),
+                            AmendmentType = postalAddressDetails.AmendmentType,
+                            FileName = strFileName,
+                            FileProcessing_TimeStamp = DateTime.UtcNow,
+                            FileType = FileType.Paf.ToString(),
+                            ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound,
+                            SuccessFlag = false
+                        };
+
+                        fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                    }
+                }
+                else
+                {
+                    objFileProcessingLog = new FileProcessingLogDTO
+                    {
+                        FileID = Guid.NewGuid(),
+                        UDPRN = objPostalAddress.UDPRN ?? default(int),
+                        AmendmentType = postalAddressDetails.AmendmentType,
+                        FileName = strFileName,
+                        FileProcessing_TimeStamp = DateTime.UtcNow,
+                        FileType = FileType.Paf.ToString(),
+                        ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound,
+                        SuccessFlag = false
+                    };
+
+                    fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                }
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
+            }
+
         }
 
         #endregion private methods

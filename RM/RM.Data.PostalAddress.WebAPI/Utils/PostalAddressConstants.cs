@@ -23,7 +23,7 @@
         internal const string NOTIFICATIONCLOSED = "Closed";
 
         internal const string INSERT = "I";
-        internal const string UPDATE = "U";
+        internal const string UPDATE = "C";
         internal const string DELETE = "D";
         internal const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
 

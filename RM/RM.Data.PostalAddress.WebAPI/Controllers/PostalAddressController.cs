@@ -109,7 +109,7 @@ namespace Fmo.API.Services.Controllers
 
                     if (postalAddress != null && postalAddress.Count > 0)
                     {
-                        isPAFSaved = await this.businessService.SavePAFDetails(postalAddress);
+                        isPAFSaved = await this.businessService.ProcessPAFDetails(postalAddress);
                         return Ok(isPAFSaved);
                     }
 
