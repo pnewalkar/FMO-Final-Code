@@ -17,7 +17,8 @@ DeliveryPointController.$inject = [
         '$state',
         '$stateParams',
         'deliveryPointService',
-        '$rootScope'];
+        '$rootScope',
+         'CommonConstants'];
 
 function DeliveryPointController(
     mapToolbarService,
@@ -33,7 +34,8 @@ function DeliveryPointController(
     $state,
     $stateParams,
     deliveryPointService,
-    $rootScope
+    $rootScope,
+    CommonConstants
 ) {
 
     var vm = this;
@@ -278,7 +280,7 @@ function DeliveryPointController(
     }
 
     function setDeliveryPoint(id, rowversion, postalAddress, hasLocation) {
-        if (vm.selectedDPUse.value === 'Residential')
+        if (vm.selectedDPUse.value === CommonConstants.DpUseType.Residential)
         {
             var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
                         + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
@@ -286,7 +288,7 @@ function DeliveryPointController(
                         + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
                         + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
         }
-        else if (vm.selectedDPUse.value === 'Organisation')
+        else if (vm.selectedDPUse.value === CommonConstants.DpUseType.Organisation)
         {
             var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
                         + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
