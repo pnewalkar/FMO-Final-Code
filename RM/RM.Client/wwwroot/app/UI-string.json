@@ -36,7 +36,7 @@
     "MODIFY": "Modify",
     "DELETE": "Delete",
     "AREA": "Area"
-
+     
   },
   "ERROR_DIALOG": {
     "TITLE": "Unable to process request"
@@ -87,7 +87,9 @@
     "MULTI_OCC": "Multi Occ",
     "MAIL_VOL": "Mail Vol",
     "LOCALITY": "Locality",
-    "REMOVE_DP_ALIAS": "Remove DP Alias"
+    "REMOVE_DP_ALIAS": "Remove DP Alias",
+    "RANGE_FROM": "Range From",
+    "SUB_BUILDING_TYPE":  "Sub Building Type"
 
   },
   "ROUTE_LOG": {
