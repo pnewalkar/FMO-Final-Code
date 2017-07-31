@@ -278,14 +278,24 @@ function DeliveryPointController(
     }
 
     function setDeliveryPoint(id, rowversion, postalAddress, hasLocation) {
-        var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.organisationName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.departmentName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
-
+        if (vm.selectedDPUse.value === 'Residential')
+        {
+            var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)                     
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
+        }
+        else if (vm.selectedDPUse.value === 'Organisation')
+        {
+            var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.organisationName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.departmentName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
+        }
         if (vm.addressDetails.udprn && hasLocation) {
             locateDeliveryPoint(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion);
         }
