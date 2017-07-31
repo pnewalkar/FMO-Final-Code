@@ -21,6 +21,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 
         public virtual DbSet<Postcode> Postcodes { get; set; }
 
+        public virtual DbSet<PostalAddressAlias> PostalAddressAlias { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AddressLocation>()
@@ -127,6 +129,19 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
                 .WithRequired(e => e.PostalAddress)
                 .HasForeignKey(e => e.PostalAddressGUID)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PostalAddress>()
+               .HasMany(e => e.PostalAddressAlias)
+               .WithRequired(e => e.PostalAddress)
+               .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PostalAddressAlias>()
+             .Property(e => e.AliasName)
+             .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddressAlias>()
+                .Property(e => e.PreferenceOrderIndex)
+                .HasPrecision(16, 8);
 
             modelBuilder.Entity<Postcode>()
                 .Property(e => e.PostcodeUnit)
