@@ -50,7 +50,7 @@ fieldset{
     @include border-radius(15px);
     @include position(absolute);
     @include background($white,none);
-    @include margin(-50PX 0PX 0PX 400PX);
+    @include margin(-5% 0% 0% 13%);
     z-index: 1;
     text-align:center;
 }

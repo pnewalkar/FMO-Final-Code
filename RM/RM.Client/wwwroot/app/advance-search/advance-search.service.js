@@ -8,7 +8,8 @@ advanceSearchService.$inject = ['advanceSearchAPIService',
                                 'CommonConstants',
                                 '$state',
                                  'roleAccessService',
-                                 'searchDPSelectedService'];
+                                 'searchDPSelectedService',
+                                 'mapService'];
 
 function advanceSearchService(advanceSearchAPIService,
                               $q,                            
@@ -17,7 +18,8 @@ function advanceSearchService(advanceSearchAPIService,
                               CommonConstants,
                               $state,
                               roleAccessService,
-                              searchDPSelectedService) {
+                              searchDPSelectedService,
+                              mapService) {
     
     
     var deliveryPointObj = null;

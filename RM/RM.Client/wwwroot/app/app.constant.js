@@ -69,7 +69,6 @@ GlobalSettings.accessLinkLayerName = "Access Links";
 GlobalSettings.roadLinkLayerName = "Roads";
 GlobalSettings.baseLayerName = "Base Layer";
 GlobalSettings.drawingLayerName = "Drawing";
-GlobalSettings.deliveryPointDetails = "Details of Delivery Point";
 
 
 

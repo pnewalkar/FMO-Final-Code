@@ -7,6 +7,7 @@ var CommonConstants = {
     AccessLinkActionName: "Access Link",
     TitleContextPanel: "Context Panel",
     TitleSimulation: "Simulation",
+    DetailsOfDeliveryPoint: "Details of Delivery Point",
     GetSessionStorageItemType: "roleAccessData",
     EntityType: { DeliveryPoint: "DeliveryPoint", StreetNetwork: "StreetNetwork", Route: "Route", Postcode: "Postcode" },
     ButtonShapeType: { point: "point", line: "line", accesslink: "accesslink", select: "select", area: "area", del: "delete" },

@@ -74,10 +74,13 @@ function DeliveryPointController(
    /* vm.hide = $stateParams.hide;*/
     vm.dpIsChecked = false;
 
-    $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
+    $scope.$watchCollection(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
-            openAlert();
+            if (vm.deliveryPointList !== null || vm.positionedDeliveryPointList !== null) {
+                openAlert();
+            }
     }, true);
+
     vm.initialize();
 
     $scope.$on("showDialog", function (event, args) {
@@ -109,6 +112,7 @@ function DeliveryPointController(
         vm.mailvol = "";
         vm.multiocc = "";
         deliveryPointService.closeModalPopup();
+        vm.results.length = 0;
     }
 
     function resultSet(query) {
@@ -214,11 +218,14 @@ function DeliveryPointController(
     function setDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
+         $scope.$emit('setSelectedButton', { "name": 'point' });
+       
     }
 
     function resetDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'select', "shape": shape, "enabled": true });
+        $scope.$emit('setSelectedButton', { "name": 'select' });
     }
 
     function savePositionedDeliveryPoint() {
