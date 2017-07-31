@@ -17,7 +17,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">NYB details DTO</param>
         /// <param name="fileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddress, string fileName);
+        Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddress, string fileName, Guid operationalStatusGUID);
 
         /// <summary>
         /// Update PostalAddress based on the PostalAddressDataDTO passed for PAF depending upon NYB and USR scenerios
@@ -57,7 +57,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="lstUDPRN">List of UDPRN</param>
         /// <param name="addressType">NYB</param>
         /// <returns>true or false</returns>
-        Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType, string fileName);
+        Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType);
 
         /*
         To be moved to Unit manager

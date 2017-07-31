@@ -41,15 +41,13 @@
         /// Common steps to configure mapper for PostalAddress
         /// </summary>
 
-        /// <summary>
-        /// Delete postal Address records do not have an associated Delivery Point
-        /// Log error in Database for each postal Address records having an associated Delivery Point
-        /// </summary>
-        /// <param name="lstUDPRN">List of UDPRN</param>
-        /// <param name="addressType">NYB</param>
-        /// <param name="fileName">Name of the NYB file</param>
-        /// <returns>true or false</returns>
-        public async Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType, string fileName)
+        /// <summary>
+        /// Delete postal Address records do not have an associated Delivery Point
+        /// </summary>
+        /// <param name="lstUDPRN">List of UDPRN</param>
+        /// <param name="addressType">NYB</param>
+        /// <returns>true or false</returns>
+        public async Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteNYBPostalAddress"))
             {
@@ -62,26 +60,23 @@
                     string nybDeleteMsg = PostalAddressConstants.NYBErrorMessageForDelete;
                     if (lstUDPRN != null && lstUDPRN.Any())
                     {
-                        var lstAddress = await DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToListAsync();
-                        if (lstAddress.Count > 0)
+                        var lstAddress = await DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Include(n => n.PostalAddressStatus).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToListAsync();
+                        if (lstAddress != null && lstAddress.Count > 0)
                         {
-                            lstAddress.ForEach(postalAddressEntity =>
+                            foreach (var postalAddressEntity in lstAddress)
                             {
                                 if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                                 {
                                     isPostalAddressDeleted = false;
-
-                                    // Log an entry in DataBase FileProcessingLog table for each NYB Postal Address records with Delivery Point
-                                    LogFileException(postalAddressEntity.UDPRN ?? default(int),
-                                                     fileName,
-                                                     FileType.Nyb.ToString(),
-                                                     string.Format(nybDeleteMsg, postalAddressEntity.UDPRN));
+                                    this.loggingHelper.Log(string.Format(nybDeleteMsg, postalAddressEntity.UDPRN), TraceEventType.Information);
                                 }
                                 else
                                 {
+                                    DataContext.PostalAddressStatus.RemoveRange(postalAddressEntity.PostalAddressStatus);
                                     DataContext.PostalAddresses.Remove(postalAddressEntity);
                                 }
-                            });
+                            }
+
                             await DataContext.SaveChangesAsync();
                             isPostalAddressDeleted = true;
                         }
@@ -92,7 +87,7 @@
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
-                    throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlDeleteException, string.Concat("PostalAdresses with UPPRN:", string.Join(",", lstUDPRN))));
+                    throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlDeleteException, string.Concat("PostalAdresses with UPPRN:", string.Join(",", lstUDPRN))));
                 }
             }
         }
@@ -103,7 +98,7 @@
         /// <param name="objPostalAddress">NYB details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
         /// <returns>Whether the record has been updated correctly</returns>
-        public async Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddressDataDTO, string strFileName)
+        public async Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddressDataDTO, string strFileName, Guid operationalStatusGUID)
         {
             bool isPostalAddressInserted = false;
             PostalAddress objPostalAddress = default(PostalAddress);
@@ -141,9 +136,7 @@
                         }
                         else
                         {
-                            objPostalAddress.ID = Guid.NewGuid();
-
-                            Mapper.Initialize(cfg =>
+                             Mapper.Initialize(cfg =>
                             {
                                 cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
                                 cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
@@ -152,6 +145,16 @@
                             Mapper.Configuration.CreateMapper();
 
                             entity = Mapper.Map<PostalAddressDataDTO, PostalAddress>(objPostalAddressDataDTO);
+
+                            entity.ID = Guid.NewGuid();
+                            PostalAddressStatus postalAddressStatus = new PostalAddressStatus
+                            {
+                                ID = Guid.NewGuid(),
+                                OperationalStatusGUID = operationalStatusGUID,
+                                StartDateTime = DateTime.UtcNow,
+                                RowCreateDateTime = DateTime.UtcNow
+                            };
+                            entity.PostalAddressStatus.Add(postalAddressStatus);
                             DataContext.PostalAddresses.Add(entity);
                         }
 
