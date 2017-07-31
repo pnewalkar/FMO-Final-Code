@@ -18,7 +18,8 @@ mapService.$inject = ['$http',
                      '$rootScope',
                      'layersAPIService',
                      'CommonConstants',
-                     'searchDPSelectedService'
+                     'searchDPSelectedService',
+                     'selectedDeliveryPointService'
 ];
 
 function mapService($http,
@@ -38,7 +39,8 @@ function mapService($http,
                     $rootScope,
                     layersAPIService,
                     CommonConstants,
-                    searchDPSelectedService
+                    searchDPSelectedService,
+                    selectedDeliveryPointService
                    ) {
     var vm = this;
     vm.map = null;
@@ -821,7 +823,7 @@ function mapService($http,
         }
     }
 
-    function showDeliveryPointDetails(deliveryPointDetails) {
+function showDeliveryPointDetails(deliveryPointDetails) {
         if (deliveryPointDetails != null) {
             deliveryPointDetails.routeName = null;
             mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
@@ -837,17 +839,27 @@ function mapService($http,
                               deliveryPointDetails.dpUse = response[0].value;
                           }
                       }
+
+                      selectedDeliveryPointService.setSelectedDeliveryPoint(deliveryPointDetails);
+
                       $state.go('deliveryPointDetails', {
-                          selectedDeliveryPoint: deliveryPointDetails
-                      }, { reload: true });
+                          selectedDeliveryPoint: null }, 
+                      { reload: true }
+                      );
                   });
         }
         else {
-            $state.go('deliveryPointDetails', {
-                selectedDeliveryPoint: deliveryPointDetails
-            }, { reload: true });
+            selectedDeliveryPointService.setSelectedDeliveryPoint(deliveryPointDetails);
+
+            $state.go('deliveryPointDetails'
+                , {
+                selectedDeliveryPoint: null},
+                { reload: true }
+                );
         }
     }
+
+
 
     function setSize(width, height) {
         vm.map.setSize([width, height]);
