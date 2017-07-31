@@ -70,10 +70,10 @@ GlobalSettings.roadLinkLayerName = "Roads";
 GlobalSettings.baseLayerName = "Base Layer";
 GlobalSettings.drawingLayerName = "Drawing";
 GlobalSettings.deliveryPointDetails = "Details of Delivery Point";
-
-
-
-
+GlobalSettings.single = "Single";
+GlobalSettings.range = "Range";
+GlobalSettings.subBuilding = "Sub building";
+GlobalSettings.numberInName = "Number in Name";
 
 angular.module('RMApp')
 .constant("GlobalSettings", GlobalSettings);

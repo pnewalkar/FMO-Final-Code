@@ -17,7 +17,8 @@ DeliveryPointController.$inject = [
         '$state',
         '$stateParams',
         'deliveryPointService',
-        '$rootScope'];
+        '$rootScope',
+        'GlobalSettings'];
 
 function DeliveryPointController(
     mapToolbarService,
@@ -33,7 +34,8 @@ function DeliveryPointController(
     $state,
     $stateParams,
     deliveryPointService,
-    $rootScope
+    $rootScope,
+    GlobalSettings
 ) {
 
     var vm = this;
@@ -71,6 +73,11 @@ function DeliveryPointController(
     vm.items = [];
    /* vm.hide = $stateParams.hide;*/
     vm.dpIsChecked = false;
+    vm.selectedType = null;
+    vm.single = GlobalSettings.single;
+    vm.range = GlobalSettings.range;
+    vm.subBuilding = GlobalSettings.subBuilding;
+    vm.numberInName = GlobalSettings.numberInName;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
@@ -92,7 +99,7 @@ function DeliveryPointController(
         deliveryPointService.deliveryPointUseType().then(function (response) {
             vm.dpUseType = response;
         });
-    } 
+    }
 
 
     function deliveryPoint() {
