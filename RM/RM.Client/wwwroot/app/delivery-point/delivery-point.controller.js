@@ -216,11 +216,14 @@ function DeliveryPointController(
     function setDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
+         $scope.$emit('setSelectedButton', { "name": 'point' });
+       
     }
 
     function resetDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'select', "shape": shape, "enabled": true });
+        $scope.$emit('setSelectedButton', { "name": 'select' });
     }
 
     function savePositionedDeliveryPoint() {
