@@ -47,12 +47,11 @@
                 <md-button class="md-icon-button" aria-label="Search" title="{{ 'GENERAL.SEARCH' | translate }}">
                     <i class="fa fa-search" aria-hidden="true"></i>
                 </md-button>
-                
-                
+
                 <md-input-container flex="35" ng-show="vm.display" ng-class="{'disabledText':vm.nybAddressDetails.length==1}">
                     <label>{{ 'DELIVERY_POINTS.NOT_YET_BUILT'| translate }}</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.nybAddressDetails.length==1">
-                        <md-option ng-repeat="type in vm.nybAddressDetails"  ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
+                        <md-option ng-repeat="type in vm.nybAddressDetails" ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
                             {{type.displayText}}
                         </md-option>
                     </md-select>
@@ -73,7 +72,6 @@
                 </md-input-container>
             </div>
 
-
             <div layout="row" ng-show="vm.display">
                 <div layout="column" flex="30">
                     <md-input-container>
@@ -82,12 +80,11 @@
                     </md-input-container>
                 </div>
 
-
                 <span flex="5"></span>
 
                 <md-input-container flex="30">
                     <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
-                    <md-select name="route" ng-model="vm.routeId" select-clear> 
+                    <md-select name="route" ng-model="vm.routeId" select-clear>
                         <md-option ng-repeat="route in vm.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
@@ -102,75 +99,71 @@
 
                 <md-input-container flex="30">
                     <label>DP Use</label>
-                    <md-select ng-model="vm.selectedDPUse" ng-disabled="true">
+                    <md-select ng-model="vm.selectedDPUse" ng-disabled="vm.selectedType === vm.single">
                         <md-option ng-repeat="type in vm.dpUse" ng-value="type">
                             {{type.value}}
                         </md-option>
                     </md-select>
                 </md-input-container>
-                
             </div>
             <div layout="row" ng-show="vm.display">
-            
+
                     <md-input-container flex="30">
                         <label>{{ 'DELIVERY_POINTS.TYPE'| translate }}</label>
-                        <md-select ng-model="deliveryPointTypes" ng-disabled="vm.notyetBuilt != vm.defaultNYBValue">
-                            <md-option ng-repeat="type in vm.deliveryPointTypes" ng-value="type.id" ng-selected="{{type.value=='Single'?true:false}}">
+                        <md-select ng-model="vm.selectedType">
+                            <md-option ng-repeat="type in vm.deliveryPointTypes" ng-value="type.value.trim()" ng-selected="{{type.value=='Single'?true:false}}">
                                 {{type.value}}
                             </md-option>
                         </md-select>
-                       
                     </md-input-container>
-                  
                 </div>
 
             <div layout="row" ng-show="vm.display" class="dp-range">
-                <div layout="column" flex="25">
+                <div layout="column" flex="25" ng-show="vm.selectedType != vm.single">
                     <md-input-container>
-                        <label>{{ 'DELIVERY_POINTS.RANGE_FROM'| translate }}<sub>*</sub></label>
-                        <input ng-model="vm.addressDetails.rangefrom" type="text" >
+                        <label>{{ 'DELIVERY_POINTS.RANGE_FROM'| translate }}</label>
+                        <input name="rangefrom" ng-model="vm.rangeFrom" type="text" ng-pattern="/^[1-9]*$/" ng-maxlength="4" ng-required="vm.selectedType != vm.single">
                         <div ng-messages="vm.deliveryPointForm.rangefrom.$error"
                              ng-show="vm.deliveryPointForm.rangefrom.$touched" role="alert">
-                            <div ng-message="required">This field is required*</div>
+                            <div ng-message="required">This field is required</div>
+                            <div ng-message="maxlength">Value entered is too large</div>
+                            <div ng-message="pattern">Value entered is not valid</div>
                         </div>
                     </md-input-container>
                 </div>
 
-
                 <span flex="5"></span>
-                
-                <md-input-container flex="25">
-                    <label>{{ 'DELIVERY_POINTS.TO' | translate }}</label>
-                    <input ng-model="vm.addressDetails.rageto" type="text" disabled>
+
+                <md-input-container flex="25" ng-show="vm.selectedType != vm.single">
+                    <label>{{ 'DELIVERY_POINTS.RANGE_TO' | translate }}</label>
+                    <input ng-model="vm.addressDetails.rageto" type="text" ng-required="vm.selectedType != vm.single">
                     <div ng-messages="vm.deliveryPointForm.rangeto.$error"
                          ng-show="vm.deliveryPointForm.rangeto.$touched" role="alert">
-                        <div ng-message="required">This field is required*</div>
+                        <div ng-message="required">This field is required</div>
+                        <div ng-message="maxlength">Value entered is too large</div>
+                        <div ng-message="pattern">Value entered is not valid</div>
                     </div>
                 </md-input-container>
 
                 <span flex="5"></span>
-                <md-input-container flex="40">
+                <md-input-container flex="40" ng-show="vm.selectedType != vm.single">
 
-                    <md-radio-group layout="row">
-                        <md-radio-button value=0 class="md-primary">Odds</md-radio-button>
-                        <md-radio-button value=1> Evens </md-radio-button>
-                        <md-radio-button value=2> Consecutives </md-radio-button>
+                    <md-radio-group layout="row" ng-model="vm.rangeOptionsSelected">
+                        <md-radio-button ng-repeat="type in vm.rangeOptions" ng-value="type.value">
+                            {{type.value}}
+                        </md-radio-button>
                     </md-radio-group>
-
                 </md-input-container>
-                
-                              
-
             </div>
             <div layout="row">
-                <div layout="column" flex="65" ng-show="vm.display">
+                <div layout="column" flex="65" ng-show="vm.display && vm.selectedType != vm.range">
                     <fieldset>
                         <legend>{{ 'DELIVERY_POINTS.ADDRESS' | translate }}<sub>*</sub></legend>
 
                         <div layout="row">
-                            <md-input-container flex="45">
+                            <md-input-container flex="45" ng-show="vm.selectedType === vm.single || vm.selectedType === vm.subBuilding">
                                 <label> {{ 'DELIVERY_POINTS.BUILDING_NUMBER' | translate }} </label>
-                                <input name="buildingNumber" ng-model="vm.addressDetails.buildingNumber"  ng-blur="vm.setOrganisation()" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
+                                <input name="buildingNumber" ng-model="vm.addressDetails.buildingNumber" ng-blur="vm.setOrganisation()" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
                                        ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)">
                                 <div ng-messages="vm.deliveryPointForm.buildingNumber.$error"
                                      ng-show="vm.deliveryPointForm.buildingNumber.$touched" role="alert">
@@ -181,9 +174,9 @@
 
                             <span flex="5"></span>
 
-                            <md-input-container flex="50">
+                            <md-input-container flex="50" ng-show="vm.selectedType === vm.single || vm.selectedType === vm.subBuilding || vm.selectedType === vm.numberInName">
                                 <label> {{'DELIVERY_POINTS.BUILDING_NAME' | translate }}</label>
-                                <input name="buildingName" ng-model="vm.addressDetails.buildingName" type="text" ng-maxlength="50" ng-blur="vm.setOrganisation()"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false"
+                                <input name="buildingName" ng-model="vm.addressDetails.buildingName" type="text" ng-maxlength="50" ng-blur="vm.setOrganisation()" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false"
                                        ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)">
                                 <div ng-messages="vm.deliveryPointForm.buildingName.$error"
                                      ng-show="vm.deliveryPointForm.buildingName.$touched" role="alert">
@@ -193,9 +186,9 @@
                         </div>
 
                         <div layout="row">
-                            <md-input-container flex="45">
+                            <md-input-container flex="45" ng-show="vm.selectedType === vm.single">
                                 <label> {{ 'DELIVERY_POINTS.SUB_BUILDING_NAME' | translate }}</label>
-                                <input name="subBuildingName" ng-model="vm.addressDetails.subBuildingName" type="text" ng-maxlength="50"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="subBuildingName" ng-model="vm.addressDetails.subBuildingName" type="text" ng-maxlength="50" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.subBuildingName.$error"
                                      ng-show="vm.deliveryPointForm.subBuildingName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 50</div>
@@ -204,9 +197,9 @@
 
                             <span flex="5"></span>
 
-                            <md-input-container flex="50">
+                            <md-input-container flex="50" ng-show="vm.selectedType === vm.single">
                                 <label>{{ 'DELIVERY_POINTS.ORGANISATION' |  translate }}</label>
-                                <input  name="organisationName" ng-model="vm.addressDetails.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="organisationName" ng-model="vm.addressDetails.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.organisationName.$error"
                                      ng-show="vm.deliveryPointForm.organisationName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
@@ -214,33 +207,32 @@
                             </md-input-container>
                         </div>
                         <div layout="row">
-                            <md-input-container flex="45">
+                            <md-input-container flex="45" ng-show="vm.selectedType === vm.single">
                                 <label> {{ 'DELIVERY_POINTS.DEPARTMENT_NAME' | translate }}</label>
-                                <input name="departmentName" ng-model="vm.addressDetails.departmentName" type="text" ng-maxlength="60"  ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="departmentName" ng-model="vm.addressDetails.departmentName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.departmentName.$error"
                                      ng-show="vm.deliveryPointForm.departmentName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
                                 </div>
                             </md-input-container>
                         </div>
-
                     </fieldset>
-                </div>       
-                
+                </div>
+
                 <div layout="column" flex="35" ng-show="vm.display" class="DPAliasBox">
                     <!--AddAlias start-->
-                    <div layout="row">
+                    <div layout="row" ng-show="vm.selectedType === vm.subBuilding">
                         <label>{{ 'DELIVERY_POINTS.SUB_BUILDING_TYPE'| translate }}</label>
-                        <md-select ng-model="" ng-change="" >
-                            <md-option ng-repeat="" ng-value="type.value" ng-selected="{{ }}">
-                                {{}}
+                        <md-select ng-model="subBuildingTypes">
+                            <md-option ng-repeat="type in vm.subBuildingTypes" ng-value="type.id">
+                                {{type.value}}
                             </md-option>
                         </md-select>
                     </div>
-                    </div>
+                </div>
 
                     <!--Alias-->
-                    <div layout="column" flex="35" ng-show="vm.display" class="DPAliasBox">
+                    <div layout="column" flex="35" ng-show="vm.display && vm.selectedType === vm.single" class="DPAliasBox">
                         <!--AddAlias start-->
                         <div layout="row">
                             <md-input-container md-no-float class="md-block" flex-gt-sm>
@@ -275,7 +267,6 @@
                     <!--Alias End-->
                 </div>
 
-
             <div layout="row" ng-show="vm.display" class="occRow">
                 <md-input-container>
                     <label> {{ 'DELIVERY_POINTS.MULTI_OCC' | translate }}</label>
@@ -288,7 +279,7 @@
                     </div>
                 </md-input-container>
                 <span flex="5"></span>
-                
+
                 <md-input-container>
                     <label> {{ 'DELIVERY_POINTS.MAIL_VOL' | translate }} </label>
                     <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="6" required>
@@ -300,7 +291,6 @@
                     </div>
                 </md-input-container>
             </div>
-
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
@@ -308,7 +298,7 @@
                 {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
             </md-button>
             <span flex></span>
-            <md-button ng-disabled="(!vm.deliveryPointForm.$valid) || vm.isOnceClicked" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+            <md-button ng-disabled="(!vm.deliveryPointForm.$valid) || vm.isOnceClicked" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
                 {{ 'GENERAL.BUTTONS.SAVE' | translate }}
             </md-button>
         </md-dialog-actions>
