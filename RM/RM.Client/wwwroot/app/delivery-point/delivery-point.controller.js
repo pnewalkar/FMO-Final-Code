@@ -69,7 +69,7 @@ function DeliveryPointController(
     vm.display = false;
     vm.disable = true;
     vm.postalAddressAliases = [];
-    vm.rangeOptionsSelected = "Odds";
+    vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
     vm.dpIsChecked = false;
     vm.selectedType = null;
     vm.single = GlobalSettings.single;
@@ -108,7 +108,7 @@ function DeliveryPointController(
         vm.searchText = "";
         vm.mailvol = "";
         vm.multiocc = "";
-        vm.rangeOptionsSelected = "Odds";
+        vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
         deliveryPointService.closeModalPopup();
     }
 
@@ -136,7 +136,7 @@ function DeliveryPointController(
     }
 
     function bindAddressDetails() {
-        vm.rangeOptionsSelected = "Odds";
+        vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
         vm.selectedType = vm.single;
         if (vm.notyetBuilt !== vm.defaultNYBValue) {
             deliveryPointService.bindAddressDetails(vm.notyetBuilt)
