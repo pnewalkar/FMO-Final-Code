@@ -18,7 +18,8 @@ mapService.$inject = ['$http',
                      '$rootScope',
                      'layersAPIService',
                      'CommonConstants',
-                     'searchDPSelectedService'
+                     'searchDPSelectedService',
+                     'selectedDeliveryPointService'
 ];
 
 function mapService($http,
@@ -38,7 +39,8 @@ function mapService($http,
                     $rootScope,
                     layersAPIService,
                     CommonConstants,
-                    searchDPSelectedService
+                    searchDPSelectedService,
+                    selectedDeliveryPointService
                    ) {
     var vm = this;
     vm.map = null;
@@ -115,7 +117,8 @@ function mapService($http,
         baseLayerLicensing: baseLayerLicensing,
         setPolygonTransparency: setPolygonTransparency,
         getLayerSummary: getLayerSummary,
-        deselectDP: deselectDP
+        deselectDP: deselectDP,
+        setDeliveryPoint: setDeliveryPoint
     }
 
     function deselectDP() {
@@ -821,7 +824,7 @@ function mapService($http,
         }
     }
 
-    function showDeliveryPointDetails(deliveryPointDetails) {
+function showDeliveryPointDetails(deliveryPointDetails) {
         if (deliveryPointDetails != null) {
             deliveryPointDetails.routeName = null;
             mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
@@ -837,17 +840,27 @@ function mapService($http,
                               deliveryPointDetails.dpUse = response[0].value;
                           }
                       }
+
+                      selectedDeliveryPointService.setSelectedDeliveryPoint(deliveryPointDetails);
+
                       $state.go('deliveryPointDetails', {
-                          selectedDeliveryPoint: deliveryPointDetails
-                      }, { reload: true });
+                          selectedDeliveryPoint: null }, 
+                      { reload: true }
+                      );
                   });
         }
         else {
-            $state.go('deliveryPointDetails', {
-                selectedDeliveryPoint: deliveryPointDetails
-            }, { reload: true });
+            selectedDeliveryPointService.setSelectedDeliveryPoint(deliveryPointDetails);
+
+            $state.go('deliveryPointDetails'
+                , {
+                selectedDeliveryPoint: null},
+                { reload: true }
+                );
         }
     }
+
+
 
     function setSize(width, height) {
         vm.map.setSize([width, height]);
@@ -977,6 +990,38 @@ function mapService($http,
             var randomNumber = Math.random() * 16 | 0, uuid = character === 'x' ? randomNumber : (randomNumber & 0x3 | 0x8);
             // Return the randomly generated UUID string
             return uuid.toString(16);
+        });
+    }
+
+    function setDeliveryPoint(long, lat) {
+        vm.map.getView().setCenter([long, lat]);
+        vm.map.getView().setResolution(0.5600011200022402);
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        deliveryPointsLayer.layer.getSource().clear();
+        deliveryPointsLayer.selected = true;
+        deliveryPointsLayer.layer.setVisible(true)
+        var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
+        var extent = vm.map.getView().calculateExtent(vm.map.getSize());
+        layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
+            var features = new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }).readFeatures(response);
+            deliveryPointsLayer.layer.getSource().addFeatures(features);
+
+            var featureToSelect;
+            angular.forEach(features, function (feature, index) {
+                var featureLatitude = feature.values_.geometry.getCoordinates()[1];
+                var featureLongitude = feature.values_.geometry.getCoordinates()[0];
+
+                if (featureLatitude === lat && featureLongitude === long) {
+                    featureToSelect = feature;
+                }
+            });
+
+            if (featureToSelect) {
+                //setSelections(null, []);
+                setSelections({
+                    featureID: featureToSelect.id_, layer: deliveryPointsLayer.layer
+                }, []);
+            }
         });
     }
 }

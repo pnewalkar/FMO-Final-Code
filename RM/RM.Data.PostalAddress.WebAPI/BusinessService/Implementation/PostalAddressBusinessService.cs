@@ -124,7 +124,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             {
                                 postalAddress.PostalAddressStatus.Add(GetPostalAddressStatus(postalAddress.ID, addressStatusId));
                                 postalAddress.AddressType_GUID = addressTypeId;
-                                await addressDataService.SaveAddress(postalAddress, strFileName);
+                                await addressDataService.SaveAddress(postalAddress, strFileName, addressStatusId);
                             }
 
                             isPostalAddressInserted = await addressDataService.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
@@ -365,7 +365,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null)
                 {
-                    addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty)
+                    {
+                        addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
+                    }
+
                     addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = usrAddressTypeId;
                     // addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
 

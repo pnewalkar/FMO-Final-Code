@@ -15,7 +15,8 @@ DeliveryPointController.$inject = [
         'guidService',
         '$state',
         '$stateParams',
-        'deliveryPointService',
+        'deliveryPointService',      
+         'CommonConstants',
         '$rootScope',
         'GlobalSettings'];
 
@@ -33,6 +34,8 @@ function DeliveryPointController(
     $state,
     $stateParams,
     deliveryPointService,
+   
+    CommonConstants,
     $rootScope,
     GlobalSettings
 ) {
@@ -80,10 +83,13 @@ function DeliveryPointController(
     vm.displayRangeFromMessage = false;
     vm.displayRangeToMessage = false;
 
-    $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
+    $scope.$watchCollection(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
-            openAlert();
+            if (vm.deliveryPointList !== null || vm.positionedDeliveryPointList !== null) {
+                openAlert();
+            }
     }, true);
+
     vm.initialize();
 
     $scope.$on("showDialog", function (event, args) {
@@ -113,6 +119,7 @@ function DeliveryPointController(
         vm.multiocc = "";
         vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
         deliveryPointService.closeModalPopup();
+        vm.results.length = 0;
     }
 
     function resultSet(query) {
@@ -231,11 +238,14 @@ function DeliveryPointController(
     function setDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
+         $scope.$emit('setSelectedButton', { "name": 'point' });
+       
     }
 
     function resetDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'select', "shape": shape, "enabled": true });
+        $scope.$emit('setSelectedButton', { "name": 'select' });
     }
 
     function savePositionedDeliveryPoint() {
@@ -268,9 +278,10 @@ function DeliveryPointController(
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
             if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
-                mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
+                mapService.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
                 guidService.setGuid(response.id);
                 mapFactory.setAccessLink();
+                mapService.refreshLayers();
                 vm.closeWindow();
                 vm.hide = true;
             }
@@ -278,6 +289,7 @@ function DeliveryPointController(
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
                 //    setDP();
                 vm.hide = true;
+                mapService.refreshLayers();
                 vm.closeWindow();
             }
             else {
@@ -295,14 +307,24 @@ function DeliveryPointController(
     }
 
     function setDeliveryPoint(id, rowversion, postalAddress, hasLocation) {
-        var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.organisationName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.departmentName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
-
+        if (vm.selectedDPUse.value === CommonConstants.DpUseType.Residential)
+        {
+            var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)                     
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
+        }
+        else if (vm.selectedDPUse.value === CommonConstants.DpUseType.Organisation)
+        {
+            var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.organisationName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.departmentName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
+        }
         if (vm.addressDetails.udprn && hasLocation) {
             locateDeliveryPoint(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion);
         }

@@ -27,20 +27,5 @@ namespace RM.CommonLibrary.EntityFramework.DTO
         /// Gets or sets a collection of search items that includes the entity type
         /// </summary>
         public ICollection<SearchResultItemDTO> SearchResultItems { get; set; }
-
-        //public ICollection<DeliveryRouteDTO> DeliveryRoute { get; set; }
-
-        //public ICollection<DeliveryPointDTO> DeliveryPoint { get; set; }
-
-        //public ICollection<StreetNameDTO> StreetName { get; set; }
-
-        //public ICollection<PostCodeDTO> PostCode { get; set; }
-
-        //public ICollection<PostalAddressDTO> PostalAddress { get; set; }
-
-        //public ICollection<NetworkLinkDTO> NetworkLink { get; set; }
-
-        //[NotMapped]
-        //public int TotalCount { get; set; }
     }
 }

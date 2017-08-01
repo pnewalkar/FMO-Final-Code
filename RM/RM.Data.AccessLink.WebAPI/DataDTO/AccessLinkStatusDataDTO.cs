@@ -16,6 +16,5 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         public DateTime StartDateTime { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
-
     }
 }
