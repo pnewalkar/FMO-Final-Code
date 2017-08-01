@@ -398,12 +398,6 @@
                                 .Where(item => item.ReferenceDataValue.Equals(DeliveryPointConstants.NetworkNodeTypeRMGServiceNode, StringComparison.OrdinalIgnoreCase))
                                 .Select(s => s.ID).SingleOrDefault();
 
-                Guid deliveryPointUseIndicator = referenceDataCategoryList
-                                    .Where(list => list.CategoryName.Equals(DeliveryPointConstants.DeliveryPointUseIndicator, StringComparison.OrdinalIgnoreCase))
-                                    .SelectMany(list => list.ReferenceDatas)
-                                    .Where(item => item.ReferenceDataValue.Equals(DeliveryPointConstants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
-                                    .Select(s => s.ID).SingleOrDefault();
-
                 Guid locationProviderId = referenceDataCategoryList
                                         .Where(list => list.CategoryName.Equals(DeliveryPointConstants.NETWORKLINKDATAPROVIDER, StringComparison.OrdinalIgnoreCase))
                                         .SelectMany(list => list.ReferenceDatas)
@@ -422,7 +416,6 @@
                     ID = deliveryPointModelDTO.ID,
                     Address_GUID = deliveryPointModelDTO.ID,
                     OperationalStatus_GUID = operationalStatusGUIDLive,
-                    DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator,
                     LocationProvider_GUID = locationProviderId,
                     NetworkNodeType_GUID = networkNodeTypeRMGServiceNode,
                     RowVersion = deliveryPointModelDTO.RowVersion,
