@@ -366,7 +366,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 {
                     addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
                     addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = usrAddressTypeId;
-                    addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
+                    // addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
+
+                    addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID = liveAddressStatusId;
+                    addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias = addDeliveryPointDTO.PostalAddressAliasDTOs;
                 }
 
                 var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(addDeliveryPointDTO.PostalAddressDTO);
@@ -875,6 +878,26 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 postalAddressStatusDataDTO.PostalAddressGUID = postalAddressDTO.ID;
                 postalAddressStatusDataDTO.OperationalStatusGUID = postalAddressDTO.AddressStatus_GUID.HasValue ? postalAddressDTO.AddressStatus_GUID.Value : Guid.Empty;
                 postalAddressDataDTO.PostalAddressStatus.Add(postalAddressStatusDataDTO);
+
+                if (postalAddressDTO.PostalAddressAlias != null)
+                {
+                    List<PostalAddressAliasDataDTO> postalAddressAliases = new List<PostalAddressAliasDataDTO>();
+                    foreach (var postalAddressAliasDTO in postalAddressDTO.PostalAddressAlias)
+                    {
+                        PostalAddressAliasDataDTO postalAddressAlias = new PostalAddressAliasDataDTO
+                        {
+                            PostalAddressID = postalAddressDTO.ID,
+                            AliasTypeGUID = postalAddressAliasDTO.ID,
+                            PostalAddressIdentifierID = postalAddressAliasDTO.PostalAddressIdentifierID,
+                            AliasName = postalAddressAliasDTO.AliasName,
+                            PreferenceOrderIndex = postalAddressAliasDTO.PreferenceOrderIndex,
+                            StartDateTime = DateTime.UtcNow,
+                            RowCreateDateTime = DateTime.UtcNow,
+                        };
+                        postalAddressAliases.Add(postalAddressAlias);
+                    }
+                }
+                
             }
 
             return postalAddressDataDTO;

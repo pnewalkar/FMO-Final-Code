@@ -2,7 +2,7 @@
 
 namespace RM.Data.DeliveryPoint.WebAPI.DTO
 {
-    public class DeliveryPointAliasDTO
+    public class PostalAddressAliasDTO
     {
         public Guid ID { get; set; }
 

@@ -235,15 +235,16 @@ function DeliveryPointController(
         var addDeliveryPointDTO =
             {
                 "PostalAddressDTO": vm.addressDetails,
+
                 "DeliveryPointDTO":
                 {
                     "MultipleOccupancyCount": vm.mailvol,
                     "MailVolume": vm.multiocc,
-                    "DeliveryPointAliasDTO": vm.items,
                     "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
                     "DeliveryRoute_Guid": vm.routeId
                 },
-                "AddressLocationDTO": null
+                "AddressLocationDTO": null,
+                "PostalAddressAliasDTOs": vm.items // TODO naming
             };
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
            
