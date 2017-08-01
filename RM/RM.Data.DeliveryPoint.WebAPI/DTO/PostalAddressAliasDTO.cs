@@ -1,10 +1,8 @@
-namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
-{
-    using System;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
 
-    public partial class PostalAddressAliasDataDTO
+namespace RM.Data.DeliveryPoint.WebAPI.DTO
+{
+    public class PostalAddressAliasDTO
     {
         public Guid ID { get; set; }
 
@@ -23,6 +21,5 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         public DateTime? EndDateTime { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
-
     }
 }

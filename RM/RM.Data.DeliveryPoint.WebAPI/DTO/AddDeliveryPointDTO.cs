@@ -22,5 +22,10 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
         /// Gets or sets a address location for entity types searched while adding delivery point.
         /// </summary>
         public AddressLocationDTO AddressLocationDTO { get; set; }
+
+        /// <summary>
+        /// Gets or sets collection of address alises for respective Postal Address
+        /// </summary>
+        public ICollection<PostalAddressAliasDTO> PostalAddressAliasDTOs { get; set; }
     }
 }

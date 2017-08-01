@@ -1,10 +1,8 @@
-namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
-{
-    using System;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
 
-    public partial class PostalAddressAliasDataDTO
+namespace RM.DataManagement.PostalAddress.WebAPI.DTO
+{
+    public class PostalAddressAliasDTO
     {
         public Guid ID { get; set; }
 

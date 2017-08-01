@@ -494,6 +494,7 @@
                             {
                                 cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
                                 cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
+                                cfg.CreateMap<PostalAddressAliasDataDTO, PostalAddressAlias>();
                                 cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
                             });
 
@@ -508,6 +509,14 @@
                                 status.RowCreateDateTime = DateTime.UtcNow;
                                 status.StartDateTime = DateTime.UtcNow;
                             }
+
+                            foreach (var alias in objPostalAddress.PostalAddressAlias)
+                            {
+                                alias.RowCreateDateTime = DateTime.UtcNow;
+                                alias.StartDateTime = DateTime.UtcNow;
+                            }
+
+
 
                             // add new address
                             DataContext.PostalAddresses.Add(objPostalAddress);
