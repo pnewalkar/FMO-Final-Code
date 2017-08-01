@@ -18,6 +18,7 @@ DeliveryPointController.$inject = [
         'deliveryPointService',      
          'CommonConstants',
         '$rootScope',
+         'CommonConstants',
         'GlobalSettings'];
 
 function DeliveryPointController(
@@ -37,6 +38,8 @@ function DeliveryPointController(
    
     CommonConstants,
     $rootScope,
+    CommonConstants,
+
     GlobalSettings
 ) {
     var vm = this;
