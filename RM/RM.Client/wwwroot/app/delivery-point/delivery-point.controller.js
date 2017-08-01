@@ -68,7 +68,7 @@ function DeliveryPointController(
     vm.alias = null;
     vm.display = false;
     vm.disable = true;
-    vm.items = [];
+    vm.postalAddressAliases = [];
    /* vm.hide = $stateParams.hide;*/
     vm.dpIsChecked = false;
 
@@ -244,7 +244,7 @@ function DeliveryPointController(
                     "DeliveryRoute_Guid": vm.routeId
                 },
                 "AddressLocationDTO": null,
-                "PostalAddressAliasDTOs": vm.items // TODO naming
+                "PostalAddressAliasDTOs": vm.postalAddressAliases // TODO naming
             };
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
            
@@ -305,16 +305,16 @@ function DeliveryPointController(
 
     function addAlias() {
 
-        vm.items.push({
-            Preferred: false,
-            DPAlias: vm.alias
+        vm.postalAddressAliases.push({
+            PreferenceOrderIndex: false,
+            AliasName: vm.alias
         });
         vm.alias = "";
     };
 
     function removeAlias() {
-        var lastItem = vm.items.length - 1;
-        vm.items.splice(lastItem);
+        var lastItem = vm.postalAddressAliases.length - 1;
+        vm.postalAddressAliases.splice(lastItem);
     }
 
     function locateDeliveryPoint(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {

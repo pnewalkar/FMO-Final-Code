@@ -28,7 +28,8 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         private Mock<IPostalAddressDataService> mockAddressDataService;
 
         private IPostalAddressDataService testCandidate;
-        private List<PostalAddressDataDTO> postalAddressesDTO;
+        private List<PostalAddressDataDTO> postalAddressesDataDTO;
+        private List<PostalAddressDTO> postalAddressesDTO;
         private AddDeliveryPointDTO addDeliveryPointDTO1;
         private AddDeliveryPointDTO addDeliveryPointDTO2;
         private AddDeliveryPointDTO addDeliveryPointDTO3;
@@ -269,7 +270,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
 
         private void SetUpDataForDeliveryPoints()
         {
-            postalAddressesDTO = new List<PostalAddressDataDTO>()
+            postalAddressesDataDTO = new List<PostalAddressDataDTO>()
             {
                 new PostalAddressDataDTO()
                 {
@@ -368,7 +369,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
 
         private void SetUpDataForCreateAddressAndDeliveryPoint()
         {
-            postalAddressesDTO = new List<PostalAddressDataDTO>()
+            postalAddressesDataDTO = new List<PostalAddressDataDTO>()
             {
                 new PostalAddressDataDTO()
                 {
@@ -473,7 +474,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
 
             // mockPostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
-            mockAddressDataService.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddressesDTO[0]);
+            mockAddressDataService.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddressesDataDTO[0]);
 
             // mockReferenceDataCategoryDataService.Setup(x => x.GetReferenceDataId("Postal Address Type", "Nyb")).Returns(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
             var rmTraceManagerMock = new Mock<IRMTraceManager>();

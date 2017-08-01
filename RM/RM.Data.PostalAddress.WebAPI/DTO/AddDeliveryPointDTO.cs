@@ -23,6 +23,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         /// <summary>
         /// Gets or sets collection of address alises for respective Postal Address
         /// </summary>
-        public ICollection<PostalAddressAliasDTO> PostalAddressAliasDTOs { get; set; }
+        public List<PostalAddressAliasDTO> PostalAddressAliasDTOs { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         public PostalAddressDTO()
         {
             this.DeliveryPoints = new List<DeliveryPointDTO>();
-            this.PostalAddressAlias = new HashSet<PostalAddressAliasDTO>();
+            this.PostalAddressAlias = new List<PostalAddressAliasDTO>();
         }
 
         public string PostcodeType { get; set; }
@@ -72,6 +72,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 
         public ICollection<DeliveryPointDTO> DeliveryPoints { get; set; }
 
-        public ICollection<PostalAddressAliasDTO> PostalAddressAlias { get; set; }
+        public List<PostalAddressAliasDTO> PostalAddressAlias { get; set; }
     }
 }
