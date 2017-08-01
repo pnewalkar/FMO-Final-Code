@@ -47,7 +47,9 @@ namespace RM.CommonLibrary.Reporting.Pdf
                 }
                 else
                 {
-                    throw new FileNotFoundException($"The default XSLT file '{nameof(xsltFilePath)}' does not exist."); 
+                    // Throw an exception but do not include the path in the error message as this is
+                    //   sensitive information
+                    throw new FileNotFoundException($"The default XSLT file does not exist."); 
                 }
             }
         }

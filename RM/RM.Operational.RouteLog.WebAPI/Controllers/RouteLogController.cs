@@ -10,50 +10,84 @@ using RM.Operational.RouteLog.WebAPI.DTO;
 
 namespace RM.Operational.RouteLog.WebAPI.Controllers
 {
+    /// <summary>
+    /// Route Log Controller
+    /// </summary>
     [Route("api/RouteLogManager")]
     public class RouteLogController : RMBaseController
     {
+        /// <summary>
+        /// Reference to the Route Log business service
+        /// </summary>
         private IRouteLogBusinessService routeLogBusinessService = default(IRouteLogBusinessService);
-        private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private int priority = LoggerTraceConstants.RouteLogAPIPriority;
-        private int entryEventId = LoggerTraceConstants.RouteLogControllerMethodEntryEventId;
-        private int exitEventId = LoggerTraceConstants.RouteLogControllerMethodExitEventId;
+        
 
-        public RouteLogController(IRouteLogBusinessService deliveryRouteBusinessService, ILoggingHelper loggingHelper)
+
+        /// <summary>
+        /// Reference to the logging helper
+        /// </summary>
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+
+
+        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RouteLogController" /> class
+        /// </summary>
+        /// <param name="routeLogBusinessService">Route log business service</param>
+        /// <param name="loggingHelper">Logging helper</param>
+        public RouteLogController(IRouteLogBusinessService routeLogBusinessService, ILoggingHelper loggingHelper)
         {
-            this.routeLogBusinessService = deliveryRouteBusinessService;
+            // Validate the arguments
+            if (routeLogBusinessService == null) throw new ArgumentNullException(nameof(routeLogBusinessService));
+            if (loggingHelper == null) throw new ArgumentNullException(nameof(loggingHelper));
+
+
+            // Store the injected dependencies
+            this.routeLogBusinessService = routeLogBusinessService;
             this.loggingHelper = loggingHelper;
         }
 
+
+
+
+
         /// <summary>
-        /// Method to retrieve sequenced delivery point details
+        /// Generates a route log summary report for the specified delivery route and returns the file name
+        ///   of the generated PDF document
         /// </summary>
-        /// <param name="deliveryRoute">deliveryRoute</param>
-        /// <returns>deliveryRoute</returns>
+        /// <param name="deliveryRoute">The delivery route</param>
+        /// <returns>The PDF document file name</returns>
         [HttpPost("routelogs")]
-        public async Task<IActionResult> GenerateRouteLogSummaryReport([FromBody]RouteDTO deliveryRoute)
+        public async Task<IActionResult> GenerateRouteLog([FromBody]RouteDTO deliveryRoute)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GenerateRouteLogSummaryReport"))
+            using (loggingHelper.RMTraceManager.StartTrace($"WebService.{nameof(GenerateRouteLog)}"))
             {
-                string methodName = typeof(RouteLogController) + "." + nameof(GenerateRouteLogSummaryReport);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = typeof(RouteLogController) + "." + nameof(GenerateRouteLog);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogControllerMethodEntryEventId);
+
+                // Initialize the PDF document file name
+                string pdfFilename = string.Empty;
 
                 try
                 {
-                    var pdfFilename = await routeLogBusinessService.GenerateRouteLog(deliveryRoute);
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                    return Ok(pdfFilename);
+                    // Generate the route log summary report for the specified delivery route
+                    pdfFilename = await routeLogBusinessService.GenerateRouteLog(deliveryRoute);
                 }
-                catch (AggregateException ae)
+                catch (AggregateException ex)
                 {
-                    foreach (var exception in ae.InnerExceptions)
+                    foreach (var exception in ex.InnerExceptions)
                     {
                         loggingHelper.Log(exception, TraceEventType.Error);
                     }
 
-                    var realExceptions = ae.Flatten().InnerException;
+                    var realExceptions = ex.Flatten().InnerException;
                     throw realExceptions;
                 }
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogControllerMethodExitEventId);
+                return Ok(pdfFilename);
             }
         }
     }

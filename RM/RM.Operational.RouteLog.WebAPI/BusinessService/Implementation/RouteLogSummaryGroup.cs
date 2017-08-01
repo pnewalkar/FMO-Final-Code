@@ -3,13 +3,34 @@ using RM.Operational.RouteLog.WebAPI.DTO;
 
 namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
-    public class RouteSummaryGroup
+    /// <summary>
+    /// Helper class used in conjunction with RouteLogSummaryFactory to hold groups of sequenced points
+    /// </summary>
+    internal class RouteLogSummaryGroup
     {
         /// <summary>
-        /// Constructs route summary group with an initial address
+        /// Group type enumeration
+        /// </summary>
+        public enum GroupType
+        {
+            ConsecutiveAscending,
+            ConsecutiveDescending,
+            EvensAscending,
+            EvensDescending,
+            OddsAscending,
+            OddsDescending,
+            Unknown
+        }
+
+
+
+    
+
+        /// <summary>
+        /// Constructs route log summary group with an initial address
         /// </summary>
         /// <param name="address">The address</param>
-        public RouteSummaryGroup(RouteLogSequencedPointsDTO address)
+        public RouteLogSummaryGroup(RouteLogSequencedPointsDTO address)
         {
             // Default the group type
             this.CurrentGroupType = GroupType.Unknown;
@@ -32,26 +53,21 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             this.BuildingName = address.BuildingName;
         }
 
-        public enum GroupType
-        {
-            SequentialAscending,
-            SequentialDescending,
-            EvensAscending,
-            EvensDescending,
-            OddsAscending,
-            OddsDescending,
-            Unknown
-        }
+
 
         /// <summary>
         /// Gets or sets the current group type
         /// </summary>
         public GroupType CurrentGroupType { get; set; }
 
+
+
         /// <summary>
         /// Gets or sets the last address in the group
         /// </summary>
         public RouteLogSequencedPointsDTO LastAddress { get; set; }
+
+
 
         /// <summary>
         /// Gets the description for the group
@@ -84,6 +100,8 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             }
         }
 
+
+
         /// <summary>
         /// Gets the group type description for a specified group type
         /// </summary>
@@ -111,12 +129,12 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                     description = "Odds";
                     break;
 
-                case GroupType.SequentialAscending:
-                    description = "cons";
+                case GroupType.ConsecutiveAscending:
+                    description = "Cons";
                     break;
 
-                case GroupType.SequentialDescending:
-                    description = "cons";
+                case GroupType.ConsecutiveDescending:
+                    description = "Cons";
                     break;
 
                 case GroupType.Unknown:
@@ -127,6 +145,8 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             // Return the description
             return description;
         }
+
+
 
         /// <summary>
         /// Gets the building description from the sub name, name, number and thoroughfare
@@ -172,10 +192,14 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             return description;
         }
 
+
+
         /// <summary>
         /// The list of addresses in the group
         /// </summary>
         private List<RouteLogSequencedPointsDTO> addressList = new List<RouteLogSequencedPointsDTO>();
+
+
 
         /// <summary>
         /// Gets the address list
@@ -185,30 +209,53 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             get { return addressList; }
         }
 
+
+
         /// <summary>
         /// Gets or sets the delivery point count
         /// </summary>
         public int DeliveryPointCount { get; set; }
+
+
 
         /// <summary>
         /// Gets or sets the multiple occupancy count
         /// </summary>
         public int? MultipleOccupancy { get; set; }
 
+
+
         /// <summary>
         /// Gets or sets the first building number
         /// </summary>
         public short? FirstBuildingNumber { get; set; }
+
+
 
         /// <summary>
         /// Gets or sets the last building number
         /// </summary>
         public short? LastBuildingNumber { get; set; }
 
+
+
+        /// <summary>
+        /// Gets or sets the street name
+        /// </summary>
         public string StreetName { get; set; }
 
+
+
+        /// <summary>
+        /// Gets or sets the sub-building name
+        /// </summary>
         public string SubBuildingName { get; set; }
 
+
+
+        /// <summary>
+        /// Gets or sets the building name
+        /// </summary>
         public string BuildingName { get; set; }
     }
 }
