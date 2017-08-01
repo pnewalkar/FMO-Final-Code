@@ -135,6 +135,7 @@ function DeliveryPointController(
     }
 
     function bindAddressDetails() {
+        vm.selectedType = vm.single;
         if (vm.notyetBuilt !== vm.defaultNYBValue) {
             deliveryPointService.bindAddressDetails(vm.notyetBuilt)
                    .then(function (response) {
@@ -155,10 +156,16 @@ function DeliveryPointController(
     }
 
     function setOrganisation() {
-        deliveryPointService.setOrganisation(vm.addressDetails, vm.dpUseType).then(function (response) {
-            vm.dpUse = response.dpUse;
-            vm.selectedDPUse = response.selectedDPUse;
-        });
+        if (vm.selectedType === vm.single) {
+            deliveryPointService.setOrganisation(vm.addressDetails, vm.dpUseType).then(function (response) {
+                vm.dpUse = response.dpUse;
+                vm.selectedDPUse = response.selectedDPUse;
+            });
+        }
+        else {
+            vm.dpUse = vm.dpUseType;
+            vm.selectedDPUse = "";
+        }
     }
 
     function toggle(item) {
