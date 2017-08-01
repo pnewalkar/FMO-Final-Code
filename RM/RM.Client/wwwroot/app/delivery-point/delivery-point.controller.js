@@ -1,4 +1,3 @@
-
 angular
     .module('deliveryPoint')
     .controller("DeliveryPointController", DeliveryPointController)
@@ -35,7 +34,6 @@ function DeliveryPointController(
     deliveryPointService,
     $rootScope
 ) {
-
     var vm = this;
     vm.resultSet = resultSet;
     vm.deliveryPoint = deliveryPoint;
@@ -68,8 +66,9 @@ function DeliveryPointController(
     vm.alias = null;
     vm.display = false;
     vm.disable = true;
+    vm.rangeOptionsSelected = "Odds";
     vm.items = [];
-   /* vm.hide = $stateParams.hide;*/
+    /* vm.hide = $stateParams.hide;*/
     vm.dpIsChecked = false;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
@@ -82,18 +81,15 @@ function DeliveryPointController(
         if (args === "deliveryPoint") {
             deliveryPoint();
         }
-
     });
     function initialize() {
-        deliveryPointService.deliveryPointTypes().then(function (response) {
-            // vm.deliveryPointTypes = [response[0]];
-            vm.deliveryPointTypes = response;
+        deliveryPointService.initialize().then(function (response) {
+            vm.deliveryPointTypes = response.DeliveryPointTypes;
+            vm.dpUseType = response.DpUseType;
+            vm.subBuildingTypes = response.SubBuildingTypes;
+            vm.rangeOptions = response.RangeOptions;
         });
-        deliveryPointService.deliveryPointUseType().then(function (response) {
-            vm.dpUseType = response;
-        });
-    } 
-
+    }
 
     function deliveryPoint() {
         deliveryPointService.openModalPopup(popUpSettingService.deliveryPoint(vm));
@@ -246,7 +242,6 @@ function DeliveryPointController(
                 "AddressLocationDTO": null
             };
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
-           
             if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
                 mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
@@ -260,14 +255,12 @@ function DeliveryPointController(
                 //    setDP();
                 vm.hide = true;
                 vm.closeWindow();
-
             }
             else {
                 vm.isError = true;
                 vm.isDisable = true;
                 vm.errorMessage = response.message;
                 vm.errorMessageTitle = "Duplicates found";
-
             }
             $rootScope.$broadcast('disablePrintMap', {
                 disable: true
@@ -291,7 +284,7 @@ function DeliveryPointController(
         }
         else {
             manualDeliveryPointPosition(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion)
-          //  setDP();
+            //  setDP();
         }
     }
 
@@ -303,7 +296,6 @@ function DeliveryPointController(
     }
 
     function addAlias() {
-
         vm.items.push({
             Preferred: false,
             DPAlias: vm.alias
@@ -320,10 +312,8 @@ function DeliveryPointController(
         deliveryPointAPIService.GetAddressLocation(udprn)
             .then(function (response) {
                 if (response.features.length > 0) {
-
                     var lat = response.features[0].geometry.coordinates[1];
                     var long = response.features[0].geometry.coordinates[0];
-
 
                     var positionedThirdPartyDeliverypointObj = {
                         udprn: udprn, locality: locality, addressGuid: addressGuid, id: deliveryPointGuid, xCoordinate: long, yCoordinate: lat, latitude: response.features[0].properties.latitude, longitude: response.features[0].properties.longitude, rowversion: rowversion
@@ -343,7 +333,7 @@ function DeliveryPointController(
 
                     $state.go("deliveryPoint", {
                         positionedThirdPartyDeliveryPointList: vm.positionedThirdPartyDeliveryPointList,
-                       /* hide: true*/
+                        /* hide: true*/
                     })
 
                     mapFactory.locateDeliveryPoint(long, lat);
@@ -352,7 +342,6 @@ function DeliveryPointController(
     }
 
     function manualDeliveryPointPosition(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {
-
         var deliveryPointListObj = {
             udprn: udprn, locality: locality, addressGuid: addressGuid, id: deliveryPointGuid, xCoordinate: null, yCoordinate: null, latitude: null, longitude: null, rowversion: rowversion
         };
@@ -364,7 +353,6 @@ function DeliveryPointController(
             deliveryPointList: vm.deliveryPointList,
             /*hide: true*/
         })
-
     }
 
     function getCommaSeparatedVale(value1, value2) {

@@ -89,7 +89,8 @@
     "LOCALITY": "Locality",
     "REMOVE_DP_ALIAS": "Remove DP Alias",
     "RANGE_FROM": "Range From",
-    "SUB_BUILDING_TYPE":  "Sub Building Type"
+    "RANGE_TO": "To",
+    "SUB_BUILDING_TYPE": "Sub Building Type"
 
   },
   "ROUTE_LOG": {
