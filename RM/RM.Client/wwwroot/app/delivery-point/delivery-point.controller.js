@@ -68,8 +68,8 @@ function DeliveryPointController(
     vm.alias = null;
     vm.display = false;
     vm.disable = true;
+    vm.postalAddressAliases = [];
     vm.rangeOptionsSelected = "Odds";
-    vm.items = [];
     vm.dpIsChecked = false;
     vm.selectedType = null;
     vm.single = GlobalSettings.single;
@@ -244,15 +244,16 @@ function DeliveryPointController(
         var addDeliveryPointDTO =
             {
                 "PostalAddressDTO": vm.addressDetails,
+
                 "DeliveryPointDTO":
                 {
                     "MultipleOccupancyCount": vm.mailvol,
                     "MailVolume": vm.multiocc,
-                    "DeliveryPointAliasDTO": vm.items,
                     "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
                     "DeliveryRoute_Guid": vm.routeId
                 },
-                "AddressLocationDTO": null
+                "AddressLocationDTO": null,
+                "PostalAddressAliasDTOs": vm.postalAddressAliases // TODO naming
             };
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
             if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
@@ -309,16 +310,17 @@ function DeliveryPointController(
     }
 
     function addAlias() {
-        vm.items.push({
-            Preferred: false,
-            DPAlias: vm.alias
+
+        vm.postalAddressAliases.push({
+            PreferenceOrderIndex: false,
+            AliasName: vm.alias
         });
         vm.alias = "";
     };
 
     function removeAlias() {
-        var lastItem = vm.items.length - 1;
-        vm.items.splice(lastItem);
+        var lastItem = vm.postalAddressAliases.length - 1;
+        vm.postalAddressAliases.splice(lastItem);
     }
 
     function locateDeliveryPoint(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {

@@ -9,6 +9,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         {
             this.PostalAddressStatus = new List<PostalAddressStatusDataDTO>();
             this.DeliveryPoints = new List<DeliveryPointDataDTO>();
+            this.PostalAddressAlias = new HashSet<PostalAddressAliasDataDTO>();
         }
 
         /// <summary>
