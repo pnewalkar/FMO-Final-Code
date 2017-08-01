@@ -258,9 +258,10 @@ function DeliveryPointController(
            
             if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
-                mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
+                mapService.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
                 guidService.setGuid(response.id);
                 mapFactory.setAccessLink();
+                mapService.refreshLayers();
                 vm.closeWindow();
                 vm.hide = true;
             }
@@ -268,6 +269,7 @@ function DeliveryPointController(
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
                 //    setDP();
                 vm.hide = true;
+                mapService.refreshLayers();
                 vm.closeWindow();
 
             }

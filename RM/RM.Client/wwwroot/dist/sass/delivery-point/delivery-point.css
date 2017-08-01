@@ -56,3 +56,9 @@ fieldset {
 
 .deliveryRoute .md-text {
   color: darkgray; }
+
+span.centerAlign.flex-20 {
+  margin: auto; }
+
+.map-panel li.initialCursor {
+  cursor: initial; }
