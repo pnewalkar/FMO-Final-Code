@@ -71,7 +71,6 @@ function DeliveryPointController(
     vm.display = false;
     vm.disable = true;
     vm.items = [];
-   /* vm.hide = $stateParams.hide;*/
     vm.dpIsChecked = false;
     vm.selectedType = null;
     vm.single = GlobalSettings.single;
@@ -93,7 +92,6 @@ function DeliveryPointController(
     });
     function initialize() {
         deliveryPointService.deliveryPointTypes().then(function (response) {
-            // vm.deliveryPointTypes = [response[0]];
             vm.deliveryPointTypes = response;
         });
         deliveryPointService.deliveryPointUseType().then(function (response) {
