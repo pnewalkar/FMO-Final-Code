@@ -226,7 +226,7 @@
                     <!--AddAlias start-->
                     <div layout="row" ng-show="vm.selectedType === vm.subBuilding">
                         <label>{{ 'DELIVERY_POINTS.SUB_BUILDING_TYPE'| translate }}</label>
-                        <md-select ng-model="subBuildingTypes">
+                        <md-select ng-model="vm.subBuildingType">
                             <md-option ng-repeat="type in vm.subBuildingTypes" ng-value="type.id">
                                 {{type.value}}
                             </md-option>
