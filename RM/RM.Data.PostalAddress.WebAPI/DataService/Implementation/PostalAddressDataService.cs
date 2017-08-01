@@ -481,7 +481,7 @@
 
                     if (postalAddressDataDTO != null)
                     {
-                        var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.UDPRN == postalAddressDataDTO.UDPRN && n.UDPRN.HasValue);
+                        var objPostalAddress = DataContext.PostalAddresses.Include(x => x.PostalAddressStatus).SingleOrDefault(n => n.ID == postalAddressDataDTO.ID );
 
                         if (objPostalAddress != null)
                         {
@@ -513,6 +513,7 @@
 
                             objPostalAddress.RowCreateDateTime = DateTime.UtcNow;
 
+                          
                             foreach (var status in objPostalAddress.PostalAddressStatus)
                             {
                                 status.RowCreateDateTime = DateTime.UtcNow;
@@ -609,7 +610,7 @@
 
                 IQueryable<PostalAddress> postalAddress = null;
 
-                if (addressTypeNYBGuid == Guid.Empty)
+                if (addressTypeNYBGuid != Guid.Empty)
                 {
                     postalAddress = DataContext.PostalAddresses.AsNoTracking()
                             .Where(n => n.AddressType_GUID == addressTypeNYBGuid);
