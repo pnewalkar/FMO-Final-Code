@@ -122,7 +122,7 @@
                 <div layout="column" flex="25" ng-show="vm.selectedType != vm.single">
                     <md-input-container>
                         <label>{{ 'DELIVERY_POINTS.RANGE_FROM'| translate }}</label>
-                        <input name="rangefrom" ng-model="vm.rangeFrom" type="text" ng-pattern="/^[1-9]*$/" ng-maxlength="4" required>
+                        <input name="rangefrom" ng-model="vm.rangeFrom" type="text" ng-pattern="/^[1-9]*$/" ng-maxlength="4" ng-required="vm.selectedType != vm.single">
                         <div ng-messages="vm.deliveryPointForm.rangefrom.$error"
                              ng-show="vm.deliveryPointForm.rangefrom.$touched" role="alert">
                             <div ng-message="required">This field is required</div>
@@ -135,8 +135,8 @@
                 <span flex="5"></span>
 
                 <md-input-container flex="25" ng-show="vm.selectedType != vm.single">
-                    <label>{{ 'DELIVERY_POINTS.TO' | translate }}</label>
-                    <input ng-model="vm.addressDetails.rageto" type="text" disabled>
+                    <label>{{ 'DELIVERY_POINTS.RANGE_TO' | translate }}</label>
+                    <input ng-model="vm.addressDetails.rageto" type="text" ng-required="vm.selectedType != vm.single">
                     <div ng-messages="vm.deliveryPointForm.rangeto.$error"
                          ng-show="vm.deliveryPointForm.rangeto.$touched" role="alert">
                         <div ng-message="required">This field is required</div>
@@ -148,10 +148,10 @@
                 <span flex="5"></span>
                 <md-input-container flex="40" ng-show="vm.selectedType != vm.single">
 
-                    <md-radio-group layout="row">
-                        <md-radio-button value=0 class="md-primary">Odds</md-radio-button>
-                        <md-radio-button value=1> Evens </md-radio-button>
-                        <md-radio-button value=2> Consecutives </md-radio-button>
+                    <md-radio-group layout="row" ng-model="vm.rangeOptionsSelected">
+                        <md-radio-button ng-repeat="type in vm.rangeOptions" ng-value="type.value">
+                            {{type.value}}
+                        </md-radio-button>
                     </md-radio-group>
                 </md-input-container>
             </div>
