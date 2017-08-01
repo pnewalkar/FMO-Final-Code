@@ -15,23 +15,22 @@
 
     <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">
         <h1>Points not positioned by 3rd party</h1>
-        <ul>
-            <li ng-show="vm.deliveryPointList == null || vm.deliveryPointList == undefined || vm.deliveryPointList == [] || vm.deliveryPointList.length == 0">
+        <ul layout="row">
+            <li ng-show="vm.deliveryPointList == null || vm.deliveryPointList == undefined || vm.deliveryPointList == [] || vm.deliveryPointList.length == 0" class="initialCursor">
                 None left to position
             </li>
-            <li ng-repeat="item in vm.deliveryPointList">
+            <li ng-repeat="item in vm.deliveryPointList" flex="85">
                 {{item.locality}}
-                <span ng-click="vm.toggle(item)">
-                    <md-checkbox class="dpCheckBox"></md-checkbox>
-                </span>
             </li>
-
+            <span ng-click="vm.toggle(item)" flex="15" class="centerAlign">
+                <md-checkbox class="dpCheckBox"></md-checkbox>
+            </span>
         </ul>
     </div>
     <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">
         <h1>Positioned points</h1>
         <ul>
-            <li ng-show="vm.positionedDeliveryPointList == null || vm.positionedDeliveryPointList == undefined || vm.positionedDeliveryPointList ==  [] || vm.positionedDeliveryPointList.length ==  0">
+            <li ng-show="vm.positionedDeliveryPointList == null || vm.positionedDeliveryPointList == undefined || vm.positionedDeliveryPointList ==  [] || vm.positionedDeliveryPointList.length ==  0" class="initialCursor">
                 None positioned yet
             </li>
             <li ng-repeat="item in vm.positionedDeliveryPointList">
@@ -42,7 +41,7 @@
     <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">
         <h1>Already positioned by 3rd Party</h1>
         <ul>
-            <li ng-show="vm.positionedThirdPartyDeliveryPointList == null || vm.positionedThirdPartyDeliveryPointList == undefined || vm.positionedThirdPartyDeliveryPointList ==  [] || vm.positionedThirdPartyDeliveryPointList.length ==  0">
+            <li ng-show="vm.positionedThirdPartyDeliveryPointList == null || vm.positionedThirdPartyDeliveryPointList == undefined || vm.positionedThirdPartyDeliveryPointList ==  [] || vm.positionedThirdPartyDeliveryPointList.length ==  0" class="initialCursor">
                 None positioned yet
             </li>
             <li ng-repeat="item in vm.positionedThirdPartyDeliveryPointList">
