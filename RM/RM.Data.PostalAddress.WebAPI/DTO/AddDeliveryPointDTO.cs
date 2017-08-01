@@ -1,4 +1,5 @@
-﻿using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
+﻿using System.Collections.Generic;
+using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
@@ -7,7 +8,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         /// <summary>
         /// Gets or sets a Postal Address for entity types searched while adding delivery point.
         /// </summary>
-        public PostalAddressDataDTO PostalAddressDTO { get; set; }
+        public PostalAddressDTO PostalAddressDTO { get; set; }
 
         /// <summary>
         /// Gets or sets a delivery point for entity types searched while adding delivery point.
@@ -18,5 +19,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         /// Gets or sets a address location for entity types searched while adding delivery point.
         /// </summary>
         public AddressLocationDTO AddressLocationDTO { get; set; }
+
+        /// <summary>
+        /// Gets or sets collection of address alises for respective Postal Address
+        /// </summary>
+        public List<PostalAddressAliasDTO> PostalAddressAliasDTOs { get; set; }
     }
 }
