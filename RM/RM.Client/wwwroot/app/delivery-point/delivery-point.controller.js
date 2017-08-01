@@ -108,6 +108,7 @@ function DeliveryPointController(
         vm.searchText = "";
         vm.mailvol = "";
         vm.multiocc = "";
+        vm.rangeOptionsSelected = "Odds";
         deliveryPointService.closeModalPopup();
     }
 
@@ -135,6 +136,7 @@ function DeliveryPointController(
     }
 
     function bindAddressDetails() {
+        vm.rangeOptionsSelected = "Odds";
         vm.selectedType = vm.single;
         if (vm.notyetBuilt !== vm.defaultNYBValue) {
             deliveryPointService.bindAddressDetails(vm.notyetBuilt)
