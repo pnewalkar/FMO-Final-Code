@@ -84,7 +84,7 @@
 
                 <md-input-container flex="30">
                     <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
-                    <md-select name="route" ng-model="vm.routeId" select-clear>
+                    <md-select name="route" ng-model="vm.routeId" select-clear required>
                         <md-option ng-repeat="route in vm.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
@@ -122,13 +122,15 @@
                 <div layout="column" flex="25" ng-show="vm.selectedType != vm.single">
                     <md-input-container>
                         <label>{{ 'DELIVERY_POINTS.RANGE_FROM'| translate }}</label>
-                        <input name="rangefrom" ng-model="vm.rangeFrom" type="text" ng-pattern="/^[1-9]*$/" ng-maxlength="4" ng-required="vm.selectedType != vm.single">
+                        <input name="rangefrom" ng-model="vm.rangeFrom" type="text" ng-pattern="/^[1-9]*$/" ng-blur="vm.setRangeValidation(vm.rangeFrom,vm.rangeTo,'RangeFrom')" ng-maxlength="4" ng-required="vm.selectedType != vm.single">
                         <div ng-messages="vm.deliveryPointForm.rangefrom.$error"
                              ng-show="vm.deliveryPointForm.rangefrom.$touched" role="alert">
                             <div ng-message="required">This field is required</div>
                             <div ng-message="maxlength">Value entered is too large</div>
                             <div ng-message="pattern">Value entered is not valid</div>
+                            <div ng-show="vm.displayRangeFromMessage">From should be less than To</div>
                         </div>
+                       
                     </md-input-container>
                 </div>
 
@@ -136,12 +138,13 @@
 
                 <md-input-container flex="25" ng-show="vm.selectedType != vm.single">
                     <label>{{ 'DELIVERY_POINTS.RANGE_TO' | translate }}</label>
-                    <input ng-model="vm.addressDetails.rageto" type="text" ng-required="vm.selectedType != vm.single">
+                    <input name="rangeto" ng-model="vm.rangeTo" type="text" ng-pattern="/^[1-9]*$/" ng-blur="vm.setRangeValidation(vm.rangeFrom,vm.rangeTo,'RangeTo')" ng-maxlength="4" ng-required="vm.selectedType != vm.single">
                     <div ng-messages="vm.deliveryPointForm.rangeto.$error"
                          ng-show="vm.deliveryPointForm.rangeto.$touched" role="alert">
                         <div ng-message="required">This field is required</div>
                         <div ng-message="maxlength">Value entered is too large</div>
                         <div ng-message="pattern">Value entered is not valid</div>
+                        <div ng-show="vm.displayRangeToMessage">To should be bigger than From</div>
                     </div>
                 </md-input-container>
 
@@ -292,13 +295,12 @@
                 </md-input-container>
             </div>
         </md-dialog-content>
-
         <md-dialog-actions layout="row">
             <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40" ng-disabled="vm.isDisable" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}">
                 {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
             </md-button>
             <span flex></span>
-            <md-button ng-disabled="(!vm.deliveryPointForm.$valid) || vm.isOnceClicked" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+            <md-button ng-disabled="(!vm.deliveryPointForm.$valid) || vm.displayRangeFromMessage || vm.displayRangeToMessage || vm.isOnceClicked " ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
                 {{ 'GENERAL.BUTTONS.SAVE' | translate }}
             </md-button>
         </md-dialog-actions>

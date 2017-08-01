@@ -53,6 +53,7 @@ function DeliveryPointController(
     vm.createDeliveryPoint = createDeliveryPoint;
     vm.Ok = Ok;
     vm.initialize = initialize;
+    vm.setRangeValidation = setRangeValidation
 
     vm.positionedThirdPartyDeliveryPointList = $stateParams.positionedThirdPartyDeliveryPointList;
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
@@ -76,6 +77,8 @@ function DeliveryPointController(
     vm.range = GlobalSettings.range;
     vm.subBuilding = GlobalSettings.subBuilding;
     vm.numberInName = GlobalSettings.numberInName;
+    vm.displayRangeFromMessage = false;
+    vm.displayRangeToMessage = false;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
@@ -140,6 +143,10 @@ function DeliveryPointController(
                    .then(function (response) {
                        vm.addressDetails = response;
                        setOrganisation();
+                       vm.rangeFrom = "";
+                       vm.rangeTo = "";
+                       vm.mailvol = "";
+                       vm.multiocc = "";
                    });
         }
         else {
@@ -151,6 +158,11 @@ function DeliveryPointController(
             vm.addressDetails.organisationName = "";
             vm.addressDetails.departmentName = "";
             vm.dpUse = "";
+            vm.rangeFrom = "";
+            vm.rangeTo = "";
+            vm.mailvol = "";
+            vm.multiocc = "";
+
         }
     }
 
@@ -376,5 +388,25 @@ function DeliveryPointController(
     function Ok() {
         vm.isError = false;
         vm.isDisable = false;
+    }
+
+    function setRangeValidation(rangeFrom, rangeTo, rangeType) {
+
+        if (parseInt(rangeFrom) > parseInt(rangeTo)) {
+            if (rangeType == "RangeFrom") {
+                vm.displayRangeFromMessage = true;
+                vm.displayRangeToMessage = false;
+            }
+            else {
+                vm.displayRangeFromMessage = false;
+                vm.displayRangeToMessage = true;
+            }
+        }
+        else
+        {
+            vm.displayRangeFromMessage = false;
+            vm.displayRangeToMessage = false;
+        }
+
     }
 };
