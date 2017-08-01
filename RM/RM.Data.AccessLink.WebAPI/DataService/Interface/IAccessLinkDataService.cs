@@ -23,14 +23,14 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// </summary>
         /// <param name="accessLinkDto">Access link data object.</param>
         /// <returns>Success.</returns>
-        bool CreateAutomaticAccessLink(AccessLinkDataDTO accessLinkDataDto);
+        bool CreateAccessLink(AccessLinkDataDTO accessLinkDataDto);
 
         /// <summary>
         /// Creates manual access link
         /// </summary>
         /// <param name="networkLinkDataDTO"></param>
         /// <returns></returns>
-        bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
+        // bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
 
         /// <summary>
         /// This method is used to get the access links crossing the created access link
@@ -38,7 +38,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// <param name="boundingBoxCoordinates">bbox coordinates</param>
         /// <param name="accessLink">access link coordinate array</param>
         /// <returns>List<AccessLinkDTO> </returns>
-        List<AccessLinkDataDTO> GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink);
+        bool GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink);
 
         int GetIntersectionCountForDeliveryPoint(DbGeometry operationalObjectPoint, DbGeometry accessLink);
 
@@ -47,6 +47,19 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// </summary>
         /// <param name="operationalObjectPoint"></param>
         /// <returns></returns>
-        int GetAccessLinkCountForCrossesorOverLaps(DbGeometry operationalObjectPoint, DbGeometry accessLink);
+        bool CheckAccessLinkCrossesorOverLaps(DbGeometry operationalObjectPoint, DbGeometry accessLink);
+
+        /// <summary> This method is used to get the delivery points crossing the created operational
+        /// object </summary> <param name="boundingBoxCoordinates">bbox coordinates</param> <param
+        /// name="accessLink">The collection of delivery points that matches the criteria, or null if a match does not exist</returns>
+        bool GetDeliveryPointsCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry operationalObject);
+
+        /// <summary>
+        /// Get the Network Links crossing access link
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLink">access link coordinate array</param>
+        /// <returns>List<NetworkLinkDTO></returns>
+        bool GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink);
     }
 }

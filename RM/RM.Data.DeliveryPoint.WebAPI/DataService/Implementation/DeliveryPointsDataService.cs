@@ -93,6 +93,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     {
                         objDeliveryPoint.ID = Guid.NewGuid();
                         deliveryPoint.ID = objDeliveryPoint.ID;
+                        deliveryPoint.MultipleOccupancyCount = objDeliveryPoint.MultipleOccupancyCount;
+                        deliveryPoint.MailVolume = objDeliveryPoint.MailVolume;
                         deliveryPoint.PostalAddressID = objDeliveryPoint.PostalAddressID;
                         deliveryPoint.DeliveryPointUseIndicatorGUID = objDeliveryPoint.DeliveryPointUseIndicatorGUID;
                         deliveryPoint.RowCreateDateTime = DateTime.UtcNow;

@@ -78,8 +78,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                // reference data value for PostcodeSector with Category - Postcode Type
-                Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeArea.GetDescription()).Result;
+                // reference data value for PostcodeDistrict with Category - Postcode Type
+                Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeDistrict.GetDescription()).Result;
 
                 IEnumerable<UnitLocationDataDTO> unitLocationDataDtoList = null;
                 if (!currentUserUnitType.Equals(UserUnit.National.GetDescription()))

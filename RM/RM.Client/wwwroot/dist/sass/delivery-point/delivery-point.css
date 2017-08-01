@@ -42,7 +42,7 @@ fieldset {
   border-radius: 15px;
   position: absolute;
   background-color: #ffffff;
-  margin: -50PX 0PX 0PX 400PX;
+  margin: -5% 0% 0% 13%;
   z-index: 1;
   text-align: center; }
   .alertPopup:hover {
@@ -101,3 +101,9 @@ md-list-item .md-list-item-inner:before, md-list-item:before {
   min-height: 0;
   visibility: hidden;
   display: inline-block; }
+
+span.centerAlign.flex-20 {
+  margin: auto; }
+
+.map-panel li.initialCursor {
+  cursor: initial; }
