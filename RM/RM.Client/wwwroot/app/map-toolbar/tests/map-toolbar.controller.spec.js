@@ -42,17 +42,6 @@ describe('MapToolbar: Controller', function() {
         expect(vm.isObjectSelected).toBe(false);
     });
 
-    it('should call `showButton,getMapButtons and autoSelect` when initialize method called', function() {
-        spyOn(vm,'showButton');
-        spyOn(vm,'getMapButtons');
-        spyOn(vm,'autoSelect');
-
-        vm.initialize();
-        expect(vm.showButton).toHaveBeenCalled();
-        expect(vm.getMapButtons).toHaveBeenCalled();
-        expect(vm.autoSelect).toHaveBeenCalled();
-    });
-
     it('should have selected button of `line` after emit fired when setSelectedButton method called', function() {
         spyOn(mapToolbarService, 'setSelectedButton').and.returnValue(true);        
         vm.setSelectedButton('line');

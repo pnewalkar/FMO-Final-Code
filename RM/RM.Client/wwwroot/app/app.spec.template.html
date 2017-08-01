@@ -15,7 +15,6 @@
     <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
     <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
     <script src="../node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>
-
     <!--angular material scripts-->
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
@@ -25,20 +24,47 @@
     <script src="../bower_components/angular-material/angular-material.min.js"></script>
     <script src="../bower_components/angular-route/angular-route.min.js"></script>
     <script src="../bower_components/svg-assets-cache.js/svg-assets-cache.js"></script>
-    <script src="../bower_components/angular-mocks/angular-mocks.js"></script>
-
-    <!-- Angular translate-->  
+   
+   <!-- Angular translate-->  
     <script src="../bower_components/angular-translate/angular-translate.js"></script>
     
     <!--angular material data-table script-->
     <script src="../bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
-
     <!--Open Layer-->
     <script src="../node_modules/openlayers/dist/ol-debug.js"></script>    
     <script src="../bower_components/proj4/dist/proj4.js"></script>
-
+    <script src="../bower_components/angular-mocks/angular-mocks.js"></script>
     <!--custom scripts-->
     <script src="./app.module.js"></script>
+
+    <!--common scripts-->
+    <script src="./common/popup-setting.service.js"></script>
+    <script src="./common/common.constants.js"></script>
+    <script src="./common/string-format.service.js"></script>
+    <script src="./common/previous-page.directive.js"></script>
+    <!--common Scripts-->
+    <script src="./common/tests/popup-setting.service.spec.js"></script>    
+    <script src="./common/tests/string-format.service.spec.js"></script>    
+
+    <!--Manage Access-->
+    <script src="./manage-access/manage-access.module.js"></script>
+    <script src="./manage-access/manage-access.service.js"></script>
+    <script src="./manage-access/manage-access.factory.js"></script>
+    <script src="./manage-access/manage-access.controller.js"></script>
+    <script src="./manage-access/manage-access.component.js"></script>
+    <!--Manage Access Specs-->    
+    <script src="./manage-access/tests/manage-access.service.spec.js"></script>
+    <script src="./manage-access/tests/manage-access.factory.spec.js"></script>
+    <script src="./manage-access/tests/manage-access.controller.spec.js"></script>
+    
+
+    <!-- Reusable Component -->
+    <script src="./common/dropdown.module.js"></script>
+    <script src="./common/searchable-dropdown.controller.js"></script>    
+    <script src="./common/searchable-dropdown.component.js"></script>
+    <!--Reusable Component -->
+    <script src="./common/tests/searchable-dropdown.controller.spec.js"></script>    
+
     <!--home-->
     <script src="./home/home.module.js"></script>
     <script src="./home/home.controller.js"></script>
@@ -66,19 +92,20 @@
     <script src="./side-nav/side-nav.route.js"></script>
     <!--side nav spec-->
 
-    <script src="../app/side-nav/tests/side-nav.controller.spec.js"></script>
+    <script src="./side-nav/tests/side-nav.controller.spec.js"></script>
+    <script src="./side-nav/tests/side-nav.service.spec.js"></script>
 
     <!--unit selector-->
     <script src="./unit-selector/unit-selector.module.js"></script>
     <script src="./unit-selector/unit-selector.service.js"></script>
     <script src="./unit-selector/unit-selector.factory.js"></script>
     <script src="./unit-selector/unit-selector.controller.js"></script>
-    <script src="./unit-selector/unit-selector.component.js"></script>    
-    <!--unit selector Specs-->    
+    <script src="./unit-selector/unit-selector.component.js"></script>
+    <!--unit selector spec-->
     <script src="./unit-selector/tests/unit-selector.service.spec.js"></script>
     <script src="./unit-selector/tests/unit-selector.factory.spec.js"></script>
     <script src="./unit-selector/tests/unit-selector.controller.spec.js"></script>
-    
+
     <!--search-->
     <script src="./search/search.module.js"></script>
     <script src="./search/search.service.js"></script>
@@ -144,10 +171,6 @@
     <script src="./layers/layers.controller.js"></script>
     <script src="./layers/layers.component.js"></script>
     <script src="./layers/layers.factory.js"></script>
-    <!--layers spec-->
-    <script src="./layers/tests/layers.factory.spec.js"></script>
-<!--     <script src="./layers/tests/layers.controller.js"></script>
-<script src="./layers/tests/layers.service.js"></script> -->
     <!--route simulation-->
     <script src="./simulation/simulation.module.js"></script>
     <script src="./simulation/simulation.factory.js"></script>
@@ -164,9 +187,10 @@
     <script src="./advance-search/advance-search.service.js"></script>
     <script src="./advance-search/advance-search.controller.js"></script>
 
-    <!--advanced search spec-->
-
-    <script src="advance-search/test/advance-search.spec.js"></script>
+     <!--advance-search spec files-->
+    <script src="./advance-search/tests/advance-search.factory.spec.js"></script>
+    <script src="./advance-search/tests/advance-search.service.spec.js"></script>
+    <script src="./advance-search/tests/advance-search.controller.spec.js"></script>
 
     <!--delivery-point-->
     <script src="./delivery-point/delivery-point.module.js"></script>
@@ -199,6 +223,12 @@
     <script src="./access-link/tests/access-link.roadLinkGuidService.spec.js"></script>
     <script src="./access-link/tests/access-link.controller.spec.js"></script>
 
+    <!--back button-->
+    <script src="./back-button/back-button.module.js"></script>
+    <script src="./back-button/back-button.config.js"></script>
+    <script src="./back-button/back-button.controller.js"></script>
+    <script src="./back-button/back-button.component.js"></script>
+
     <!-- Licensing information-->
     <script src="./license-information/licensing-information.module.js"></script>
     <script src="./license-information/licensing-information.service.js"></script>
@@ -217,7 +247,7 @@
     <script src="./reference-data/reference-data.factory.js"></script>
     <script src="./reference-data/reference-data.controller.js"></script>
     <!--Reference Data Spec-->
-    <!--<script src="./reference-data/tests/reference-data.controller.spec.js"></script>-->
+    <script src="./reference-data/tests/reference-data.controller.spec.js"></script>
     <script src="./reference-data/tests/reference-data.factory.spec.js"></script>
 </head>
 <body>    

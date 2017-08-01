@@ -302,9 +302,9 @@ describe('Route-Log: Controller', function () {
 
     it('should promise to return a success response once deliveryRouteChange method is called', function () {        
         var deffer = $q.defer();
-        var deliveryRouteChangeMockData = {"id":"33bc42ed-42bd-4456-a3f6-33a10efc8bd3","travelOutTimeMin":null,"travelInTimeMin":null,"spanTimeMin":null,"deliveryScenario_Id":null,"deliveryRouteBarcode":null,"deliveryOffice":undefined};        
+        var deliveryRouteChangeMockData = {"id":"33bc42ed-42bd-4456-a3f6-33a10efc8bd3","travelOutTimeMin":null,"travelInTimeMin":null,"spanTimeMin":null,"deliveryScenario_Id":null,"deliveryRouteBarcode":null,"deliveryOffice":'Worthing Delivery Office'};        
         var selectedRouteValue = {id:'33bc42ed-42bd-4456-a3f6-33a10efc8bd3'};
-
+        
         spyOn(routeLogService, 'deliveryRouteChange').and.returnValue(deffer.promise);
 
         vm.deliveryRouteChange(selectedRouteValue);
@@ -313,7 +313,7 @@ describe('Route-Log: Controller', function () {
         $rootScope.$apply();
 
         expect(routeLogService.deliveryRouteChange).toHaveBeenCalledWith('33bc42ed-42bd-4456-a3f6-33a10efc8bd3');
-        expect(vm.routeDetails.deliveryOffice).toEqual('');
+        expect(vm.routeDetails).toEqual(deliveryRouteChangeMockData);
         expect(vm.generateSummaryReport).toEqual(false);
     }); 
 

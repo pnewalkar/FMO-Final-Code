@@ -132,7 +132,7 @@
         });
     });
 
-    it('Polygon Transparency method should have been called and return the opacity', function () {
+    xit('Polygon Transparency method should have been called and return the opacity', function () {
         spyOn(mapFactory, 'getPolygonTransparency').and.callFake(function () {
             var deferred = $q.defer(); 
             deferred.resolve([{value: 10}]);
