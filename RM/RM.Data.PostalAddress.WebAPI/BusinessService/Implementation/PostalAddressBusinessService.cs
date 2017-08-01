@@ -881,6 +881,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 postalAddressDataDTO.UDPRN = postalAddressDTO.UDPRN;
 
                 PostalAddressStatusDataDTO postalAddressStatusDataDTO = new PostalAddressStatusDataDTO();
+                postalAddressStatusDataDTO.ID = Guid.NewGuid();
                 postalAddressStatusDataDTO.PostalAddressGUID = postalAddressDTO.ID;
                 postalAddressStatusDataDTO.OperationalStatusGUID = postalAddressDTO.AddressStatus_GUID.HasValue ? postalAddressDTO.AddressStatus_GUID.Value : Guid.Empty;
                 postalAddressDataDTO.PostalAddressStatus.Add(postalAddressStatusDataDTO);

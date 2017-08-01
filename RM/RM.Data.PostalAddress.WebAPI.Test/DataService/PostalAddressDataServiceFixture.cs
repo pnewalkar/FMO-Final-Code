@@ -101,7 +101,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         public void Test_CheckForDuplicateNybRecords_Duplicate()
         {
             SetUpDataForDeliveryPoints();
-            string results = testCandidate.CheckForDuplicateNybRecords(postalAddressesDTO[0], new Guid("222C68A4-D959-4B37-B468-4B1855950A81"));
+            string results = testCandidate.CheckForDuplicateNybRecords(postalAddressesDataDTO[0], new Guid("222C68A4-D959-4B37-B468-4B1855950A81"));
             Assert.NotNull(results);
             Assert.IsEmpty(results.ToString());            
         }
@@ -110,7 +110,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         public void Test_CheckForDuplicateNybRecords_NotDuplicate()
         {
             SetUpDataForDeliveryPoints();
-            string results = testCandidate.CheckForDuplicateNybRecords(postalAddressesDTO[1], new Guid("222C68A4-D959-4B37-B468-4B1855950A81"));
+            string results = testCandidate.CheckForDuplicateNybRecords(postalAddressesDataDTO[1], new Guid("222C68A4-D959-4B37-B468-4B1855950A81"));
             Assert.NotNull(results);
             Assert.IsTrue(results == string.Empty);
         }
@@ -119,7 +119,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         public void Test_CreateAddressForDeliveryPoint()
         {
             SetUpDataForCreateAddressAndDeliveryPoint();
-            var result = testCandidate.CreateAddressForDeliveryPoint(postalAddressesDTO[0]);
+            var result = testCandidate.CreateAddressForDeliveryPoint(postalAddressesDataDTO[0]);
             Assert.NotNull(result);
             Assert.IsTrue(result != Guid.Empty);
         }
@@ -128,7 +128,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         public void Test_CheckForDuplicateAddressWithDeliveryPoints()
         {
             SetUpDataForCreateAddressAndDeliveryPoint();
-            var result = testCandidate.CheckForDuplicateAddressWithDeliveryPoints(postalAddressesDTO[0]);
+            var result = testCandidate.CheckForDuplicateAddressWithDeliveryPoints(postalAddressesDataDTO[0]);
             Assert.NotNull(result);            
         }
 
@@ -422,7 +422,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             mockPostalAddressDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
 
             // mockPostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
-            mockAddressDataService.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddressesDTO[0]);
+            mockAddressDataService.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddressesDataDTO[0]);
             mockAddressDataService.Setup(x => x.CreateAddressForDeliveryPoint(mockPostalAddressDTO.Object)).Returns(It.IsAny<Guid>());
 
             // mockReferenceDataCategoryDataService.Setup(x => x.GetReferenceDataId("Postal Address Type", "Nyb")).Returns(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
