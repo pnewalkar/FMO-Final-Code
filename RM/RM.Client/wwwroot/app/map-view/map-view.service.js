@@ -117,7 +117,8 @@ function mapService($http,
         baseLayerLicensing: baseLayerLicensing,
         setPolygonTransparency: setPolygonTransparency,
         getLayerSummary: getLayerSummary,
-        deselectDP: deselectDP
+        deselectDP: deselectDP,
+        setDeliveryPoint: setDeliveryPoint
     }
 
     function deselectDP() {
@@ -989,6 +990,38 @@ function showDeliveryPointDetails(deliveryPointDetails) {
             var randomNumber = Math.random() * 16 | 0, uuid = character === 'x' ? randomNumber : (randomNumber & 0x3 | 0x8);
             // Return the randomly generated UUID string
             return uuid.toString(16);
+        });
+    }
+
+    function setDeliveryPoint(long, lat) {
+        vm.map.getView().setCenter([long, lat]);
+        vm.map.getView().setResolution(0.5600011200022402);
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        deliveryPointsLayer.layer.getSource().clear();
+        deliveryPointsLayer.selected = true;
+        deliveryPointsLayer.layer.setVisible(true)
+        var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
+        var extent = vm.map.getView().calculateExtent(vm.map.getSize());
+        layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
+            var features = new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }).readFeatures(response);
+            deliveryPointsLayer.layer.getSource().addFeatures(features);
+
+            var featureToSelect;
+            angular.forEach(features, function (feature, index) {
+                var featureLatitude = feature.values_.geometry.getCoordinates()[1];
+                var featureLongitude = feature.values_.geometry.getCoordinates()[0];
+
+                if (featureLatitude === lat && featureLongitude === long) {
+                    featureToSelect = feature;
+                }
+            });
+
+            if (featureToSelect) {
+                //setSelections(null, []);
+                setSelections({
+                    featureID: featureToSelect.id_, layer: deliveryPointsLayer.layer
+                }, []);
+            }
         });
     }
 }
