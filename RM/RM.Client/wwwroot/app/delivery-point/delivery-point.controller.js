@@ -142,11 +142,7 @@ function DeliveryPointController(
             deliveryPointService.bindAddressDetails(vm.notyetBuilt)
                    .then(function (response) {
                        vm.addressDetails = response;
-                       setOrganisation();
-                       vm.rangeFrom = "";
-                       vm.rangeTo = "";
-                       vm.mailvol = "";
-                       vm.multiocc = "";
+                       setOrganisation();   
                    });
         }
         else {
@@ -158,12 +154,11 @@ function DeliveryPointController(
             vm.addressDetails.organisationName = "";
             vm.addressDetails.departmentName = "";
             vm.dpUse = "";
-            vm.rangeFrom = "";
-            vm.rangeTo = "";
-            vm.mailvol = "";
-            vm.multiocc = "";
-
-        }
+                   }
+        vm.rangeFrom = "";
+        vm.rangeTo = "";
+        vm.mailvol = "";
+        vm.multiocc = "";
     }
 
     function setOrganisation() {
