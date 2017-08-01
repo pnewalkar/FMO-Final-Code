@@ -26,7 +26,7 @@
         internal const string UPDATE = "U";
         internal const string DELETE = "D";
         internal const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
-        internal const string DeliveryPointAlias = "DeliveryPointAlias";
+        internal const string DeliveryPointAlias = "Delivery Point Alias";
 
         internal const string ResponseContent = "Status Code: {0} Reason: {1} ";
         internal const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";

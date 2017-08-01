@@ -76,6 +76,7 @@ function DeliveryPointController(
     vm.range = GlobalSettings.range;
     vm.subBuilding = GlobalSettings.subBuilding;
     vm.numberInName = GlobalSettings.numberInName;
+    
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
@@ -240,7 +241,7 @@ function DeliveryPointController(
 
     function createDeliveryPoint() {
         vm.isOnceClicked = true;
-
+        debugger;
         var addDeliveryPointDTO =
             {
                 "PostalAddressDTO": vm.addressDetails,
@@ -312,10 +313,11 @@ function DeliveryPointController(
     function addAlias() {
 
         vm.postalAddressAliases.push({
-            PreferenceOrderIndex: false,
+            PreferenceOrderIndex: 0,
             AliasName: vm.alias
         });
         vm.alias = "";
+        vm.isAliasDisabled = true;
     };
 
     function removeAlias() {

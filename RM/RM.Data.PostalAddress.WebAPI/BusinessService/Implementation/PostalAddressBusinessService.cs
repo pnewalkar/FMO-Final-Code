@@ -357,7 +357,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 bool isAddressLocationAvailable = false;
                 double? addLocationXCoOrdinate = 0;
                 double? addLocationYCoOrdinate = 0;
-                List<string> listNames = new List<string> { ReferenceDataCategoryNames.PostalAddressType, ReferenceDataCategoryNames.PostalAddressStatus };
+                List<string> listNames = new List<string> { ReferenceDataCategoryNames.PostalAddressType, ReferenceDataCategoryNames.PostalAddressStatus, ReferenceDataCategoryNames.PostalAddressAliasType };
 
                 Guid usrAddressTypeId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressType, FileType.Usr.ToString().ToUpper(), true);
                 Guid liveAddressStatusId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressStatus, PostalAddressConstants.LiveAddressStatus, true);
@@ -888,9 +888,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     {
                         PostalAddressAliasDataDTO postalAddressAlias = new PostalAddressAliasDataDTO
                         {
+                            ID=Guid.NewGuid(),
                             PostalAddressID = postalAddressDTO.ID,
-                            AliasTypeGUID = postalAddressAliasDTO.ID,
-                            PostalAddressIdentifierID = Guid.Empty,
+                            AliasTypeGUID = postalAddressAliasDTO.AliasTypeGUID,
                             AliasName = postalAddressAliasDTO.AliasName,
                             PreferenceOrderIndex = postalAddressAliasDTO.PreferenceOrderIndex
                         };
@@ -899,7 +899,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                     postalAddressDataDTO.PostalAddressAlias = postalAddressAliases;
                 }
-                
+
             }
 
             return postalAddressDataDTO;
