@@ -53,6 +53,7 @@ function DeliveryPointController(
     vm.createDeliveryPoint = createDeliveryPoint;
     vm.Ok = Ok;
     vm.initialize = initialize;
+    vm.setRangeValidation = setRangeValidation
 
     vm.positionedThirdPartyDeliveryPointList = $stateParams.positionedThirdPartyDeliveryPointList;
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
@@ -69,14 +70,15 @@ function DeliveryPointController(
     vm.display = false;
     vm.disable = true;
     vm.postalAddressAliases = [];
-    vm.rangeOptionsSelected = "Odds";
+    vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
     vm.dpIsChecked = false;
     vm.selectedType = null;
     vm.single = GlobalSettings.single;
     vm.range = GlobalSettings.range;
     vm.subBuilding = GlobalSettings.subBuilding;
     vm.numberInName = GlobalSettings.numberInName;
-    
+    vm.displayRangeFromMessage = false;
+    vm.displayRangeToMessage = false;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
@@ -109,6 +111,7 @@ function DeliveryPointController(
         vm.searchText = "";
         vm.mailvol = "";
         vm.multiocc = "";
+        vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
         deliveryPointService.closeModalPopup();
     }
 
@@ -136,6 +139,7 @@ function DeliveryPointController(
     }
 
     function bindAddressDetails() {
+        vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
         vm.selectedType = vm.single;
         if (vm.notyetBuilt !== vm.defaultNYBValue) {
             deliveryPointService.bindAddressDetails(vm.notyetBuilt)
@@ -154,6 +158,11 @@ function DeliveryPointController(
             vm.addressDetails.departmentName = "";
             vm.dpUse = "";
         }
+        vm.rangeFrom = "";
+        vm.rangeTo = "";
+        vm.mailvol = "";
+        vm.multiocc = "";
+        vm.subBuildingType = "";
     }
 
     function setOrganisation() {
@@ -387,5 +396,24 @@ function DeliveryPointController(
     function Ok() {
         vm.isError = false;
         vm.isDisable = false;
+    }
+
+    function setRangeValidation(rangeFrom, rangeTo, rangeType) {
+
+        if (parseInt(rangeFrom) > parseInt(rangeTo)) {
+            if (rangeType == "RangeFrom") {
+                vm.displayRangeFromMessage = true;
+                vm.displayRangeToMessage = false;
+            }
+            else {
+                vm.displayRangeFromMessage = false;
+                vm.displayRangeToMessage = true;
+            }
+        }
+        else {
+            vm.displayRangeFromMessage = false;
+            vm.displayRangeToMessage = false;
+        }
+
     }
 };
