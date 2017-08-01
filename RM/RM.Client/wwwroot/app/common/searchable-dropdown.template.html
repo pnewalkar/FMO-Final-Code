@@ -9,7 +9,7 @@
         <md-select-header class="select-header">
             <input type="search"
                    ng-model="vm.searchTerm"
-                   placeholder="{{vm.searchPlaceholder | translate}}"
+                   placeholder="{{vm.items.length!==0?vm.searchPlaceholder:''| translate}}"
                    ng-keydown="$event.stopPropagation()"
                    ng-if="vm.items.length!==0"
                    class="search-input md-text">
@@ -19,4 +19,5 @@
         </md-option>
         <md-option ng-value ng-if="filteredItems.length === 0"> {{ 'VALIDATION.NO_RESULT_FOUND' | translate }} </md-option>
     </md-select>
+     <div ng-if="vm.items.length===0" class="noResult">{{ 'VALIDATION.NO_RESULT_FOUND' | translate }}</div>
 </md-input-container>

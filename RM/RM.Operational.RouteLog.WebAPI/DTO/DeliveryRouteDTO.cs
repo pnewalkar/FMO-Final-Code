@@ -36,7 +36,7 @@ namespace RM.Operational.RouteLog.WebAPI.DTO
             {
                 if (!string.IsNullOrEmpty(RouteNumber) && !string.IsNullOrEmpty(RouteName))
                 {
-                    return RouteName + "(" + RouteNumber.Trim() + ")";
+                    return "(" + RouteNumber.Trim() + ")" + RouteName;
                 }
                 else
                 {
