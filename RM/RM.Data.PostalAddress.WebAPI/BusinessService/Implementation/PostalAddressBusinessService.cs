@@ -124,10 +124,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             {
                                 postalAddress.PostalAddressStatus.Add(GetPostalAddressStatus(postalAddress.ID, addressStatusId));
                                 postalAddress.AddressType_GUID = addressTypeId;
-                                await addressDataService.SaveAddress(postalAddress, strFileName);
+                                await addressDataService.SaveAddress(postalAddress, strFileName, addressStatusId);
                             }
 
-                            isPostalAddressInserted = await addressDataService.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId, strFileName);
+                            isPostalAddressInserted = await addressDataService.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
                         }
                     }
 
