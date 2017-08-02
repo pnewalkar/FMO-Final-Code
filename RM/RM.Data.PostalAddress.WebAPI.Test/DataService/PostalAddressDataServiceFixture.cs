@@ -270,7 +270,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
 
             PostalAddressDTO postalAddressDTO = new PostalAddressDTO()
             {
-                ID = new Guid()
+                ID = Guid.Empty
             };
 
             DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO()

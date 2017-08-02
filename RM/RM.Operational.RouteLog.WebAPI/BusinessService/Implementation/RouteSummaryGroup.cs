@@ -6,6 +6,11 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
     public class RouteSummaryGroup
     {
         /// <summary>
+        /// The list of addresses in the group
+        /// </summary>
+        private List<RouteLogSequencedPointsDTO> addressList = new List<RouteLogSequencedPointsDTO>();
+
+        /// <summary>
         /// Constructs route summary group with an initial address
         /// </summary>
         /// <param name="address">The address</param>
@@ -54,6 +59,14 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         public RouteLogSequencedPointsDTO LastAddress { get; set; }
 
         /// <summary>
+        /// Gets the address list
+        /// </summary>
+        public List<RouteLogSequencedPointsDTO> AddressList
+        {
+            get { return addressList; }
+        }
+
+        /// <summary>
         /// Gets the description for the group
         /// </summary>
         public string Description
@@ -85,48 +98,30 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         }
 
         /// <summary>
-        /// Gets the group type description for a specified group type
+        /// Gets or sets the delivery point count
         /// </summary>
-        /// <param name="groupType"></param>
-        /// <returns>The group type description</returns>
-        private string GetGroupTypeDescription(GroupType groupType)
-        {
-            // Get the description for the group type
-            string description = string.Empty;
-            switch (groupType)
-            {
-                case GroupType.EvensAscending:
-                    description = "Evens";
-                    break;
+        public int DeliveryPointCount { get; set; }
 
-                case GroupType.EvensDescending:
-                    description = "Evens";
-                    break;
+        /// <summary>
+        /// Gets or sets the multiple occupancy count
+        /// </summary>
+        public int? MultipleOccupancy { get; set; }
 
-                case GroupType.OddsAscending:
-                    description = "Odds";
-                    break;
+        /// <summary>
+        /// Gets or sets the first building number
+        /// </summary>
+        public short? FirstBuildingNumber { get; set; }
 
-                case GroupType.OddsDescending:
-                    description = "Odds";
-                    break;
+        /// <summary>
+        /// Gets or sets the last building number
+        /// </summary>
+        public short? LastBuildingNumber { get; set; }
 
-                case GroupType.SequentialAscending:
-                    description = "cons";
-                    break;
+        public string StreetName { get; set; }
 
-                case GroupType.SequentialDescending:
-                    description = "cons";
-                    break;
+        public string SubBuildingName { get; set; }
 
-                case GroupType.Unknown:
-                    description = string.Empty;
-                    break;
-            }
-
-            // Return the description
-            return description;
-        }
+        public string BuildingName { get; set; }
 
         /// <summary>
         /// Gets the building description from the sub name, name, number and thoroughfare
@@ -173,42 +168,47 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         }
 
         /// <summary>
-        /// The list of addresses in the group
+        /// Gets the group type description for a specified group type
         /// </summary>
-        private List<RouteLogSequencedPointsDTO> addressList = new List<RouteLogSequencedPointsDTO>();
-
-        /// <summary>
-        /// Gets the address list
-        /// </summary>
-        public List<RouteLogSequencedPointsDTO> AddressList
+        /// <param name="groupType"></param>
+        /// <returns>The group type description</returns>
+        private string GetGroupTypeDescription(GroupType groupType)
         {
-            get { return addressList; }
+            // Get the description for the group type
+            string description = string.Empty;
+            switch (groupType)
+            {
+                case GroupType.EvensAscending:
+                    description = "Evens";
+                    break;
+
+                case GroupType.EvensDescending:
+                    description = "Evens";
+                    break;
+
+                case GroupType.OddsAscending:
+                    description = "Odds";
+                    break;
+
+                case GroupType.OddsDescending:
+                    description = "Odds";
+                    break;
+
+                case GroupType.SequentialAscending:
+                    description = "cons";
+                    break;
+
+                case GroupType.SequentialDescending:
+                    description = "cons";
+                    break;
+
+                case GroupType.Unknown:
+                    description = string.Empty;
+                    break;
+            }
+
+            // Return the description
+            return description;
         }
-
-        /// <summary>
-        /// Gets or sets the delivery point count
-        /// </summary>
-        public int DeliveryPointCount { get; set; }
-
-        /// <summary>
-        /// Gets or sets the multiple occupancy count
-        /// </summary>
-        public int? MultipleOccupancy { get; set; }
-
-        /// <summary>
-        /// Gets or sets the first building number
-        /// </summary>
-        public short? FirstBuildingNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the last building number
-        /// </summary>
-        public short? LastBuildingNumber { get; set; }
-
-        public string StreetName { get; set; }
-
-        public string SubBuildingName { get; set; }
-
-        public string BuildingName { get; set; }
     }
 }

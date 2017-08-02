@@ -600,7 +600,7 @@
         /// <param name="objPostalAddress">Postal Address Transfer Object</param>
         /// <param name="addressTypeNYBGuid">Static NYB Address Type Guid</param>
         /// <returns>Posta Address matching the criteria</returns>
-        private IQueryable<PostalAddress> GetPostalAddressEntities(PostalAddressDataDTO objPostalAddress, Guid addressTypeNYBGuid = new Guid())
+        private IQueryable<PostalAddress> GetPostalAddressEntities(PostalAddressDataDTO objPostalAddress, Guid addressTypeNYBGuid = default(Guid))
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressEntities"))
             {
