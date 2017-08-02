@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.NetworkManager.WebAPI.DTO;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 {
@@ -22,7 +22,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint);
+        Tuple<NetworkLinkDTO, List<SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint);
 
         /// <summary>
         /// Get the street DTO for operational object.
@@ -57,7 +57,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// <param name="searchText">The search text.</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns></returns>
-        Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid userUnit);
+        Task<List<StreetNameDTO>> GetStreetNamesForBasicSearch(string searchText, Guid userUnit);
 
         /// <summary>
         /// Gets the street name count.
@@ -73,6 +73,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// <param name="searchText">The search text.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns></returns>
-        Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<StreetNameDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid unitGuid);
     }
 }

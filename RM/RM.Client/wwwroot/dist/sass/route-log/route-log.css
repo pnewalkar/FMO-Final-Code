@@ -67,10 +67,6 @@ md-dialog h2 {
   color: #2a2a2d;
   margin: 10px 0px 20px 0px; }
 
-.routeLogDialog {
-  width: 58.82353%;
-  height: 100%; }
-
 .routeSelectSearch {
   width: 40.98361%;
   padding: 0px 0px 0px 0px;
@@ -126,3 +122,13 @@ span.closeRouteWindow {
 .routeLogList md-list-item, md-list-item .md-list-item-inner {
   height: 28px;
   min-height: 28px; }
+
+.routeLogDialog {
+  width: 58.82353%;
+  height: 100%; }
+  .routeLogDialog h1 {
+    margin-bottom: 5px; }
+  .routeLogDialog md-input-container {
+    margin-right: 12px; }
+  .routeLogDialog md-input-container.md-block.md-input-has-placeholder {
+    margin-right: 0px; }

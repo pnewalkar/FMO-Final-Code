@@ -24,6 +24,6 @@ function BackButtonController(
                 }
             count= 1;
             };
-        $state.go(storedState.pop());
+        $state.go(storedState.pop(), {}, {inherit: false});
     }
 };

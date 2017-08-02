@@ -5,22 +5,22 @@
 
 DeliveryPointContextController.$inject = ['GlobalSettings',
     '$rootScope',
-    '$stateParams']
+ 'selectedDeliveryPointService','CommonConstants']
 
 function DeliveryPointContextController(GlobalSettings,
     $rootScope,
-    $stateParams)
+selectedDeliveryPointService, CommonConstants)
 {
         var vm = this;
-        vm.selectedDeliveryPoint = $stateParams.selectedDeliveryPoint;
-        if ($stateParams.selectedDeliveryPoint != null) {
+        vm.selectedDeliveryPoint = selectedDeliveryPointService.getSelectedDeliveryPoint();
+        if (vm.selectedDeliveryPoint != null) {
             vm.selectedDeliveryPointType = vm.selectedDeliveryPoint.type;
         }
         else {
             vm.selectedDeliveryPointType = "others";
         }
             $rootScope.$broadcast('showDeliveryPointDetails', {
-                contextTitle: GlobalSettings.deliveryPointDetails,
+                contextTitle: CommonConstants.DetailsOfDeliveryPoint,
                 featureType: vm.selectedDeliveryPointType
             });      
     }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 
 namespace RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface

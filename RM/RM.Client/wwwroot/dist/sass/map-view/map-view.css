@@ -2,9 +2,6 @@
   width: 100%;
   height: 100%; }
 
-#mini-map {
-  height: 150px; }
-
 #leftPanel {
   position: absolute;
   top: 75px;
@@ -43,3 +40,21 @@ input[name="zoom-scale"] {
 
 .context-panel {
   height: calc(100% - 30px); }
+
+.mini-map {
+  height: 150px; }
+
+.ol-overviewmap:not(.ol-collapsed) button {
+  display: none; }
+
+.ol-overviewmap.ol-unselectable.ol-control {
+  top: 37px;
+  left: 0px;
+  width: 248px;
+  background: none;
+  height: 148px; }
+
+.ol-overviewmap .ol-overviewmap-map {
+  width: 241px;
+  height: 151px;
+  border: none; }

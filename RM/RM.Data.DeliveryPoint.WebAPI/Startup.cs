@@ -7,10 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
-//using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.Entities;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
@@ -90,7 +87,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI
             });
 
             // Infrastructure
-            services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
             services.AddScoped<IDatabaseFactory<DeliveryPointDBContext>, DatabaseFactory<DeliveryPointDBContext>>();
 
             // BusinessServices

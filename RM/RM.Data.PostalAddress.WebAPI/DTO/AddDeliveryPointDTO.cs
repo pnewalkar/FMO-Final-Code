@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
@@ -11,7 +7,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         /// <summary>
         /// Gets or sets a Postal Address for entity types searched while adding delivery point.
         /// </summary>
-        public PostalAddressDBDTO PostalAddressDTO { get; set; }
+        public PostalAddressDataDTO PostalAddressDTO { get; set; }
 
         /// <summary>
         /// Gets or sets a delivery point for entity types searched while adding delivery point.

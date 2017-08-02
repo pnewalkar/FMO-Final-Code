@@ -1,19 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using Fonet;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.Enums;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Operational.RouteLog.WebAPI.DTO;
 using RM.Operational.RouteLog.WebAPI.IntegrationService;
 using RM.Operational.RouteLog.WebAPI.Utils;
+using static RM.Operational.RouteLog.WebAPI.BusinessService.RouteSummaryGroup;
 
 namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
@@ -22,6 +19,9 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         private string xsltFilepath = string.Empty;
         private IRouteLogIntegrationService routeLogIntegrationService;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.RouteLogAPIPriority;
+        private int entryEventId = LoggerTraceConstants.RouteLogBusinessServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.RouteLogBusinessServiceMethodExitEventId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService" /> class and other classes.
@@ -39,24 +39,24 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// <summary>
         /// Method to retrieve sequenced delivery point details
         /// </summary>
-        /// <param name="deliveryRouteDto">deliveryRouteDto</param>
-        /// <returns>deliveryRouteDto</returns>
-        public async Task<string> GenerateRouteLog(RouteDTO deliveryRouteDto)
+        /// <param name="deliveryRoute">deliveryRoute</param>
+        /// <returns>deliveryRoute</returns>
+        public async Task<string> GenerateRouteLog(RouteDTO deliveryRoute)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateRouteLog"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(RouteLogBusinessService) + "." + nameof(GenerateRouteLog);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 string pdfFilename = string.Empty;
-                var routeLogSummaryModelDTO = await routeLogIntegrationService.GenerateRouteLog(deliveryRouteDto);
-                if (routeLogSummaryModelDTO != null)
+                var routeLogSummary = await routeLogIntegrationService.GenerateRouteLog(deliveryRoute);
+                if (routeLogSummary != null)
                 {
-                    routeLogSummaryModelDTO.RouteLogSequencedPoints = GetRouteSummary(routeLogSummaryModelDTO.RouteLogSequencedPoints);
-                    pdfFilename = await routeLogIntegrationService.GenerateRouteLogSummaryReport(RouteSummaryXMLSerialization(routeLogSummaryModelDTO), xsltFilepath);
+                    routeLogSummary.RouteLogSequencedPoints = GetRouteSummary(routeLogSummary.RouteLogSequencedPoints);
+                    pdfFilename = await routeLogIntegrationService.GenerateRouteLogSummaryReport(RouteSummaryXMLSerialization(routeLogSummary), xsltFilepath);
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return pdfFilename;
             }
         }
@@ -66,7 +66,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="address">The address</param>
         /// <returns>True if the address could be added to the group, otherwise false</returns>
-        private bool Add(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
+        private bool Add(RouteLogSequencedPointsDTO address, RouteSummaryGroup grp)
         {
             // Determine whether the address should be part of the current group
             //
@@ -109,6 +109,11 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             return canAdd;
         }
 
+        /// <summary>
+        /// This method is used to generate Route log summary Pdf
+        /// </summary>
+        /// <param name="xml">xml as string</param>
+        /// <returns>byte[]</returns>
         private byte[] GenerateRouteLogSummaryPdf(string xml)
         {
             MemoryStream stream = new MemoryStream();
@@ -137,7 +142,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// <typeparam name="T">Class </typeparam>
         /// <param name="type">object</param>
         /// <returns>xml as string</returns>
-        private string RouteSummaryXMLSerialization(RouteLogSummaryModelDTO routeLogSummaryModelDTO)
+        private string RouteSummaryXMLSerialization(RouteLogSummaryDTO routeLogSummary)
         {
             XmlDocument doc = new XmlDocument();
             XmlElement report = doc.CreateElement(RouteLogConstants.Report);
@@ -177,7 +182,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             // Section 2 columns 1 i.e Table 1
             sectionColumn = doc.CreateElement(RouteLogConstants.SectionColumn);
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
-            data = GetSectionColumnData(1, routeLogSummaryModelDTO);
+            data = GetSectionColumnData(1, routeLogSummary);
             table = CreateTableWithFixedRowsColumns(2, data, doc, true);
             sectionColumn.AppendChild(table);
             section.AppendChild(sectionColumn);
@@ -185,7 +190,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             // Section 2 columns 2 i.e Table 2
             sectionColumn = doc.CreateElement(RouteLogConstants.SectionColumn);
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
-            data = GetSectionColumnData(2, routeLogSummaryModelDTO);
+            data = GetSectionColumnData(2, routeLogSummary);
             table = CreateTableWithFixedRowsColumns(2, data, doc, true);
             sectionColumn.AppendChild(table);
             section.AppendChild(sectionColumn);
@@ -195,7 +200,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             paragraph = doc.CreateElement(RouteLogConstants.Paragraph);
             paragraph.InnerText = RouteLogConstants.RouteSummaryAlias;
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
-            data = GetSectionColumnData(3, routeLogSummaryModelDTO);
+            data = GetSectionColumnData(3, routeLogSummary);
             table = CreateTableWithFixedRowsColumns(2, data, doc, true);
             sectionColumn.AppendChild(table);
             sectionColumn.AppendChild(paragraph);
@@ -209,7 +214,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             sectionColumn = doc.CreateElement(RouteLogConstants.SectionColumn);
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
             heading2.InnerText = RouteLogConstants.RouteSummarySequencedPoints;
-            table = CreateTableWithDynamicRowsColumns(GetSectionColumnData(routeLogSummaryModelDTO.RouteLogSequencedPoints), doc);
+            table = CreateTableWithDynamicRowsColumns(GetSectionColumnData(routeLogSummary.RouteLogSequencedPoints), doc);
             sectionColumn.AppendChild(heading2);
             sectionColumn.AppendChild(table);
             section.AppendChild(sectionColumn);
@@ -219,28 +224,34 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             return doc.InnerXml;
         }
 
-        private Dictionary<string, string> GetSectionColumnData(int sectionNumber, RouteLogSummaryModelDTO routeLogSummaryModelDTO)
+        /// <summary>
+        /// This method is used to get section column data
+        /// </summary>
+        /// <param name="sectionNumber">sectionNumber as int</param>
+        /// <param name="routeLogSummary">routeLogSummary as routeLogSummaryDTO</param>
+        /// <returns>Dictionary of section column data</returns>
+        private Dictionary<string, string> GetSectionColumnData(int sectionNumber, RouteLogSummaryDTO routeLogSummary)
         {
             Dictionary<string, string> data = new Dictionary<string, string>();
             if (sectionNumber == 1)
             {
-                data.Add(RouteLogConstants.RouteSummaryName, routeLogSummaryModelDTO.DeliveryRoute.RouteName);
-                data.Add(RouteLogConstants.Number, routeLogSummaryModelDTO.DeliveryRoute.RouteNumber);
-                data.Add(RouteLogConstants.RouteMethod, routeLogSummaryModelDTO.DeliveryRoute.Method);
-                data.Add(RouteLogConstants.DeliveryOffice, routeLogSummaryModelDTO.DeliveryRoute.DeliveryOffice);
-                data.Add(RouteLogConstants.Aliases, routeLogSummaryModelDTO.DeliveryRoute.Aliases.ToString());
-                data.Add(RouteLogConstants.Block, routeLogSummaryModelDTO.DeliveryRoute.Blocks.ToString());
-                data.Add(RouteLogConstants.Scenario, routeLogSummaryModelDTO.DeliveryRoute.ScenarioName);
+                data.Add(RouteLogConstants.RouteSummaryName, routeLogSummary.Route.RouteName);
+                data.Add(RouteLogConstants.Number, routeLogSummary.Route.RouteNumber);
+                data.Add(RouteLogConstants.RouteMethod, routeLogSummary.Route.Method);
+                data.Add(RouteLogConstants.DeliveryOffice, routeLogSummary.Route.DeliveryOffice);
+                data.Add(RouteLogConstants.Aliases, routeLogSummary.Route.Aliases.ToString());
+                data.Add(RouteLogConstants.Block, routeLogSummary.Route.Blocks.ToString());
+                data.Add(RouteLogConstants.Scenario, routeLogSummary.Route.ScenarioName);
             }
             else if (sectionNumber == 2)
             {
                 data.Add(RouteLogConstants.CollectionPoint, "0");
-                data.Add(RouteLogConstants.DeliveryPoint, routeLogSummaryModelDTO.DeliveryRoute.DPs.ToString());
-                data.Add(RouteLogConstants.BusinessDeliveryPoint, routeLogSummaryModelDTO.DeliveryRoute.BusinessDPs.ToString());
-                data.Add(RouteLogConstants.ResidentialDeliveryPoint, routeLogSummaryModelDTO.DeliveryRoute.ResidentialDPs.ToString());
-                data.Add(RouteLogConstants.AccelerationIn, routeLogSummaryModelDTO.DeliveryRoute.AccelarationIn);
-                data.Add(RouteLogConstants.AccelerationOut, routeLogSummaryModelDTO.DeliveryRoute.AccelarationOut);
-                data.Add(RouteLogConstants.PairedRoute, routeLogSummaryModelDTO.DeliveryRoute.PairedRoute);
+                data.Add(RouteLogConstants.DeliveryPoint, routeLogSummary.Route.DPs.ToString());
+                data.Add(RouteLogConstants.BusinessDeliveryPoint, routeLogSummary.Route.BusinessDPs.ToString());
+                data.Add(RouteLogConstants.ResidentialDeliveryPoint, routeLogSummary.Route.ResidentialDPs.ToString());
+                data.Add(RouteLogConstants.AccelerationIn, routeLogSummary.Route.AccelarationIn);
+                data.Add(RouteLogConstants.AccelerationOut, routeLogSummary.Route.AccelarationOut);
+                data.Add(RouteLogConstants.PairedRoute, routeLogSummary.Route.PairedRoute);
             }
             else
             {
@@ -251,22 +262,35 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             return data;
         }
 
-        private List<List<string>> GetSectionColumnData(List<RouteLogSequencedPointsDTO> routeLogSequencedPointsDTOs)
+        /// <summary>
+        /// This method is used to get List of Columns for section.
+        /// </summary>
+        /// <param name="routeLogSequencedPoints">routeLogSequencedPoints as List</param>
+        /// <returns>List of string</returns>
+        private List<List<string>> GetSectionColumnData(List<RouteLogSequencedPointsDTO> routeLogSequencedPoints)
         {
             List<List<string>> data = new List<List<string>>();
             data.Add(new List<string> { RouteLogConstants.Street, RouteLogConstants.Number, RouteLogConstants.DeliveryPoint, RouteLogConstants.MultipleOccupancy, RouteLogConstants.SpecialInstructions, RouteLogConstants.AreaHazards });
-            foreach (var routeLogSequencedPointsDTO in routeLogSequencedPointsDTOs)
+            foreach (var routeLogSequencedPoint in routeLogSequencedPoints)
             {
                 data.Add(new List<string>
                             {
-                                routeLogSequencedPointsDTO.StreetName, routeLogSequencedPointsDTO.Description, routeLogSequencedPointsDTO.DeliveryPointCount.ToString(),
-                                routeLogSequencedPointsDTO.MultipleOccupancy != null ? routeLogSequencedPointsDTO.MultipleOccupancy.ToString() : "0", string.Empty, string.Empty
+                                routeLogSequencedPoint.StreetName, routeLogSequencedPoint.Description, routeLogSequencedPoint.DeliveryPointCount.ToString(),
+                                routeLogSequencedPoint.MultipleOccupancy != null ? routeLogSequencedPoint.MultipleOccupancy.ToString() : "0", string.Empty, string.Empty
                             });
             }
 
             return data;
         }
 
+        /// <summary>
+        /// This method is used to create table with fixed rows and columns
+        /// </summary>
+        /// <param name="columnsCount">columnsCount as int</param>
+        /// <param name="data">dictionary of string</param>
+        /// <param name="doc">XmlDocument</param>
+        /// <param name="setWidth">boolean</param>
+        /// <returns>XmlElement</returns>
         private XmlElement CreateTableWithFixedRowsColumns(int columnsCount, Dictionary<string, string> data, XmlDocument doc, bool setWidth = false)
         {
             XmlElement table = doc.CreateElement(RouteLogConstants.Table);
@@ -315,6 +339,12 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             return table;
         }
 
+        /// <summary>
+        /// This method is used to create table with dynamic rows for pdf.
+        /// </summary>
+        /// <param name="data">List of string</param>
+        /// <param name="doc">Xml document</param>
+        /// <returns>XmlElement</returns>
         private XmlElement CreateTableWithDynamicRowsColumns(List<List<string>> data, XmlDocument doc)
         {
             XmlElement table = doc.CreateElement(RouteLogConstants.Table);
@@ -371,6 +401,11 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             return table;
         }
 
+        /// <summary>
+        /// This method is used to get route summary.
+        /// </summary>
+        /// <param name="addressList">addressList as List of route sequenced Points</param>
+        /// <returns>routeSummary as List<RouteLogSequencedPointsDTO></returns>
         private List<RouteLogSequencedPointsDTO> GetRouteSummary(List<RouteLogSequencedPointsDTO> addressList)
         {
             // Initialize the route summary
@@ -380,7 +415,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 // Route summary group
                 // The route summary group keeps track of the current group while the route summary
                 // is being generated
-                RouteSummaryGroupDTO group = null;
+                RouteSummaryGroup group = null;
 
                 // Step through the addresses
                 foreach (RouteLogSequencedPointsDTO address in addressList)
@@ -391,7 +426,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                         // The current address is the start of a new route summary group
                         //
                         // Initialize a new route summary group from the current address
-                        group = new RouteSummaryGroupDTO(address);
+                        group = new RouteSummaryGroup(address);
                     }
                     else
                     {
@@ -411,7 +446,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                             routeSummary.Add(row);
 
                             // Initialize a new route summary group from the current address
-                            group = new RouteSummaryGroupDTO(address);
+                            group = new RouteSummaryGroup(address);
                         }
                     }
                 }
@@ -440,7 +475,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="address">The address</param>
         /// <returns>True if the address continues the current group, otherwise false</returns>
-        private bool ContinuesGroup(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
+        private bool ContinuesGroup(RouteLogSequencedPointsDTO address, RouteSummaryGroup grp)
         {
             // Assume that the address does not continue the current group
             bool doesContinueGroup = false;
@@ -555,7 +590,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="address">The address</param>
         /// <returns>The group type</returns>
-        private GroupType IdentifyGroupType(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
+        private GroupType IdentifyGroupType(RouteLogSequencedPointsDTO address, RouteSummaryGroup grp)
         {
             // Assume that the group type is unknown
             GroupType groupType = GroupType.Unknown;

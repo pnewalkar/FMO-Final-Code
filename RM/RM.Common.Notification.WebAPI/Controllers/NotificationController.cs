@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.Common.Notification.WebAPI.BusinessService;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Common.Notification.WebAPI.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
@@ -11,7 +11,7 @@ using RM.CommonLibrary.Utilities.HelperMiddleware;
 namespace RM.Common.Notification.WebAPI.Controllers
 {
     [Route("api/notificationmanager")]
-    public class NotificationController : RMBaseController
+    public class NotificationController : Controller
     {
         private INotificationBusinessService notificationBusinessService = default(INotificationBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
@@ -177,14 +177,13 @@ namespace RM.Common.Notification.WebAPI.Controllers
             }
         }
 
-
-        [Route("notifications/postaladdress/{udprn}/{action}")]
+        [Route("notifications/postaladdress/{udprn}/{newaction}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateNotificationMessageByUDPRN(int udprn, string action, [FromBody]string message)
+        public async Task<IActionResult> UpdateNotificationMessageByUDPRN(int udprn, string newaction, [FromBody]string message)
         {
             try
             {
-                bool isUpdated = await notificationBusinessService.UpdateNotificationMessageByUDPRN(udprn, action, message);
+                bool isUpdated = await notificationBusinessService.UpdateNotificationMessageByUDPRN(udprn, newaction, message);
                 return Ok(isUpdated);
             }
             catch (AggregateException ae)

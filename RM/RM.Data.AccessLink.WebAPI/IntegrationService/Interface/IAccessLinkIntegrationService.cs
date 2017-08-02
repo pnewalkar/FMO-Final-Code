@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.AccessLink.WebAPI.DTOs;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {
@@ -22,7 +22,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        Task<Tuple<NetworkLinkDTO, SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint);
+        Task<Tuple<NetworkLinkDTO, List<SqlGeometry>>> GetNearestSegment(DbGeometry operationalObjectPoint);
 
         /// <summary>
         /// Get the street DTO for operational object.

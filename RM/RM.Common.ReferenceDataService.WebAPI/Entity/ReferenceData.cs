@@ -11,35 +11,35 @@ namespace RM.Common.ReferenceData.WebAPI.Entities
     [Table("FMO.ReferenceData")]
     public partial class ReferenceData
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "This is an entity model.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public ReferenceData()
         {
             ReferenceData1 = new HashSet<ReferenceData>();
         }
 
-        [StringLength(100)]
-        public string ReferenceDataName { get; set; }
-
-        [StringLength(100)]
-        public string ReferenceDataValue { get; set; }
-
-        [StringLength(300)]
-        public string DataDescription { get; set; }
-
-        [StringLength(100)]
-        public string DisplayText { get; set; }
-
         public Guid ID { get; set; }
 
-        public Guid ReferenceDataCategory_GUID { get; set; }
+        [StringLength(1000)]
+        public string ReferenceDataName { get; set; }
 
-        public Guid? DataParent_GUID { get; set; }
+        [StringLength(1000)]
+        public string ReferenceDataValue { get; set; }
+
+        [StringLength(1000)]
+        public string DataDescription { get; set; }
+
+        [StringLength(1000)]
+        public string DisplayText { get; set; }
+
+        public Guid ReferenceDataCategoryID { get; set; }
+
+        public Guid? ParentReferenceDataID { get; set; }
 
         public int? OrderingIndex { get; set; }
 
         public bool? Default { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is an entity model.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<ReferenceData> ReferenceData1 { get; set; }
 
         public virtual ReferenceData ReferenceData2 { get; set; }

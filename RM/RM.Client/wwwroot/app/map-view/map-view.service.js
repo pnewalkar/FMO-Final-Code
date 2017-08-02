@@ -17,7 +17,9 @@ mapService.$inject = ['$http',
                      '$stateParams',
                      '$rootScope',
                      'layersAPIService',
-                     'CommonConstants'
+                     'CommonConstants',
+                     'searchDPSelectedService',
+                     'selectedDeliveryPointService'
 ];
 
 function mapService($http,
@@ -36,7 +38,9 @@ function mapService($http,
                     $stateParams,
                     $rootScope,
                     layersAPIService,
-                    CommonConstants
+                    CommonConstants,
+                    searchDPSelectedService,
+                    selectedDeliveryPointService
                    ) {
     var vm = this;
     vm.map = null;
@@ -80,7 +84,6 @@ function mapService($http,
     };
     return {
         initialise: initialise,
-        initialiseMiniMap: initialiseMiniMap,
         mapLayers: mapLayers,
         getDotStyle: getDotStyle,
         deleteSelectedFeature: deleteSelectedFeature,
@@ -112,9 +115,22 @@ function mapService($http,
         setOriginalSize: setOriginalSize,
         LicenceInfo: LicenceInfo,
         baseLayerLicensing: baseLayerLicensing,
-        setPolygonTransparency: setPolygonTransparency
-      
+        setPolygonTransparency: setPolygonTransparency,
+        getLayerSummary: getLayerSummary,
+        deselectDP: deselectDP
     }
+
+    function deselectDP() {
+        var map = mapFactory.getMap();
+        map.on('click', function (e) {
+            var dpSelected = searchDPSelectedService.getSelectedDP();
+            if (dpSelected !== null && dpSelected) {
+                var deliveryPointDetails = null;
+                showDeliveryPointDetails(deliveryPointDetails);
+            }
+        });
+    }
+
 
     function LicenceInfo(displayText) {
         return mapFactory.LicenceInfo(displayText);
@@ -175,7 +191,7 @@ function mapService($http,
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.deliveryPointLayerName;
-                    mapFactory.LicenceInfo("", layerName, deliveryPointsVector);
+                    mapFactory.LicenceInfo(layerName, deliveryPointsVector);
                     loadFeatures(deliveryPointsVector, response);
                 });
             }
@@ -204,7 +220,7 @@ function mapService($http,
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.accessLinkLayerName;
-                    mapFactory.LicenceInfo("", layerName, accessLinkVector);
+                    mapFactory.LicenceInfo(layerName, accessLinkVector);
                     loadFeatures(accessLinkVector, response);
                 });
             }
@@ -219,7 +235,7 @@ function mapService($http,
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.roadLinkLayerName;
-                    mapFactory.LicenceInfo("", layerName, roadLinkVector);
+                    mapFactory.LicenceInfo(layerName, roadLinkVector);
                     loadFeatures(roadLinkVector, response);
                 });
             }
@@ -231,7 +247,7 @@ function mapService($http,
             }),
             loader: function (extent) {
                 var layerName = GlobalSettings.unitBoundaryLayerName;
-                mapFactory.LicenceInfo("", layerName, unitBoundaryVector);
+                mapFactory.LicenceInfo(layerName, unitBoundaryVector);
             }
         });
 
@@ -325,14 +341,10 @@ function mapService($http,
         vm.showRoadPanel = false;
     }
 
-    function baseLayerLicensing() {
-        mapFactory.LicenceInfo("Base Layers", "Base Layer", null);
+    function baseLayerLicensing(selectedLayer) {
+        mapFactory.LicenceInfo(selectedLayer, null);
     }
-    function initialiseMiniMap() {
-        mapFactory.initialiseMiniMap();
-        vm.miniMap = mapFactory.getMiniMap();
-    }
- 
+
     function mapLayers() {
         return mapFactory.getAllLayers();
     }
@@ -481,7 +493,6 @@ function mapService($http,
         }
 
         else if (name === "line") {
-            
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "linestring");
@@ -647,17 +658,16 @@ function mapService($http,
         });
         persistSelection();
     }
-    function setModifyButton() {       
-            vm.interactions.select = new ol.interaction.Select({
-                condition: ol.events.condition.never
-            });
-            var collection = new ol.Collection();
-            collection.push(getActiveFeature());
-            if (vm.layerName === GlobalSettings.drawingLayerName) {
+    function setModifyButton() {
+        vm.interactions.select = new ol.interaction.Select({
+            condition: ol.events.condition.never
+        });
+        var collection = new ol.Collection();
+        collection.push(getActiveFeature());
+        if (vm.layerName === GlobalSettings.drawingLayerName) {
             vm.interactions.modify = new ol.interaction.Modify({
                 features: collection
             });
-            
 
             vm.map.on('singleclick', function (evt) {
                 if (vm.activeTool === "modify" && getActiveFeature().getProperties().type === "deliverypoint") {
@@ -813,7 +823,7 @@ function mapService($http,
         }
     }
 
-    function showDeliveryPointDetails(deliveryPointDetails) {
+function showDeliveryPointDetails(deliveryPointDetails) {
         if (deliveryPointDetails != null) {
             deliveryPointDetails.routeName = null;
             mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
@@ -829,17 +839,27 @@ function mapService($http,
                               deliveryPointDetails.dpUse = response[0].value;
                           }
                       }
+
+                      selectedDeliveryPointService.setSelectedDeliveryPoint(deliveryPointDetails);
+
                       $state.go('deliveryPointDetails', {
-                          selectedDeliveryPoint: deliveryPointDetails
-                      }, { reload: true });
+                          selectedDeliveryPoint: null }, 
+                      { reload: true }
+                      );
                   });
         }
         else {
-            $state.go('deliveryPointDetails', {
-                selectedDeliveryPoint: deliveryPointDetails
-            }, { reload: true });
+            selectedDeliveryPointService.setSelectedDeliveryPoint(deliveryPointDetails);
+
+            $state.go('deliveryPointDetails'
+                , {
+                selectedDeliveryPoint: null},
+                { reload: true }
+                );
         }
     }
+
+
 
     function setSize(width, height) {
         vm.map.setSize([width, height]);
@@ -876,7 +896,7 @@ function mapService($http,
         var scalenumber = parseInt(scale, 10);
         var scaleunit = scale.match(/[Aa-zZ]{1,}/g);
 
-        var calculatedScale = setScaleUnit(scalenumber, scaleunit);
+        var calculatedScale = setScaleUnit(scalenumber, scaleunit.toString());
         //Scale Text
         ctx.beginPath();
         ctx.textAlign = "left";
@@ -971,5 +991,4 @@ function mapService($http,
             return uuid.toString(16);
         });
     }
-
 }

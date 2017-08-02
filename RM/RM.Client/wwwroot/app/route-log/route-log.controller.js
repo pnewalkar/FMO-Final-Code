@@ -62,7 +62,7 @@ function RouteLogController(routeLogService,
     function scenarioChange() {
         var result = routeLogService.scenarioChange(vm.selectedRouteSelectionObj.value);
         vm.isDeliveryRouteDisabled = result.isDeliveryRouteDisabled;
-        loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);
+        loadDeliveryRoute(vm.selectedRouteScenario.id);
         clearDeliveryRoute();
     }
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
@@ -79,8 +79,8 @@ function RouteLogController(routeLogService,
             }
         });
     }
-    function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
-        routeLogService.loadDeliveryRoute(operationStateID, deliveryScenarioID, vm.selectedRouteSelectionObj.value).then(function (response) {
+    function loadDeliveryRoute(deliveryScenarioID) {
+        routeLogService.loadDeliveryRoute(deliveryScenarioID, vm.selectedRouteSelectionObj.value).then(function (response) {
             vm.multiSelectiondeliveryRoute = response[0].multiSelectiondeliveryRoute;
             vm.deliveryRoute = response[0].deliveryRoute;
 

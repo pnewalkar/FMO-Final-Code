@@ -17,7 +17,8 @@ DeliveryPointController.$inject = [
         '$state',
         '$stateParams',
         'deliveryPointService',
-        '$rootScope'];
+        '$rootScope',
+         'CommonConstants'];
 
 function DeliveryPointController(
     mapToolbarService,
@@ -33,7 +34,8 @@ function DeliveryPointController(
     $state,
     $stateParams,
     deliveryPointService,
-    $rootScope
+    $rootScope,
+    CommonConstants
 ) {
 
     var vm = this;
@@ -72,10 +74,13 @@ function DeliveryPointController(
    /* vm.hide = $stateParams.hide;*/
     vm.dpIsChecked = false;
 
-    $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
+    $scope.$watchCollection(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
-            openAlert();
+            if (vm.deliveryPointList !== null || vm.positionedDeliveryPointList !== null) {
+                openAlert();
+            }
     }, true);
+
     vm.initialize();
 
     $scope.$on("showDialog", function (event, args) {
@@ -107,6 +112,7 @@ function DeliveryPointController(
         vm.mailvol = "";
         vm.multiocc = "";
         deliveryPointService.closeModalPopup();
+        vm.results.length = 0;
     }
 
     function resultSet(query) {
@@ -212,11 +218,14 @@ function DeliveryPointController(
     function setDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
+         $scope.$emit('setSelectedButton', { "name": 'point' });
+       
     }
 
     function resetDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'select', "shape": shape, "enabled": true });
+        $scope.$emit('setSelectedButton', { "name": 'select' });
     }
 
     function savePositionedDeliveryPoint() {
@@ -278,14 +287,24 @@ function DeliveryPointController(
     }
 
     function setDeliveryPoint(id, rowversion, postalAddress, hasLocation) {
-        var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.organisationName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.departmentName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
-
+        if (vm.selectedDPUse.value === CommonConstants.DpUseType.Residential)
+        {
+            var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)                     
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
+        }
+        else if (vm.selectedDPUse.value === CommonConstants.DpUseType.Organisation)
+        {
+            var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.organisationName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.departmentName)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
+        }
         if (vm.addressDetails.udprn && hasLocation) {
             locateDeliveryPoint(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion);
         }

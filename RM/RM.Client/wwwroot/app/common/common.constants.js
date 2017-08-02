@@ -7,6 +7,7 @@ var CommonConstants = {
     AccessLinkActionName: "Access Link",
     TitleContextPanel: "Context Panel",
     TitleSimulation: "Simulation",
+    DetailsOfDeliveryPoint: "Details of Delivery Point",
     GetSessionStorageItemType: "roleAccessData",
     EntityType: { DeliveryPoint: "DeliveryPoint", StreetNetwork: "StreetNetwork", Route: "Route", Postcode: "Postcode" },
     ButtonShapeType: { point: "point", line: "line", accesslink: "accesslink", select: "select", area: "area", del: "delete" },
@@ -18,7 +19,9 @@ var CommonConstants = {
     RouteName: "ROUTENAME",
     DpUse: "DPUSE",
     PrintMapActionName: "Print Map",
-    PrintMapmmPerInch: 25.4
+    PrintMapmmPerInch: 25.4,
+    UserType: { DeliveryUser: "Delivery User", CollectionUser: "Collection User", ManagerUser: "Manager User" },
+    DpUseType: { Residential: "Residential", Organisation: "Organisation" }
 };
 
 angular.module('RMApp')

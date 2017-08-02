@@ -41,6 +41,10 @@
   "ERROR_DIALOG": {
     "TITLE": "Unable to process request"
   },
+  "LICESING_INFO": {
+    "NO_LAYERS_SELECTED": "No layers selected"
+  },
+
   "UNIT_SELECTOR": {
     "SEARCH_PLACEHOLDER": "Filter Unit"
   },
@@ -92,7 +96,16 @@
     "STATUS": "Status",
     "SCENARIO": "Scenario",
     "ROUTE": "Route",
-    "NO_RESULT_FOUND": "No Result Found"
+    "SEARCH_ROUTE": "Search Route",
+    "SELECTED_ROUTES": "Selected Routes",
+    "ROUTE_NAME": "Route Name",
+    "ROUTE_NUMBER": "Route Number",
+    "SELECT": "Select",
+    "ROUTE_DETAILS": "Route Details",
+    "GENERATE": "Generate",
+    "ROUTE_LOG_SUMMARY": "Route Log Summary",
+    "DETAILED_ROUTE_LOG": "Detailed Route Log",
+    "HAZARD_CARD": "Hazard Card"
   },
   "ROUTE_SIMULATION": {
     "TITTLE": "Route Simulation",

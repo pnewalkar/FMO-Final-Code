@@ -48,11 +48,11 @@ function MapFactory($http,
     var availableResolutionForCurrentExtent = [];
     var maxScale = null;
     var BNGProjection = 'EPSG:27700';
+    var overviewMapContainer = null;
 
     return {
         initialiseMap: initialiseMap,
         getMap: getMap,
-        initialiseMiniMap: initialiseMiniMap,
         getShapeAsync: getShapeAsync,
         getMiniMap: getMiniMap,
         getVectorLayer: getVectorLayer,
@@ -81,7 +81,7 @@ function MapFactory($http,
 
     };
 
-    function LicenceInfo(displayText, layerName, layerSource) {
+    function LicenceInfo(layerName, layerSource) {
         var map = getMap();
         var layer = map.getLayers();
         if (layerName !== undefined && layerName !== GlobalSettings.baseLayerName) {
@@ -134,7 +134,7 @@ function MapFactory($http,
             source: vectorSource,
             style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE),
             renderBuffer: 1000
-        });
+        });      
 
 
         map = new ol.Map({
@@ -147,6 +147,7 @@ function MapFactory($http,
             controls: []
         });
 
+
         map.addControl(getCustomScaleLine());
         map.addControl(new ol.control.Attribution());
         var licenseIcon = document.getElementsByClassName("ol-attribution");
@@ -158,41 +159,23 @@ function MapFactory($http,
         });
         map.addControl(external_control);
 
+        $timeout(function() {
+            var overviewMapContainer = document.querySelector('#overviewMap');
+            var overviewMapControl =new ol.control.OverviewMap({
+                view: new ol.View({
+                   projection: BNGProjection
+                }),
+                collapsed : false,
+                target: overviewMapContainer
+            });
+            map.addControl(overviewMapControl);
+        }, 1000);
+
         units = map.getView().getProjection().getUnits();
         mpu = ol.proj.METERS_PER_UNIT[units];
 
     }
 
-
-
-    function initialiseMiniMap() {
-        if (view === null)
-            initialiseMap();
-
-        viewMiniMap = new ol.View({
-            projection: BNGProjection,
-            center: view.getCenter(),
-            zoom: view.getZoom() - 2
-        });
-
-        miniMap = new ol.Map({
-            layers: layers.filter(function (l) { return l.onMiniMap; }).map(function (a) { return a.layer }),
-            interactions: [],
-            controls: [],
-            loadTilesWhileAnimating: true,
-            loadTilesWhileInteracting: true,
-            target: 'mini-map',
-            view: viewMiniMap
-        });
-
-        view.on('change:resolution', updateMiniMap);
-        view.on('change:center', updateMiniMap);
-    }
-
-    function updateMiniMap() {
-        viewMiniMap.setCenter(view.getCenter());
-        viewMiniMap.setZoom(view.getZoom() - 2);
-    }
 
     function getVectorLayer() {
         return vectorLayer;
@@ -474,8 +457,6 @@ function MapFactory($http,
             resolution: getResolutionFromScale(defaultZoomScale)
         });
 
-        view.on('change:resolution', updateMiniMap);
-        view.on('change:center', updateMiniMap);
 
         map.setView(view);
 
