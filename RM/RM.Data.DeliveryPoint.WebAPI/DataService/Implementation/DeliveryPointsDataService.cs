@@ -696,19 +696,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 bool dpUseStatusUpdated = false;
 
-                //Get delivery point details for matching UDPRN
-                var deliveryPointDetails = (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                            join dp in DataContext.DeliveryPoints.AsNoTracking() on pa.ID equals dp.PostalAddressID
-                                            where pa.UDPRN == udprn
-                                            select dp).ToList();
-                if (deliveryPointDetails != null && deliveryPointDetails.Count > 0)
+                var deliveryPointDetails = await DataContext.DeliveryPoints.Include(n => n.PostalAddress).Where(n => n.PostalAddress.UDPRN == udprn).SingleOrDefaultAsync();
+                if (deliveryPointDetails != null)
                 {
-                    //Update DPUse in delivery point for matching UDPRN
-                    foreach (var deliveryPoint in deliveryPointDetails)
-                    {
-                        deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointUseIndicatorGUID;
-                    }
-                    await DataContext.SaveChangesAsync();
+                    deliveryPointDetails.DeliveryPointUseIndicatorGUID = deliveryPointUseIndicatorGUID;
+                    DataContext.SaveChanges();
                     dpUseStatusUpdated = true;
                 }
 
@@ -716,7 +708,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 return dpUseStatusUpdated;
             }
         }
-       
+
         #endregion Public Methods
 
         #region Private Methods
