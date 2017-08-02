@@ -93,6 +93,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     {
                         objDeliveryPoint.ID = Guid.NewGuid();
                         deliveryPoint.ID = objDeliveryPoint.ID;
+                        deliveryPoint.MultipleOccupancyCount = objDeliveryPoint.MultipleOccupancyCount;
+                        deliveryPoint.MailVolume = objDeliveryPoint.MailVolume;
                         deliveryPoint.PostalAddressID = objDeliveryPoint.PostalAddressID;
                         deliveryPoint.DeliveryPointUseIndicatorGUID = objDeliveryPoint.DeliveryPointUseIndicatorGUID;
                         deliveryPoint.RowCreateDateTime = DateTime.UtcNow;
@@ -443,7 +445,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
                         deliveryPoint.NetworkNode.NetworkNodeType_GUID = deliveryPointDto.NetworkNode.NetworkNodeType_GUID;
                         deliveryPoint.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID = deliveryPointDto.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID;
-                        deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
+                        //deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
                         DataContext.Entry(deliveryPoint).State = EntityState.Modified;
                         DataContext.Entry(deliveryPoint).OriginalValues[DeliveryPointConstants.ROWVERSION] = deliveryPointDto.RowVersion;
                         await DataContext.SaveChangesAsync();
