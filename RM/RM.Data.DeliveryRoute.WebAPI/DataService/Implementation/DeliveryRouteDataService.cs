@@ -195,7 +195,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
             {
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteByDeliverypoint);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
-                RouteDataDTO routeData = null;
+                RouteDataDTO routeData = new RouteDataDTO();
                 var block = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
 
                 if (block != null)
@@ -212,16 +212,19 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                         {
                             if (routeDetails.ID == postCode.PrimaryRouteGUID)
                             {
-                                routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + routeDetails.RouteName };
+                                routeData.ID = routeDetails.ID;
+                                routeData.RouteName = DeliveryRouteConstants.PrimaryRoute + routeDetails.RouteName;
                             }
                             else if (routeDetails.ID == postCode.SecondaryRouteGUID)
                             {
-                                routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + routeDetails.RouteName };
+                                routeData.ID = routeDetails.ID;
+                                routeData.RouteName = DeliveryRouteConstants.SecondaryRoute + routeDetails.RouteName;
                             }
                         }
                         else
                         {
-                            routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = routeDetails.RouteName };
+                            routeData.ID = routeDetails.ID;
+                            routeData.RouteName = routeDetails.RouteName;
                         }
                     }
                 }

@@ -50,6 +50,7 @@
             }
             catch (Exception ex)
             {
+                loggingHelper.Log(ex, TraceEventType.Error);
                 this.exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap);
                 if (ex.InnerException == null)
                 {

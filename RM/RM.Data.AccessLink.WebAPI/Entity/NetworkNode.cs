@@ -4,7 +4,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.NetworkNode")]
     public partial class NetworkNode
@@ -31,10 +30,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.Entities
 
         public virtual Location Location { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification ="justification")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "justification")]
         public virtual ICollection<NetworkLink> NetworkLinks { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification ="justification")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "justification")]
         public virtual ICollection<NetworkLink> NetworkLinks1 { get; set; }
     }
 }

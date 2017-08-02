@@ -17,7 +17,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">NYB details DTO</param>
         /// <param name="fileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddress, string fileName);
+        Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddress, string fileName, Guid operationalStatusGUID);
 
         /// <summary>
         /// Update PostalAddress based on the PostalAddressDataDTO passed for PAF depending upon NYB and USR scenerios

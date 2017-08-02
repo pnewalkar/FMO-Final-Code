@@ -55,8 +55,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 
         public string DeliveryPointUseIndicator { get; set; }
 
-        public List<DeliveryPointAliasDTO> DeliveryPointAliasDTO { get; set; }
-
         public Guid? LocationProvider_GUID { get; set; }
 
         public Guid? OperationalStatus_GUID { get; set; }

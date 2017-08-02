@@ -5,9 +5,6 @@
     height: height-percent(1);
 }
 
-#mini-map{
-    height: 150px;
-}
 
 #leftPanel {
     @include position(absolute);
