@@ -80,6 +80,14 @@ md-select-menu._md {
 button.md-raised.md-primary.md-button.md-ink-ripple.rightAligned {
   margin: 1.5%; }
 
+.ol-attribution.ol-unselectable.ol-control {
+  width: 50%; }
+  .ol-attribution.ol-unselectable.ol-control ul {
+    text-align: left; }
+
+.ol-attribution.ol-unselectable.ol-control.ol-collapsed {
+  width: 28px; }
+
 /*fonts*/
 /*Chevin Light Font*/
 @font-face {
