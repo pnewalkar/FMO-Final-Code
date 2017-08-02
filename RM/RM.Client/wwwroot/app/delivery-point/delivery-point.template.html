@@ -256,7 +256,7 @@
                             <md-list class="listAliasMdlist" style="padding: 0px;">
                                 <md-list-item ng-repeat="item in vm.postalAddressAliases" class="listAlias">
                                     <p>{{ item.AliasName }}</p>
-                                    <input type="radio" class="listAliasRadioBtn" name="check" value="1" ng-model="item.PreferenceOrderIndex">
+                                      <input type="radio" class="listAliasRadioBtn" ng-checked="true" name="check" ng-value="true" value="{{ item.AliasName }}" ng-model="item.PreferenceOrderIndex">
                                     <md-button class="md-icon-button" aria-label="Remove DP Alias" ng-click="vm.removeAlias()" title="{{ 'DELIVERY_POINTS.REMOVE_DP_ALIAS' | translate }}">
                                         <i class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
                                     </md-button>
