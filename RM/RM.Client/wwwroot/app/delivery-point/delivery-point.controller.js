@@ -15,7 +15,7 @@ DeliveryPointController.$inject = [
         'guidService',
         '$state',
         '$stateParams',
-        'deliveryPointService',      
+        'deliveryPointService',
          'CommonConstants',
         '$rootScope',
          'CommonConstants',
@@ -35,7 +35,7 @@ function DeliveryPointController(
     $state,
     $stateParams,
     deliveryPointService,
-   
+
     CommonConstants,
     $rootScope,
     CommonConstants,
@@ -241,8 +241,7 @@ function DeliveryPointController(
     function setDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
-         $scope.$emit('setSelectedButton', { "name": 'point' });
-       
+        $scope.$emit('setSelectedButton', { "name": 'point' });
     }
 
     function resetDP() {
@@ -263,7 +262,6 @@ function DeliveryPointController(
 
     function createDeliveryPoint() {
         vm.isOnceClicked = true;
-        debugger;
         var addDeliveryPointDTO =
             {
                 "PostalAddressDTO": vm.addressDetails,
@@ -276,7 +274,12 @@ function DeliveryPointController(
                     "DeliveryRoute_Guid": vm.routeId
                 },
                 "AddressLocationDTO": null,
-                "PostalAddressAliasDTOs": vm.postalAddressAliases // TODO naming
+                "PostalAddressAliasDTOs": vm.postalAddressAliases, // TODO naming
+                "DeliveryPointType": vm.selectedType,
+                "RangeType": vm.rangeOptionsSelected,
+                "FromRange": vm.rangeFrom,
+                "ToRange": vm.rangeTo,
+                "SubBuildingType": vm.subBuildingType,
             };
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
             if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
@@ -310,16 +313,14 @@ function DeliveryPointController(
     }
 
     function setDeliveryPoint(id, rowversion, postalAddress, hasLocation) {
-        if (vm.selectedDPUse.value === CommonConstants.DpUseType.Residential)
-        {
+        if (vm.selectedDPUse.value === CommonConstants.DpUseType.Residential) {
             var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
                         + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
-                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)                     
+                        + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
                         + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
                         + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
         }
-        else if (vm.selectedDPUse.value === CommonConstants.DpUseType.Organisation)
-        {
+        else if (vm.selectedDPUse.value === CommonConstants.DpUseType.Organisation) {
             var address = deliveryPointService.isUndefinedOrNull(postalAddress.buildingNumber)
                         + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.buildingName)
                         + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
@@ -345,7 +346,6 @@ function DeliveryPointController(
     }
 
     function addAlias() {
-
         vm.postalAddressAliases.push({
             PreferenceOrderIndex: 0,
             AliasName: vm.alias
@@ -424,7 +424,6 @@ function DeliveryPointController(
     }
 
     function setRangeValidation(rangeFrom, rangeTo, rangeType) {
-
         if (parseInt(rangeFrom) > parseInt(rangeTo)) {
             if (rangeType == "RangeFrom") {
                 vm.displayRangeFromMessage = true;
@@ -439,6 +438,5 @@ function DeliveryPointController(
             vm.displayRangeFromMessage = false;
             vm.displayRangeToMessage = false;
         }
-
     }
 };

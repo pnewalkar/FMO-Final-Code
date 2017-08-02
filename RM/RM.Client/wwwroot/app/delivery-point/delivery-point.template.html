@@ -84,7 +84,7 @@
 
                 <md-input-container flex="30">
                     <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
-                    <md-select name="route" ng-model="vm.routeId" select-clear required> 
+                    <md-select name="route" ng-model="vm.routeId" select-clear required>
                         <md-option ng-repeat="route in vm.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
@@ -122,7 +122,7 @@
                 <div layout="column" flex="25" ng-show="vm.selectedType != vm.single">
                     <md-input-container>
                         <label>{{ 'DELIVERY_POINTS.RANGE_FROM'| translate }}</label>
-                        <input name="rangefrom" ng-model="vm.rangeFrom" type="text" ng-pattern="/^\d*[1-9]\d*$/" ng-maxlength="4" ng-required="vm.selectedType != vm.single">
+                        <input name="rangefrom" ng-model="vm.rangeFrom" type="text" ng-pattern="/^\d*[1-9]\d*$/" ng-blur="vm.setRangeValidation(vm.rangeFrom,vm.rangeTo,'RangeFrom')" ng-maxlength="4" ng-required="vm.selectedType != vm.single">
                         <div ng-messages="vm.deliveryPointForm.rangefrom.$error"
                              ng-show="vm.deliveryPointForm.rangefrom.$touched" role="alert">
                             <div ng-message="required">This field is required</div>
@@ -130,7 +130,6 @@
                             <div ng-message="pattern">Value entered is not valid</div>
                             <div ng-show="vm.displayRangeFromMessage">From should be less than To</div>
                         </div>
-                       
                     </md-input-container>
                 </div>
 
@@ -227,48 +226,48 @@
                     <div layout="row" ng-show="vm.selectedType === vm.subBuilding">
                         <label>{{ 'DELIVERY_POINTS.SUB_BUILDING_TYPE'| translate }}</label>
                         <md-select ng-model="vm.subBuildingType">
-                            <md-option ng-repeat="type in vm.subBuildingTypes" ng-value="type.id">
+                            <md-option ng-repeat="type in vm.subBuildingTypes" ng-value="type.value">
                                 {{type.value}}
                             </md-option>
                         </md-select>
                     </div>
                 </div>
 
-                    <!--Alias-->
-                    <div layout="column" flex="35" ng-show="vm.display && vm.selectedType === vm.single" class="DPAliasBox">
-                        <!--AddAlias start-->
-                        <div layout="row">
-                            <md-input-container md-no-float class="md-block" flex-gt-sm>
-                                <label>{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}</label>
-                                <input ng-model="vm.alias" type="text" ng-maxlength="60">
-                            </md-input-container>
-                            <md-button class="md-icon-button" id="DPAliasBoxBtn" aria-label="Add DP Alias" ng-disabled="vm.alias.toString().length==0" ng-click="vm.addAlias()" title="{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}">
-                                <i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i>
-                            </md-button>
-                        </div>
-                        <!--AddAlias End-->
-                        <!--List Alias Start-->
-                        <div layout="column">
-                            <div class="listAliasHeader">
-                                <label>{{ 'DELIVERY_POINTS.ALIAS' | translate }}</label>
-                                <span class="listAliasStar"><i class="fa fa-star" aria-hidden="true"></i></span>
-                            </div>
-                            <div class="">
-                                <md-list class="listAliasMdlist" style="padding: 0px;">
-                                    <md-list-item ng-repeat="item in vm.postalAddressAliases" class="listAlias">
-                                        <p>{{ item.AliasName }}</p>
-                                        <input type="radio" class="listAliasRadioBtn" name="check" value="1" ng-model="item.PreferenceOrderIndex">
-                                        <md-button class="md-icon-button" aria-label="Remove DP Alias" ng-click="vm.removeAlias()" title="{{ 'DELIVERY_POINTS.REMOVE_DP_ALIAS' | translate }}">
-                                            <i class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
-                                        </md-button>
-                                    </md-list-item>
-                                </md-list>
-                            </div>
-                        </div>
-                        <!--List Alias End-->
+                <!--Alias-->
+                <div layout="column" flex="35" ng-show="vm.display && vm.selectedType === vm.single" class="DPAliasBox">
+                    <!--AddAlias start-->
+                    <div layout="row">
+                        <md-input-container md-no-float class="md-block" flex-gt-sm>
+                            <label>{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}</label>
+                            <input ng-model="vm.alias" type="text" ng-maxlength="60">
+                        </md-input-container>
+                        <md-button class="md-icon-button" id="DPAliasBoxBtn" aria-label="Add DP Alias" ng-disabled="vm.alias.toString().length==0" ng-click="vm.addAlias()" title="{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}">
+                            <i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i>
+                        </md-button>
                     </div>
-                    <!--Alias End-->
+                    <!--AddAlias End-->
+                    <!--List Alias Start-->
+                    <div layout="column">
+                        <div class="listAliasHeader">
+                            <label>{{ 'DELIVERY_POINTS.ALIAS' | translate }}</label>
+                            <span class="listAliasStar"><i class="fa fa-star" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="">
+                            <md-list class="listAliasMdlist" style="padding: 0px;">
+                                <md-list-item ng-repeat="item in vm.postalAddressAliases" class="listAlias">
+                                    <p>{{ item.AliasName }}</p>
+                                    <input type="radio" class="listAliasRadioBtn" name="check" value="1" ng-model="item.PreferenceOrderIndex">
+                                    <md-button class="md-icon-button" aria-label="Remove DP Alias" ng-click="vm.removeAlias()" title="{{ 'DELIVERY_POINTS.REMOVE_DP_ALIAS' | translate }}">
+                                        <i class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
+                                    </md-button>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                    </div>
+                    <!--List Alias End-->
                 </div>
+                <!--Alias End-->
+            </div>
 
             <div layout="row" ng-show="vm.display" class="occRow">
                 <md-input-container>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RM.Data.DeliveryPoint.WebAPI.DTO.Model
 {
@@ -15,5 +16,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO.Model
         public double? XCoordinate { get; set; }
 
         public double? YCoordinate { get; set; }
+
+        public List<PostalAddressDTO> PostalAddressDTOs { get; set; }
     }
 }
