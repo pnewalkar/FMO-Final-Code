@@ -42,5 +42,10 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
         /// Gets or sets the To Range value
         /// </summary>
         public int ToRange { get; set; }
+
+        /// <summary>
+        /// Gets or sets collection of address alises for respective Postal Address
+        /// </summary>
+        public List<PostalAddressAliasDTO> PostalAddressAliasDTOs { get; set; }
     }
 }

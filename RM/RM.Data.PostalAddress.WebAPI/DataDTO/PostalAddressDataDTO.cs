@@ -9,6 +9,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         {
             this.PostalAddressStatus = new List<PostalAddressStatusDataDTO>();
             this.DeliveryPoints = new List<DeliveryPointDataDTO>();
+            this.PostalAddressAlias = new HashSet<PostalAddressAliasDataDTO>();
         }
 
         /// <summary>
@@ -55,6 +56,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         public DateTime RowCreateDateTime { get; set; }
 
         public ICollection<DeliveryPointDataDTO> DeliveryPoints { get; set; }
+
+        public ICollection<PostalAddressAliasDataDTO> PostalAddressAlias { get; set; }
 
         public ICollection<PostalAddressStatusDataDTO> PostalAddressStatus { get; set; }
     }

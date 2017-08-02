@@ -1,4 +1,5 @@
-﻿using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
+﻿using System.Collections.Generic;
+using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
 using System.Collections.Generic;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
@@ -40,5 +41,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         /// </summary>
         public int ToRange { get; set; }
 
+
+        /// <summary>
+        /// Gets or sets collection of address alises for respective Postal Address
+        /// </summary>
+        public List<PostalAddressAliasDTO> PostalAddressAliasDTOs { get; set; }
     }
 }

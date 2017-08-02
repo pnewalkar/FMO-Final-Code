@@ -49,7 +49,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void Test_CreateAccessLink()
         {
-            var actualResult = testCandidate.CreateAutomaticAccessLink(accessLinkDataDTO);
+            var actualResult = testCandidate.CreateAccessLink(accessLinkDataDTO);
             Assert.IsNotNull(actualResult);
         }
 
@@ -59,7 +59,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void Test_CreateManualAccessLink()
         {
-            var actualResult = testCandidate.CreateManualAccessLink(netWorkLinkDataDto);
+            var actualResult = testCandidate.CreateAccessLink(accessLinkDataDTO);
             Assert.IsNotNull(actualResult);
         }
 
@@ -84,9 +84,9 @@ namespace RM.DataServices.Tests.DataService
         {
             DbGeometry operationalObjectPoint = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
             DbGeometry accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
-            var actualResult = testCandidate.GetAccessLinkCountForCrossesorOverLaps(operationalObjectPoint, accessLinkLine);
+            var actualResult = testCandidate.CheckAccessLinkCrossesorOverLaps(operationalObjectPoint, accessLinkLine);
             Assert.IsNotNull(actualResult);
-            Assert.AreEqual(actualResult, 0);
+            Assert.False(actualResult);
         }
 
         /// <summary>
@@ -99,8 +99,17 @@ namespace RM.DataServices.Tests.DataService
             DbGeometry accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
             var actualResult = testCandidate.GetAccessLinksCrossingOperationalObject(coordinates, accessLinkLine);
             Assert.IsNotNull(actualResult);
-            Assert.AreEqual(actualResult.Count, 0);
         }
+        [Test]
+        public void Test_GetCrossingNetworkLink()
+        {
+            string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
+            DbGeometry accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
+          bool actualResult=  testCandidate.GetCrossingNetworkLink(coordinates, accessLinkLine);
+            Assert.IsTrue(actualResult);
+        }
+       
+
 
         /// <summary>
         /// Setup for Nunit Tests.

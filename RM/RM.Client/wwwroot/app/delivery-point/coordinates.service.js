@@ -27,3 +27,18 @@ angular.module('deliveryPoint')
         }
 
     });
+
+    angular.module('deliveryPoint')
+    .factory('selectedDeliveryPointService', function () {
+
+        var selectedDeliveryPoint = '';
+        return {
+            getSelectedDeliveryPoint: function () {
+                return selectedDeliveryPoint;
+            },
+            setSelectedDeliveryPoint: function (value) {
+                selectedDeliveryPoint = value;
+            }
+        }
+
+    });

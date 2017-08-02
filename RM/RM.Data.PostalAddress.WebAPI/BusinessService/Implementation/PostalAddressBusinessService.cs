@@ -127,7 +127,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             {
                                 postalAddress.PostalAddressStatus.Add(GetPostalAddressStatus(postalAddress.ID, addressStatusId));
                                 postalAddress.AddressType_GUID = addressTypeId;
-                                await addressDataService.SaveAddress(postalAddress, strFileName);
+                                await addressDataService.SaveAddress(postalAddress, strFileName, addressStatusId);
                             }
 
                             isPostalAddressInserted = await addressDataService.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
@@ -360,21 +360,28 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 bool isAddressLocationAvailable = false;
                 double? addLocationXCoOrdinate = 0;
                 double? addLocationYCoOrdinate = 0;
-                List<string> listNames = new List<string> { ReferenceDataCategoryNames.PostalAddressType, ReferenceDataCategoryNames.PostalAddressStatus };
+                List<string> listNames = new List<string> { ReferenceDataCategoryNames.PostalAddressType, ReferenceDataCategoryNames.PostalAddressStatus, ReferenceDataCategoryNames.PostalAddressAliasType };
 
                 Guid usrAddressTypeId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressType, FileType.Usr.ToString().ToUpper(), true);
                 Guid liveAddressStatusId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressStatus, PostalAddressConstants.LiveAddressStatus, true);
-                Mapper.Initialize(cfg => cfg.CreateMap<PostalAddressDTO, PostalAddressDataDTO>());
-                PostalAddressDataDTO postalAddressDataDTO = Mapper.Map<PostalAddressDTO, PostalAddressDataDTO>(addDeliveryPointDTO.PostalAddressDTO);
+                Guid deliveryPointAliasId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressAliasType, PostalAddressConstants.DeliveryPointAlias, false);
 
                 if (addDeliveryPointDTO != null && postalAddressDataDTO != null)
                 {
-                    postalAddressDataDTO.ID = Guid.NewGuid();
-                    postalAddressDataDTO.AddressType_GUID = usrAddressTypeId;
-                    postalAddressDataDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty)
+                    {
+                        addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
+                    }
+
+                    addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = usrAddressTypeId;
+                    // addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
+
+                    addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID = liveAddressStatusId;
+                    addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias = addDeliveryPointDTO.PostalAddressAliasDTOs;
+                    addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias.ForEach(p => p.AliasTypeGUID = deliveryPointAliasId);
                 }
 
-                var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(postalAddressDataDTO);
+                var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(ConvertToDataDTO(addDeliveryPointDTO.PostalAddressDTO));
 
                 // check if third partylocation exists
                 var addressLocation = postalAddressIntegrationService.GetAddressLocationByUDPRN(addDeliveryPointDTO.PostalAddressDTO.UDPRN ?? default(int)).Result;
@@ -999,9 +1006,30 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 postalAddressDataDTO.UDPRN = postalAddressDTO.UDPRN;
 
                 PostalAddressStatusDataDTO postalAddressStatusDataDTO = new PostalAddressStatusDataDTO();
+                postalAddressStatusDataDTO.ID = Guid.NewGuid();
                 postalAddressStatusDataDTO.PostalAddressGUID = postalAddressDTO.ID;
                 postalAddressStatusDataDTO.OperationalStatusGUID = postalAddressDTO.AddressStatus_GUID.HasValue ? postalAddressDTO.AddressStatus_GUID.Value : Guid.Empty;
                 postalAddressDataDTO.PostalAddressStatus.Add(postalAddressStatusDataDTO);
+
+                if (postalAddressDTO.PostalAddressAlias != null)
+                {
+                    List<PostalAddressAliasDataDTO> postalAddressAliases = new List<PostalAddressAliasDataDTO>();
+                    foreach (var postalAddressAliasDTO in postalAddressDTO.PostalAddressAlias)
+                    {
+                        PostalAddressAliasDataDTO postalAddressAlias = new PostalAddressAliasDataDTO
+                        {
+                            ID=Guid.NewGuid(),
+                            PostalAddressID = postalAddressDTO.ID,
+                            AliasTypeGUID = postalAddressAliasDTO.AliasTypeGUID,
+                            AliasName = postalAddressAliasDTO.AliasName,
+                            PreferenceOrderIndex = postalAddressAliasDTO.PreferenceOrderIndex
+                        };
+                        postalAddressAliases.Add(postalAddressAlias);
+                    }
+
+                    postalAddressDataDTO.PostalAddressAlias = postalAddressAliases;
+                }
+
             }
 
             return postalAddressDataDTO;
