@@ -753,7 +753,7 @@
                 }
                 else if (deiveryPoint.DeliveryPointUseIndicatorGUID == operationalObjectTypeForDpResidential)
                 {
-                    dpUsetype = DPUseType.Organisation.ToString();
+                    dpUsetype = DPUseType.Residential.ToString();
                 }
             }
 

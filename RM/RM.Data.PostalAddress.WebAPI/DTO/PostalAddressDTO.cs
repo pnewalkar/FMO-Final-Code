@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
@@ -7,6 +8,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         /// <summary>
         /// This class represents data transfer object for PostalAddress entity
         /// </summary>
+        public PostalAddressDTO()
+        {
+            this.DeliveryPoints = new List<DeliveryPointDTO>();
+            this.PostalAddressAlias = new List<PostalAddressAliasDTO>();
+        }
+
         public string PostcodeType { get; set; }
 
         public string OrganisationName { get; set; }
@@ -62,5 +69,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         public string AmendmentDesc { get; set; }
 
         public string FileName { get; set; }
+
+        public ICollection<DeliveryPointDTO> DeliveryPoints { get; set; }
+
+        public List<PostalAddressAliasDTO> PostalAddressAlias { get; set; }
+
+        public List<PostalAddressStatusDTO> PostalAddressStatus { get; set; }
     }
 }
