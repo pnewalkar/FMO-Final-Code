@@ -366,7 +366,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 Guid liveAddressStatusId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressStatus, PostalAddressConstants.LiveAddressStatus, true);
                 Guid deliveryPointAliasId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressAliasType, PostalAddressConstants.DeliveryPointAlias, false);
 
-                if (addDeliveryPointDTO != null && postalAddressDataDTO != null)
+                if (addDeliveryPointDTO != null)
                 {
                     if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty)
                     {
@@ -456,7 +456,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             XCoordinate = addressLocations.Where(al => al.UDPRN == pa.UDPRN).Any() ? deliveryPointSqlGeometry.STX.Value : 0,
                             YCoordinate = addressLocations.Where(al => al.UDPRN == pa.UDPRN).Any() ? deliveryPointSqlGeometry.STY.Value : 0
                         });
-
                     });
                 }
 
@@ -516,7 +515,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="objPostalAddress">PostalAddressDTO as input</param>
         /// <returns>string</returns>
         public async Task<DuplicateDeliveryPointDTO> CheckForDuplicateNybRecordsForRange(List<PostalAddressDTO> postalAddresses)
-        {            
+        {
             DuplicateDeliveryPointDTO duplicateDeliveryPointDTO = null;
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CheckForDuplicateNybRecords"))
             {
@@ -536,7 +535,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 Mapper.Initialize(cfg => cfg.CreateMap<PostalAddressDataDTO, PostalAddressDTO>());
                 duplicateDeliveryPointDTO.PostalAddressDTO = Mapper.Map<List<PostalAddressDataDTO>, List<PostalAddressDTO>>(duplicatePostalAddresses.Item2);
                 duplicateDeliveryPointDTO.IsDuplicate = duplicatePostalAddresses.Item1;
-
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return duplicateDeliveryPointDTO;
@@ -564,7 +562,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 Mapper.Initialize(cfg => cfg.CreateMap<PostalAddressDataDTO, PostalAddressDTO>());
                 duplicateDeliveryPointDTO.PostalAddressDTO = Mapper.Map<List<PostalAddressDataDTO>, List<PostalAddressDTO>>(duplicatePostalAddresses.Item2);
                 duplicateDeliveryPointDTO.IsDuplicate = duplicatePostalAddresses.Item1;
-
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return duplicateDeliveryPointDTO;
@@ -1018,7 +1015,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     {
                         PostalAddressAliasDataDTO postalAddressAlias = new PostalAddressAliasDataDTO
                         {
-                            ID=Guid.NewGuid(),
+                            ID = Guid.NewGuid(),
                             PostalAddressID = postalAddressDTO.ID,
                             AliasTypeGUID = postalAddressAliasDTO.AliasTypeGUID,
                             AliasName = postalAddressAliasDTO.AliasName,
@@ -1029,7 +1026,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                     postalAddressDataDTO.PostalAddressAlias = postalAddressAliases;
                 }
-
             }
 
             return postalAddressDataDTO;

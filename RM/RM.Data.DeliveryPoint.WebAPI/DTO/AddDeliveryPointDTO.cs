@@ -44,6 +44,11 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
         public int ToRange { get; set; }
 
         /// <summary>
+        /// Gets or sets the To Sub buidling value
+        /// </summary>
+        public string SubBuildingType { get; set; }
+
+        /// <summary>
         /// Gets or sets collection of address alises for respective Postal Address
         /// </summary>
         public List<PostalAddressAliasDTO> PostalAddressAliasDTOs { get; set; }
