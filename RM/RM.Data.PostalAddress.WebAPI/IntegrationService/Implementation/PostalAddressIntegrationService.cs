@@ -460,6 +460,28 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
+
+        public async Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.GetAddressLocationsByUDPRN"))
+            {
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetAddressLocationsByUDPRN);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(addressLocationManagerDataWebAPIName + "addresslocation/range/", udprns);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                List<AddressLocationDTO> addressLocationDTOs = JsonConvert.DeserializeObject<List<AddressLocationDTO>>(result.Content.ReadAsStringAsync().Result);
+                
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return addressLocationDTOs;
+            }
+        }
+
         #endregion public methods
     }
 }

@@ -69,5 +69,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// <param name="postcode"></param>
         /// <returns>The approx location/</returns>
         Task<DbGeometry> GetApproxLocation(string postcode);
+
+        Task<DuplicateDeliveryPointDTO> CheckForDuplicateNybRecordsForRange(List<PostalAddressDTO> postalAddresses);
+
+        Task<DuplicateDeliveryPointDTO> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDTO> postalAddresses);
     }
 }
