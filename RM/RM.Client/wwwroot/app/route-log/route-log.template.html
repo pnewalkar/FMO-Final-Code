@@ -35,9 +35,11 @@
 
                 <md-input-container flex="25">
                     <label>{{ 'ROUTE_LOG.SCENARIO' | translate }}</label>
-                    <md-select ng-model="vm.selectedRouteScenario" ng-disabled="vm.isRouteScenarioDisabled || (!filterScenario.length && vm.isSelectionType)" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
-                        <md-option ng-repeat="scenario in  filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
+                    <md-select ng-model="vm.selectedRouteScenario" title={{vm.selectedRouteScenario.scenarioName}} ng-disabled="vm.isRouteScenarioDisabled || (!filterScenario.length && vm.isSelectionType)" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
+                        <md-option ng-repeat="scenario in  filterScenario =(vm.RouteScenario)" title={{scenario.scenarioName}} ng-value="scenario">{{scenario.scenarioName}}</md-option>
+                       
                     </md-select>
+                   
                     <div ng-show="!filterScenario.length && vm.isSelectionType" class="noResult">{{ 'GENERAL.ERRORS.NO_RESULT_FOUND' | translate }}</div>
                 </md-input-container>
 
@@ -46,28 +48,30 @@
             </div>
         </div>
 
-        <h1 ng-show="vm.isShowMultiSelectionRoute">{{ 'ROUTE_LOG.SELECTED_ROUTES' | translate }}</h1>
-        <div layout="row" ng-show="vm.isShowMultiSelectionRoute">
-            <md-table-container id="routLogTable">
-                <table md-table>
-                    <thead md-head>
-                        <tr md-row>
-                            <th md-column>{{ 'ROUTE_LOG.ROUTE_NAME' | translate }}</th>
-                            <th md-column>{{ 'ROUTE_LOG.ROUTE_NUMBER' | translate }}</th>
-                            <th md-column>{{ 'ROUTE_LOG.SELECT' | translate }}</th>
-                        </tr>
-                    </thead>
-                    <tbody md-body>
-                        <tr md-row ng-repeat="routeType in vm.multiSelectiondeliveryRoute">
-                            <td md-cell>{{routeType.routeName}}</td>
-                            <td md-cell>{{routeType.routeNumber}}</td>
-                            <td md-cell>
-                                <md-checkbox ng-model="data" aria-label="Select Route"></md-checkbox>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </md-table-container>
+        <div ng-show="vm.isShowMultiSelectionRoute">
+            <h1>{{ 'ROUTE_LOG.SELECTED_ROUTES' | translate }}</h1>
+            <div layout="row">
+                <md-table-container id="routLogTable">
+                    <table md-table>
+                        <thead md-head>
+                            <tr md-row>
+                                <th md-column>{{ 'ROUTE_LOG.ROUTE_NAME' | translate }}</th>
+                                <th md-column>{{ 'ROUTE_LOG.ROUTE_NUMBER' | translate }}</th>
+                                <th md-column>{{ 'ROUTE_LOG.SELECT' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row ng-repeat="routeType in vm.multiSelectiondeliveryRoute">
+                                <td md-cell>{{routeType.routeName}}</td>
+                                <td md-cell>{{routeType.routeNumber}}</td>
+                                <td md-cell>
+                                    <md-checkbox ng-model="data" aria-label="Select Route"></md-checkbox>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </div>
         </div>
 
 
@@ -79,39 +83,39 @@
                     <div flex="35" class="routeDetailstable">
                         <table>
                             <tr>
-                                <td>Name</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.NAME' | translate }}</td>
                                 <td>{{vm.routeDetails.routeName}}</td>
                             </tr>
                             <tr>
-                                <td>Route Number</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.ROUTE_NUMBER' | translate }}</td>
                                 <td>{{vm.routeDetails.routeNumber}}</td>
                             </tr>
                             <tr>
-                                <td>Delivery Method</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.DELIVERY_METHOD' | translate }}</td>
                                 <td>{{vm.routeDetails.method}}</td>
                             </tr>
                             <tr>
-                                <td>Total Time</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.TOTAL_TIME' | translate }}</td>
                                 <td>{{vm.routeDetails.totaltime}}</td>
                             </tr>
                             <tr>
-                                <td>Hazards</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.HAZARDS' | translate }}</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>Special Instructions</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.SPECIAL_INSTRUCTION' | translate }}</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>Aliases<sub>*</sub></td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.ALIASES' | translate }}<sub>*</sub></td>
                                 <td>{{vm.routeDetails.aliases}}</td>
                             </tr>
                             <tr>
-                                <td>Blocks</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.BLOCKS' | translate }}</td>
                                 <td>{{vm.routeDetails.blocks}}</td>
                             </tr>
                             <tr>
-                                <td>Paired Route</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.PAIRED_ROUTE' | translate }}</td>
                                 <td>{{vm.routeDetails.pairedRoute}}</td>
                             </tr>
                         </table>
@@ -122,26 +126,28 @@
                     <div flex="35" class="routeDetailstable">
                         <table>
                             <tr>
-                                <td>CPs</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.CPS' | translate }}</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>DPs</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.DPS' | translate }}</td>
                                 <td>{{vm.routeDetails.dPs}}</td>
                             </tr>
                             <tr>
-                                <td>Business DPs</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.BUSINESS_DPS' | translate }}</td>
                                 <td>{{vm.routeDetails.businessDPs}}</td>
                             </tr>
                             <tr>
-                                <td>Residential DPs</td>
+                                <td>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.RESIDENTIAL_DPS' | translate }}</td>
                                 <td>{{vm.routeDetails.residentialDPs}}</td>
                             </tr>
                         </table>
                     </div>
                     <span flex="5"></span>
 
-                    <div flex="20" class="md-text"><sub>*</sub>All Alias information is shown on detailed route log </div>
+                    <div flex="20" class="md-text">
+                        <sub>*</sub>{{ 'ROUTE_LOG.ROUTE_DETAILS_KEYS.ALIAS_INFORMATION' | translate }}
+                    </div>
                 </div>
             </md-list>
 

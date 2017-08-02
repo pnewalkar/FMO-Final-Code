@@ -292,7 +292,8 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
 
             actualDeliveryPointDataDto = new List<DeliveryPointDataDTO>()
             {
-                new DeliveryPointDataDTO() {
+                new DeliveryPointDataDTO()
+                {
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                 MailVolume = 5, PostalAddress = new PostalAddressDataDTO()
                 {
@@ -313,8 +314,24 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
-            }, NetworkNode = new NetworkNodeDataDTO { ID = new Guid(), NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() { Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } }, DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } } },
-                 new DeliveryPointDataDTO() {
+            },
+                    NetworkNode = new NetworkNodeDataDTO
+                    {
+                        ID = Guid.Empty, NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO()
+                        {
+                            Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700)
+                        }
+                    },
+                    DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>()
+                    {
+                        new DeliveryPointStatusDataDTO
+                        {
+                            ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
+                        }
+                    }
+                },
+                 new DeliveryPointDataDTO()
+                 {
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A17"),
                 MailVolume = 2, PostalAddress = new PostalAddressDataDTO()
                 {
@@ -335,7 +352,23 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
-            }, NetworkNode = new NetworkNodeDataDTO { ID = new Guid(), NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() { Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } }, DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } }
+            },
+                     NetworkNode = new NetworkNodeDataDTO
+                     {
+                         ID = Guid.Empty,
+                         NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
+                         Location = new LocationDataDTO()
+                         {
+                             Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700)
+                         }
+                     },
+                     DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>()
+                     {
+                         new DeliveryPointStatusDataDTO
+                         {
+                             ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
+                         }
+                     }
             }
             };
 
@@ -363,7 +396,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
                 },
-                NetworkNode = new NetworkNodeDataDTO { ID = new Guid(), NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() { Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } },
+                NetworkNode = new NetworkNodeDataDTO { ID = Guid.Empty, NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() { Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } },
                 DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } }
             };
 
@@ -414,7 +447,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
 
             // mockDeliveryPointsDataService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
 
-            //    mockDeliveryPointsDataService.Setup(x => x.GetDPUse(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns("Org");
+            // mockDeliveryPointsDataService.Setup(x => x.GetDPUse(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns("Org");
             mockDeliveryPointsDataService.Setup(x => x.UpdatePAFIndicator(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns(Task.FromResult("ABC"));

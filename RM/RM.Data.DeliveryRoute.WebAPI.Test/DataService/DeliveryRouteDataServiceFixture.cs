@@ -114,7 +114,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         public async Task TestGetRouteByDeliverypoint_NegativeScenario()
         {
             var actualResult = await testCandidate.GetRouteByDeliverypoint(new Guid("2A0CDB34-7ABF-480E-B8BB-1A7C131ABAB5"));
-            Assert.IsNull(actualResult);
+            Assert.IsNull(actualResult.RouteName);
         }
 
         [Test]
