@@ -18,6 +18,7 @@
   </CategoryName>
   <CategoryName>
     <AppCategoryName>LocationRelationshipType</AppCategoryName>
+
     <DBCategoryName>Location Relationship Type</DBCategoryName>
   </CategoryName>
   <CategoryName>
@@ -51,6 +52,22 @@
   <CategoryName>
     <AppCategoryName>RouteActivityType</AppCategoryName>
     <DBCategoryName>Route Activity Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>PostalAddressAliasType</AppCategoryName>
+    <DBCategoryName>PostalAddressAliasType</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>UI_Delete_DP_ReasonCode</AppCategoryName>
+    <DBCategoryName>UI_Delete_DP_ReasonCode</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>UI_Range_Options</AppCategoryName>
+    <DBCategoryName>UI_Range_Options</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>SubBuildingType</AppCategoryName>
+    <DBCategoryName>Sub Building Type</DBCategoryName>
   </CategoryName>
   <CategoryName>
     <AppCategoryName>DeliveryPointColor</AppCategoryName>
