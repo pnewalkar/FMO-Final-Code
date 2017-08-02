@@ -205,6 +205,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                     break;
 
                                 case AmmendmentType.D:
+
+
+
+                                    // Soft delete
                                     MatchAddressOnUdprn(item.UDPRN.Value, addressTypePAF, pendingDelete);
                                     break;
                             }
@@ -931,7 +935,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     {
                         PostalAddressAliasDataDTO postalAddressAlias = new PostalAddressAliasDataDTO
                         {
-                            ID=Guid.NewGuid(),
+                            ID = Guid.NewGuid(),
                             PostalAddressID = postalAddressDTO.ID,
                             AliasTypeGUID = postalAddressAliasDTO.AliasTypeGUID,
                             AliasName = postalAddressAliasDTO.AliasName,
@@ -1112,7 +1116,17 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>boolean</returns>
         private async Task<bool> DeletePostalAddress(Guid addressId)
         {
-            return await addressDataService.DeletePostalAddress(addressId);
+            bool isPostalAddressDeleted = false;
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.DeletePostalAddress"))
+            {
+                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(DeletePostalAddress);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
+                // PostalAddress physical delete
+                isPostalAddressDeleted = await addressDataService.DeletePostalAddress(addressId);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
+            }
+            return isPostalAddressDeleted;
         }
 
         /// <summary>
