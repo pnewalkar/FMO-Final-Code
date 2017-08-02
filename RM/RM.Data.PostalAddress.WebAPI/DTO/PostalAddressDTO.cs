@@ -73,5 +73,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         public ICollection<DeliveryPointDTO> DeliveryPoints { get; set; }
 
         public List<PostalAddressAliasDTO> PostalAddressAlias { get; set; }
+
+        public List<PostalAddressStatusDTO> PostalAddressStatus { get; set; }
     }
 }

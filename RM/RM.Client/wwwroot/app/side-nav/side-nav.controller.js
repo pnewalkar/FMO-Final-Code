@@ -54,7 +54,7 @@ function SideNavController(
                 break;
             case CommonConstants.DeliveryPointActionName:
                 vm.contextTitle = CommonConstants.DeliveryPointActionName;
-                $state.go("deliveryPoint", { selectedUnit: vm.selectedDeliveryUnit });
+                $state.go("deliveryPoint", { selectedUnit: vm.selectedDeliveryUnit }, {inherit: false});
                 break;
             case CommonConstants.AccessLinkActionName:
                 vm.contextTitle = CommonConstants.AccessLinkActionName;

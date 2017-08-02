@@ -181,7 +181,7 @@
 
                 if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
                 {
-                    referenceDataCategories.ReferenceDatas.ToList().ForEach(refData => listItems.Add(new ListItems
+                    referenceDataCategories.ReferenceDatas.OrderBy(n => n.OrderingIndex).ToList().ForEach(refData => listItems.Add(new ListItems
                     {
                         Id = refData.ID,
                         Name = refData.ReferenceDataName,

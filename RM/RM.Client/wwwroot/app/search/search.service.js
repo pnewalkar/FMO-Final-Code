@@ -33,8 +33,7 @@ function searchBusinessService(
         resultSet: resultSet,
         onEnterKeypress: onEnterKeypress,
         OnChangeItem: OnChangeItem,
-        advanceSearch: advanceSearch,
-        showDeliveryPointDetails: showDeliveryPointDetails
+        advanceSearch: advanceSearch
     };
 
     function resultSet(query) {
@@ -91,9 +90,9 @@ function searchBusinessService(
                     var data = response;
                     var lat = data.features[0].geometry.coordinates[1];
                     var long = data.features[0].geometry.coordinates[0];
-                    mapFactory.setDeliveryPoint(long, lat);
+                    mapService.setDeliveryPoint(long, lat);
                     var deliveryPointDetails = data.features[0].properties;
-                    showDeliveryPointDetails(deliveryPointDetails);
+                    mapService.showDeliveryPointDetails(deliveryPointDetails);
                     searchDPSelectedService.setSelectedDP(true);
                     mapService.deselectDP();
                 });

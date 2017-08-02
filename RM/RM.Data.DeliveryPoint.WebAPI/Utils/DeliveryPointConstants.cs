@@ -52,5 +52,12 @@
         internal const string PRIMARYROUTE = "Primary - ";
         internal const string SECONDARYROUTE = "Secondary - ";
         internal const string SearchResultCount = "SearchResultCount";
+
+        internal const string DeliveryPointTypeRange = "Range";
+        internal const string DeliveryPointTypeNumberInName = "Number in Name";
+        internal const string DeliveryPointTypeSubBuildingRange = "Sub-building type";
+        internal const string RangeTypeOdds = "Odds";
+        internal const string RangeTypeEvens = "Evens";
+        internal const string RangeTypeConsecutive = "Consecutives";
     }
 }

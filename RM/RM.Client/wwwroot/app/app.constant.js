@@ -49,12 +49,26 @@ else if (GlobalSettings.env === "dev") {
     GlobalSettings.pdfGeneratorApiUrl = "http://172.18.5.7/PDFGenerator/api";
     GlobalSettings.routeLogApiUrl = "http://172.18.5.7/RouteLog/api";
     GlobalSettings.searchManagerApiUrl = "http://172.18.5.7/SearchManager/api";
+    GlobalSettings.mapManagerApiUrl = "http://172.18.5.7/MapManager/api";
     GlobalSettings.indexUrl = "http://172.18.4.4/app/index.html";
 
 }
 else if (GlobalSettings.env === "test") {
-    GlobalSettings.apiUrl = "http://10.246.18.217/fmoapi/api"; // Here comes test enviroment url
-    GlobalSettings.indexUrl = "http://10.246.18.217/fmoui/app/index.html"
+    GlobalSettings.actionManagerApiUrl = "http://172.18.5.12/ActionManager/api";
+    GlobalSettings.referenceDataApiUrl = "http://172.18.5.12/ReferenceData/api";
+    GlobalSettings.accessLinkApiUrl = "http://172.18.5.12/AccessLink/api";
+    GlobalSettings.deliveryPointApiUrl = "http://172.18.5.12/DeliveryPoint/api";
+    GlobalSettings.deliveryRouteApiUrl = "http://172.18.5.12/DeliveryRoute/api";
+    GlobalSettings.networkManagerApiUrl = "http://172.18.5.12/NetworkManager/api";
+    GlobalSettings.postalAddressApiUrl = "http://172.18.5.12/PostalAddress/api";
+    GlobalSettings.specialInstructionApiUrl = "http://172.18.5.12/SpecialInstruction/api";
+    GlobalSettings.thirdPartyAddressLocationApiUrl = "http://172.18.5.12/ThirdPartyAddressLocation/api";
+    GlobalSettings.unitManagerApiUrl = "http://172.18.5.12/UnitManager/api";
+    GlobalSettings.pdfGeneratorApiUrl = "http://172.18.5.12/PDFGenerator/api";
+    GlobalSettings.routeLogApiUrl = "http://172.18.5.12/RouteLog/api";
+    GlobalSettings.searchManagerApiUrl = "http://172.18.5.12/SearchManager/api";
+    GlobalSettings.mapManagerApiUrl = "http://172.18.5.12/MapManager/api";
+    GlobalSettings.indexUrl = "http://172.18.4.8/app/index.html";
 }
 else if (GlobalSettings.env === "prod") {
     GlobalSettings.apiUrl = ""; // Here comes production enviroment url
@@ -74,6 +88,7 @@ GlobalSettings.single = "Single";
 GlobalSettings.range = "Range";
 GlobalSettings.subBuilding = "Sub building";
 GlobalSettings.numberInName = "Number in Name";
+GlobalSettings.defaultRangeOption = "Odds";
 
 angular.module('RMApp')
 .constant("GlobalSettings", GlobalSettings);

@@ -157,6 +157,31 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         }
 
         /// <summary>
+        /// This method is used to check Duplicate NYB records
+        /// </summary>
+        /// <param name="objPostalAddress">objPostalAddress as input</param>
+        /// <returns>string</returns>
+        public async Task<DuplicateDeliveryPointDTO> CheckForDuplicateNybRecordsForRange(List<PostalAddressDTO> postalAddresses)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CheckForDuplicateNybRecordsForRange"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CheckForDuplicateNybRecordsForRange);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/nybduplicate/range/", postalAddresses);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                var duplicateNybAddresses = JsonConvert.DeserializeObject<DuplicateDeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return duplicateNybAddresses;
+            }
+        }
+
+        /// <summary>
         /// This method is used to check for Duplicate Address with Delivery Points.
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
@@ -179,6 +204,32 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return checkForDuplicateAddressWithDeliveryPoints;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to check for Duplicate Address with Delivery Points.
+        /// </summary>
+        /// <param name="objPostalAddress">Postal Addess Dto as input</param>
+        /// <returns>bool</returns>
+        public async Task<DuplicateDeliveryPointDTO> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDTO> postalAddresses)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CheckForDuplicateAddressWithDeliveryPoints"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/duplicatedeliverypoint/range/", postalAddresses);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                var duplicateAddressWithDeliveryPoints = JsonConvert.DeserializeObject<DuplicateDeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return duplicateAddressWithDeliveryPoints;
             }
         }
 

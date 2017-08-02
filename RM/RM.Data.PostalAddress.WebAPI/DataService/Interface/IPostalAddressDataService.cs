@@ -17,7 +17,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">NYB details DTO</param>
         /// <param name="fileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddress, string fileName);
+        Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddress, string fileName, Guid operationalStatusGUID);
 
         /// <summary>
         /// Update PostalAddress based on the PostalAddressDataDTO passed for PAF depending upon NYB and USR scenerios
@@ -126,5 +126,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="pafGuid">pafGuid as Address Type Guid</param>
         /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
+
+        /// <summary>
+        /// Check the duplicates for NYB records for a range
+        /// </summary>
+        /// <param name="objPostalAddress"></param>
+        /// <param name="addressTypeNYBGuid"></param>
+        /// <returns></returns>
+        Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateNybRecordsForRange(List<PostalAddressDataDTO> postalAddressesDTOs, Guid addressTypeNYBGuid);
+
+
+        Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDataDTO> postalAddressDTOs);
     }
 }

@@ -100,6 +100,42 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Get AddressLocation by UDPRN
+        /// </summary>
+        /// <param name="udprn"> UDPRN id</param>
+        /// <returns>AddressLocationDTO object</returns>
+        [HttpPost("addresslocation/range")]
+        public async Task<IActionResult> GetAddressLocationsByUDPRN(List<int> udprns)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetAddressLocationByUDPRN"))
+            {
+                if (udprns == null)
+                {
+                    throw new ArgumentException(nameof(udprns));
+                }
+
+                try
+                {
+                    string methodName = typeof(ThirdPartyAddressLocationController) + "." + nameof(GetAddressLocationByUDPRN);
+                    loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId);
+                    List<AddressLocationDTO> addressLocationDTOs = await this.thirdPartyAddressLocationBusinessService.GetAddressLocationsByUDPRN(udprns);
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId);
+                    return Ok(addressLocationDTOs);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
+            }
+        }
+
         // TODO : Add method when ready
         /// <summary>
         /// Method to save the list of USR data into the database.

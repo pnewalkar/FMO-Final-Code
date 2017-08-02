@@ -10,6 +10,7 @@
         internal const string PAFTaskBodyPreText = "Please position the DP ";
         internal const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
         internal const int NOTIFICATIONDUE = 24;
+        internal const int BNGCOORDINATESYSTEM = 27700;
         internal const string EXTERNAL = "External";
         internal const string TASKACTION = "Action required";
         internal const string TASKSOURCE = "SYSTEM";
@@ -26,7 +27,7 @@
         internal const string UPDATE = "U";
         internal const string DELETE = "D";
         internal const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
-        internal const string DeliveryPointAlias = "DeliveryPointAlias";
+        internal const string DeliveryPointAlias = "Delivery Point Alias";
 
         internal const string ResponseContent = "Status Code: {0} Reason: {1} ";
         internal const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";

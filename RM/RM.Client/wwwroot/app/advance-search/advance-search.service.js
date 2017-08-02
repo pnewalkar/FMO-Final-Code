@@ -8,7 +8,8 @@ advanceSearchService.$inject = ['advanceSearchAPIService',
                                 'CommonConstants',
                                 '$state',
                                  'roleAccessService',
-                                 'searchDPSelectedService'];
+                                 'searchDPSelectedService',
+                                 'mapService'];
 
 function advanceSearchService(advanceSearchAPIService,
                               $q,                            
@@ -17,7 +18,8 @@ function advanceSearchService(advanceSearchAPIService,
                               CommonConstants,
                               $state,
                               roleAccessService,
-                              searchDPSelectedService) {
+                              searchDPSelectedService,
+                              mapService) {
     
     
     var deliveryPointObj = null;
@@ -34,8 +36,7 @@ function advanceSearchService(advanceSearchAPIService,
 
     return {
         queryAdvanceSearch: queryAdvanceSearch,
-        onChangeItem: onChangeItem,
-        showDeliveryPointDetails: showDeliveryPointDetails
+        onChangeItem: onChangeItem
     };
 
     function queryAdvanceSearch(query) {
@@ -109,35 +110,14 @@ function advanceSearchService(advanceSearchAPIService,
                     coordinatesData = response;
                     lat = coordinatesData.features[0].geometry.coordinates[1];
                     long = coordinatesData.features[0].geometry.coordinates[0];
-                    mapFactory.setDeliveryPoint(long, lat);
+                    mapService.setDeliveryPoint(long, lat);
                     var deliveryPointDetails = coordinatesData.features[0].properties;
-                    showDeliveryPointDetails(deliveryPointDetails);
+                    mapService.showDeliveryPointDetails(deliveryPointDetails);
                     deferred.resolve(coordinatesData);
                     searchDPSelectedService.setSelectedDP(true);
                     mapService.deselectDP();
                 });
             return deferred.promise;
-    }
-
-    function showDeliveryPointDetails(deliveryPointDetails) {
-        deliveryPointDetails.routeName = null;
-        mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
-              .then(function (response) {
-                  if (response != null) {
-                      if (response[0].key == CommonConstants.RouteName) {
-                          deliveryPointDetails.routeName = [response[0].value];
-                          if (response[1].key == CommonConstants.DpUse) {
-                              deliveryPointDetails.dpUse = response[1].value;
-                          }
-                      }
-                      else if (response[0].key == CommonConstants.DpUse) {
-                          deliveryPointDetails.dpUse = response[0].value;
-                      }
-                  }
-                  $state.go('deliveryPointDetails', {
-                      selectedDeliveryPoint: deliveryPointDetails
-                  }, { reload: true });
-              });
     }
 
     function groupSearchEntities() {
