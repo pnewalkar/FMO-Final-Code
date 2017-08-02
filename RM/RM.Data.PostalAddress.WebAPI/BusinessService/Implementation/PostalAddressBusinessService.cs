@@ -197,11 +197,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             switch (ammendmentType)
                             {
                                 case AmmendmentType.C:
-                                    ModifyPAFRecords(item);
+                                    await ModifyPAFRecords(item, addressTypePAF, item.FileName);
                                     break;
+
                                 case AmmendmentType.I:
                                     await SavePAFRecords(item, addressTypeUSR, addressTypeNYB, addressTypePAF, item.FileName);
                                     break;
+
                                 case AmmendmentType.D:
                                     MatchAddressOnUdprn(item.UDPRN.Value, addressTypePAF, pendingDelete);
                                     break;
@@ -1030,21 +1032,23 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     DeliveryPointSuffix = postalAddressDetails.DeliveryPointSuffix,
                     RowCreateDateTime = DateTime.UtcNow
                 };
-                
-                // matching UDPRN
+
+                // Matching UDPRN
                 PostalAddressDataDTO objPostalAddressMatchedUDPRN = await addressDataService.GetPostalAddress(objPostalAddress.UDPRN);
-                
-                // If UDPRN match
+
+                // If UDPRN matches..
                 if (objPostalAddressMatchedUDPRN != null)
                 {
+                    // And Address Type is <PAF>
                     if (objPostalAddressMatchedUDPRN.AddressType_GUID == addressTypePAF)
                     {
+                        objPostalAddress.AddressType_GUID = addressTypePAF;
                         objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
 
-                        await addressDataService.UpdateAddress(objPostalAddress, strFileName);
+                        bool recordUpdated = await addressDataService.UpdateAddress(objPostalAddress, strFileName);
 
-                        // TODO Swapna's logic
-                        if (await addressDataService.UpdateAddress(objPostalAddress, strFileName))
+                        // If Postal address updated then update DeliveryPointUseIndicatorGUID for DeliveryPoint
+                        if (recordUpdated)
                         {
                             //Update DPUse in delivery point for matching UDPRN
                             var isDPUseUpdated = postalAddressIntegrationService.UpdateDPUse(postalAddressDetails).Result;
@@ -1054,42 +1058,21 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             }
                         }
                     }
+
+                    // If Address Type is not <PAF>, log error
                     else
                     {
-                        objFileProcessingLog = new FileProcessingLogDTO
-                        {
-                            FileID = Guid.NewGuid(),
-                            UDPRN = objPostalAddress.UDPRN ?? default(int),
-                            AmendmentType = postalAddressDetails.AmendmentType,
-                            FileName = strFileName,
-                            FileProcessing_TimeStamp = DateTime.UtcNow,
-                            FileType = FileType.Paf.ToString(),
-                            ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound,
-                            SuccessFlag = false
-                        };
-
-                        fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                        loggingHelper.Log(string.Format(PostalAddressConstants.WrongAddressType, postalAddressDetails.UDPRN), TraceEventType.Information);
                     }
                 }
+
+                // If UDPRN does not match, log error
                 else
                 {
-                    objFileProcessingLog = new FileProcessingLogDTO
-                    {
-                        FileID = Guid.NewGuid(),
-                        UDPRN = objPostalAddress.UDPRN ?? default(int),
-                        AmendmentType = postalAddressDetails.AmendmentType,
-                        FileName = strFileName,
-                        FileProcessing_TimeStamp = DateTime.UtcNow,
-                        FileType = FileType.Paf.ToString(),
-                        ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound,
-                        SuccessFlag = false
-                    };
-
-                    fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                    loggingHelper.Log(string.Format(PostalAddressConstants.NoMatchToAddressOnUDPRN, postalAddressDetails.UDPRN), TraceEventType.Information);
                 }
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
             }
-
         }
 
         /// <summary>

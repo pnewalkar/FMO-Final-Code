@@ -185,12 +185,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             Assert.IsNotNull(result);
         }
 
-
-
-
-
-
-
         protected override void OnSetup()
         {
             // OnSetup to be configured
@@ -283,7 +277,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             mockPostalAddressIntegrationService.Setup(n => n.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).Returns(Task.FromResult(referenceDataCategoryDTOList));
             //mockPostalAddressIntegrationService.Setup(n => n.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             mockPostalAddressIntegrationService.Setup(n => n.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
-            mockPostalAddressIntegrationService.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(Task.FromResult(addressLocationDTO));           
+            mockPostalAddressIntegrationService.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(Task.FromResult(addressLocationDTO));
             //mockPostalAddressDataService.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDataDTO>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             mockPostalAddressDataService.Setup(n => n.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
 
