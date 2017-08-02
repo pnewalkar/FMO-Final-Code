@@ -119,7 +119,7 @@ describe('Simulation: Controller', function () {
         $rootScope.$apply();
 
         expect(vm.isDeliveryRouteDisabled).toBe(false);
-        expect(simulationService.loadDeliveryRoute).toHaveBeenCalledWith('9c1e56d7-5397-4984-9cf0-cd9ee7093c88','9c1e56d7-5397-4984-9cf0-cd9ee7093c88');
+        expect(simulationService.loadDeliveryRoute).toHaveBeenCalledWith('9c1e56d7-5397-4984-9cf0-cd9ee7093c88');
         expect(vm.deliveryRoute).toEqual([{"id":"9c1e56d7-5397-4984-9cf0-cd9ee7093c88","name":null,"value":"Live","displayText":null,"description":"Live"},{"id":"bee6048d-79b3-49a4-ad26-e4f5b988b7ab","name":null,"value":"Not Live","displayText":null,"description":"Not Live"}]);
     });
 

@@ -6,6 +6,8 @@ describe('Common: Error Interceptor Service', function() {
 	var $translate;
 
 	beforeEach(function() {		
+		module('miniMap');
+		module('mapView');
         module('home');        
 		module('RMApp');		
 		inject(function(_$rootScope_,_errorInterceptorService_,_$q_,_$translate_){

@@ -7,13 +7,13 @@
 
     var MockGlobalSettings = {
     	apiUrl: '',
-        deliveryRouteApiUrl: "http://localhost:50239/DeliveryRoute/api",
+        deliveryRouteApiUrl: "http://localhost:50235/api",
         getRouteLogStatus: "/RouteLog/RouteLogsStatus",
         unitManagerApiUrl: "http://localhost:50239/api",
         getDeliveryRouteScenario: "/UnitManager/scenario/{0}/{1}",
         getRouteLogSimulationStatus: "/RouteSimulation/RouteLogsStatus",
         getRouteSimulationScenario: "/UnitManager/scenario/{0}/{1}",
-        getDeliveryRoutes: "/DeliveryRouteManager/deliveryroute/{0}/{1}"
+        getDeliveryRoutes: "/DeliveryRouteManager/deliveryroute/{0}/DisplayText"
     };
 
     var MockStringFormatService = {
@@ -117,14 +117,14 @@
 
     it('should promise to return a success response once getRoutes method is called', function() {        
         var response; 
-        var getRouteSimulationScenarioParams = '/DeliveryRouteManager/deliveryroute/9c1e56d7-5397-4984-9cf0-cd9ee7093c88/b51aa229-c984-4ca6-9c12-510187b81050';
+        var getRouteSimulationScenarioParams = '/DeliveryRouteManager/deliveryroute/9c1e56d7-5397-4984-9cf0-cd9ee7093c88/DisplayText';
         var getScenarioMockData = [{"scenarioName":"Worthing Delivery Office - Baseline weekday","id":"b51aa229-c984-4ca6-9c12-510187b81050"}];        
         var expectedUrl = GlobalSettings.deliveryRouteApiUrl+getRouteSimulationScenarioParams;
         
         $httpBackend.when('GET', expectedUrl)
             .respond(200, getScenarioMockData);
 
-        simulationAPIService.getRoutes("9c1e56d7-5397-4984-9cf0-cd9ee7093c88","b51aa229-c984-4ca6-9c12-510187b81050")
+        simulationAPIService.getRoutes("9c1e56d7-5397-4984-9cf0-cd9ee7093c88")
             .then(function(data) {
                 response = data;
             });
@@ -135,13 +135,13 @@
 
     it('should promise to return a error response once getRoutes method is called', function() {        
         var response; 
-        var getRouteSimulationScenarioParams = '/DeliveryRouteManager/deliveryroute/9c1e56d7-5397-4984-9cf0-cd9ee7093c88/b51aa229-c984-4ca6-9c12-510187b81050';
+        var getRouteSimulationScenarioParams = '/DeliveryRouteManager/deliveryroute/9c1e56d7-5397-4984-9cf0-cd9ee7093c88/DisplayText';
         var expectedUrl = GlobalSettings.deliveryRouteApiUrl+getRouteSimulationScenarioParams;
         
         $httpBackend.when('GET', expectedUrl)
             .respond(500);
 
-        simulationAPIService.getRoutes("9c1e56d7-5397-4984-9cf0-cd9ee7093c88","b51aa229-c984-4ca6-9c12-510187b81050")
+        simulationAPIService.getRoutes("9c1e56d7-5397-4984-9cf0-cd9ee7093c88")
             .then(function(data) {
                 response = data;
             }).catch(function() {

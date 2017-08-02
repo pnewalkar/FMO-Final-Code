@@ -6,6 +6,7 @@ describe('Delivery Point : Factory', function() {
     var $rootScope;    
     var stringFormatService;
     var MockGlobalSettings = {
+        unitManagerApiUrl: "http://localhost:50239/api",
         postalAddressApiUrl: "http://localhost:43423/PostalAddress/api",
         thirdPartyAddressLocationApiUrl: "http://localhost:43423/ThirdPartyAddressLocation/api",
         deliveryPointApiUrl: "http://localhost:43423/DeliveryPoint/api",
@@ -46,7 +47,7 @@ describe('Delivery Point : Factory', function() {
   
     it('should promise to return a success response once GetDeliveryPointsResultSet method is called', function() {                
         var getDeliveryPointsParams = '/postaladdressmanager/postaladdress/search/mySearch';
-        var expectedUrl = GlobalSettings.postalAddressApiUrl+getDeliveryPointsParams;
+        var expectedUrl = GlobalSettings.unitManagerApiUrl+getDeliveryPointsParams;
         var GetDeliveryPointsResultSetMockData = {"id":"d8053df2-1aad-40c8-bbf6-de0ae783e772","externalId":null,"routeName":"1101 NEWLAND ROAD             ","routeNumber":"101       ","operationalStatus_Id":0,"routeMethodType_Id":0,"travelOutTransportType_Id":null,"travelInTransportType_Id":null,"travelOutTimeMin":null,"travelInTimeMin":null,"spanTimeMin":null,"deliveryScenario_Id":null,"deliveryRouteBarcode":null,"displayText":"(101)1101 NEWLAND ROAD             ","methodReferenceGuid":"c168f46e-561b-e711-9f8c-28d244aef9ed","method":"High Capacity Trolley","deliveryOffice":null,"aliases":0,"blocks":2,"scenarioName":"Worthing Delivery Office - Baseline weekday","dPs":677,"businessDPs":1,"residentialDPs":676,"travelOutTransportType_GUID":"c168f46e-561b-e711-9f8c-28d244aef9ed","travelInTransportType_GUID":"c168f46e-561b-e711-9f8c-28d244aef9ed","accelarationIn":"High Capacity Trolley","accelarationOut":"High Capacity Trolley","pairedRoute":"","totaltime":"0:04 mins"};
         var response;
 
@@ -64,7 +65,7 @@ describe('Delivery Point : Factory', function() {
    
     it('should promise to return a error response once GetDeliveryPointsResultSet method is called', function() {
         var getDeliveryPointsParams = '/postaladdressmanager/postaladdress/search/mySearch';
-        var expectedUrl = GlobalSettings.postalAddressApiUrl+getDeliveryPointsParams;
+        var expectedUrl = GlobalSettings.unitManagerApiUrl+getDeliveryPointsParams;
         var response;
 
         $httpBackend.when('GET', expectedUrl)
@@ -83,7 +84,7 @@ describe('Delivery Point : Factory', function() {
     
     it('should promise to return a success response once GetAddressByPostCode method is called', function() {
         var getAddressByPostCodeParams = '/postaladdressmanager/postaladdress/filter?selectedItem=selectedItem';
-        var expectedUrl = GlobalSettings.postalAddressApiUrl+getAddressByPostCodeParams;
+        var expectedUrl = GlobalSettings.unitManagerApiUrl+getAddressByPostCodeParams;
         var GetAddressByPostCodeMockData = [{"id":"9c1e56d7-5397-4984-9cf0-cd9ee7093c88","name":null,"value":"Live","displayText":null,"description":"Live"},{"id":"bee6048d-79b3-49a4-ad26-e4f5b988b7ab","name":null,"value":"Not Live","displayText":null,"description":"Not Live"}]; 
         var response;
 
@@ -101,7 +102,7 @@ describe('Delivery Point : Factory', function() {
     
     it('should promise to return a error response once GetAddressByPostCode method is called', function() {
         var getAddressByPostCodeParams = '/postaladdressmanager/postaladdress/filter?selectedItem=selectedItem';
-        var expectedUrl = GlobalSettings.postalAddressApiUrl+getAddressByPostCodeParams;
+        var expectedUrl = GlobalSettings.unitManagerApiUrl+getAddressByPostCodeParams;
         var response;
 
         $httpBackend.when('GET', expectedUrl)

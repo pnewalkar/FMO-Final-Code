@@ -221,7 +221,7 @@ describe('Route-Log: Controller', function () {
         $rootScope.$apply();
 
         expect(vm.isDeliveryRouteDisabled).toBe(true);
-        expect(routeLogService.loadDeliveryRoute).toHaveBeenCalledWith('b51aa229-c984-4ca6-9c12-510187b81050', '9c1e56d7-5397-4984-9cf0-cd9ee7093c88', 'Multiple');
+        expect(routeLogService.loadDeliveryRoute).toHaveBeenCalledWith('9c1e56d7-5397-4984-9cf0-cd9ee7093c88', 'Multiple');
         expect(vm.multiSelectiondeliveryRoute).toEqual([]);
         expect(vm.deliveryRoute).toEqual([]);   
         expect(vm.isShowMultiSelectionRoute).toBe(false);

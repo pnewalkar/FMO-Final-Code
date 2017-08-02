@@ -17,6 +17,7 @@ describe('Delivery Point: Controller', function () {
     var stateMockData;
     var stateParamsMockingData;
     var mapService;
+    var CommonConstants;
     
 
     stateMockData = {"selectedUnit":{"displayText":"BN    Worthing  Office","ID":"b51aa229-c984-4ca6-9c12-510187b81050","icon":"fa-map-marker delivery","$$mdSelectId":1,"$$hashKey":"object:114"}};
@@ -30,6 +31,7 @@ describe('Delivery Point: Controller', function () {
     beforeEach(function () {
         module('deliveryPoint'); 
         module(function ($provide) {
+            $provide.value('CommonConstants',{});
             $provide.value('$state', stateMockData);
             $provide.value('$stateParams', stateParamsMockingData);  
             $provide.value('GlobalSettings', {});
@@ -142,7 +144,8 @@ describe('Delivery Point: Controller', function () {
             _$stateParams_,
             _deliveryPointService_,
             _$q_,
-            _mapService_) {
+            _mapService_,
+            _CommonConstants_) {
             
             $rootScope = _$rootScope_;
             $scope = $rootScope.$new();
@@ -154,6 +157,7 @@ describe('Delivery Point: Controller', function () {
             $stateParams = _$stateParams_;
             deliveryPointService = _deliveryPointService_;
             $q = _$q_;
+            CommonConstants = _CommonConstants_;
 
             vm = _$controller_('DeliveryPointController', {
                 $scope : $scope,
@@ -164,7 +168,8 @@ describe('Delivery Point: Controller', function () {
                 $state : $state,
                 $stateParams : $stateParams,
                 deliveryPointService : deliveryPointService,
-                mapService: _mapService_
+                mapService: _mapService_,
+                CommonConstants: CommonConstants
             });
 
             spyOn($scope, '$emit').and.callThrough();
@@ -254,12 +259,15 @@ describe('Delivery Point: Controller', function () {
 
     });
 
-    it('should close dialog window', function() {
-        vm.closeWindow();
+    it('should close dialog window', function() {    
         spyOn(deliveryPointService,'closeModalPopup');
-        deliveryPointService.closeModalPopup();
+        vm.closeWindow();
 
         expect(vm.hide).toBe(false);
+        expect(vm.display).toBe(false);
+        expect(vm.searchText).toEqual("");
+        expect(vm.mailvol).toEqual("");
+        expect(vm.multiocc).toEqual("");
         expect(deliveryPointService.closeModalPopup).toHaveBeenCalled();
     });
 

@@ -7,6 +7,9 @@ describe('Advance Search: Service', function() {
 	var mapFactory;
 	var CommonConstants;
 	var $state;
+    var roleAccessService;
+    var searchDPSelectedService;
+    var mapService;
 	var MockCommonConstants = {    
     	EntityType: { DeliveryPoint: "DeliveryPoint", StreetNetwork: "StreetNetwork", Route: "Route", Postcode: "Postcode" },
         RouteName: "ROUTENAME",
@@ -49,6 +52,24 @@ describe('Advance Search: Service', function() {
                     GetRouteForDeliveryPoint: GetRouteForDeliveryPoint
                 }
             });
+            $provide.factory('roleAccessService', function($q){
+                return {
+                    fetchActionItems: function(){
+                        var deffer = $q.defer();
+                        return deffer.promise;
+                    }
+                }
+            });
+            $provide.factory('searchDPSelectedService', function($q){
+                return {
+                    setSelectedDP: function(){},
+                }
+            });
+            $provide.factory('mapService', function($q){
+                return {
+                    deselectDP: function(){}
+                }
+            });
 		});
 		inject(function(
 			_$rootScope_,
@@ -58,7 +79,10 @@ describe('Advance Search: Service', function() {
 			_searchService_,
 			_mapFactory_,
 			_CommonConstants_,
-			_$state_){
+			_$state_,
+            _roleAccessService_,
+            _searchDPSelectedService_,
+            _mapService_){
 
 			$rootScope = _$rootScope_;
 			advanceSearchService = _advanceSearchService_;
@@ -68,6 +92,9 @@ describe('Advance Search: Service', function() {
 			mapFactory = _mapFactory_;
 			CommonConstants = _CommonConstants_;
 			$state = _$state_;			
+            roleAccessService = roleAccessService;
+            searchDPSelectedService = searchDPSelectedService;
+            mapService = mapService;
 		});
 	});
 

@@ -112,7 +112,7 @@ function DeliveryPointController(
         vm.mailvol = "";
         vm.multiocc = "";
         deliveryPointService.closeModalPopup();
-        vm.results.length = 0;
+        vm.results = {};
     }
 
     function resultSet(query) {

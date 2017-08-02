@@ -136,7 +136,7 @@ describe('SideNav: Controller', function () {
         vm.fetchActions('Delivery Point');
 
         expect(vm.contextTitle).toEqual('Delivery Point');
-        expect($state.go).toHaveBeenCalledWith("deliveryPoint", { selectedUnit: true });
+        expect($state.go).toHaveBeenCalledWith("deliveryPoint", { selectedUnit: true },{ inherit: false });
     });
 
     it('should redirect to referenceData when AccessLinkActionName is `Access Link`', function() {        

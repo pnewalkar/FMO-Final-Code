@@ -23,7 +23,7 @@ describe('Route-Log: Service', function () {
                   deferred.resolve(MockGetScenarioData);                    
                   return deferred.promise;
                 }                                    
-                function getRoutes(operationStateID, deliveryScenarioID,selectionType) {
+                function getRoutes(deliveryScenarioID,selectionType) {
                   var deferred = $q.defer();                  
                   deferred.resolve({ "deliveryRoute": true, "multiSelectiondeliveryRoute": true });
                   return deferred.promise;
@@ -156,25 +156,23 @@ describe('Route-Log: Service', function () {
 
     it('should promise to return a object `deliveryRoute` where selectionType is `Single` once loadDeliveryRoute method is called', function () {      
       var operationStateID = 'ffeb0dbc-d12b-e711-8735-28d244aef9ed';
-      var deliveryScenarioID = 'ffeb0dbc-d12b-e711-8735-28d244aef9ed';
       var selectionType =  "Single";      
       var response;
 
-      routeLogService.loadDeliveryRoute(operationStateID, deliveryScenarioID, selectionType).then(function(result){
+      routeLogService.loadDeliveryRoute(operationStateID, selectionType).then(function(result){
         response = result;
       });      
       $rootScope.$apply();
 
-      expect(response).toEqual([{deliveryRoute:{ "deliveryRoute": true, "multiSelectiondeliveryRoute": true }, multiSelectiondeliveryRoute: [  ] }]);
+      expect(response).toEqual([{ deliveryRoute:{ deliveryRoute: true, multiSelectiondeliveryRoute: true }, multiSelectiondeliveryRoute: [  ]}]);
     });
 
     it('should promise to return a object `multiSelectiondeliveryRoute` where selectionType is `Multiple` once loadDeliveryRoute method is called', function () {      
       var operationStateID = 'ffeb0dbc-d12b-e711-8735-28d244aef9ed';
-      var deliveryScenarioID = 'ffeb0dbc-d12b-e711-8735-28d244aef9ed';
       var selectionType =  "Multiple";      
       var response;
 
-      routeLogService.loadDeliveryRoute(operationStateID, deliveryScenarioID, selectionType).then(function(result){
+      routeLogService.loadDeliveryRoute(operationStateID, selectionType).then(function(result){
         response = result;
       });      
       $rootScope.$apply();
