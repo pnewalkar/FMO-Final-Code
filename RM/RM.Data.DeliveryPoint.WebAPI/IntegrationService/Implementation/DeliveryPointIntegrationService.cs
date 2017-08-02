@@ -300,7 +300,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(MapRouteForDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/" + deliveryRouteId + "/" , deliveryPointIds);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypointrange/" + deliveryRouteId, deliveryPointIds);
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode

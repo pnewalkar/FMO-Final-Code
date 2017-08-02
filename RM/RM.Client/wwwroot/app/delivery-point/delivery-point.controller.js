@@ -282,27 +282,42 @@ function DeliveryPointController(
                 "SubBuildingType": vm.subBuildingType,
             };
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
-            if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
-                setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
-                mapService.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
-                guidService.setGuid(response.id);
-                mapFactory.setAccessLink();
-                mapService.refreshLayers();
-                vm.closeWindow();
-                vm.hide = true;
+            if (response.createDeliveryPointModelDTOs || response.postalAddressDTOs) {
+                if (response.hasAllDuplicates) {
+                    // Only popup needs to be displayed & on click of OK, it should go back to the Create DP screen
+                    vm.errorMessage = response.message;
+                    vm.errorMessageTitle = "Duplicates found";
+                }
+                else {
+                    if (response.hasDuplicates) {
+                        // Show the popup Get the response.postalAddressDTOs object and make a service call to save the DPs on click 
+                    }
+                }
             }
-            else if (response.message && response.message == "Delivery Point created successfully without location") {
-                setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
-                //    setDP();
-                vm.hide = true;
-                mapService.refreshLayers();
-                vm.closeWindow();
-            }
-            else {
-                vm.isError = true;
-                vm.isDisable = true;
-                vm.errorMessage = response.message;
-                vm.errorMessageTitle = "Duplicates found";
+            else  {
+
+                if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
+                    setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
+                    mapService.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
+                    guidService.setGuid(response.id);
+                    mapFactory.setAccessLink();
+                    mapService.refreshLayers();
+                    vm.closeWindow();
+                    vm.hide = true;
+                }
+                else if (response.message && response.message == "Delivery Point created successfully without location") {
+                    setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
+                    //    setDP();
+                    vm.hide = true;
+                    mapService.refreshLayers();
+                    vm.closeWindow();
+                }
+                else {
+                    vm.isError = true;
+                    vm.isDisable = true;
+                    vm.errorMessage = response.message;
+                    vm.errorMessageTitle = "Duplicates found";
+                }
             }
             $rootScope.$broadcast('disablePrintMap', {
                 disable: true

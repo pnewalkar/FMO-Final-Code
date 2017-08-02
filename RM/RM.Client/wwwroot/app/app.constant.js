@@ -88,7 +88,7 @@ GlobalSettings.range = "Range";
 GlobalSettings.subBuilding = "Sub building";
 GlobalSettings.numberInName = "Number in Name";
 GlobalSettings.defaultRangeOption = "Odds";
-GlobalSettings.validateDeliveryPoints = "";
+
 
 angular.module('RMApp')
 .constant("GlobalSettings", GlobalSettings);
@@ -114,6 +114,8 @@ GlobalSettings.getAddressLocation = "/thirdpartyaddresslocationmanager/addresslo
 GlobalSettings.getPostalAddressByGuid = "/postaladdressmanager/postaladdress/filter/addressguid:{0}";
 GlobalSettings.createDeliveryPoint = "/DeliveryPointManager/deliverypoint/newdeliverypoint";
 GlobalSettings.updateDeliverypoint = "/DeliveryPointManager/deliverypoint/";
+GlobalSettings.validateDeliveryPoints = "/DeliveryPointManager/deliverypoint/newdeliverypoint/range/check";
+GlobalSettings.createDeliveryPointsRange = "/DeliveryPointManager/deliverypoint/newdeliverypoint/range";
 
 //-----Layers Factory---------------//
 GlobalSettings.fetchDeliveryPointsByBoundingBox = "/deliverypointmanager/deliverypoints?bbox=";
