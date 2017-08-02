@@ -1,5 +1,4 @@
-﻿Not Applicable because method is already changed.
-
+﻿
 //describe('Reference Data: Controller', function () {    
 //    var vm;
 //    var $rootScope;
