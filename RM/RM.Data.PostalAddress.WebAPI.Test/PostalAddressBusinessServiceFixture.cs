@@ -55,7 +55,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         [Test]
         public void Test_GetPostalAddressDetails_PositiveScenario()
         {
-            mockPostalAddressDataService.Setup(n => n.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(new PostalAddressDataDTO() { ID = new Guid() });
+            mockPostalAddressDataService.Setup(n => n.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(new PostalAddressDataDTO() { ID = Guid.Empty });
             var result = testCandidate.GetPostalAddressDetails(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
             Assert.IsNotNull(result);
         }
@@ -127,14 +127,14 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                 PostalAddressDTO = new PostalAddressDataDTO()
                 {
                     Postcode = "1234",
-                    ID = new Guid()
+                    ID = Guid.Empty
                 },
                 DeliveryPointDTO = new DeliveryPointDTO()
                 {
                     PostalAddress = new PostalAddressDTO()
                     {
                         Postcode = "1234",
-                        ID = new Guid()
+                        ID = Guid.Empty
                     }
                 }
             };
@@ -219,7 +219,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
 
             PostalAddressDTO postalAddressDTO = new PostalAddressDTO()
             {
-                ID = new Guid()
+                ID = Guid.Empty
             };
 
             mockPostalAddressDataService = CreateMock<IPostalAddressDataService>();
