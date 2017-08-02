@@ -132,6 +132,31 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         }
 
         /// <summary>
+        /// Create address for a delivery point with PAF/NYB details
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <returns>bool</returns>
+        public async Task<List<CreateDeliveryPointModelDTO>> CreateAddressForDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CreateAddressAndDeliveryPoint"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CreateAddressForDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/savedeliverypointaddress/range/", postalAddressDTOs);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                var createAddressAndDeliveryPoint = JsonConvert.DeserializeObject<List<CreateDeliveryPointModelDTO>>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return createAddressAndDeliveryPoint;
+            }
+        }
+
+        /// <summary>
         /// This method is used to check Duplicate NYB records
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress as input</param>
@@ -248,6 +273,34 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/" + deliveryRouteId + "/" + deliveryPointId, string.Empty);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    mapRouteForDeliveryPointSuccess = false;
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return mapRouteForDeliveryPointSuccess;
+            }
+        }
+
+        /// <summary>
+        /// Method to map a route  for delivery point
+        /// </summary>
+        /// <param name="deliveryRouteId">deliveryRouteId</param>
+        /// <param name="deliveryPointId">deliveryPointId</param>
+        /// <returns>bool</returns>
+        public async Task<bool> MapRouteForDeliveryPointForRange(Guid deliveryRouteId, List<Guid> deliveryPointIds)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.MapForDeliveryPoint"))
+            {
+                bool mapRouteForDeliveryPointSuccess = true;
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(MapRouteForDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/" + deliveryRouteId + "/" , deliveryPointIds);
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode

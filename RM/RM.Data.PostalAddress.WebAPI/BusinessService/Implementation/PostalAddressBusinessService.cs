@@ -315,7 +315,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(CheckForDuplicateNybRecords);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-                var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(PostalAddressConstants.PostalAddressType).Result;
+                var referenceDataCategoryList = await postalAddressIntegrationService.GetReferenceDataSimpleLists(PostalAddressConstants.PostalAddressType);
                 Guid addressTypeNYB = GetReferenceData(PostalAddressConstants.PostalAddressType, FileType.Nyb.ToString());
 
                 string postCode = string.Empty;
@@ -366,7 +366,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 Guid liveAddressStatusId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressStatus, PostalAddressConstants.LiveAddressStatus, true);
                 Guid deliveryPointAliasId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressAliasType, PostalAddressConstants.DeliveryPointAlias, false);
 
-                if (addDeliveryPointDTO != null && postalAddressDataDTO != null)
+                if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null)
                 {
                     if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty)
                     {
@@ -459,6 +459,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                     });
                 }
+                
 
                 return createDeliveryPointModelDTOs;
             }

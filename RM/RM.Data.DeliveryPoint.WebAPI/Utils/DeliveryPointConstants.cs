@@ -59,5 +59,8 @@
         internal const string RangeTypeOdds = "Odds";
         internal const string RangeTypeEvens = "Evens";
         internal const string RangeTypeConsecutive = "Consecutives";
+
+        internal const string DUPLICATEDELIVERYPOINTRANGE = "One or more addresses in the given range already exist.";
+        internal const string DUPLICATEDELIVERYPOINTRANGEALLDUPLICATES = "All the addresses in the given range already exist, please modify the range.";
     }
 }

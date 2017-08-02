@@ -62,5 +62,9 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
         public string AmendmentDesc { get; set; }
 
         public string FileName { get; set; }
+
+        public Guid DeliveryPointUseIndicator_GUID { get; set; }
+
+        public Guid DeliveryRoute_Guid { get; set; }
     }
 }
