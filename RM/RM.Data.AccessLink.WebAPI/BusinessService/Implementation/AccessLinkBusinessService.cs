@@ -509,8 +509,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 // Create NetworkLink
                 accessLinkDataDto.NetworkLink.ID = accessLinkGuid;
-                accessLinkDataDto.NetworkLink.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true); // ReferenceDataValue(Internal)	CategoryName(Data Provider)
-                accessLinkDataDto.NetworkLink.NetworkLinkTypeGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkLinkType, AccessLinkConstants.AccessLink, true);// ReferenceDataValue(Access Link)	CategoryName(Network Link Type)
+                accessLinkDataDto.NetworkLink.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true); // ReferenceDataValue(Internal) CategoryName(Data Provider)
+                accessLinkDataDto.NetworkLink.NetworkLinkTypeGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkLinkType, AccessLinkConstants.AccessLink, true); // ReferenceDataValue(Access Link) CategoryName(Network Link Type)
                 accessLinkDataDto.NetworkLink.LinkGeometry = DbGeometry.LineFromText(accessLinkLineManual, AccessLinkConstants.BNGCOORDINATESYSTEM);
                 accessLinkDataDto.NetworkLink.LinkLength = Convert.ToDecimal(actualLengthMeter);
                 accessLinkDataDto.NetworkLink.StartNodeID = operationalObjectGuidManual;
@@ -614,7 +614,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 // get the delivery point data based on the guid.
                 var deliveryPointOperationalObject = accessLinkIntegrationService.GetDeliveryPoint(operationalObjectGuidManual).Result;
-                DbGeometry OperationalObjectPoint = deliveryPointOperationalObject.LocationXY;
+                DbGeometry operationalObjectPoint = deliveryPointOperationalObject.LocationXY;
 
                 operationalObject = deliveryPointOperationalObject;
 

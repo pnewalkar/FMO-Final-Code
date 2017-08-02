@@ -30,7 +30,7 @@ namespace RM.DataServices.Tests.DataService
         private Guid user1Id;
         private Guid user2Id;
         private NetworkLinkDataDTO netWorkLinkDataDto;
-        private AccessLinkDataDTO accessLinkDataDTO;
+        private AccessLinkDataDTO accessLinkDataDTO = default(AccessLinkDataDTO);
 
         /// <summary>
         /// Test for Load AccessLink.
@@ -100,16 +100,15 @@ namespace RM.DataServices.Tests.DataService
             var actualResult = testCandidate.GetAccessLinksCrossingOperationalObject(coordinates, accessLinkLine);
             Assert.IsNotNull(actualResult);
         }
+
         [Test]
         public void Test_GetCrossingNetworkLink()
         {
             string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
             DbGeometry accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
-          bool actualResult=  testCandidate.GetCrossingNetworkLink(coordinates, accessLinkLine);
+            bool actualResult = testCandidate.GetCrossingNetworkLink(coordinates, accessLinkLine);
             Assert.IsTrue(actualResult);
         }
-       
-
 
         /// <summary>
         /// Setup for Nunit Tests.
@@ -130,7 +129,7 @@ namespace RM.DataServices.Tests.DataService
             var accessLink = new List<AccessLink>() { new AccessLink() { ID = Guid.NewGuid(), NetworkLink = networkLink } };
             var deliveryPoint = new List<DeliveryPoint>() { new DeliveryPoint() { NetworkNode = new NetworkNode() { Location = new Location() { Shape = unitBoundary } } } };
 
-            var NetworkNodeDataDTO = new NetworkNodeDataDTO()
+            var networkNodeDataDTO = new NetworkNodeDataDTO()
             {
                 ID = Guid.NewGuid(),
                 Location = new LocationDataDTO()
@@ -149,7 +148,6 @@ namespace RM.DataServices.Tests.DataService
                 LinkDirectionGUID = Guid.NewGuid(),
                 ConnectedNetworkLinkID = Guid.NewGuid(),
                 AccessLinkTypeGUID = Guid.NewGuid()
-                
             };
 
             var accessLinkStatus = new AccessLinkStatusDataDTO()
@@ -171,8 +169,6 @@ namespace RM.DataServices.Tests.DataService
                 LinkLength = 40,
                 LinkGeometry = unitBoundary,
                 RowCreateDateTime = DateTime.UtcNow,
-                
-                
             };
 
             var mockAsynEnumerable = new DbAsyncEnumerable<AccessLink>(accessLink);
