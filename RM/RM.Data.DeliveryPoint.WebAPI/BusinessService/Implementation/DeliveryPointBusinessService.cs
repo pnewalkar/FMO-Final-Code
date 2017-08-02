@@ -653,7 +653,6 @@
             return ConvertToDTO(await deliveryPointsDataService.GetDeliveryPointByPostalAddressWithLocation(addressId));
         }
 
-
         /// <summary>
         /// Create delivery point for PAF and NYB records.
         /// </summary>
@@ -1185,15 +1184,12 @@
         /// <returns>Create Delivery point return object</returns>
         private List<PostalAddressDTO> GetMultipleAddressesForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
-            // Common functionality
-            string rangeNums = GetValuesOnRangeType(addDeliveryPointDTO.RangeType, addDeliveryPointDTO.FromRange, addDeliveryPointDTO.ToRange);
+            string[] ranges = GetValuesOnRangeType(addDeliveryPointDTO.RangeType, addDeliveryPointDTO.FromRange, addDeliveryPointDTO.ToRange).Split(',');
             List<PostalAddressDTO> postalAddressDTOs = new List<PostalAddressDTO>();
             PostalAddressDTO postalAddressDTO = null;
 
-            // RFMO-166 and RFMO-167 story implemented here.
             if (addDeliveryPointDTO.DeliveryPointType.Equals(DeliveryPointConstants.DeliveryPointTypeRange))
             {
-                string[] ranges = rangeNums.Split(',');
                 foreach (string range in ranges)
                 {
                     postalAddressDTO = new PostalAddressDTO();
@@ -1203,27 +1199,29 @@
                     postalAddressDTO.DeliveryRoute_Guid = addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid;
                     postalAddressDTOs.Add(postalAddressDTO);
                 }
-
-                return postalAddressDTOs;
             }
-
-            // RFMO-168 and RFMO-169 story implemented here.
             else if (addDeliveryPointDTO.DeliveryPointType.Equals(DeliveryPointConstants.DeliveryPointTypeSubBuildingRange))
             {
-                return null;
+                foreach (string range in ranges)
+                {
+                    postalAddressDTO = new PostalAddressDTO();
+                    postalAddressDTO = addDeliveryPointDTO.PostalAddressDTO;
+                    postalAddressDTO.SubBuildingName = !string.IsNullOrEmpty(addDeliveryPointDTO.SubBuildingType) ? $"{addDeliveryPointDTO.SubBuildingType} {range}" : range;
+                    postalAddressDTOs.Add(postalAddressDTO);
+                }
             }
-
-            // RFMO-170 and RFMO-171 story implemented here.
-            else if (addDeliveryPointDTO.DeliveryPointType.Equals(DeliveryPointConstants.DeliveryPointTypeNumberInName))
-            {
-                return null;
-            }
-
             else
             {
-                throw new NotImplementedException();
+                foreach (string range in ranges)
+                {
+                    postalAddressDTO = new PostalAddressDTO();
+                    postalAddressDTO = addDeliveryPointDTO.PostalAddressDTO;
+                    postalAddressDTO.BuildingNumber = short.Parse(range);
+                    postalAddressDTOs.Add(postalAddressDTO);
+                }
             }
 
+            return postalAddressDTOs;
         }
 
         private void RemoveDuplicateAddresses(List<PostalAddressDTO> postalAddresses, List<PostalAddressDTO> duplicatePostalAddresses)
