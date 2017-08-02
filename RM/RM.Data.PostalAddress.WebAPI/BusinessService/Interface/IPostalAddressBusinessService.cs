@@ -17,7 +17,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <param name="lstPostalAddress">List Of address DTO</param>
         /// <param name="strFileName">CSV filename</param>
         /// <returns>return success</returns>
-        Task<bool> SavePostalAddressForNYB(List<PostalAddressDBDTO> lstPostalAddress, string strFileName);
+        Task<bool> SavePostalAddressForNYB(List<PostalAddressDTO> lstPostalAddress, string strFileName);
 
         /// <summary>
         /// Save list of PAF details into database.
@@ -26,6 +26,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <returns>returns true or false</returns>
         Task<bool> SavePAFDetails(List<PostalAddressDTO> postalAddress);
 
+        // TODO : To be moved to Unit Manager
+        /*
         /// <summary>
         /// Filter PostalAddress based on the search text
         /// </summary>
@@ -40,45 +42,55 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        Task<PostalAddressDBDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid);
+        Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid);*/
 
         /// <summary>
         /// Get Postal Address based on postal address id.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="postalAddressId">PostalAddress Unique Identifier</param>
         /// <returns>Postal Address DTO</returns>
-        PostalAddressDBDTO GetPostalAddressDetails(Guid id);
+        PostalAddressDTO GetPostalAddressDetails(Guid postalAddressId);
 
         /// <summary>
         /// This method is used to check Duplicate NYB records
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress as input</param>
         /// <returns>string</returns>
-        string CheckForDuplicateNybRecords(PostalAddressDBDTO objPostalAddress);
+        Task<string> CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress);
 
         /// <summary>
         /// This method is used to check for Duplicate Address with Delivery Points.
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
-        bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress);
+        Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress);
 
         /// <summary>
         /// This method is used to Create Address and Delivery Point.
         /// </summary>
         /// <param name="addDeliveryPointDTO">AddDeliveryPointDTO as input</param>
         /// <returns>CreateDeliveryPointModelDTO</returns>
-        CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
+        CreateDeliveryPointModelDTO CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
 
         /// <summary>
         /// Get Postal address details depending on the UDPRN
         /// </summary>
         /// <param name="uDPRN">UDPRN id</param>
         /// <returns>returns PostalAddress object</returns>
-        Task<PostalAddressDBDTO> GetPostalAddress(int? uDPRN);
+        Task<PostalAddressDTO> GetPostalAddress(int? uDPRN);
 
-        Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids);
+        /// <summary>
+        ///  Get Postal Addresses on adress guid's  as search criteria
+        /// </summary>
+        /// <param name="addressGuids"></param>
+        /// <returns></returns>
+        Task<List<PostalAddressDTO>> GetPostalAddresses(List<Guid> addressGuids);
 
+        /// <summary>
+        /// Get Postal Address on UDPRN value
+        /// </summary>
+        /// <param name="udprn">udprn value of PostalAddress</param>
+        /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn);
     }
 }

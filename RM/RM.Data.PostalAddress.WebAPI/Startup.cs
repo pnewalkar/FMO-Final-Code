@@ -8,22 +8,18 @@ using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.DataManagement.PostalAddress.WebAPI.Entities;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
-using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation;
-using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
-using Microsoft.Practices.EnterpriseLibrary.Logging;
+using RM.DataManagement.PostalAddress.WebAPI.Entities;
+using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation;
+using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 
 namespace RM.DataManagement.PostalAddress.WebAPI
 {
@@ -94,20 +90,17 @@ namespace RM.DataManagement.PostalAddress.WebAPI
                 return new ExceptionHelper(logWriter);
             });
 
-            // Infrastructure
+            // Register Infrastructure
             services.AddScoped<IDatabaseFactory<PostalAddressDBContext>, DatabaseFactory<PostalAddressDBContext>>();
-            services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
 
-            // DataServices
-            services.AddScoped<IActionManagerDataService, ActionManagerDataService>();
-            services.AddScoped<IUserRoleUnitDataService, UserRoleUnitDataService>();
-            services.AddScoped<DataService.Interfaces.IPostalAddressDataService, DataService.Implementation.PostalAddressDataService>();
-            services.AddScoped<DataService.Interfaces.IFileProcessingLogDataService, DataService.Implementation.FileProcessingLogDataService>();
-            //services.AddScoped<IPostCodeDataService, PostCodeDataService>();
-            //services.AddScoped<IReferenceDataCategoryDataService, ReferenceDataCategoryDataService>();
+            // Register DataServices
+            services.AddScoped<IPostalAddressDataService, PostalAddressDataService>();
+            services.AddScoped<IFileProcessingLogDataService, FileProcessingLogDataService>();
 
-            // Integration Services
+            // Register Integration Services
             services.AddScoped<IPostalAddressIntegrationService, PostalAddressIntegrationService>();
+
+            // Register Business Service
             services.AddScoped<IPostalAddressBusinessService, PostalAddressBusinessService>();
 
             // Others - Helper, Utils etc

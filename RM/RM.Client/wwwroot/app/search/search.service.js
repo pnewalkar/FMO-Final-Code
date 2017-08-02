@@ -11,7 +11,9 @@ searchBusinessService.$inject = ['searchService',
                                   '$stateParams',
                                   '$timeout',
                                   '$q',
-                                  'CommonConstants'];
+                                  'CommonConstants',
+                                  'mapService',
+                                  'searchDPSelectedService'];
 
 function searchBusinessService(
     searchService,
@@ -23,14 +25,15 @@ function searchBusinessService(
     $stateParams,
     $timeout,
     $q,
-    CommonConstants) {
+    CommonConstants,
+    mapService,
+    searchDPSelectedService) {
     var result = [];
     return {
         resultSet: resultSet,
         onEnterKeypress: onEnterKeypress,
         OnChangeItem: OnChangeItem,
-        advanceSearch: advanceSearch,
-        showDeliveryPointDetails: showDeliveryPointDetails
+        advanceSearch: advanceSearch
     };
 
     function resultSet(query) {
@@ -87,9 +90,11 @@ function searchBusinessService(
                     var data = response;
                     var lat = data.features[0].geometry.coordinates[1];
                     var long = data.features[0].geometry.coordinates[0];
-                    mapFactory.setDeliveryPoint(long, lat);
+                    mapService.setDeliveryPoint(long, lat);
                     var deliveryPointDetails = data.features[0].properties;
-                    showDeliveryPointDetails(deliveryPointDetails);
+                    mapService.showDeliveryPointDetails(deliveryPointDetails);
+                    searchDPSelectedService.setSelectedDP(true);
+                    mapService.deselectDP();
                 });
         }
         return contextTitle;

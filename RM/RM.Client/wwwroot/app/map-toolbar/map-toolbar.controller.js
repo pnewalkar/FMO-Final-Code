@@ -32,11 +32,28 @@ function MapToolbarController(
         vm.autoSelect();
     });
 
+    $rootScope.$on('setSelectedButton', function (event, objectStatus) {
+        selectedButton(objectStatus.name)
+    });
+
     function initialize() {
         vm.showButton();
         vm.getMapButtons();
         vm.autoSelect();
     } 
+
+    function selectedButton(button)
+    {
+        var shape = getShapeForButton(button);
+        var isActive = mapToolbarService.setSelectedButton(button, vm.selectedButton);
+        if (isActive) {
+            vm.selectedButton = button;
+        }
+        else
+        {
+            vm.selectedButton = 'select';
+        }
+    }
 
     function setSelectedButton(button) {
         var shape = getShapeForButton(button);

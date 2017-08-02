@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
@@ -20,6 +19,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
 
         public ThirdPartyAddressLocationController(IThirdPartyAddressLocationBusinessService thirdPartyAddressLocationBusinessService, ILoggingHelper logginghelper)
         {
+            // Store injected dependencies
             this.thirdPartyAddressLocationBusinessService = thirdPartyAddressLocationBusinessService;
             this.loggingHelper = logginghelper;
         }
@@ -37,13 +37,17 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetAddressLocationByUDPRNJson"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                if (udprn == 0)
+                {
+                    throw new ArgumentException(nameof(udprn));
+                }
 
                 try
                 {
+                    string methodName = typeof(ThirdPartyAddressLocationController) + "." + nameof(GetAddressLocationByUDPRNJson);
+                    loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId);
                     object addressLocationJson = await this.thirdPartyAddressLocationBusinessService.GetAddressLocationByUDPRNJson(udprn);
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId);
                     return Ok(addressLocationJson);
                 }
                 catch (AggregateException ae)
@@ -70,13 +74,17 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetAddressLocationByUDPRN"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                if (udprn == 0)
+                {
+                    throw new ArgumentException(nameof(udprn));
+                }
 
                 try
                 {
+                    string methodName = typeof(ThirdPartyAddressLocationController) + "." + nameof(GetAddressLocationByUDPRN);
+                    loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId);
                     AddressLocationDTO addressLocationDTO = await this.thirdPartyAddressLocationBusinessService.GetAddressLocationByUDPRN(udprn);
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId);
                     return Ok(addressLocationDTO);
                 }
                 catch (AggregateException ae)
@@ -92,6 +100,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
             }
         }
 
+        // TODO : Add method when ready
         /// <summary>
         /// Method to save the list of USR data into the database.
         /// </summary>
@@ -104,7 +113,12 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.SaveUSRDetails"))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    if (addressLocationUsrpostdtos == null || addressLocationUsrpostdtos.Count <= 0)
+                    {
+                        throw new ArgumentException(nameof(addressLocationUsrpostdtos));
+                    }
+
+                    string methodName = typeof(ThirdPartyAddressLocationController) + "." + nameof(SaveUSRDetails);
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     if (!ModelState.IsValid)
@@ -129,6 +143,5 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
                 throw realExceptions;
             }
         }
-
     }
 }

@@ -40,11 +40,17 @@
 
         internal const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
         internal const string OperationalStatusGUIDLive = "Live";
+        internal const string OperationalStatusGUIDLivePendingLocation = "Live pending location";
         internal const string NetworkNodeTypeRMGServiceNode = "RMG Service Node";
         internal const string TASKNOTIFICATION = "Notification Type";
         internal const string TASKACTION = "Action required";
         internal const string TASKSOURCE = "SYSTEM";
         internal const string DeliveryPointUseIndicatorPAF = "Organisation";
         internal const string EXTERNAL = "External";
+        internal const string ROWVERSION = "RowVersion";
+        internal const string UnSequenced = "U";
+        internal const string PRIMARYROUTE = "Primary - ";
+        internal const string SECONDARYROUTE = "Secondary - ";
+        internal const string SearchResultCount = "SearchResultCount";
     }
 }

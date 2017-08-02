@@ -40,8 +40,8 @@ function SimulationController($stateParams,
         });
     }
     function scenarioChange() {
-        loadDeliveryRoute(vm.selectedRouteStatusObj, vm.selectedRouteScenario.id);
-        vm.isDeliveryRouteDisabled = false;
+        loadDeliveryRoute(vm.selectedRouteScenario.id);  
+        vm.deliveryRoute = null;
     }
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitID) {
         simulationService.loadScenario(selectedRouteStatusObj, selectedDeliveryUnitID).then(function (response) {
@@ -56,10 +56,14 @@ function SimulationController($stateParams,
             }
         });
     }
-    function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
-        simulationService.loadDeliveryRoute(operationStateID, deliveryScenarioID).then(function (response) {
+    function loadDeliveryRoute(deliveryScenarioID) {
+        simulationService.loadDeliveryRoute(deliveryScenarioID).then(function (response) {
             vm.deliveryRoute = response;
-        });
+            if (vm.deliveryRoute.length > 0) {
+                vm.isDeliveryRouteDisabled = false;
+            }
+        });       
+            vm.isDeliveryRouteDisabled = true;  
     }
 
     function selectionChanged(selectedRoute) {

@@ -14,15 +14,12 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.DataManagement.DeliveryRoute.WebAPI.Utils;
 
 namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
 {
     public class DeliveryRouteIntegrationService : IDeliveryRouteIntegrationService
     {
-        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
-        private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
-        private const string UnitManagerDataWebAPIName = "UnitManagerDataWebAPIName";
-
         #region Property Declarations
 
         private string deliveryRouteWebAPIName = string.Empty;
@@ -38,9 +35,9 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
         public DeliveryRouteIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.httpHandler = httpHandler;
-            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
-            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
-            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(UnitManagerDataWebAPIName).ToString() : string.Empty;
+            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteConstants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteConstants.ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteConstants.UnitManagerDataWebAPIName).ToString() : string.Empty;
             this.loggingHelper = loggingHelper;
         }
 
@@ -102,25 +99,6 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return referenceId;
-            }
-        }
-
-        public async Task<Guid> GetUnitLocationTypeId(Guid unitId)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetUnitLocationTypeId"))
-            {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "Unit/" + unitId);
-                if (!result.IsSuccessStatusCode)
-                {
-                    var responseContent = result.ReasonPhrase;
-                    throw new ServiceException(responseContent);
-                }
-                Guid loactionTypeId = JsonConvert.DeserializeObject<Guid>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return loactionTypeId;
             }
         }
 

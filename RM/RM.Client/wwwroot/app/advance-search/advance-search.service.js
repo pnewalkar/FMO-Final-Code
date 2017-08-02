@@ -6,14 +6,20 @@ advanceSearchService.$inject = ['advanceSearchAPIService',
                                 'searchService',
                                 'mapFactory',
                                 'CommonConstants',
-                                '$state'];
+                                '$state',
+                                 'roleAccessService',
+                                 'searchDPSelectedService',
+                                 'mapService'];
 
 function advanceSearchService(advanceSearchAPIService,
                               $q,                            
                               searchService,
                               mapFactory,
                               CommonConstants,
-                              $state) {
+                              $state,
+                              roleAccessService,
+                              searchDPSelectedService,
+                              mapService) {
     
     
     var deliveryPointObj = null;
@@ -22,22 +28,21 @@ function advanceSearchService(advanceSearchAPIService,
     var deliveryRouteobj = null;
     var route = [];
     var obj = null;
+    var arrDeliverypoints = [];
+    var arrPostCodes = [];
+    var arrStreetNames = [];
+    var arrDeliveryRoutes = [];
+    var arrRoutes = [];
 
     return {
         queryAdvanceSearch: queryAdvanceSearch,
-        onChangeItem: onChangeItem,
-        showDeliveryPointDetails: showDeliveryPointDetails
+        onChangeItem: onChangeItem
     };
 
     function queryAdvanceSearch(query) {
         var deferred = $q.defer();
         var advanceSearchResults = null;
-        var arrDeliverypoints = [];
-        var arrPostCodes = [];
-        var arrStreetNames = [];
-        var arrDeliveryRoutes = [];
-        var arrRoutes = [];
-
+      
         advanceSearchAPIService.advanceSearch(query).then(function (response) {
             advanceSearchResults = response;
             angular.forEach(advanceSearchResults.searchResultItems, function (value, key) {
@@ -54,7 +59,7 @@ function advanceSearchService(advanceSearchAPIService,
                    obj = { 'displayText': value.displayText }
                    arrStreetNames.push(obj);
                 }
-                if (value.type === CommonConstants.EntityType.Route) {
+              else  if (value.type === CommonConstants.EntityType.Route) {
                     obj = { 'displayText': value.displayText }
                     arrDeliveryRoutes.push(obj);
                 }
@@ -89,19 +94,8 @@ function advanceSearchService(advanceSearchAPIService,
             else {
                 deliveryRouteobj = { 'type': CommonConstants.EntityType.Route, 'name': arrDeliveryRoutes, 'open': false };
             }
-     
-            if (arrPostCodes.length > 0) {
-                arrRoutes.push(postCodeObj);
-            }
-            if (arrStreetNames.length > 0) {
-                arrRoutes.push(streetnameObj);
-            }
-            if (arrDeliverypoints.length > 0) {
-                arrRoutes.push(deliveryPointObj);
-            }
-            if (arrDeliveryRoutes.length > 0) {
-                arrRoutes.push(deliveryRouteobj);
-            }
+
+            groupSearchEntities();
             deferred.resolve(arrRoutes);
         });
         return deferred.promise;
@@ -116,33 +110,78 @@ function advanceSearchService(advanceSearchAPIService,
                     coordinatesData = response;
                     lat = coordinatesData.features[0].geometry.coordinates[1];
                     long = coordinatesData.features[0].geometry.coordinates[0];
-                    mapFactory.setDeliveryPoint(long, lat);
+                    mapService.setDeliveryPoint(long, lat);
                     var deliveryPointDetails = coordinatesData.features[0].properties;
-                    showDeliveryPointDetails(deliveryPointDetails);
+                    mapService.showDeliveryPointDetails(deliveryPointDetails);
                     deferred.resolve(coordinatesData);
+                    searchDPSelectedService.setSelectedDP(true);
+                    mapService.deselectDP();
                 });
             return deferred.promise;
     }
 
-    function showDeliveryPointDetails(deliveryPointDetails) {
-        deliveryPointDetails.routeName = null;
-        mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
-              .then(function (response) {
-                  if (response != null) {
-                      if (response[0].key == CommonConstants.RouteName) {
-                          deliveryPointDetails.routeName = [response[0].value];
-                          if (response[1].key == CommonConstants.DpUse) {
-                              deliveryPointDetails.dpUse = response[1].value;
-                          }
-                      }
-                      else if (response[0].key == CommonConstants.DpUse) {
-                          deliveryPointDetails.dpUse = response[0].value;
-                      }
-                  }
-                  $state.go('deliveryPointDetails', {
-                      selectedDeliveryPoint: deliveryPointDetails
-                  }, { reload: true });
-              });
+    function groupSearchEntities() {
+        var userRoleDetails = roleAccessService.fetchActionItems().RolesActionResult;
+        if (userRoleDetails && userRoleDetails.length > 0) {
+            switch (userRoleDetails[0].RoleName) {
+                case CommonConstants.UserType.DeliveryUser:
+                    {
+                        arrRoutes = [];
+                        if (arrPostCodes.length > 0) {
+                            arrRoutes.push(postCodeObj);
+                        }
+                        if (arrStreetNames.length > 0) {
+                            arrRoutes.push(streetnameObj);
+                        }
+                        if (arrDeliverypoints.length > 0) {
+                            arrRoutes.push(deliveryPointObj);
+                        }
+                        if (arrDeliveryRoutes.length > 0) {
+                            arrRoutes.push(deliveryRouteobj);
+                        }
+                        break;
+                    }
+                case CommonConstants.UserType.CollectionUser:
+                    {
+                        arrRoutes = [];
+                        if (arrPostCodes.length > 0) {
+                            arrRoutes.push(postCodeObj);
+                        }
+                        if (arrDeliveryRoutes.length > 0) {
+                            arrRoutes.push(deliveryRouteobj);
+                        }
+                        if (arrStreetNames.length > 0) {
+                            arrRoutes.push(streetnameObj);
+                        }
+                        if (arrDeliverypoints.length > 0) {
+                            arrRoutes.push(deliveryPointObj);
+                        }
+                        break;
+                    }
+                case CommonConstants.UserType.ManagerUser:
+                    {
+                        arrRoutes = [];
+                        if (arrPostCodes.length > 0) {
+                            arrRoutes.push(postCodeObj);
+                        }
+
+                        if (arrDeliverypoints.length > 0) {
+                            arrRoutes.push(deliveryPointObj);
+                        }
+                        if (arrStreetNames.length > 0) {
+                            arrRoutes.push(streetnameObj);
+                        }
+                        if (arrDeliveryRoutes.length > 0) {
+                            arrRoutes.push(deliveryRouteobj);
+                        }
+                        break;
+
+                    }
+                default:
+                    break;
+
+            }
+        }
     }
    
 }

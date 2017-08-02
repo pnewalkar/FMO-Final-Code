@@ -2,12 +2,11 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Operational.RouteLog.WebAPI.BusinessService;
 using RM.Operational.RouteLog.WebAPI.Controllers.BaseController;
+using RM.Operational.RouteLog.WebAPI.DTO;
 
 namespace RM.Operational.RouteLog.WebAPI.Controllers
 {
@@ -16,6 +15,9 @@ namespace RM.Operational.RouteLog.WebAPI.Controllers
     {
         private IRouteLogBusinessService routeLogBusinessService = default(IRouteLogBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.RouteLogAPIPriority;
+        private int entryEventId = LoggerTraceConstants.RouteLogControllerMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.RouteLogControllerMethodExitEventId;
 
         public RouteLogController(IRouteLogBusinessService deliveryRouteBusinessService, ILoggingHelper loggingHelper)
         {
@@ -23,18 +25,23 @@ namespace RM.Operational.RouteLog.WebAPI.Controllers
             this.loggingHelper = loggingHelper;
         }
 
+        /// <summary>
+        /// Method to retrieve sequenced delivery point details
+        /// </summary>
+        /// <param name="deliveryRoute">deliveryRoute</param>
+        /// <returns>deliveryRoute</returns>
         [HttpPost("routelogs")]
-        public async Task<IActionResult> GenerateRouteLogSummaryReport([FromBody]RouteDTO deliveryRouteDto)
+        public async Task<IActionResult> GenerateRouteLogSummaryReport([FromBody]RouteDTO deliveryRoute)
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GenerateRouteLogSummaryReport"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(RouteLogController) + "." + nameof(GenerateRouteLogSummaryReport);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 try
                 {
-                    var pdfFilename = await routeLogBusinessService.GenerateRouteLog(deliveryRouteDto);
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    var pdfFilename = await routeLogBusinessService.GenerateRouteLog(deliveryRoute);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(pdfFilename);
                 }
                 catch (AggregateException ae)

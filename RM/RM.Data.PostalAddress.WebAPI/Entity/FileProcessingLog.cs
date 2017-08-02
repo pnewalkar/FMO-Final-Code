@@ -1,10 +1,8 @@
 namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.FileProcessingLog")]
     public partial class FileProcessingLog
@@ -20,6 +18,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 
         public DateTime FileProcessing_TimeStamp { get; set; }
 
+        [Required]
         [StringLength(256)]
         public string FileName { get; set; }
 
@@ -32,7 +31,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 
         public string Comments { get; set; }
 
-        [Required]
         public bool SuccessFlag { get; set; }
     }
 }

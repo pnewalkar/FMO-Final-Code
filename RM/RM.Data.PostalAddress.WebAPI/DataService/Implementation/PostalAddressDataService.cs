@@ -8,8 +8,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using CommonLibrary.Utilities.HelperMiddleware;
-    using DTO.Model;
+    using Data.PostalAddress.WebAPI.Utils;
+    using DataDTO;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.ExceptionMiddleware;
     using RM.CommonLibrary.HelperMiddleware;
@@ -24,12 +24,11 @@
     /// </summary>
     public class PostalAddressDataService : DataServiceBase<PostalAddress, PostalAddressDBContext>, IPostalAddressDataService
     {
-        private const string INSERT = "I";
-        private const string UPDATE = "U";
-        private const string DELETE = "D";
-
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogDataService fileProcessingLog = default(IFileProcessingLogDataService);
+        private int priority = LoggerTraceConstants.PostalAddressAPIPriority;
+        private int entryEventId = LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId;
 
         public PostalAddressDataService(IDatabaseFactory<PostalAddressDBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogDataService fileProcessingLog)
             : base(databaseFactory)
@@ -38,109 +37,141 @@
             this.fileProcessingLog = fileProcessingLog;
         }
 
-        ///// <summary>
-        ///// Delete postal Address records do not have an associated Delivery Point
-        ///// </summary>
-        ///// <param name="lstUDPRN">List of UDPRN</param>
-        ///// <param name="addressType">NYB</param>
-        ///// <returns>true or false</returns>
-        //public async Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
-        //{
-        //    try
-        //    {
-        //        bool isPostalAddressDeleted = false;
-        //        string nybDeleteMsg = Constants.NYBErrorMessageForDelete;
-        //        if (lstUDPRN != null && lstUDPRN.Any())
-        //        {
-        //            var lstAddress = await DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToListAsync();
-        //            if (lstAddress.Count > 0)
-        //            {
-        //                lstAddress.ForEach(postalAddressEntity =>
-        //                {
-        //                    if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
-        //                    {
-        //                        isPostalAddressDeleted = false;
-        //                        this.loggingHelper.Log(string.Format(nybDeleteMsg, postalAddressEntity.UDPRN), TraceEventType.Information);
-        //                    }
-        //                    else
-        //                    {
-        //                        DataContext.PostalAddresses.Remove(postalAddressEntity);
-        //                    }
-        //                });
-        //                await DataContext.SaveChangesAsync();
-        //                isPostalAddressDeleted = true;
-        //            }
-        //        }
+        /// <summary>
+        /// Common steps to configure mapper for PostalAddress
+        /// </summary>
 
-        //        return isPostalAddressDeleted;
-        //    }
-        //    catch (DbUpdateException dbUpdateException)
-        //    {
-        //        throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlDeleteException, string.Concat("PostalAdresses with UPPRN:", string.Join(",", lstUDPRN))));
-        //    }
-        //}
+        /// <summary>
+        /// Delete postal Address records do not have an associated Delivery Point
+        /// </summary>
+        /// <param name="lstUDPRN">List of UDPRN</param>
+        /// <param name="addressType">NYB</param>
+        /// <returns>true or false</returns>
+        public async Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteNYBPostalAddress"))
+            {
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(DeleteNYBPostalAddress);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                try
+                {
+                    bool isPostalAddressDeleted = false;
+                    string nybDeleteMsg = PostalAddressConstants.NYBErrorMessageForDelete;
+                    if (lstUDPRN != null && lstUDPRN.Any())
+                    {
+                        var lstAddress = await DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Include(n => n.PostalAddressStatus).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToListAsync();
+                        if (lstAddress != null && lstAddress.Count > 0)
+                        {
+                            foreach (var postalAddressEntity in lstAddress)
+                            {
+                                if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
+                                {
+                                    isPostalAddressDeleted = false;
+                                    this.loggingHelper.Log(string.Format(nybDeleteMsg, postalAddressEntity.UDPRN), TraceEventType.Information);
+                                }
+                                else
+                                {
+                                    DataContext.PostalAddressStatus.RemoveRange(postalAddressEntity.PostalAddressStatus);
+                                    DataContext.PostalAddresses.Remove(postalAddressEntity);
+                                }
+                            }
+
+                            await DataContext.SaveChangesAsync();
+                            isPostalAddressDeleted = true;
+                        }
+                    }
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return isPostalAddressDeleted;
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlDeleteException, string.Concat("PostalAdresses with UPPRN:", string.Join(",", lstUDPRN))));
+                }
+            }
+        }
 
         /// <summary>
         /// Create or update NYB details depending on the UDPRN
         /// </summary>
         /// <param name="objPostalAddress">NYB details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
-        /// <returns>true or false</returns>
-        public async Task<bool> SaveAddress(PostalAddressDBDTO objPostalAddress, string strFileName)
+        /// <returns>Whether the record has been updated correctly</returns>
+        public async Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddressDataDTO, string strFileName, Guid operationalStatusGUID)
         {
             bool isPostalAddressInserted = false;
-            PostalAddress objAddress = default(PostalAddress);
+            PostalAddress objPostalAddress = default(PostalAddress);
             PostalAddress entity = new PostalAddress();
             if (objPostalAddress != null)
             {
                 try
                 {
-                    objAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefaultAsync();
-                    if (objAddress != null)
+                    using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveAddress"))
                     {
-                        objAddress.Postcode = objPostalAddress.Postcode;
-                        objAddress.PostTown = objPostalAddress.PostTown;
-                        objAddress.DependentLocality = objPostalAddress.DependentLocality;
-                        objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
-                        objAddress.Thoroughfare = objPostalAddress.Thoroughfare;
-                        objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
-                        objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
-                        objAddress.BuildingName = objPostalAddress.BuildingName;
-                        objAddress.SubBuildingName = objPostalAddress.SubBuildingName;
-                        objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
-                        objAddress.DepartmentName = objPostalAddress.DepartmentName;
-                        objAddress.OrganisationName = objPostalAddress.OrganisationName;
-                        objAddress.UDPRN = objPostalAddress.UDPRN;
-                        objAddress.PostcodeType = objPostalAddress.PostcodeType;
-                        objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
-                        objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                        objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
-                    }
-                    else
-                    {
-                        objPostalAddress.ID = Guid.NewGuid();
-                        entity = GenericMapper.Map<PostalAddressDBDTO, PostalAddress>(objPostalAddress);
-                        DataContext.PostalAddresses.Add(entity);
-                    }
+                        string methodName = typeof(PostalAddressDataService) + "." + nameof(SaveAddress);
+                        loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                        objPostalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddressDataDTO.UDPRN).SingleOrDefaultAsync();
 
-                    await DataContext.SaveChangesAsync();
-                    isPostalAddressInserted = true;
+                        // Update existing Postal Address else Insert new Postal Address
+                        if (objPostalAddress != null)
+                        {
+                            objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
+                            objPostalAddress.PostTown = objPostalAddressDataDTO.PostTown;
+                            objPostalAddress.DependentLocality = objPostalAddressDataDTO.DependentLocality;
+                            objPostalAddress.DoubleDependentLocality = objPostalAddressDataDTO.DoubleDependentLocality;
+                            objPostalAddress.Thoroughfare = objPostalAddressDataDTO.Thoroughfare;
+                            objPostalAddress.DependentThoroughfare = objPostalAddressDataDTO.DependentThoroughfare;
+                            objPostalAddress.BuildingNumber = objPostalAddressDataDTO.BuildingNumber;
+                            objPostalAddress.BuildingName = objPostalAddressDataDTO.BuildingName;
+                            objPostalAddress.SubBuildingName = objPostalAddressDataDTO.SubBuildingName;
+                            objPostalAddress.POBoxNumber = objPostalAddressDataDTO.POBoxNumber;
+                            objPostalAddress.DepartmentName = objPostalAddressDataDTO.DepartmentName;
+                            objPostalAddress.OrganisationName = objPostalAddressDataDTO.OrganisationName;
+                            objPostalAddress.UDPRN = objPostalAddressDataDTO.UDPRN;
+                            objPostalAddress.PostcodeType = objPostalAddressDataDTO.PostcodeType;
+                            objPostalAddress.SmallUserOrganisationIndicator = objPostalAddressDataDTO.SmallUserOrganisationIndicator;
+                            objPostalAddress.DeliveryPointSuffix = objPostalAddressDataDTO.DeliveryPointSuffix;
+                            objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
+                        }
+                        else
+                        {
+                             Mapper.Initialize(cfg =>
+                            {
+                                cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
+                                cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
+                                cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
+                            });
+                            Mapper.Configuration.CreateMapper();
+
+                            entity = Mapper.Map<PostalAddressDataDTO, PostalAddress>(objPostalAddressDataDTO);
+
+                            entity.ID = Guid.NewGuid();
+                            PostalAddressStatus postalAddressStatus = new PostalAddressStatus
+                            {
+                                ID = Guid.NewGuid(),
+                                OperationalStatusGUID = operationalStatusGUID,
+                                StartDateTime = DateTime.UtcNow,
+                                RowCreateDateTime = DateTime.UtcNow
+                            };
+                            entity.PostalAddressStatus.Add(postalAddressStatus);
+                            DataContext.PostalAddresses.Add(entity);
+                        }
+
+                        await DataContext.SaveChangesAsync();
+                        isPostalAddressInserted = true;
+                        loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    if (objAddress != null)
+                    // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
+                    if (objPostalAddressDataDTO.UDPRN != null)
                     {
-                        DataContext.Entry(objAddress).State = EntityState.Unchanged;
-                    }
-                    else
-                    {
-                        DataContext.Entry(entity).State = EntityState.Unchanged;
+                        LogFileException(objPostalAddressDataDTO.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
                     }
 
-                    if (objPostalAddress.UDPRN != null)
-                    {
-                        LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
-                    }
+                    throw ex;
                 }
             }
 
@@ -152,52 +183,66 @@
         /// </summary>
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
-        /// <returns>true or false</returns>
-        public async Task<bool> InsertAddress(PostalAddressDBDTO objPostalAddress, string strFileName)
+        /// <returns>Whether the record has been inserted correctly</returns>
+        public async Task<bool> InsertAddress(PostalAddressDataDTO objPostalAddress, string strFileName)
         {
+            if (objPostalAddress == null)
+            {
+                throw new ArgumentNullException(nameof(objPostalAddress), string.Format(ErrorConstants.Err_ArgumentmentNullException, objPostalAddress));
+            }
+
             bool isPostalAddressInserted = false;
             PostalAddress objAddress = new PostalAddress();
             try
             {
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.InsertAddress"))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    string methodName = typeof(PostalAddressDataService) + "." + nameof(InsertAddress);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
+                    // Insert new Postal Address
                     if (objPostalAddress != null)
                     {
                         Mapper.Initialize(cfg =>
                         {
-                            cfg.CreateMap<PostalAddressDBDTO, PostalAddress>();
-                            cfg.CreateMap<PostalAddressStatusDTO, PostalAddressStatus>();
+                            cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
+                            cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
+                            cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
                         });
                         Mapper.Configuration.CreateMapper();
 
-                        objAddress = Mapper.Map<PostalAddressDBDTO, PostalAddress>(objPostalAddress);
+                        objAddress = Mapper.Map<PostalAddressDataDTO, PostalAddress>(objPostalAddress);
                         DataContext.PostalAddresses.Add(objAddress);
 
                         await DataContext.SaveChangesAsync();
                         isPostalAddressInserted = true;
                     }
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 }
+            }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateConcurrencyException.ToString());
+                throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (DbUpdateException dbUpdateException)
             {
-                DataContext.Entry(objAddress).State = EntityState.Unchanged;
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateException.ToString());
                 throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                DataContext.Entry(objAddress).State = EntityState.Unchanged;
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), notSupportedException.ToString());
                 notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                DataContext.Entry(objAddress).State = EntityState.Unchanged;
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), disposedException.ToString());
                 disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
@@ -211,24 +256,19 @@
         /// </summary>
         /// <param name="uDPRN">UDPRN id</param>
         /// <returns>returns PostalAddress object</returns>
-        public async Task<PostalAddressDBDTO> GetPostalAddress(int? uDPRN)
+        public async Task<PostalAddressDataDTO> GetPostalAddress(int? uDPRN)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddress);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var postalAddress = await DataContext.PostalAddresses.Include(m => m.PostalAddressStatus).Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
+                var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
-                var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return dtoPostalAddress;
             }
         }
@@ -238,90 +278,20 @@
         /// </summary>
         /// <param name="objPostalAddress">Postal address</param>
         /// <returns>returns PostalAddress object</returns>
-        public async Task<PostalAddressDBDTO> GetPostalAddress(PostalAddressDBDTO objPostalAddress)
+        public async Task<PostalAddressDataDTO> GetPostalAddress(PostalAddressDataDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddress);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(l => l.PostalAddressStatus)//.Include(m => m.DeliveryPoints)
-                .FirstOrDefaultAsync(n => n.Postcode == objPostalAddress.Postcode
-                                     && ((n.BuildingName ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.BuildingName)
-                                              ? objPostalAddress.BuildingName
-                                              : null))
-                                         ||
-                                         ((!string.IsNullOrEmpty(n.BuildingName) ? n.BuildingName : string.Empty) ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.BuildingName)
-                                              ? objPostalAddress.BuildingName
-                                              : string.Empty)))
+                // Get first Postal Address satifying the below condition
+                PostalAddress postalAddress = await GetPostalAddressEntity(objPostalAddress);
 
-                                     && ((n.BuildingNumber == objPostalAddress.BuildingNumber)
-                                         ||
-                                         ((n.BuildingNumber ?? 0) == (objPostalAddress.BuildingNumber ?? 0)))
+                ConfigureMapper();
 
-                                     && ((n.SubBuildingName ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName)
-                                              ? objPostalAddress.SubBuildingName
-                                              : null))
-                                         ||
-                                         ((!string.IsNullOrEmpty(n.SubBuildingName)
-                                              ? n.SubBuildingName
-                                              : string.Empty) ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName)
-                                              ? objPostalAddress.SubBuildingName
-                                              : string.Empty)))
-                                     && ((n.OrganisationName ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.OrganisationName)
-                                              ? objPostalAddress.OrganisationName
-                                              : null))
-                                         ||
-                                         ((!string.IsNullOrEmpty(n.OrganisationName)
-                                              ? n.OrganisationName
-                                              : string.Empty) ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.OrganisationName)
-                                              ? objPostalAddress.OrganisationName
-                                              : string.Empty)))
-                                     && ((n.DepartmentName ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.DepartmentName)
-                                              ? objPostalAddress.DepartmentName
-                                              : null))
-                                         ||
-                                         ((!string.IsNullOrEmpty(n.DepartmentName) ? n.DepartmentName : string.Empty) ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.DepartmentName)
-                                              ? objPostalAddress.DepartmentName
-                                              : string.Empty)))
-                                     && ((n.Thoroughfare ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare)
-                                              ? objPostalAddress.Thoroughfare
-                                              : null))
-                                         ||
-                                         ((!string.IsNullOrEmpty(n.Thoroughfare) ? n.Thoroughfare : string.Empty) ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare)
-                                              ? objPostalAddress.Thoroughfare
-                                              : string.Empty)))
-                                     && ((n.DependentThoroughfare ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare)
-                                              ? objPostalAddress.DependentThoroughfare
-                                              : null))
-                                         ||
-                                         ((!string.IsNullOrEmpty(n.DependentThoroughfare)
-                                              ? n.DependentThoroughfare
-                                              : string.Empty) ==
-                                          (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare)
-                                              ? objPostalAddress.DependentThoroughfare
-                                              : string.Empty))));
-
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
-
-                var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return dtoPostalAddress;
             }
         }
@@ -329,152 +299,78 @@
         /// <summary>
         /// Checking for duplicatesthat already exists in FMO as a NYB record
         /// </summary>
-        /// <param name="objPostalAddress">objPostalAddress</param>
+        /// <param name="objPostalAddress">Postal address</param>
         /// <param name="addressTypeNYBGuid">Reference data Guid of NYB</param>
-        /// <returns>string</returns>
-        public string CheckForDuplicateNybRecords(PostalAddressDBDTO objPostalAddress, Guid addressTypeNYBGuid)
+        /// <returns>postcode</returns>
+        public string CheckForDuplicateNybRecords(PostalAddressDataDTO objPostalAddress, Guid addressTypeNYBGuid)
         {
             string postCode = string.Empty;
 
-            var postalAddress = DataContext.PostalAddresses.AsNoTracking()
-                .Where(n => n.AddressType_GUID == addressTypeNYBGuid);
-
-            if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.CheckForDuplicateNybRecords"))
             {
-                postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName,
-                    StringComparison.OrdinalIgnoreCase));
-            }
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(CheckForDuplicateNybRecords);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-            if (objPostalAddress.BuildingNumber != null)
-            {
-                postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
-            }
+                // Get the Postal Address Entity matching the address fields
+                List<PostalAddress> postalAddress = GetPostalAddressEntities(objPostalAddress, addressTypeNYBGuid).ToList();
 
-            if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
-            {
-                postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName,
-                    StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
-            {
-                postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName,
-                    StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
-            {
-                postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName,
-                    StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
-            {
-                postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(
-                    objPostalAddress.Thoroughfare,
-                    StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
-            {
-                postalAddress =
-                    postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare,
-                        StringComparison.OrdinalIgnoreCase));
-            }
-
-            var addressDetails = postalAddress.ToList();
-            if (addressDetails != null && addressDetails.Count > 0)
-            {
-                foreach (var address in addressDetails)
+                if (postalAddress != null && postalAddress.Count > 0)
                 {
-                    if (address != null && address.Postcode != objPostalAddress.Postcode)
+                    foreach (var address in postalAddress)
                     {
-                        postCode = address.Postcode;
-                        break;
+                        if (address != null && address.Postcode != objPostalAddress.Postcode)
+                        {
+                            postCode = address.Postcode;
+                            break;
+                        }
                     }
                 }
-            }
 
-            return postCode;
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return postCode;
+            }
         }
 
-        ///// <summary>
-        ///// Check For Duplicate Address With DeliveryPoints
-        ///// </summary>
-        ///// <param name="objPostalAddress">objPostalAddress</param>
-        ///// <returns>bool</returns>
-        //public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress)
-        //{
-        //    bool isDuplicate = false;
+        /// <summary>
+        /// Check For Duplicate Address With DeliveryPoints
+        /// </summary>
+        /// <param name="objPostalAddress">Postal address</param>
+        /// <returns>Whether the record is a duplicate or not</returns>
+        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress)
+        {
+            bool isDuplicate = false;
 
-        //    var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
-        //        .Where(n => n.Postcode == objPostalAddress.Postcode);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.CheckForDuplicateAddressWithDeliveryPoints"))
+            {
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-        //    if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
-        //    {
-        //        postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName,
-        //            StringComparison.OrdinalIgnoreCase));
-        //    }
+                var postalAddress = GetPostalAddressEntities(objPostalAddress).ToList();
 
-        //    if (objPostalAddress.BuildingNumber != null)
-        //    {
-        //        postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
-        //    }
+                if (postalAddress != null && postalAddress.Count > 0)
+                {
+                    foreach (var address in postalAddress)
+                    {
+                        if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
+                        {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+                }
 
-        //    if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
-        //    {
-        //        postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName,
-        //            StringComparison.OrdinalIgnoreCase));
-        //    }
-
-        //    if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
-        //    {
-        //        postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName,
-        //            StringComparison.OrdinalIgnoreCase));
-        //    }
-
-        //    if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
-        //    {
-        //        postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName,
-        //            StringComparison.OrdinalIgnoreCase));
-        //    }
-
-        //    if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
-        //    {
-        //        postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare,
-        //            StringComparison.OrdinalIgnoreCase));
-        //    }
-
-        //    if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
-        //    {
-        //        postalAddress =
-        //            postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare,
-        //                StringComparison.OrdinalIgnoreCase));
-        //    }
-
-        //    var addressDetails = postalAddress.ToList();
-        //    if (addressDetails != null && addressDetails.Count > 0)
-        //    {
-        //        foreach (var address in addressDetails)
-        //        {
-        //            if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
-        //            {
-        //                isDuplicate = true;
-        //                break;
-        //            }
-        //        }
-        //    }
-
-        //    return isDuplicate;
-        //}
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return isDuplicate;
+            }
+        }
 
         /// <summary>
         /// Update PAF details depending on the UDPRN
         /// </summary>
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
-        /// <returns>true or false</returns>
-        public async Task<bool> UpdateAddress(PostalAddressDBDTO objPostalAddress, string strFileName, Guid deliveryPointUseIndicatorPAF)
+        /// <returns>Whether the entity has been updated or not</returns>
+        public async Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string strFileName)
         {
             bool isPostalAddressUpdated = false;
             PostalAddress objAddress = new PostalAddress();
@@ -482,13 +378,12 @@
             {
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdateAddress"))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    string methodName = typeof(PostalAddressDataService) + "." + nameof(UpdateAddress);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     if (objPostalAddress != null)
                     {
-                        //objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
-                        objAddress = DataContext.PostalAddresses.Include(m => m.PostalAddressStatus).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                        objAddress = DataContext.PostalAddresses.Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
 
                         if (objAddress != null)
                         {
@@ -508,61 +403,38 @@
                             objAddress.PostcodeType = objPostalAddress.PostcodeType;
                             objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                             objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                            objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
+                            objAddress.Postcode = objPostalAddress.Postcode;
                             objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
-
-                            //if (objAddress.PostalAddressStatus != null && objAddress.PostalAddressStatus.Count > 0)
-                            //{
-                            //}
-
-                            //if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
-                            //{
-                            //    foreach (var objDelPoint in objAddress.DeliveryPoints)
-                            //    {
-                            //        if (objAddress.OrganisationName.Length > 0)
-                            //        {
-                            //            objDelPoint.DeliveryPointUseIndicator_GUID = deliveryPointUseIndicatorPAF;
-                            //        }
-
-                            //        // objDelPoint.UDPRN = objPostalAddress.UDPRN;
-                            //    }
-                            //}
                         }
 
                         await DataContext.SaveChangesAsync();
                         isPostalAddressUpdated = true;
-                        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                        loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     }
                 }
             }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateConcurrencyException.ToString());
+                throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
+            }
             catch (DbUpdateException dbUpdateException)
             {
-                if (objAddress != null)
-                {
-                    DataContext.Entry(objAddress).State = EntityState.Unchanged;
-                }
-
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateException.ToString());
                 throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                if (objAddress != null)
-                {
-                    DataContext.Entry(objAddress).State = EntityState.Unchanged;
-                }
-
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), notSupportedException.ToString());
                 notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                if (objAddress != null)
-                {
-                    DataContext.Entry(objAddress).State = EntityState.Unchanged;
-                }
-
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), disposedException.ToString());
                 disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
@@ -572,327 +444,314 @@
         }
 
         /// <summary>
-        /// Filter PostalAddress based on the search text
-        /// </summary>
-        /// <param name="searchText">searchText</param>
-        /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of Postcodes</returns>
-        public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postCodeDTOs)
-        {
-            try
-            {
-                List<string> searchdetails = new List<string>();
-                List<Guid> postCodeGuids = new List<Guid>();
-                postCodeDTOs.ForEach(pc => postCodeGuids.Add(pc.ID));
-
-                var searchresults = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                               //join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
-                                               //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-                                           where postCodeGuids.Contains(pa.PostCodeGUID) && addresstypeIDs.Contains(pa.AddressType_GUID)
-                                           select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
-
-                return searchresults.Select(n => n.SearchResult).ToList();
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.Log(ex, TraceEventType.Error);
-                throw;
-            }
-        }
-
-        public async Task<List<Guid>> GetPostcodeGuids(string searchText)
-        {
-            try
-            {
-                var postcodeGuids = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                           where (pa.Thoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText))
-                                           select pa.PostCodeGUID).ToListAsync();
-
-                return postcodeGuids;
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.Log(ex, TraceEventType.Error);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Filter PostalAddress based on post code. Also, it fetches the route information based on
-        /// the postcode and if there are no matching routes then the routes for the unit is fetched.
-        /// </summary>
-        /// <param name="selectedItem">selectedItem</param>
-        /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of Postal Address</returns>
-        public async Task<List<PostalAddressDBDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodeDTOs)
-        {
-            List<string> lstPocodes = new List<string>();
-            List<PostalAddressDBDTO> PostalAddressDBDTO = new List<PostalAddressDBDTO>();
-            string[] selectedItems = selectedItem.Split(',');
-            string postCode = string.Empty;
-            string streetName = string.Empty;
-            List<PostalAddress> postalAddress = null;
-            List<Guid> postcodeGuids = new List<Guid>();
-
-            postcodeDTOs.ForEach(pc => postcodeGuids.Add(pc.ID));
-
-            postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                   where postcodeGuids.Contains(pa.PostCodeGUID)
-                                   select pa).ToListAsync();
-
-            /*if (selectedItems.Count() == 2)
-            {
-                postCode = selectedItems[1].Trim();
-                streetName = selectedItems[0].Trim();
-                postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                           //join pc in DataContext.Postcodes.AsNoTracking()
-                                           //on pa.PostCodeGUID equals pc.ID
-                                           //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-                                           //where pa.PostcodeUnit == postCode && pa.Thoroughfare == streetName && ul.Unit_GUID == unitGuid
-                                       where pa.PostCodeGUID == postcodeDTO.ID
-                                       select pa).ToListAsync();
-            }
-            else
-            {
-                postCode = selectedItems[0].Trim();
-                postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                       join pc in DataContext.Postcodes.AsNoTracking()
-                                       on pa.PostCodeGUID equals pc.ID
-                                       join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-                                       where pc.PostcodeUnit == postCode && ul.Unit_GUID == unitGuid
-                                       select pa).ToListAsync();
-            }*/
-
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
-                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
-            });
-            Mapper.Configuration.CreateMapper();
-
-            return Mapper.Map<List<PostalAddress>, List<PostalAddressDBDTO>>(postalAddress);
-
-            //postalAddress.ForEach(p => p.Postcode1.DeliveryRoutePostcodes.ToList().ForEach(d =>
-            //{
-            //    if (d.IsPrimaryRoute)
-            //    {
-            //        PostalAddressDBDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
-            //        {
-            //            if (paDTO.RouteDetails == null)
-            //            {
-            //                paDTO.RouteDetails = new List<BindingEntity>();
-            //            }
-
-            //            if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()))
-            //            {
-            //                paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
-            //            }
-            //        });
-            //    }
-            //    else
-            //    {
-            //        PostalAddressDBDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
-            //        {
-            //            if (paDTO.RouteDetails == null)
-            //            {
-            //                paDTO.RouteDetails = new List<BindingEntity>();
-            //            }
-
-            //            if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()))
-            //            {
-            //                paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
-            //            }
-            //        });
-            //    }
-            //}));
-
-            //var postCodes = await DataContext.UnitLocationPostcodes.AsNoTracking().Where(p => p.Unit_GUID == unitGuid).Select(s => s.PoscodeUnit_GUID).Distinct().ToListAsync();
-            //if (PostalAddressDBDTO != null && PostalAddressDBDTO.Count > 0 && (PostalAddressDBDTO[0].RouteDetails == null || PostalAddressDBDTO[0].RouteDetails.Count == 0))
-            //{
-            //    List<BindingEntity> routeDetails = new List<BindingEntity>();
-            //    var routes = await DataContext.DeliveryRoutePostcodes.AsNoTracking().Where(dr => postCodes.Contains(dr.Postcode_GUID)).ToListAsync();
-            //    routes.ForEach(r =>
-            //    {
-            //        if (!routeDetails.Where(rd => rd.Value == r.DeliveryRoute.ID).Any())
-            //        {
-            //            routeDetails.Add(new BindingEntity() { DisplayText = r.DeliveryRoute.RouteName, Value = r.DeliveryRoute.ID });
-            //        }
-            //    });
-            //    PostalAddressDBDTO[0].RouteDetails = new List<BindingEntity>(routeDetails.Distinct().OrderBy(n => n.DisplayText));
-            //}
-        }
-
-        public async Task<List<Guid>> GetSelectedPostcode(string selectedItem)
-        {
-            string[] selectedItems = selectedItem.Split(',');
-            string postCode = string.Empty;
-            string streetName = string.Empty;
-            List<Guid> postcodeGuids = new List<Guid>();
-
-            if (selectedItems.Count() == 2)
-            {
-                postCode = selectedItems[1].Trim();
-                streetName = selectedItems[0].Trim();
-                postcodeGuids = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                           //join pc in DataContext.Postcodes.AsNoTracking()
-                                           //on pa.PostCodeGUID equals pc.ID
-                                           //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-                                       where pa.Postcode == postCode && pa.Thoroughfare == streetName
-                                       select pa.PostCodeGUID).ToListAsync();
-            }
-            else
-            {
-                postCode = selectedItems[0].Trim();
-                postcodeGuids = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                           //join pc in DataContext.Postcodes.AsNoTracking()
-                                           //on pa.PostCodeGUID equals pc.ID
-                                           //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-                                       where pa.Postcode == postCode
-                                       select pa.PostCodeGUID).ToListAsync();
-            }
-
-            return postcodeGuids;
-        }
-
-        /// <summary>
         /// Filter PostalAddress based on postal address id.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="postalAddressId">PostalAddress Unique Identifier</param>
         /// <returns>Postal Address DTO</returns>
-        public PostalAddressDBDTO GetPostalAddressDetails(Guid id)
+        public PostalAddressDataDTO GetPostalAddressDetails(Guid postalAddressId)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressDetails"))
             {
-                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == id).FirstOrDefault();
-                return GenericMapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.Log(ex, TraceEventType.Error);
-                throw;
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddressDetails);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == postalAddressId).FirstOrDefault();
+
+                ConfigureMapper();
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
             }
         }
 
         /// <summary>
         /// Create delivery point for PAF and NYB details
         /// </summary>
-        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
-        /// <returns>bool</returns>
-        public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus)
+        /// <param name="postalAddressDataDTO">Postal address data DTO.</param>
+        /// <returns>Guid address Guid</returns>
+        public Guid CreateAddressForDeliveryPoint(PostalAddressDataDTO postalAddressDataDTO)
         {
             try
             {
-                bool isAddressLocationAvailable = false;
                 Guid returnGuid = Guid.Empty;
-                double? addLocationXCoOrdinate = 0;
-                double? addLocationYCoOrdinate = 0;
-                if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
+
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAddressForDeliveryPoint"))
                 {
-                    var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN);
-                    //var objAddressLocation = DataContext.AddressLocations.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN);
+                    string methodName = typeof(PostalAddressDataService) + "." + nameof(CreateAddressForDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    //DeliveryPoint objDeliveryPoint = new DeliveryPoint()
-                    //{
-                    //    // ID = Guid.NewGuid(),
-                    //    // UDPRN = addDeliveryPointDTO.PostalAddressDBDTO.UDPRN,
-                    //    DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID,
-                    //    MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount,
-                    //    MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume
-                    //};
-
-                    //if (objAddressLocation != null)
-                    //{
-                    //    SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(objAddressLocation.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
-                    //    //objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
-                    //    //objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
-                    //    //objDeliveryPoint.Longitude = objAddressLocation.Longitude;
-                    //    //objDeliveryPoint.Positioned = true;
-                    //    isAddressLocationAvailable = true;
-                    //    addLocationXCoOrdinate = deliveryPointSqlGeometry.STX.Value;
-                    //    addLocationYCoOrdinate = deliveryPointSqlGeometry.STY.Value;
-                    //}
-
-                    if (objPostalAddress != null)
+                    if (postalAddressDataDTO != null)
                     {
-                        objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
-                        objPostalAddress.BuildingName = addDeliveryPointDTO.PostalAddressDTO.BuildingName;
-                        objPostalAddress.SubBuildingName = addDeliveryPointDTO.PostalAddressDTO.SubBuildingName;
-                        objPostalAddress.POBoxNumber = addDeliveryPointDTO.PostalAddressDTO.POBoxNumber;
-                        objPostalAddress.DepartmentName = addDeliveryPointDTO.PostalAddressDTO.DepartmentName;
-                        objPostalAddress.OrganisationName = addDeliveryPointDTO.PostalAddressDTO.OrganisationName;
-                        objPostalAddress.UDPRN = addDeliveryPointDTO.PostalAddressDTO.UDPRN;
-                        objPostalAddress.PostcodeType = addDeliveryPointDTO.PostalAddressDTO.PostcodeType;
-                        objPostalAddress.SmallUserOrganisationIndicator = addDeliveryPointDTO.PostalAddressDTO.SmallUserOrganisationIndicator;
-                        objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
-                        objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID;
-                        objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID;
-                        //objPostalAddress.AddressStatus_GUID = addDeliveryPointDTO.PostalAddressDBDTO.AddressStatus_GUID;
-                        //objPostalAddress.DeliveryPoints.Add(objDeliveryPoint);
-                    }
-                    /*else
-                    {
-                        addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
-                        addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus = new List<PostalAddressStatusDTO>();
-                        addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(new PostalAddressStatusDTO {
-                            ID = Guid.NewGuid(),
-                            PostalAddressGUID = addDeliveryPointDTO.PostalAddressDTO.ID,
-                            StartDateTime = DateTime.UtcNow,
-                            RowCreateDateTime = DateTime.UtcNow,
-                            OperationalStatusGUID = OperationalStatus
-                        });
+                        var objPostalAddress = DataContext.PostalAddresses.Include(x => x.PostalAddressStatus).SingleOrDefault(n => n.ID == postalAddressDataDTO.ID );
 
-                        Mapper.Initialize(cfg =>
+                        if (objPostalAddress != null)
                         {
-                            cfg.CreateMap<PostalAddressDBDTO, PostalAddress>();
-                            cfg.CreateMap<PostalAddressStatusDTO, PostalAddressStatus>();
-                        });
-                        Mapper.Configuration.CreateMapper();
+                            objPostalAddress.BuildingNumber = postalAddressDataDTO.BuildingNumber;
+                            objPostalAddress.BuildingName = postalAddressDataDTO.BuildingName;
+                            objPostalAddress.SubBuildingName = postalAddressDataDTO.SubBuildingName;
+                            objPostalAddress.POBoxNumber = postalAddressDataDTO.POBoxNumber;
+                            objPostalAddress.DepartmentName = postalAddressDataDTO.DepartmentName;
+                            objPostalAddress.OrganisationName = postalAddressDataDTO.OrganisationName;
+                            objPostalAddress.UDPRN = postalAddressDataDTO.UDPRN;
+                            objPostalAddress.PostcodeType = postalAddressDataDTO.PostcodeType;
+                            objPostalAddress.SmallUserOrganisationIndicator = postalAddressDataDTO.SmallUserOrganisationIndicator;
+                            objPostalAddress.DeliveryPointSuffix = postalAddressDataDTO.DeliveryPointSuffix;
+                            objPostalAddress.Postcode = postalAddressDataDTO.Postcode;
+                            objPostalAddress.AddressType_GUID = postalAddressDataDTO.AddressType_GUID;
+                        }
+                        else
+                        {
+                            Mapper.Initialize(cfg =>
+                            {
+                                cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
+                                cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
+                                cfg.CreateMap<PostalAddressAliasDataDTO, PostalAddressAlias>();
+                                cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
+                            });
 
-                        var objAddress = Mapper.Map<PostalAddressDBDTO, PostalAddress>(addDeliveryPointDTO.PostalAddressDTO);
+                            Mapper.Configuration.CreateMapper();
 
-                        DataContext.PostalAddresses.Add(objAddress);
-                        returnGuid = objAddress.ID;
-                    }*/
+                            objPostalAddress = Mapper.Map<PostalAddressDataDTO, PostalAddress>(postalAddressDataDTO);
 
-                    returnGuid = objPostalAddress.ID;
-                    DataContext.SaveChanges();
+                            objPostalAddress.RowCreateDateTime = DateTime.UtcNow;
+
+                          
+                            foreach (var status in objPostalAddress.PostalAddressStatus)
+                            {
+                                status.RowCreateDateTime = DateTime.UtcNow;
+                                status.StartDateTime = DateTime.UtcNow;
+                            }
+
+                            foreach (var alias in objPostalAddress.PostalAddressAlias)
+                            {
+                                alias.RowCreateDateTime = DateTime.UtcNow;
+                                alias.StartDateTime = DateTime.UtcNow;
+                            }
+
+
+
+                            // add new address
+                            DataContext.PostalAddresses.Add(objPostalAddress);
+                        }
+
+                        returnGuid = objPostalAddress.ID;
+                        DataContext.SaveChanges();
+                    }
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return returnGuid;
                 }
-
-                return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", addDeliveryPointDTO.PostalAddressDTO.UDPRN)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", postalAddressDataDTO.UDPRN)));
             }
         }
 
-        public async Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids)
+        /// <summary>
+        /// Get PostalAddress on list of PostalAddress Guid
+        /// </summary>
+        /// <param name="addressGuids">List of PostalAddress Guid</param>
+        /// <returns></returns>
+        public async Task<List<PostalAddressDataDTO>> GetPostalAddresses(List<Guid> addressGuids)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddresses"))
             {
-                var addressDetails = await DataContext.PostalAddresses.Include(pa => pa.PostalAddressStatus).Where(pa => addressGuids.Contains(pa.ID)).ToListAsync();
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddresses);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
-                    //cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDTO>();
-                    //cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-                });
+                var addressDetails = await DataContext.PostalAddresses.Where(pa => addressGuids.Contains(pa.ID)).ToListAsync();
 
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
-                return Mapper.Map<List<PostalAddress>, List<PostalAddressDBDTO>>(addressDetails);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return Mapper.Map<List<PostalAddress>, List<PostalAddressDataDTO>>(addressDetails);
             }
-            catch (AggregateException ae)
+        }
+
+        /// <summary>
+        /// Get Postal Address on UDPRN value
+        /// </summary>
+        /// <param name="udprn">udprn value of PostalAddress</param>
+        /// <param name="pafGuid">pafGuid as Address Type Guid</param>
+        /// <returns></returns>
+        public async Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPAFAddress"))
             {
-                foreach (var exception in ae.InnerExceptions)
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPAFAddress);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                PostalAddress postalAddress = await DataContext.PostalAddresses.Where(pa => pa.UDPRN == udprn && pa.AddressType_GUID == pafGuid).SingleOrDefaultAsync();
+
+                ConfigureMapper();
+
+                PostalAddressDataDTO postalAddressDataDTO = Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return GenericMapper.Map<PostalAddressDataDTO, PostalAddressDTO>(postalAddressDataDTO);
+            }
+        }
+
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>().MaxDepth(2);
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
+            });
+            Mapper.Configuration.CreateMapper();
+        }
+
+        /// <summary>
+        /// Get the Postal Address Entity based on the Address Fields
+        /// </summary>
+        /// <param name="objPostalAddress">Postal Address Transfer Object</param>
+        /// <param name="addressTypeNYBGuid">Static NYB Address Type Guid</param>
+        /// <returns>Posta Address matching the criteria</returns>
+        private IQueryable<PostalAddress> GetPostalAddressEntities(PostalAddressDataDTO objPostalAddress, Guid addressTypeNYBGuid = new Guid())
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressEntities"))
+            {
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddressEntities);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                IQueryable<PostalAddress> postalAddress = null;
+
+                if (addressTypeNYBGuid != Guid.Empty)
                 {
-                    loggingHelper.Log(exception, TraceEventType.Error);
+                    postalAddress = DataContext.PostalAddresses.AsNoTracking()
+                            .Where(n => n.AddressType_GUID == addressTypeNYBGuid);
+                }
+                else
+                {
+                    postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.Postcode == objPostalAddress.Postcode);
                 }
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
+                {
+                    postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (objPostalAddress.BuildingNumber != null)
+                {
+                    postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
+                {
+                    postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
+                {
+                    postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
+                {
+                    postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
+                {
+                    postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
+                {
+                    postalAddress =
+                        postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return postalAddress;
+            }
+        }
+
+        /// <summary>
+        /// Get the Postal Address Entity based on the Address fields.
+        /// </summary>
+        /// <param name="objPostalAddress">Postal Address Object</param>
+        /// <returns>Postal Address Entity</returns>
+        private async Task<PostalAddress> GetPostalAddressEntity(PostalAddressDataDTO objPostalAddress)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressEntity"))
+            {
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddressEntity);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                PostalAddress postalAddress = await DataContext.PostalAddresses.AsNoTracking().FirstOrDefaultAsync(n => n.Postcode == objPostalAddress.Postcode
+                                                 && ((n.BuildingName ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.BuildingName)
+                                                          ? objPostalAddress.BuildingName
+                                                          : null))
+                                                     ||
+                                                     ((!string.IsNullOrEmpty(n.BuildingName) ? n.BuildingName : string.Empty) ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.BuildingName)
+                                                          ? objPostalAddress.BuildingName
+                                                          : string.Empty)))
+
+                                                 && ((n.BuildingNumber == objPostalAddress.BuildingNumber)
+                                                     ||
+                                                     ((n.BuildingNumber ?? 0) == (objPostalAddress.BuildingNumber ?? 0)))
+
+                                                 && ((n.SubBuildingName ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName)
+                                                          ? objPostalAddress.SubBuildingName
+                                                          : null))
+                                                     ||
+                                                     ((!string.IsNullOrEmpty(n.SubBuildingName)
+                                                          ? n.SubBuildingName
+                                                          : string.Empty) ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName)
+                                                          ? objPostalAddress.SubBuildingName
+                                                          : string.Empty)))
+                                                 && ((n.OrganisationName ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.OrganisationName)
+                                                          ? objPostalAddress.OrganisationName
+                                                          : null))
+                                                     ||
+                                                     ((!string.IsNullOrEmpty(n.OrganisationName)
+                                                          ? n.OrganisationName
+                                                          : string.Empty) ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.OrganisationName)
+                                                          ? objPostalAddress.OrganisationName
+                                                          : string.Empty)))
+                                                 && ((n.DepartmentName ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.DepartmentName)
+                                                          ? objPostalAddress.DepartmentName
+                                                          : null))
+                                                     ||
+                                                     ((!string.IsNullOrEmpty(n.DepartmentName) ? n.DepartmentName : string.Empty) ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.DepartmentName)
+                                                          ? objPostalAddress.DepartmentName
+                                                          : string.Empty)))
+                                                 && ((n.Thoroughfare ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare)
+                                                          ? objPostalAddress.Thoroughfare
+                                                          : null))
+                                                     ||
+                                                     ((!string.IsNullOrEmpty(n.Thoroughfare) ? n.Thoroughfare : string.Empty) ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare)
+                                                          ? objPostalAddress.Thoroughfare
+                                                          : string.Empty)))
+                                                 && ((n.DependentThoroughfare ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare)
+                                                          ? objPostalAddress.DependentThoroughfare
+                                                          : null))
+                                                     ||
+                                                     ((!string.IsNullOrEmpty(n.DependentThoroughfare)
+                                                          ? n.DependentThoroughfare
+                                                          : string.Empty) ==
+                                                      (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare)
+                                                          ? objPostalAddress.DependentThoroughfare
+                                                          : string.Empty))));
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return postalAddress;
             }
         }
 
@@ -905,85 +764,24 @@
         /// <param name="strException">Exception</param>
         private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
         {
-            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressEntity"))
             {
-                FileID = Guid.NewGuid(),
-                UDPRN = uDPRN,
-                AmendmentType = INSERT,
-                FileName = strFileName,
-                FileProcessing_TimeStamp = DateTime.UtcNow,
-                FileType = fileType,
-                ErrorMessage = strException,
-                SuccessFlag = false
-            };
-            fileProcessingLog.LogFileException(objFileProcessingLog);
-        }
-
-        public Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<PostalAddressDBDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
-        {
-            throw new NotImplementedException();
-        }
-
-        //public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid)
-        {
-            try
-            {
-                PostalAddress postalAddress = await DataContext.PostalAddresses.Where(pa => pa.UDPRN == udprn && pa.AddressType_GUID == pafGuid).SingleOrDefaultAsync();
-
-                Mapper.Initialize(cfg =>
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(LogFileException);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
                 {
-                    cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
-
-                PostalAddressDBDTO postalAddressDBDTO = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
-
-                return GenericMapper.Map<PostalAddressDBDTO, PostalAddressDTO>(postalAddressDBDTO);
-            }
-            catch (Exception ex)
-            {
-                return null;
+                    FileID = Guid.NewGuid(),
+                    UDPRN = uDPRN,
+                    AmendmentType = PostalAddressConstants.INSERT,
+                    FileName = strFileName,
+                    FileProcessing_TimeStamp = DateTime.UtcNow,
+                    FileType = fileType,
+                    ErrorMessage = strException,
+                    SuccessFlag = false
+                };
+                fileProcessingLog.LogFileException(objFileProcessingLog);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
             }
         }
-
-        //private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
-        //{
-        //    Guid deliveryPointID = Guid.NewGuid();
-        //    return new DeliveryPoint()
-        //    {
-        //        ID = deliveryPointID,
-        //        DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
-        //        MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
-        //        MailVolume = deliveryPointDTO.MailVolume,
-        //        DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
-        //        {
-        //            ID = Guid.NewGuid(),
-        //            DeliveryPoint_GUID = deliveryPointID,
-        //            DPAlias = n.DPAlias,
-        //            Preferred = n.Preferred
-        //        }).ToList()
-        //    };
-        //}
     }
 }

@@ -181,7 +181,7 @@
 
                 if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
                 {
-                    referenceDataCategories.ReferenceDatas.ToList().ForEach(refData => listItems.Add(new ListItems
+                    referenceDataCategories.ReferenceDatas.OrderBy(n => n.OrderingIndex).ToList().ForEach(refData => listItems.Add(new ListItems
                     {
                         Id = refData.ID,
                         Name = refData.ReferenceDataName,
@@ -224,7 +224,6 @@
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<ListItems> listItems = new List<ListItems>();
-
 
                 var referenceData = DataContext.ReferenceDatas.Include(m => m.ReferenceDataCategory)
                         .Where(n => n.ID == id && n.ReferenceDataCategory.CategoryType.Equals(ReferenceDataCategoryTypeForSimpleList)).SingleOrDefault();

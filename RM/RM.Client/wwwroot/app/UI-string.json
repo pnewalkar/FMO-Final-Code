@@ -36,11 +36,15 @@
     "MODIFY": "Modify",
     "DELETE": "Delete",
     "AREA": "Area"
-
+     
   },
   "ERROR_DIALOG": {
     "TITLE": "Unable to process request"
   },
+  "LICESING_INFO": {
+    "NO_LAYERS_SELECTED": "No layers selected"
+  },
+
   "UNIT_SELECTOR": {
     "SEARCH_PLACEHOLDER": "Filter Unit"
   },
@@ -83,7 +87,10 @@
     "MULTI_OCC": "Multi Occ",
     "MAIL_VOL": "Mail Vol",
     "LOCALITY": "Locality",
-    "REMOVE_DP_ALIAS": "Remove DP Alias"
+    "REMOVE_DP_ALIAS": "Remove DP Alias",
+    "RANGE_FROM": "Range From",
+    "RANGE_TO": "To",
+    "SUB_BUILDING_TYPE": "Sub Building Type"
 
   },
   "ROUTE_LOG": {
@@ -93,7 +100,10 @@
     "SCENARIO": "Scenario",
     "ROUTE": "Route",
     "SEARCH_ROUTE": "Search Route",
-    "NO_RESULT_FOUND": "No Result Found",
+    "SELECTED_ROUTES": "Selected Routes",
+    "ROUTE_NAME": "Route Name",
+    "ROUTE_NUMBER": "Route Number",
+    "SELECT": "Select",
     "ROUTE_DETAILS": "Route Details",
     "GENERATE": "Generate",
     "ROUTE_LOG_SUMMARY": "Route Log Summary",

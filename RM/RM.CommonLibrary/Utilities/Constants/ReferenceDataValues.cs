@@ -30,5 +30,7 @@
 
         public const string UserDefined = "User Defined";
         public const string DeliveryUnit = "Delivery Unit";
+        public const string TravelOut = "Travel Out";
+        public const string TravelIn = "Travel In";
     }
 }
