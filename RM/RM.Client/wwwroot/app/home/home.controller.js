@@ -32,7 +32,11 @@ function HomeController(
 
     });
     $scope.$on("showError", function (event, args) {
-        errorService.openAlert(args);
-
+         errorService.openAlert(args);
+      
+    })
+    $scope.$on("InfoPopup", function (event, args, title, css) {
+      
+        errorService.openInfoPopup(args, title, css);
     })
 };
