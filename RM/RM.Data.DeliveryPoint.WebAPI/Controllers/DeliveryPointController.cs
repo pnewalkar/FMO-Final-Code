@@ -653,6 +653,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Check duplicate addresses and save non-duplicate ones
+        /// </summary>
+        /// <param name="deliveryPointDto">Add Delivery Point DTO </param>
+        /// <returns>CreateDeliveryPointForRangeModelDTO</returns>
         [Route("deliverypoint/newdeliverypoint/range/check")]
         [HttpPost]
         public async Task<IActionResult> CheckDeliveryPointForRange([FromBody]AddDeliveryPointDTO deliveryPointDto)
@@ -661,7 +666,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.CheckDeliveryPointForRange"))
                 {
-                    CreateDeliveryPointModelDTO createDeliveryPointModelDTO = null;
+                    CreateDeliveryPointForRangeModelDTO createDeliveryPointForRangeModelDTO = null;
                     string methodName = typeof(DeliveryPointController) + "." + nameof(CheckDeliveryPointForRange);
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
@@ -670,10 +675,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                         return BadRequest(ModelState);
                     }
 
-                    createDeliveryPointModelDTO = await businessService.CreateDeliveryPoint(deliveryPointDto);
+                    createDeliveryPointForRangeModelDTO = await businessService.CheckDeliveryPointForRange(deliveryPointDto);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                    return Ok(createDeliveryPointModelDTO);
+                    return Ok(createDeliveryPointForRangeModelDTO);
                 }
             }
             catch (AggregateException ae)
@@ -688,7 +693,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Create Delivery Points with specified range
+        /// </summary>
+        /// <param name="postalAddressDTOs">PostalAddressDTO</param>
+        /// <returns></returns>
         [Route("deliverypoint/newdeliverypoint/range")]
         [HttpPost]
         public async Task<IActionResult> CreateDeliveryPointForRange([FromBody]List<PostalAddressDTO> postalAddressDTOs)
