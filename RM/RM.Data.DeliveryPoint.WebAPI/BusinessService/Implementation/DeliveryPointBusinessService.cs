@@ -1207,6 +1207,8 @@
                     postalAddressDTO = new PostalAddressDTO();
                     postalAddressDTO = addDeliveryPointDTO.PostalAddressDTO;
                     postalAddressDTO.SubBuildingName = !string.IsNullOrEmpty(addDeliveryPointDTO.SubBuildingType) ? $"{addDeliveryPointDTO.SubBuildingType} {range}" : range;
+                    postalAddressDTO.DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID;
+                    postalAddressDTO.DeliveryRoute_Guid = addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid;
                     postalAddressDTOs.Add(postalAddressDTO);
                 }
             }
@@ -1217,6 +1219,8 @@
                     postalAddressDTO = new PostalAddressDTO();
                     postalAddressDTO = addDeliveryPointDTO.PostalAddressDTO;
                     postalAddressDTO.BuildingNumber = short.Parse(range);
+                    postalAddressDTO.DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID;
+                    postalAddressDTO.DeliveryRoute_Guid = addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid;
                     postalAddressDTOs.Add(postalAddressDTO);
                 }
             }
