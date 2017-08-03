@@ -209,7 +209,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                     await DeletePAFRecords(item.UDPRN.Value, addressTypePAF, pendingDelete);
 
                                     // Soft delete
-                                    MatchAddressOnUdprn(item.UDPRN.Value, addressTypePAF, pendingDelete);
+                                    await MatchAddressOnUdprn(item.UDPRN.Value, addressTypePAF, pendingDelete);
                                     break;
                             }
                         }
