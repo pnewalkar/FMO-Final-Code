@@ -59,7 +59,8 @@ function DeliveryPointController(
     vm.createDeliveryPoint = createDeliveryPoint;
     vm.Ok = Ok;
     vm.initialize = initialize;
-    vm.setRangeValidation = setRangeValidation
+    vm.setRangeValidation = setRangeValidation;
+    vm.createDeliveryPointsRange = createDeliveryPointsRange;
 
     vm.positionedThirdPartyDeliveryPointList = $stateParams.positionedThirdPartyDeliveryPointList;
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
@@ -131,21 +132,21 @@ function DeliveryPointController(
         });
     }
 
-    function OnChangeItem(selectedItem) {
-        if (selectedItem) {
-            vm.dpUse = "";
-            vm.routeId = "";
-            vm.notyetBuilt = "";
-            vm.searchText = selectedItem;
-            vm.results = {};
-            deliveryPointService.getPostalAddress(selectedItem).then(function (response) {
-                vm.addressDetails = response.postalAddressData;
-                vm.nybAddressDetails = response.postalAddressData.nybAddressDetails;
-                vm.routeDetails = response.postalAddressData.routeDetails;
-                vm.display = response.display;
-                vm.selectedValue = response.selectedValue;
-            });
-        }
+    function OnChangeItem(selectedItem) {       
+    if (selectedItem) {
+        vm.dpUse = "";
+        vm.routeId = "";
+        vm.notyetBuilt = "";
+        vm.searchText = selectedItem;
+        vm.results = {};
+        deliveryPointService.getPostalAddress(selectedItem).then(function (response) {
+            vm.addressDetails = response.postalAddressData;
+            vm.nybAddressDetails = response.postalAddressData.nybAddressDetails;
+            vm.routeDetails = response.postalAddressData.routeDetails;
+            vm.display = response.display;
+            vm.selectedValue = response.selectedValue;
+        });
+    }
     }
 
     function bindAddressDetails() {
@@ -176,7 +177,7 @@ function DeliveryPointController(
     }
 
     function setOrganisation() {
-        if (vm.selectedType === vm.single) {
+        if (vm.selectedType === vm.single && !angular.isUndefined(vm.addressDetails)) {
             deliveryPointService.setOrganisation(vm.addressDetails, vm.dpUseType).then(function (response) {
                 vm.dpUse = response.dpUse;
                 vm.selectedDPUse = response.selectedDPUse;
@@ -265,11 +266,11 @@ function DeliveryPointController(
         var addDeliveryPointDTO =
             {
                 "PostalAddressDTO": vm.addressDetails,
-
                 "DeliveryPointDTO":
                 {
-                    "MultipleOccupancyCount": vm.mailvol,
-                    "MailVolume": vm.multiocc,
+                    "MultipleOccupancyCount":vm.multiocc,
+                    "MailVolume": vm.mailvol,
+                    "DeliveryPointAliasDTO": vm.items,
                     "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
                     "DeliveryRoute_Guid": vm.routeId
                 },
@@ -281,20 +282,25 @@ function DeliveryPointController(
                 "ToRange": vm.rangeTo,
                 "SubBuildingType": vm.subBuildingType,
             };
+
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
             if (response.createDeliveryPointModelDTOs || response.postalAddressDTOs) {
                 if (response.hasAllDuplicates) {
                     // Only popup needs to be displayed & on click of OK, it should go back to the Create DP screen
-                    vm.errorMessage = response.message;
-                    vm.errorMessageTitle = "Duplicates found";
+                    //vm.errorMessage = response.message;
+                    //  $rootScope.$broadcast("InfoPopup", response.message);
+                    var title = "Duplicates Found";
+                    var css = "info-dialog";
+                    $rootScope.$broadcast("InfoPopup", message, title, css);
                 }
                 else {
                     if (response.hasDuplicates) {
                         // Show the popup Get the response.postalAddressDTOs object and make a service call to save the DPs on click 
+                        saveDeliveryPointsPartially(response.message, response.postalAddressDTOs);
                     }
                 }
             }
-            else  {
+            else {
 
                 if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
                     setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
@@ -326,6 +332,24 @@ function DeliveryPointController(
             vm.isOnceClicked = false;
         });
     }
+
+    function saveDeliveryPointsPartially(message, postalAddressDetails) {
+
+        var alert = $mdDialog.alert()
+            .parent()
+            .clickOutsideToClose(false)
+            .title($translate.instant(title))
+            .textContent(message)
+            .ariaLabel('Duplicates Found')
+            .css(css)
+            .ok($translate.instant('GENERAL.BUTTONS.OK'))
+
+        $mdDialog.show(alert)
+            .then(function () {
+                createDeliveryPointsRange(postalAddressDetails);
+            });
+    };
+
 
     function setDeliveryPoint(id, rowversion, postalAddress, hasLocation) {
         if (vm.selectedDPUse.value === CommonConstants.DpUseType.Residential) {
@@ -361,8 +385,9 @@ function DeliveryPointController(
     }
 
     function addAlias() {
-        vm.postalAddressAliases.push({
-            PreferenceOrderIndex: 0,
+        
+       vm.postalAddressAliases.push({
+    PreferenceOrderIndex: 0,
             AliasName: vm.alias
         });
         vm.alias = "";
@@ -454,4 +479,13 @@ function DeliveryPointController(
             vm.displayRangeToMessage = false;
         }
     }
+
+    function createDeliveryPointsRange(postalAddressDetails) {
+        deliveryPointService.createDeliveryPointsRange(postalAddressDetails)
+                   .then(function (response) {
+
+                   });
+
+    }
+
 };
