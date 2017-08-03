@@ -445,7 +445,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
                         deliveryPoint.NetworkNode.NetworkNodeType_GUID = deliveryPointDto.NetworkNode.NetworkNodeType_GUID;
                         deliveryPoint.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID = deliveryPointDto.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID;
-                        deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
+
+                        // deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
                         DataContext.Entry(deliveryPoint).State = EntityState.Modified;
                         DataContext.Entry(deliveryPoint).OriginalValues[DeliveryPointConstants.ROWVERSION] = deliveryPointDto.RowVersion;
                         await DataContext.SaveChangesAsync();

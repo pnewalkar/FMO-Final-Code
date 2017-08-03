@@ -41,7 +41,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ToList().Count, 1);
             Assert.AreEqual(result.ToList()[0].LocationId, new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918"));
-            Assert.AreEqual(result.ToList()[0].Area, "");
+            Assert.AreEqual(result.ToList()[0].Area, string.Empty);
         }
 
         /// <summary>

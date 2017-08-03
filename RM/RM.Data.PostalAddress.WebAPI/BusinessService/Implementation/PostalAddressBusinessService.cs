@@ -73,7 +73,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                 PostalAddressDataDTO postalAddressDBDTO = await addressDataService.GetPostalAddress(uDPRN);
 
-                var postalAddress = ConvertDataDTOToDTO(postalAddressDBDTO);
+                var postalAddress = ConvertToDTO(postalAddressDBDTO);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return postalAddress;
@@ -335,7 +335,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                 var postalAddressDBDTO = addressDataService.GetPostalAddressDetails(postalAddressId);
 
-                var postalAddress = ConvertDataDTOToDTO(postalAddressDBDTO);
+                var postalAddress = ConvertToDTO(postalAddressDBDTO);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodExitEventId);
                 return postalAddress;
@@ -354,11 +354,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(CheckForDuplicateNybRecords);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-                var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(PostalAddressConstants.PostalAddressType).Result;
+                var referenceDataCategoryList = await postalAddressIntegrationService.GetReferenceDataSimpleLists(PostalAddressConstants.PostalAddressType);
                 Guid addressTypeNYB = GetReferenceData(PostalAddressConstants.PostalAddressType, FileType.Nyb.ToString());
 
                 string postCode = string.Empty;
-                var objDataPostalAddress = ConvertDTOToDataDTO(objPostalAddress);
+                var objDataPostalAddress = ConvertToDataDTO(objPostalAddress);
                 postCode = addressDataService.CheckForDuplicateNybRecords(objDataPostalAddress, addressTypeNYB);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
@@ -378,7 +378,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-                bool isDuplicate = await addressDataService.CheckForDuplicateAddressWithDeliveryPoints(ConvertDTOToDataDTO(objPostalAddress));
+                bool isDuplicate = await addressDataService.CheckForDuplicateAddressWithDeliveryPoints(ConvertToDataDTO(objPostalAddress));
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return isDuplicate;
             }
@@ -831,60 +831,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return referenceDataGuid;
-            }
-        }
-
-        /// <summary>
-        /// Method to convert DTO to DataDTO of PostalAddress
-        /// </summary>
-        /// <param name="objPostalAddress"></param>
-        /// <returns></returns>
-        private PostalAddressDataDTO ConvertDTOToDataDTO(PostalAddressDTO objPostalAddress)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetReferenceData"))
-            {
-                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ConvertDTOToDataDTO);
-                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
-
-                PostalAddressDataDTO postalAddressDBDTO = new PostalAddressDataDTO();
-
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddressDTO, PostalAddressDataDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
-
-                postalAddressDBDTO = Mapper.Map<PostalAddressDTO, PostalAddressDataDTO>(objPostalAddress);
-
-                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
-                return postalAddressDBDTO;
-            }
-        }
-
-        /// <summary>
-        /// Method to convert DataDTO to DTO of PostalAddress
-        /// </summary>
-        /// <param name="postalAddressDBDTO">PostalAddressDataDTO object</param>
-        /// <returns></returns>
-        private PostalAddressDTO ConvertDataDTOToDTO(PostalAddressDataDTO postalAddressDBDTO)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetReferenceData"))
-            {
-                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ConvertDataDTOToDTO);
-                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
-
-                PostalAddressDTO postalAddressDTO = new PostalAddressDTO();
-
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddressDataDTO, PostalAddressDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
-
-                postalAddressDTO = Mapper.Map<PostalAddressDataDTO, PostalAddressDTO>(postalAddressDBDTO);
-
-                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
-                return postalAddressDTO;
             }
         }
 
