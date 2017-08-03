@@ -186,13 +186,15 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public async Task Test_DeleteDeliveryPoint_PositiveScenario()
         {
+            mockDeliveryPointsDataService.Setup(x => x.DeleteDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(true);
             bool expectedresult = await testCandidate.DeleteDeliveryPoint(id);
             Assert.IsNotNull(expectedresult);
             Assert.IsTrue(expectedresult);
         }
-        
+
         /// <summary>
         /// Delivery point with the matching postal address exists
+        /// Organization has some value
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -200,6 +202,20 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         {
             mockDeliveryPointsDataService.Setup(x => x.UpdateDPUse(It.IsAny<int>(), It.IsAny<Guid>())).ReturnsAsync(true);
             bool result = await testCandidate.UpdateDPUse(postalAddressesDTO[0]);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result);
+        }
+
+        /// <summary>
+        /// Delivery point with the matching postal address exists
+        /// Organization is null
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_UpdateDPUse_PositiveScenario2()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.UpdateDPUse(It.IsAny<int>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            bool result = await testCandidate.UpdateDPUse(postalAddressesDTO[2]);
             Assert.IsNotNull(result);
             Assert.IsTrue(result);
         }
@@ -332,6 +348,26 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = Guid.Empty
+            },
+                new PostalAddressDTO()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = null,
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "Postcode",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 12345,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    ID = Guid.Empty
             }
             };
 
@@ -359,7 +395,8 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
 
             actualDeliveryPointDataDto = new List<DeliveryPointDataDTO>()
             {
-                new DeliveryPointDataDTO() {
+                new DeliveryPointDataDTO()
+                {
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                 MailVolume = 5, PostalAddress = new PostalAddressDataDTO()
                 {
@@ -380,8 +417,24 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
-            }, NetworkNode = new NetworkNodeDataDTO { ID = new Guid(), NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() { Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } }, DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } } },
-                 new DeliveryPointDataDTO() {
+            },
+                    NetworkNode = new NetworkNodeDataDTO
+                    {
+                        ID = Guid.Empty, NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO()
+                        {
+                            Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700)
+                        }
+                    },
+                    DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>()
+                    {
+                        new DeliveryPointStatusDataDTO
+                        {
+                            ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
+                        }
+                    }
+                },
+                 new DeliveryPointDataDTO()
+                 {
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A17"),
                 MailVolume = 2, PostalAddress = new PostalAddressDataDTO()
                 {
@@ -402,7 +455,23 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
-            }, NetworkNode = new NetworkNodeDataDTO { ID = new Guid(), NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() { Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } }, DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } }
+            },
+                     NetworkNode = new NetworkNodeDataDTO
+                     {
+                         ID = Guid.Empty,
+                         NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
+                         Location = new LocationDataDTO()
+                         {
+                             Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700)
+                         }
+                     },
+                     DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>()
+                     {
+                         new DeliveryPointStatusDataDTO
+                         {
+                             ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
+                         }
+                     }
             }
             };
 
@@ -430,7 +499,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
                 },
-                NetworkNode = new NetworkNodeDataDTO { ID = new Guid(), NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() { Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } },
+                NetworkNode = new NetworkNodeDataDTO { ID = Guid.Empty, NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() { Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } },
                 DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } }
             };
 
@@ -460,8 +529,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             var locationXy = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700);
             DbGeometry location = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
 
-
-
             List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceData = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>()
             {
                 new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO
@@ -469,7 +536,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     CategoryName = "Delivery Point"
                 },
                 new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO
-                {                   
+                {
                     CategoryName = ReferenceDataCategoryNames.DeliveryPointUseIndicator,
                     ReferenceDatas = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataDTO>()
                     {
@@ -481,7 +548,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     }
                 },
                 new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO
-                {                  
+                {
                     CategoryName = ReferenceDataCategoryNames.DeliveryPointUseIndicator,
                     ReferenceDatas = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataDTO>()
                     {
@@ -538,7 +605,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(actualDeliveryPointDataDto);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).Returns(actualDeliveryPointDTO);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointByPostalAddressWithLocation(It.IsAny<Guid>())).ReturnsAsync(actualDeliveryPointDTO);
-           
+
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsDataService.Object, mockLoggingDataService.Object, mockConfigurationDataService.Object, mockDeliveryPointIntegrationService.Object);
         }
     }

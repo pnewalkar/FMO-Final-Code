@@ -374,7 +374,7 @@ namespace RM.DataServices.Tests.DataService
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
-                    ID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"),                  
+                    ID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"),
         },
                    DeliveryPointStatus = new List<DeliveryPointStatus>()
                 {

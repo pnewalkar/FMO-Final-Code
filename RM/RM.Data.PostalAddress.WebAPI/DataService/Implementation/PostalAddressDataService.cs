@@ -136,12 +136,12 @@
                         }
                         else
                         {
-                             Mapper.Initialize(cfg =>
-                            {
-                                cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
-                                cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
-                                cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
-                            });
+                            Mapper.Initialize(cfg =>
+                           {
+                               cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
+                               cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
+                               cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
+                           });
                             Mapper.Configuration.CreateMapper();
 
                             entity = Mapper.Map<PostalAddressDataDTO, PostalAddress>(objPostalAddressDataDTO);
@@ -481,7 +481,7 @@
 
                     if (postalAddressDataDTO != null)
                     {
-                        var objPostalAddress = DataContext.PostalAddresses.Include(x => x.PostalAddressStatus).SingleOrDefault(n => n.ID == postalAddressDataDTO.ID );
+                        var objPostalAddress = DataContext.PostalAddresses.Include(x => x.PostalAddressStatus).SingleOrDefault(n => n.ID == postalAddressDataDTO.ID);
 
                         if (objPostalAddress != null)
                         {
@@ -514,7 +514,6 @@
 
                             objPostalAddress.RowCreateDateTime = DateTime.UtcNow;
 
-                          
                             foreach (var status in objPostalAddress.PostalAddressStatus)
                             {
                                 status.RowCreateDateTime = DateTime.UtcNow;
@@ -674,7 +673,7 @@
         /// <param name="objPostalAddress">Postal Address Transfer Object</param>
         /// <param name="addressTypeNYBGuid">Static NYB Address Type Guid</param>
         /// <returns>Posta Address matching the criteria</returns>
-        private IQueryable<PostalAddress> GetPostalAddressEntities(PostalAddressDataDTO objPostalAddress, Guid addressTypeNYBGuid = new Guid())
+        private IQueryable<PostalAddress> GetPostalAddressEntities(PostalAddressDataDTO objPostalAddress, Guid addressTypeNYBGuid = default(Guid))
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressEntities"))
             {

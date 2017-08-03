@@ -106,4 +106,4 @@ span.centerAlign.flex-20 {
   margin: auto; }
 
 .map-panel li.initialCursor {
-  cursor: initial; }
+  cursor: default; }

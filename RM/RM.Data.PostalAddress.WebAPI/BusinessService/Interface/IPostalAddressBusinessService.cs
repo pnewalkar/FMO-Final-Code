@@ -26,24 +26,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <returns>returns true or false</returns>
         Task<bool> ProcessPAFDetails(List<PostalAddressDTO> postalAddress);
 
-        // TODO : To be moved to Unit Manager
-        /*
-        /// <summary>
-        /// Filter PostalAddress based on the search text
-        /// </summary>
-        /// <param name="searchText">searchText</param>
-        /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of postcodes</returns>
-        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid);
-
-        /// <summary>
-        /// Get Postal Address based on postcode
-        /// </summary>
-        /// <param name="selectedItem">selectedItem</param>
-        /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of Postal Address</returns>
-        Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid);*/
-
         /// <summary>
         /// Get Postal Address based on postal address id.
         /// </summary>
@@ -92,6 +74,5 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <param name="udprn">udprn value of PostalAddress</param>
         /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn);
-
     }
 }
