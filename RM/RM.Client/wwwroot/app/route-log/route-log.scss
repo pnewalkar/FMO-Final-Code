@@ -1,61 +1,5 @@
 @import './app/variables';
 
-#table_wrapper{
-    @include background($recess-grey,none);
-    @include border($black);
-    @include float(right);
-    @include border(1px solid $black);
-}
-
-#tbody{
-    @include background($white,none);
-    @include width(550px);
-    @include height(150px);
-    overflow-y:auto;
-}
-
-table{
-    width: width-percent(1);
-    border-collapse:collapse;
-}
-
-#table_wrapper td{
-    @include border-bottom(1px solid $black);
-    @include padding(1px 5px 1px 5px);
-    border-right:1px solid black;
-} 
-.td1{
-    @extend %body-content;
-    @include width(250px);
-}
-.td2{
-    @extend %body-content;
-    @include width(140px);
-}
-#header{
-    @include width(550px);
-    @include background($recess-grey,none);
-    @include border-bottom(1px solid $recess-grey);
-}
-#header div{
-    @include padding(1px 5px 1px 5px);
-    @include float(left);
-    border-right:1px solid black;
-}
-#header #head1{
-    @extend %header-content;
-    @include width(250px);
-} /* the same as td1 */
-#header #head2{
-    @extend %header-content;
-    @include width(140px);
-} /* the same as td2 */
-#header #head3{
-    @extend %header-content;
-    @include float(none);
-    border-right-width:0
-}
-
 md-dialog h2{
     @extend %header-content;
     @include font-color($black);
@@ -118,10 +62,21 @@ span.closeRouteWindow {
     border-collapse: collapse;
 }
 
-.routeDetailstable td, th {
+.routeDetailstable {
+
+    td {
     @include border(1px solid $black);
     @include padding(8px 8px 8px 8px);
     text-align: left;
+    }
+
+    th {
+    @include border(1px solid $black);
+    @include padding(8px 8px 8px 8px);
+    text-align: left;
+    }
+
+
 }
 
 .routeDetailstable tr:nth-child(even) {
@@ -135,7 +90,7 @@ span.closeRouteWindow {
 
 
 .routeLogDialog{
-  width: width-percent(1.7);
+  width: 855px;
   height: height-percent(1);
 
   h1{
@@ -150,3 +105,18 @@ span.closeRouteWindow {
     margin-right: 0px;
   }
 }
+
+#routLogTable{
+  width: 100%;
+  height: 350px;
+ }
+  #routLogTable th{
+  color: #2a2a2d;
+  font-family: Chevin;
+  font-size: 18px; 
+ }
+  #routLogTable td{
+  color: #2a2a2d;
+  font-family: PF_DIN;
+  font-size: 16px; 
+ }

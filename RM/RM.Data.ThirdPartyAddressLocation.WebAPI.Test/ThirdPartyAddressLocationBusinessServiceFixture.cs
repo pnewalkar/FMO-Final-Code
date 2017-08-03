@@ -4,7 +4,6 @@ using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DataService;
@@ -35,6 +34,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         [Test]
         public async Task Test_Address_Location_By_Udprn()
         {
+            OnSetup();
             int udprn = 0;
 
             Exception mockException = It.IsAny<Exception>();
@@ -61,6 +61,13 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         public void Test_Save_USR_Details_Valid_Scenario()
         {
             List<CommonLib.ReferenceDataCategoryDTO> referenceDataCategoryList = new List<CommonLib.ReferenceDataCategoryDTO>();
+            addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
+            thirdPartyAddressLocationIntegrationServiceMock = new Mock<IThirdPartyAddressLocationIntegrationService>();
+            loggingHelperMock = new Mock<ILoggingHelper>();
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+            testCandidate = new ThirdPartyAddressLocationBusinessService(addressLocationDataServiceMock.Object, thirdPartyAddressLocationIntegrationServiceMock.Object, loggingHelperMock.Object);
+
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Notification Type", Id = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("DB44760F-A5F4-42B8-8C36-24A89559AC8C"), ReferenceDataValue = "Action Required", DataDescription = "Action required", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("4C238DDE-9755-4FF0-9BDF-43328E67EEBA"), ReferenceDataValue = "Informational", DataDescription = "Informational", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("F151040D-3606-42D8-A0A9-705430C9DA7B"), ReferenceDataValue = "Authorization", DataDescription = "Authorization", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Data Provider", Id = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("3742D14F-BCDF-48AE-90D7-1D3E3E3BAA40"), ReferenceDataValue = "Internal", DataDescription = "Internal", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("5ABA4B09-D741-473D-801D-E88602BB2B03"), ReferenceDataValue = "External", DataDescription = "External", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "DeliveryPoint Use Indicator", Id = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Organisation", DataDescription = "Organisation", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Residential", DataDescription = "Residential", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") } } });
@@ -80,9 +87,9 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), USRACTION)).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).Returns(Task.FromResult(referenceDataCategoryList));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(Task.FromResult(deliveryPointDTO));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
             addressLocationDataServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateNotificationByUDPRN(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
             addressLocationDataServiceMock.Setup(x => x.AddressLocationExists(It.IsAny<int>())).Returns(Task.FromResult(false));
             addressLocationDataServiceMock.Setup(x => x.GetPostalAddressData(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
             Exception mockException = It.IsAny<Exception>();
@@ -92,13 +99,18 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             thirdPartyAddressLocationIntegrationServiceMock.Verify(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>()), Times.Once);
             addressLocationDataServiceMock.Verify(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
             addressLocationDataServiceMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDataDTO>()), Times.Once);
-            thirdPartyAddressLocationIntegrationServiceMock.Verify(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>()), Times.Once);
         }
 
         [Test]
         public void Test_Save_USR_Details_Invalid_Scenario()
         {
             List<CommonLib.ReferenceDataCategoryDTO> referenceDataCategoryList = new List<CommonLib.ReferenceDataCategoryDTO>();
+            addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
+            thirdPartyAddressLocationIntegrationServiceMock = new Mock<IThirdPartyAddressLocationIntegrationService>();
+            loggingHelperMock = new Mock<ILoggingHelper>();
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+            testCandidate = new ThirdPartyAddressLocationBusinessService(addressLocationDataServiceMock.Object, thirdPartyAddressLocationIntegrationServiceMock.Object, loggingHelperMock.Object);
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Notification Type", Id = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("DB44760F-A5F4-42B8-8C36-24A89559AC8C"), ReferenceDataValue = "Action Required", DataDescription = "Action required", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("4C238DDE-9755-4FF0-9BDF-43328E67EEBA"), ReferenceDataValue = "Informational", DataDescription = "Informational", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("F151040D-3606-42D8-A0A9-705430C9DA7B"), ReferenceDataValue = "Authorization", DataDescription = "Authorization", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Data Provider", Id = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("3742D14F-BCDF-48AE-90D7-1D3E3E3BAA40"), ReferenceDataValue = "Internal", DataDescription = "Internal", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("5ABA4B09-D741-473D-801D-E88602BB2B03"), ReferenceDataValue = "External", DataDescription = "External", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "DeliveryPoint Use Indicator", Id = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Organisation", DataDescription = "Organisation", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Residential", DataDescription = "Residential", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") } } });
@@ -108,6 +120,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos = new List<AddressLocationUSRPOSTDTO>() { new AddressLocationUSRPOSTDTO { UDPRN = 1234, XCoordinate = 12, YCoordinate = 10 } };
             addressLocationDataServiceMock.Setup(x => x.AddressLocationExists(It.IsAny<int>())).Returns(Task.FromResult(false));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(Task.FromResult(false));
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
 
             Exception mockException = It.IsAny<Exception>();
             var result = testCandidate.SaveUSRDetails(addressLocationUsrpostdtos);
@@ -121,6 +134,12 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         public async Task SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Approx_Location_Notification()
         {
             List<CommonLib.ReferenceDataCategoryDTO> referenceDataCategoryList = new List<CommonLib.ReferenceDataCategoryDTO>();
+            addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
+            thirdPartyAddressLocationIntegrationServiceMock = new Mock<IThirdPartyAddressLocationIntegrationService>();
+            loggingHelperMock = new Mock<ILoggingHelper>();
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+            testCandidate = new ThirdPartyAddressLocationBusinessService(addressLocationDataServiceMock.Object, thirdPartyAddressLocationIntegrationServiceMock.Object, loggingHelperMock.Object);
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Notification Type", Id = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("DB44760F-A5F4-42B8-8C36-24A89559AC8C"), ReferenceDataValue = "Action Required", DataDescription = "Action required", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("4C238DDE-9755-4FF0-9BDF-43328E67EEBA"), ReferenceDataValue = "Informational", DataDescription = "Informational", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("F151040D-3606-42D8-A0A9-705430C9DA7B"), ReferenceDataValue = "Authorization", DataDescription = "Authorization", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Data Provider", Id = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("3742D14F-BCDF-48AE-90D7-1D3E3E3BAA40"), ReferenceDataValue = "Internal", DataDescription = "Internal", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("5ABA4B09-D741-473D-801D-E88602BB2B03"), ReferenceDataValue = "External", DataDescription = "External", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "DeliveryPoint Use Indicator", Id = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Organisation", DataDescription = "Organisation", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Residential", DataDescription = "Residential", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") } } });
@@ -140,11 +159,11 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), USRACTION)).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).Returns(Task.FromResult(referenceDataCategoryList));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(Task.FromResult(deliveryPointDTO));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
             addressLocationDataServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateNotificationByUDPRN(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             addressLocationDataServiceMock.Setup(x => x.AddressLocationExists(It.IsAny<int>())).Returns(Task.FromResult(false));
             addressLocationDataServiceMock.Setup(x => x.GetPostalAddressData(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
             Exception mockException = It.IsAny<Exception>();
 
             await testCandidate.SaveUSRDetails(addressLocationUsrpostdtos);
@@ -159,6 +178,12 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         public async Task SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Real_Location_Non_Existing_Notification()
         {
             List<CommonLib.ReferenceDataCategoryDTO> referenceDataCategoryList = new List<CommonLib.ReferenceDataCategoryDTO>();
+            addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
+            thirdPartyAddressLocationIntegrationServiceMock = new Mock<IThirdPartyAddressLocationIntegrationService>();
+            loggingHelperMock = new Mock<ILoggingHelper>();
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+            testCandidate = new ThirdPartyAddressLocationBusinessService(addressLocationDataServiceMock.Object, thirdPartyAddressLocationIntegrationServiceMock.Object, loggingHelperMock.Object);
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Notification Type", Id = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("DB44760F-A5F4-42B8-8C36-24A89559AC8C"), ReferenceDataValue = "Action Required", DataDescription = "Action required", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("4C238DDE-9755-4FF0-9BDF-43328E67EEBA"), ReferenceDataValue = "Informational", DataDescription = "Informational", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("F151040D-3606-42D8-A0A9-705430C9DA7B"), ReferenceDataValue = "Authorization", DataDescription = "Authorization", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Data Provider", Id = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("3742D14F-BCDF-48AE-90D7-1D3E3E3BAA40"), ReferenceDataValue = "Internal", DataDescription = "Internal", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("5ABA4B09-D741-473D-801D-E88602BB2B03"), ReferenceDataValue = "External", DataDescription = "External", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "DeliveryPoint Use Indicator", Id = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Organisation", DataDescription = "Organisation", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Residential", DataDescription = "Residential", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") } } });
@@ -178,7 +203,6 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), USRACTION)).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).Returns(Task.FromResult(referenceDataCategoryList));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(Task.FromResult(deliveryPointDTO));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
             addressLocationDataServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(false));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateNotificationByUDPRN(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             addressLocationDataServiceMock.Setup(x => x.AddressLocationExists(It.IsAny<int>())).Returns(Task.FromResult(false));
@@ -197,6 +221,12 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         public async Task SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Real_Location_Within_Range_Non_Existing_Notification()
         {
             List<CommonLib.ReferenceDataCategoryDTO> referenceDataCategoryList = new List<CommonLib.ReferenceDataCategoryDTO>();
+            addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
+            thirdPartyAddressLocationIntegrationServiceMock = new Mock<IThirdPartyAddressLocationIntegrationService>();
+            loggingHelperMock = new Mock<ILoggingHelper>();
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+            testCandidate = new ThirdPartyAddressLocationBusinessService(addressLocationDataServiceMock.Object, thirdPartyAddressLocationIntegrationServiceMock.Object, loggingHelperMock.Object);
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Notification Type", Id = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("DB44760F-A5F4-42B8-8C36-24A89559AC8C"), ReferenceDataValue = "Action Required", DataDescription = "Action required", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("4C238DDE-9755-4FF0-9BDF-43328E67EEBA"), ReferenceDataValue = "Informational", DataDescription = "Informational", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("F151040D-3606-42D8-A0A9-705430C9DA7B"), ReferenceDataValue = "Authorization", DataDescription = "Authorization", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Data Provider", Id = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("3742D14F-BCDF-48AE-90D7-1D3E3E3BAA40"), ReferenceDataValue = "Internal", DataDescription = "Internal", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("5ABA4B09-D741-473D-801D-E88602BB2B03"), ReferenceDataValue = "External", DataDescription = "External", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "DeliveryPoint Use Indicator", Id = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Organisation", DataDescription = "Organisation", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Residential", DataDescription = "Residential", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") } } });
@@ -235,6 +265,12 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         public async Task SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Real_Location_Outside_Range_Non_Existing_Notification()
         {
             List<CommonLib.ReferenceDataCategoryDTO> referenceDataCategoryList = new List<CommonLib.ReferenceDataCategoryDTO>();
+            addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
+            thirdPartyAddressLocationIntegrationServiceMock = new Mock<IThirdPartyAddressLocationIntegrationService>();
+            loggingHelperMock = new Mock<ILoggingHelper>();
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+            testCandidate = new ThirdPartyAddressLocationBusinessService(addressLocationDataServiceMock.Object, thirdPartyAddressLocationIntegrationServiceMock.Object, loggingHelperMock.Object);
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Notification Type", Id = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("DB44760F-A5F4-42B8-8C36-24A89559AC8C"), ReferenceDataValue = "Action Required", DataDescription = "Action required", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("4C238DDE-9755-4FF0-9BDF-43328E67EEBA"), ReferenceDataValue = "Informational", DataDescription = "Informational", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("F151040D-3606-42D8-A0A9-705430C9DA7B"), ReferenceDataValue = "Authorization", DataDescription = "Authorization", ReferenceDataCategory_GUID = new Guid("5780A5C0-8C04-4926-9C60-158F02A4E696") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "Data Provider", Id = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("3742D14F-BCDF-48AE-90D7-1D3E3E3BAA40"), ReferenceDataValue = "Internal", DataDescription = "Internal", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("5ABA4B09-D741-473D-801D-E88602BB2B03"), ReferenceDataValue = "External", DataDescription = "External", ReferenceDataCategory_GUID = new Guid("6A2662CD-936C-44ED-961B-4448E8AB3EC8") } } });
             referenceDataCategoryList.Add(new CommonLib.ReferenceDataCategoryDTO { CategoryName = "DeliveryPoint Use Indicator", Id = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED"), ReferenceDatas = new List<CommonLib.ReferenceDataDTO>() { new CommonLib.ReferenceDataDTO() { ID = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Organisation", DataDescription = "Organisation", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") }, new CommonLib.ReferenceDataDTO() { ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), ReferenceDataValue = "Residential", DataDescription = "Residential", ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") } } });

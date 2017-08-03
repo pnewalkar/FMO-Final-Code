@@ -177,7 +177,7 @@ function DeliveryPointController(
     }
 
     function setOrganisation() {
-        if (vm.selectedType === vm.single) {
+        if (vm.selectedType === vm.single && !angular.isUndefined(vm.addressDetails)) {
             deliveryPointService.setOrganisation(vm.addressDetails, vm.dpUseType).then(function (response) {
                 vm.dpUse = response.dpUse;
                 vm.selectedDPUse = response.selectedDPUse;
@@ -266,11 +266,11 @@ function DeliveryPointController(
         var addDeliveryPointDTO =
             {
                 "PostalAddressDTO": vm.addressDetails,
-
                 "DeliveryPointDTO":
                 {
-                    "MultipleOccupancyCount": vm.mailvol,
-                    "MailVolume": vm.multiocc,
+                    "MultipleOccupancyCount":vm.multiocc,
+                    "MailVolume": vm.mailvol,
+                    "DeliveryPointAliasDTO": vm.items,
                     "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
                     "DeliveryRoute_Guid": vm.routeId
                 },
