@@ -419,6 +419,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                 {
                     DataContext.RouteActivities.Remove(routeActivity);
                 }
+
                 await DataContext.SaveChangesAsync();
                 routeActivityDeleted = true;
 

@@ -526,8 +526,6 @@
                                 alias.StartDateTime = DateTime.UtcNow;
                             }
 
-
-
                             // add new address
                             DataContext.PostalAddresses.Add(objPostalAddress);
                         }
