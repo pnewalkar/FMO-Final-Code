@@ -195,7 +195,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public async Task Test_CheckDeliveryPointForRange_PositiveScenario()
         {
-            mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecordsForRange(It.IsAny<List<PostalAddressDTO>>())).Returns(Task.FromResult(GetDuplicateDeliveryPointDTO()));
             var expectedresult = await testCandidate.CheckDeliveryPointForRange(addDeliveryPointDTO);
             Assert.IsNotNull(expectedresult);
             Assert.IsTrue(expectedresult.CreateDeliveryPointModelDTOs.Count == 1);
@@ -282,6 +281,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     DeliveryPointSuffix = "DeliveryPointSuffix",
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                      ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
             },
                 new PostalAddressDTO()
                 {
@@ -308,7 +308,11 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             addDeliveryPointDTO = new AddDeliveryPointDTO()
             {
                 PostalAddressDTO = postalAddressesDTO[0],
-                DeliveryPointDTO = deliveryPointDTO
+                DeliveryPointDTO = deliveryPointDTO,
+                RangeType = "Odds",
+                DeliveryPointType = "Range",
+                FromRange = 2,
+                ToRange = 11,
             };
             addDeliveryPointDTO1 = new AddDeliveryPointDTO()
             {
@@ -463,7 +467,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             var locationXy = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700);
             DbGeometry location = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
 
-            List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceData = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>() { new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO { CategoryName = "Delivery Point" } };
+            List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceData = GetReferenceDataCategory();
             double xLocation = 399545.5590911182;
             double yLocation = 649744.6394892789;
             routeDTO = new RouteDTO
@@ -497,7 +501,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointIntegrationService.Setup(x => x.MapRouteForDeliveryPoint(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
             mockDeliveryPointIntegrationService.Setup(x => x.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).Returns(Guid.NewGuid());
             mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnID(It.IsAny<DeliveryPointDataDTO>())).ReturnsAsync(Guid.NewGuid());
-
+            mockDeliveryPointIntegrationService.Setup(x => x.CreateAddressForDeliveryPointForRange(It.IsAny<List<PostalAddressDTO>>())).ReturnsAsync(new List<CreateDeliveryPointModelDTO> { new CreateDeliveryPointModelDTO() { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12"), IsAddressLocationAvailable = true, Message = "Delivery Point Created", XCoordinate = xLocation, YCoordinate = yLocation } });
             mockDeliveryPointIntegrationService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(routeDTO);
 
             mockDeliveryPointsDataService.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).ReturnsAsync(true);
