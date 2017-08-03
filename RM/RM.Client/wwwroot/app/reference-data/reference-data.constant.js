@@ -22,7 +22,7 @@
     UI_SearchRules: { DBCategoryName: "UI_SearchRules", AppCategoryName: "UI_SearchRules", ReferenceDataNames: [{ AppReferenceDataName: "UI_MinNumSearchCharacters", DBReferenceDataName: "UI_MinNumSearchCharacters" }] },
     PDF_PageSize: { AppCategoryName: "PDF_PageSize", DBCategoryName: "PDF_PageSize", ReferenceDataNames: [{ AppReferenceDataName: "PDF_PageSize_A0", DBReferenceDataName: "PDF_PageSize_A0" }, { AppReferenceDataName: "PDF_PageSize_A1", DBReferenceDataName: "PDF_PageSize_A1" }, { AppReferenceDataName: "PDF_PageSize_A2", DBReferenceDataName: "PDF_PageSize_A2" }, { AppReferenceDataName: "PDF_PageSize_A3", DBReferenceDataName: "PDF_PageSize_A3" }, { AppReferenceDataName: "PDF_PageSize_A4", DBReferenceDataName: "PDF_PageSize_A4" }] },
     PrintMap_DPI: { AppCategoryName: "PrintMap_DPI", DBCategoryName: "PrintMap_DPI", ReferenceDataNames: [{ AppReferenceDataName: "PrintMap_DPI", DBReferenceDataName: "PrintMap_DPI" }] },
-    Transparency : { DBCategoryName: "Object Transparency",  AppCategoryName: "ObjectTransparency" },
+    Transparency: { DBCategoryName: "Object Transparency", AppCategoryName: "ObjectTransparency" },
     PrintMap_mmPerInch: {
         AppCategoryName: "PrintMap_mmPerInch",
         DBCategoryName: "PrintMap_mmPerInch",
@@ -86,7 +86,9 @@
         ]
     },
     SenarioOperationState: { AppCategoryName: "SenarioOperationState", DBCategoryName: "Senario Operation State", ReferenceDataNames: [] },
-    DeliveryPointColor: { DBCategoryName: "Delivery Point Color", AppCategoryName: "DeliveryPointColor", ReferenceDataNames: [] }
+    DeliveryPointColor: { DBCategoryName: "Delivery Point Color", AppCategoryName: "DeliveryPointColor", ReferenceDataNames: [] },
+    SubBuildingType: { DBCategoryName: "Sub Building Type", AppCategoryName: "SubBuildingType", ReferenceDataNames: [] },
+    UI_Range_Options: { DBCategoryName: "UI_Range_Options", AppCategoryName: "UI_Range_Options", ReferenceDataNames: [] }
 };
 
 angular.module('RMApp')

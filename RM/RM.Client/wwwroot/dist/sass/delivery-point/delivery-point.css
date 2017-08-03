@@ -56,3 +56,54 @@ fieldset {
 
 .deliveryRoute .md-text {
   color: darkgray; }
+
+.DPAliasBox {
+  padding-left: 15px; }
+
+#DPAliasBoxBtn {
+  margin-left: 0px;
+  margin-top: 10px; }
+
+.listAliasHeader {
+  padding-bottom: 5px;
+  padding-left: 5px; }
+
+.listAliasStar {
+  float: right;
+  margin-right: 60px; }
+
+.listAliasMdlist {
+  border: solid 1px #d0c9c9;
+  height: 145px;
+  overflow-y: scroll; }
+
+.listAliasMdlist .md-button.md-icon-button {
+  margin: 0 6px;
+  height: 20px;
+  min-width: 0;
+  line-height: 16px;
+  padding: 2px 8px;
+  width: 40px;
+  border-radius: 50%; }
+
+.listAlias {
+  padding: 0 0 0 5px;
+  Margin: 0; }
+
+.listAliasRadioBtn {
+  margin-right: -10px; }
+
+.md-list-item, md-list-item .md-list-item-inner, md-list-item, .md-list-item .md-list-item-inner {
+  min-height: 10px; }
+
+md-list-item .md-list-item-inner:before, md-list-item:before {
+  content: '';
+  min-height: 0;
+  visibility: hidden;
+  display: inline-block; }
+
+span.centerAlign.flex-20 {
+  margin: auto; }
+
+.map-panel li.initialCursor {
+  cursor: initial; }

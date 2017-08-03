@@ -481,7 +481,7 @@
 
                     if (postalAddressDataDTO != null)
                     {
-                        var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.UDPRN == postalAddressDataDTO.UDPRN && n.UDPRN.HasValue);
+                        var objPostalAddress = DataContext.PostalAddresses.Include(x => x.PostalAddressStatus).SingleOrDefault(n => n.ID == postalAddressDataDTO.ID );
 
                         if (objPostalAddress != null)
                         {
@@ -504,6 +504,7 @@
                             {
                                 cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
                                 cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
+                                cfg.CreateMap<PostalAddressAliasDataDTO, PostalAddressAlias>();
                                 cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
                             });
 
@@ -513,11 +514,20 @@
 
                             objPostalAddress.RowCreateDateTime = DateTime.UtcNow;
 
+                          
                             foreach (var status in objPostalAddress.PostalAddressStatus)
                             {
                                 status.RowCreateDateTime = DateTime.UtcNow;
                                 status.StartDateTime = DateTime.UtcNow;
                             }
+
+                            foreach (var alias in objPostalAddress.PostalAddressAlias)
+                            {
+                                alias.RowCreateDateTime = DateTime.UtcNow;
+                                alias.StartDateTime = DateTime.UtcNow;
+                            }
+
+
 
                             // add new address
                             DataContext.PostalAddresses.Add(objPostalAddress);
@@ -609,7 +619,7 @@
 
                 IQueryable<PostalAddress> postalAddress = null;
 
-                if (addressTypeNYBGuid == Guid.Empty)
+                if (addressTypeNYBGuid != Guid.Empty)
                 {
                     postalAddress = DataContext.PostalAddresses.AsNoTracking()
                             .Where(n => n.AddressType_GUID == addressTypeNYBGuid);
