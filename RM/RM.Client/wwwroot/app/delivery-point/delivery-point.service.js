@@ -38,7 +38,8 @@ function deliveryPointService(
         setOrganisation: setOrganisation,
         isUndefinedOrNull: isUndefinedOrNull,
         UpdateDeliverypoint: UpdateDeliverypoint,
-        getSubBuildingTypes: getSubBuildingTypes
+        getSubBuildingTypes: getSubBuildingTypes,
+        createDeliveryPointsRange: createDeliveryPointsRange
     };
 
     function initialize() {
@@ -185,6 +186,17 @@ function deliveryPointService(
         var deferred = $q.defer();
         referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.UI_Range_Options.DBCategoryName).then(function (response) {
             deferred.resolve(response.listItems);
+        });
+        return deferred.promise;
+    }
+
+    
+
+
+    function createDeliveryPointsRange(postalAddressDetails) {
+        var deferred = $q.defer();
+        deliveryPointAPIService.createDeliveryPointsRange(postalAddressDetails).then(function (result) {
+            deferred.resolve(response);
         });
         return deferred.promise;
     }
