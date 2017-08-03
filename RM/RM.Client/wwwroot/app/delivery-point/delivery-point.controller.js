@@ -385,8 +385,9 @@ function DeliveryPointController(
     }
 
     function addAlias() {
-        vm.postalAddressAliases.push({
-            PreferenceOrderIndex: 0,
+        
+       vm.postalAddressAliases.push({
+    PreferenceOrderIndex: 0,
             AliasName: vm.alias
         });
         vm.alias = "";
