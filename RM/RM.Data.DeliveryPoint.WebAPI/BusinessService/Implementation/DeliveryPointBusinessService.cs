@@ -667,9 +667,9 @@
         /// <returns>Flag to indicate DPUse updated or not</returns>
         public async Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPointsCrossingOperationalObject"))
+            using (loggingHelper.RMTraceManager.StartTrace("Business.UpdateDPUse"))
             {
-                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(GetDeliveryPointsCrossingOperationalObject);
+                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(UpdateDPUse);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 if (postalAddressDetails == null)
                 {
