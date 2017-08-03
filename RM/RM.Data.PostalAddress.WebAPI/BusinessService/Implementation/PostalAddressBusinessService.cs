@@ -377,8 +377,18 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     // addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
 
                     addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID = liveAddressStatusId;
+
                     addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias = addDeliveryPointDTO.PostalAddressAliasDTOs;
-                    addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias.ForEach(p => p.AliasTypeGUID = deliveryPointAliasId);
+
+                    if (addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias != null)
+                    {
+                        if (addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias.Count == 1)
+                        {
+                            addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias.First().PreferenceOrderIndex = 1;
+                        }
+
+                        addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias.ForEach(p => p.AliasTypeGUID = deliveryPointAliasId);
+                    }
                 }
 
                 var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(ConvertToDataDTO(addDeliveryPointDTO.PostalAddressDTO));
@@ -410,6 +420,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>bool</returns>
         public async Task<List<CreateDeliveryPointModelDTO>> CreateAddressForDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs)
         {
+            if (postalAddressDTOs == null)
+            {
+                throw new ArgumentNullException(nameof(postalAddressDTOs));
+            }
+
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CreateAddressForDeliveryPointForRange"))
             {
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(CreateAddressForDeliveryPointForRange);
@@ -461,7 +476,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         });
                     });
                 }
-                
 
                 return createDeliveryPointModelDTOs;
             }
@@ -520,9 +534,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>string</returns>
         public async Task<DuplicateDeliveryPointDTO> CheckForDuplicateNybRecordsForRange(List<PostalAddressDTO> postalAddresses)
         {
-            DuplicateDeliveryPointDTO duplicateDeliveryPointDTO = new DuplicateDeliveryPointDTO();
+            if (postalAddresses == null)
+            {
+                throw new ArgumentNullException(nameof(postalAddresses));
+            }
+
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CheckForDuplicateNybRecords"))
             {
+                DuplicateDeliveryPointDTO duplicateDeliveryPointDTO = new DuplicateDeliveryPointDTO();
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(CheckForDuplicateNybRecords);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
@@ -550,9 +569,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>bool</returns>
         public async Task<DuplicateDeliveryPointDTO> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDTO> postalAddressDTOs)
         {
-            DuplicateDeliveryPointDTO duplicateDeliveryPointDTO = new DuplicateDeliveryPointDTO();
+            if (postalAddressDTOs == null)
+            {
+                throw new ArgumentNullException(nameof(postalAddressDTOs));
+            }
+
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CheckForDuplicateNybRecords"))
             {
+                DuplicateDeliveryPointDTO duplicateDeliveryPointDTO = new DuplicateDeliveryPointDTO();
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(CheckForDuplicateNybRecords);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
                                 

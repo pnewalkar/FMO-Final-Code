@@ -117,7 +117,7 @@ function DeliveryPointController(
         $scope.$emit("dialogOpen", "deliveryPoint");
     }
 
-    function closeWindow() {
+    function closeWindow() {       
         vm.hide = false;
         vm.display = false;
         vm.searchText = "";
@@ -126,6 +126,8 @@ function DeliveryPointController(
         vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
         deliveryPointService.closeModalPopup();
         vm.results.length = 0;
+        vm.postalAddressAliases = [];
+        vm.alias = "";
     }
 
     function resultSet(query) {
@@ -134,21 +136,21 @@ function DeliveryPointController(
         });
     }
 
-    function OnChangeItem(selectedItem) {       
-    if (selectedItem) {
-        vm.dpUse = "";
-        vm.routeId = "";
-        vm.notyetBuilt = "";
-        vm.searchText = selectedItem;
-        vm.results = {};
-        deliveryPointService.getPostalAddress(selectedItem).then(function (response) {
-            vm.addressDetails = response.postalAddressData;
-            vm.nybAddressDetails = response.postalAddressData.nybAddressDetails;
-            vm.routeDetails = response.postalAddressData.routeDetails;
-            vm.display = response.display;
-            vm.selectedValue = response.selectedValue;
-        });
-    }
+    function OnChangeItem(selectedItem) {
+        if (selectedItem) {
+            vm.dpUse = "";
+            vm.routeId = "";
+            vm.notyetBuilt = "";
+            vm.searchText = selectedItem;
+            vm.results = {};
+            deliveryPointService.getPostalAddress(selectedItem).then(function (response) {
+                vm.addressDetails = response.postalAddressData;
+                vm.nybAddressDetails = response.postalAddressData.nybAddressDetails;
+                vm.routeDetails = response.postalAddressData.routeDetails;
+                vm.display = response.display;
+                vm.selectedValue = response.selectedValue;
+            });
+        }
     }
 
     function bindAddressDetails() {
@@ -270,14 +272,14 @@ function DeliveryPointController(
                 "PostalAddressDTO": vm.addressDetails,
                 "DeliveryPointDTO":
                 {
-                    "MultipleOccupancyCount":vm.multiocc,
+                    "MultipleOccupancyCount": vm.multiocc,
                     "MailVolume": vm.mailvol,
                     "DeliveryPointAliasDTO": vm.items,
                     "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
                     "DeliveryRoute_Guid": vm.routeId
                 },
                 "AddressLocationDTO": null,
-                "PostalAddressAliasDTOs": vm.postalAddressAliases, // TODO naming
+                "PostalAddressAliasDTOs": vm.postalAddressAliases,
                 "DeliveryPointType": vm.selectedType,
                 "RangeType": vm.rangeOptionsSelected,
                 "FromRange": vm.rangeFrom,
@@ -387,19 +389,21 @@ function DeliveryPointController(
                 });
     }
 
-    function addAlias() {
-        
-       vm.postalAddressAliases.push({
-    PreferenceOrderIndex: 0,
-            AliasName: vm.alias
-        });
-        vm.alias = "";
-        vm.isAliasDisabled = true;
+    function addAlias() {       
+        if (vm.alias !== "" && vm.alias !== null && angular.isDefined(vm.alias)) {
+            
+            vm.postalAddressAliases.push({
+                PreferenceOrderIndex:  0,
+                AliasName: vm.alias              
+            });
+            vm.alias = "";
+            vm.isAliasDisabled = true;
+        }
     };
 
     function removeAlias() {
-        var lastItem = vm.postalAddressAliases.length - 1;
-        vm.postalAddressAliases.splice(lastItem);
+        //var lastItem = vm.postalAddressAliases.length - 1;
+        //vm.postalAddressAliases.splice(lastItem);
     }
 
     function locateDeliveryPoint(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {
