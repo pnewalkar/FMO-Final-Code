@@ -676,7 +676,6 @@
                 Guid returnGuid = new Guid(DeliveryPointConstants.DEFAULTGUID);
                 createDeliveryPointForRangeModelDTO = new CreateDeliveryPointForRangeModelDTO();
 
-
                 List<PostalAddressDTO> postalAddressDTOs = GetMultipleAddressesForDeliveryPoint(addDeliveryPointDTO);
 
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null &&
@@ -687,7 +686,7 @@
                     DuplicateDeliveryPointDTO duplicatePostalAddressRecords = deliveryPointIntegrationService.CheckForDuplicateAddressWithDeliveryPointsForRange(postalAddressDTOs).Result;
 
                     // Call Postal Address integration API
-                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && (duplicatePostalAddressRecords.PostalAddressDTO != null && duplicatePostalAddressRecords.PostalAddressDTO.Count > 0))
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && duplicatePostalAddressRecords != null && duplicatePostalAddressRecords.PostalAddressDTO != null && duplicatePostalAddressRecords.PostalAddressDTO.Count > 0)
                     {
                         RemoveDuplicateAddresses(postalAddressDTOs, duplicatePostalAddressRecords.PostalAddressDTO);
                         if (postalAddressDTOs.Count == 0)
@@ -702,9 +701,9 @@
                             createDeliveryPointForRangeModelDTO.Message = DeliveryPointConstants.DUPLICATEDELIVERYPOINTRANGE;
                         }
                     }
-                    else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && duplicateNybRecords.PostalAddressDTO != null && duplicateNybRecords.PostalAddressDTO.Count > 0)
+                    else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && duplicateNybRecords != null && duplicateNybRecords.PostalAddressDTO != null && duplicateNybRecords.PostalAddressDTO.Count > 0)
                     {
-                        RemoveDuplicateAddresses(postalAddressDTOs, duplicatePostalAddressRecords.PostalAddressDTO);
+                        RemoveDuplicateAddresses(postalAddressDTOs, duplicateNybRecords.PostalAddressDTO);
                         if (postalAddressDTOs.Count == 0)
                         {
                             createDeliveryPointForRangeModelDTO.HasAllDuplicates = true;
@@ -715,14 +714,12 @@
                             createDeliveryPointForRangeModelDTO.HasDuplicates = true;
                             createDeliveryPointForRangeModelDTO.PostalAddressDTOs = postalAddressDTOs;
                             createDeliveryPointForRangeModelDTO.Message = DeliveryPointConstants.DUPLICATEDELIVERYPOINTRANGE;
-                        }                        
+                        }
                     }
-
                     else
                     {
                         createDeliveryPointForRangeModelDTO = await CreateDeliveryPointForRange(postalAddressDTOs);
                     }
-
                 }
                 return createDeliveryPointForRangeModelDTO;
             }
@@ -748,7 +745,6 @@
                 double? returnYCoordinate = 0;
                 string message = string.Empty;
 
-
                 returnCreateDeliveryPointModelDTOs = new List<CreateDeliveryPointModelDTO>();
                 deliveryPointIds = new List<Guid>();
                 // Call Postal Address integration API
@@ -757,7 +753,6 @@
                 List<string> listNames = new List<string> { ReferenceDataCategoryNames.DeliveryPointOperationalStatus, ReferenceDataCategoryNames.DataProvider, ReferenceDataCategoryNames.NetworkNodeType };
 
                 var referenceDataCategoryList = deliveryPointIntegrationService.GetReferenceDataSimpleLists(listNames).Result;
-
 
                 foreach (CreateDeliveryPointModelDTO createDeliveryPointModelDTO in createDeliveryPointModelDTOs)
                 {
@@ -801,7 +796,6 @@
 
                         deliveryPointStatusDataDTO.DeliveryPointStatusGUID = liveWithLocationStatusId;
                     }
-
                     else
                     {
                         // if the exact location is not present
@@ -862,7 +856,6 @@
                     {
                         deliveryRouteId = postalAddressDTO.DeliveryRoute_Guid;
                     }
-
                 }
 
                 // Call Route log integration API
@@ -872,7 +865,6 @@
 
                 return new CreateDeliveryPointForRangeModelDTO { CreateDeliveryPointModelDTOs = returnCreateDeliveryPointModelDTOs };
             }
-            
         }
 
         #endregion Public Methods
