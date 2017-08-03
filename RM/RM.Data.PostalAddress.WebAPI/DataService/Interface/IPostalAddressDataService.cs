@@ -126,5 +126,20 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="pafGuid">pafGuid as Address Type Guid</param>
         /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
+
+        /// <summary>
+        /// Delete postal Address details
+        /// </summary>
+        /// <param name="addressId">Postal Address Id</param>
+        /// <returns>boolean</returns>
+        Task<bool> DeletePostalAddress(Guid addressId);
+
+        /// <summary>
+        /// Update postal address status to live or pending delete
+        /// </summary>
+        /// <param name="postalAddressId">Address id</param>
+        /// <param name="postalAddressStatus">Address status</param>
+        /// <returns>boolean value true if status has been updated successfully</returns>
+        Task<bool> UpdatePostalAddressStatus(Guid postalAddressId, Guid postalAddressStatus);
     }
 }

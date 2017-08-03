@@ -92,13 +92,13 @@ namespace Fmo.API.Services.Controllers
         /// <param name="postalAddress">List of posatl address DTO</param>
         /// <returns></returns>
         [HttpPost("pafaddresses")]
-        public async Task<IActionResult> SavePAFDetails([FromBody] List<PostalAddressDTO> postalAddress)
+        public async Task<IActionResult> ProcessPAFDetails([FromBody] List<PostalAddressDTO> postalAddress)
         {
             try
             {
-                using (loggingHelper.RMTraceManager.StartTrace("Controller.SavePAFDetails"))
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.ProcessPAFDetails"))
                 {
-                    string methodName = typeof(PostalAddressController) + "." + nameof(SavePAFDetails);
+                    string methodName = typeof(PostalAddressController) + "." + nameof(ProcessPAFDetails);
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     bool isPAFSaved = false;
@@ -109,7 +109,7 @@ namespace Fmo.API.Services.Controllers
 
                     if (postalAddress != null && postalAddress.Count > 0)
                     {
-                        isPAFSaved = await this.businessService.SavePAFDetails(postalAddress);
+                        isPAFSaved = await this.businessService.ProcessPAFDetails(postalAddress);
                         return Ok(isPAFSaved);
                     }
 

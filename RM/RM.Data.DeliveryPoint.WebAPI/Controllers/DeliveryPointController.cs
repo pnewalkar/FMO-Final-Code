@@ -637,19 +637,56 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete delivery point.
+        /// </summary>
+        /// <param name="deliveryPointid">Delivery point unique identifier.</param>
+        /// <returns>Boolean flag indicating success of operation.</returns>
         [HttpDelete("deliverypoint/batch/delete/id:{id}")]
-        public Task<bool> DeleteDeliveryPoint(Guid id)
+        public async Task<IActionResult> DeleteDeliveryPoint(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteDeliveryPoint"))
             {
                 string methodName = typeof(DeliveryPointController) + "." + nameof(DeleteDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var isDeliveryPointUpdated = businessService.DeleteDeliveryPoint(id);
+                var isDeliveryPointDeleted = await businessService.DeleteDeliveryPoint(id);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return isDeliveryPointUpdated;
+                return Ok(isDeliveryPointDeleted);
+            }
+        }
+
+        /// <summary>
+        /// Update DPUse in delivery point for matching UDPRN
+        /// </summary>
+        /// <param name="postalAddressDetails">postal address record in PAF</param>
+        /// <returns>Flag to indicate DPUse updated or not</returns>
+        [HttpPost("deliverypoint/UpdateDPUse")]
+        public async Task<IActionResult> UpdateDPUse([FromBody] PostalAddressDTO postalAddressDetails)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDPUse"))
+                {
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(UpdateDPUse);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    bool success = await businessService.UpdateDPUse(postalAddressDetails);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return Ok(success);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
             }
         }
 
