@@ -1,6 +1,6 @@
 'use strict';
 describe('Delivery Point: Controller', function () {    
-    var $rootScope;    
+    
     var $scope;
     var vm;
     var $q; 
@@ -9,17 +9,19 @@ describe('Delivery Point: Controller', function () {
     var popUpSettingService;
     var deliveryPointAPIService;    
     var mapFactory;
-    var coordinatesService;
-    var guidService;
-    var $state;
-    var $stateParams;
-    var deliveryPointService           
+    var coordinatesService;    
     var stateMockData;
     var stateParamsMockingData;
     var mapService;
+    var guidService;
+    var $state;    
+    var $stateParams;
+    var deliveryPointService           
+    var $rootScope;    
     var CommonConstants;
+    var GlobalSettings;
     
-
+    var MockGlobalSettings = {};
     stateMockData = {"selectedUnit":{"displayText":"BN    Worthing  Office","ID":"b51aa229-c984-4ca6-9c12-510187b81050","icon":"fa-map-marker delivery","$$mdSelectId":1,"$$hashKey":"object:114"}};
     stateParamsMockingData = {
       hide:true,
@@ -31,6 +33,7 @@ describe('Delivery Point: Controller', function () {
     beforeEach(function () {
         module('deliveryPoint'); 
         module(function ($provide) {
+            $provide.value('GlobalSettings',MockGlobalSettings);
             $provide.value('CommonConstants',{});
             $provide.value('$state', stateMockData);
             $provide.value('$stateParams', stateParamsMockingData);  
@@ -55,7 +58,10 @@ describe('Delivery Point: Controller', function () {
             });
 
             $provide.factory('deliveryPointService', function($q){
-                function initialize() {}                
+                function initialize() {
+                    var deferred = $q.defer();                    
+                    return deferred.promise;
+                }                
                 function resultSet() {}                    
                 function openModalPopup() {}              
                 function closeModalPopup() {}
@@ -221,11 +227,7 @@ describe('Delivery Point: Controller', function () {
 
     it('should set disable value as `true`', function() {
         expect(vm.disable).toBe(true);
-    });
-
-    it('should be set items value as `array`', function() {
-        expect(vm.items).toEqual([]);
-    });
+    });   
 
     it('should set `dpIsChecked` value as `false`', function() {
         expect(vm.dpIsChecked).toBe(false);
@@ -233,9 +235,9 @@ describe('Delivery Point: Controller', function () {
 
     it('should promise to return a success response once initialize method is called', function() {            
         var deferred = $q.defer();
-        var response = {deliveryPointTypes:'single',dpUseType:'circle'};
+        var response = {deliveryPointTypes:'single',dpUseType:'circle',SubBuildingTypes:'GigaPlex',RangeOptions:'548759'};
 
-        spyOn(deliveryPointService, 'deliveryPointTypes').and.returnValue(deferred.promise);        
+        spyOn(deliveryPointService, 'initialize').and.returnValue(deferred.promise);        
         spyOn(deliveryPointService, 'deliveryPointUseType').and.returnValue(deferred.promise);
 
         vm.initialize();    
@@ -243,9 +245,11 @@ describe('Delivery Point: Controller', function () {
         deferred.resolve(response);    
         $scope.$digest();
 
-        expect(deliveryPointService.deliveryPointTypes).toHaveBeenCalled();
-        expect(deliveryPointService.deliveryPointUseType).toHaveBeenCalled();
-        expect(response).toEqual({deliveryPointTypes:'single',dpUseType:'circle'});        
+        expect(deliveryPointService.initialize).toHaveBeenCalled();
+        expect(vm.deliveryPointTypes).toEqual('single');
+        expect(vm.dpUseType).toEqual('circle');
+        expect(vm.subBuildingTypes).toEqual('GigaPlex');
+        expect(vm.rangeOptions).toEqual('548759');
     });
 
     it('should be open popup model', function() {

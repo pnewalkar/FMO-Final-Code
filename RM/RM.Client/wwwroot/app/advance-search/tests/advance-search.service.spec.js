@@ -12,6 +12,7 @@ describe('Advance Search: Service', function() {
     var mapService;
 	var MockCommonConstants = {    
     	EntityType: { DeliveryPoint: "DeliveryPoint", StreetNetwork: "StreetNetwork", Route: "Route", Postcode: "Postcode" },
+        UserType: { DeliveryUser: "Delivery User", CollectionUser: "Collection User", ManagerUser: "Manager User" },
         RouteName: "ROUTENAME",
         DpUse: "DPUSE",
 	};	
@@ -106,18 +107,14 @@ describe('Advance Search: Service', function() {
         	deferred.resolve(MockDeliveryPointData);
         	return deferred.promise;
     	});
-        
-        /*var MockDeliveryPointData = {"searchResultItems":[
-                                                            {"udprn":null,"displayText":" HIGHFIELD WAY","type":"StreetNetwork","deliveryPointGuid":"00000000-0000-0000-0000-000000000000"},
-                                                            {"udprn":null,"displayText":" HIGH STREET","type":"StreetNetwork","deliveryPointGuid":"00000000-0000-0000-0000-000000000000"}]};
-        */
-        spyOn(roleAccessService,'fetchActionItems').and.callFake(function(){
-            var MockDeliveryPointData = {"searchResultItems":[{"udprn":10872591,"displayText":" HIGHFIELD WAY ","type":"DeliveryPoint","deliveryPointGuid":"00000000-0000-0000-0000-000000000000"}]};
+                
+        /*spyOn(roleAccessService,'fetchActionItems').and.callFake(function(){
+            var MockDeliveryPointData = [{"UserName":"shobharam.katiya    ","RoleName":"Delivery User","Unit_GUID":"092c69ae-4382-4183-84ff-ba07543d9c75","FunctionName":"Print Map","ActionName":"Print Map","UserId":"a867065b-b91e-e711-9f8c-28d244aef9ed","UnitType":"Delivery Office","UnitName":"High Wycombe North DO"}];
             return {
                 RolesActionResult: 
             }
         });
-
+        */
         advanceSearchService.queryAdvanceSearch('high').then(function(result){
             response = result;
         });
