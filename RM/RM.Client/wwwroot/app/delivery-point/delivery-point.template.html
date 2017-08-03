@@ -110,7 +110,7 @@
 
                 <md-input-container flex="30">
                     <label>{{ 'DELIVERY_POINTS.TYPE'| translate }}</label>
-                    <md-select ng-model="vm.selectedType" ng-change="vm.setOrganisation()">
+                    <md-select ng-model="vm.selectedType" ng-change="vm.setOrganisation()" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                         <md-option ng-repeat="type in vm.deliveryPointTypes" ng-value="type.value.trim()" ng-selected="{{type.value=='Single'?true:false}}">
                             {{type.value}}
                         </md-option>
