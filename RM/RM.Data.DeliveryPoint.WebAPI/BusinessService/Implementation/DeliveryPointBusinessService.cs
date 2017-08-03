@@ -794,6 +794,11 @@
                     {
                         // if the exact location is not present
                         deliveryPointdataDTO.NetworkNode.Location.Shape = deliveryPointIntegrationService.GetApproxLocation(postalAddressDTO.Postcode).Result;
+                        SqlGeometry approxLocation = SqlGeometry.STGeomFromWKB(new SqlBytes(deliveryPointdataDTO.NetworkNode.Location.Shape.AsBinary()), DeliveryPointConstants.BNGCOORDINATESYSTEM);
+
+                        createDeliveryPointModelDTO.XCoordinate = approxLocation.STX.Value;
+                        createDeliveryPointModelDTO.YCoordinate = approxLocation.STY.Value;
+
 
                         DeliveryPointStatusDataDTO deliveryPointStatusDataDTO = new DeliveryPointStatusDataDTO();
 
