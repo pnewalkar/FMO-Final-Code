@@ -763,7 +763,7 @@
 
                 IQueryable<PostalAddress> postalAddress = null;
 
-                if (addressTypeGuid == Guid.Empty)
+                if (addressTypeGuid != Guid.Empty)
                 {
                     postalAddress = DataContext.PostalAddresses.AsNoTracking()
                             .Where(n => n.AddressType_GUID == addressTypeGuid);

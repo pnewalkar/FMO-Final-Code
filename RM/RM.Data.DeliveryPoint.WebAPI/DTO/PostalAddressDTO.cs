@@ -2,11 +2,12 @@
 
 namespace RM.Data.DeliveryPoint.WebAPI.DTO
 {
+    /// <summary>
+    /// This class represents data transfer object for PostalAddress entity
+    /// </summary>
     public class PostalAddressDTO
     {
-        /// <summary>
-        /// This class represents data transfer object for PostalAddress entity
-        /// </summary>
+       
         public string PostcodeType { get; set; }
 
         public string OrganisationName { get; set; }

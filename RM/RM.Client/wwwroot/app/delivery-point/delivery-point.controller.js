@@ -18,6 +18,7 @@ DeliveryPointController.$inject = [
         'deliveryPointService',
          'CommonConstants',
         '$rootScope',
+        '$translate',
          'CommonConstants',
         'GlobalSettings'];
 
@@ -38,6 +39,7 @@ function DeliveryPointController(
 
     CommonConstants,
     $rootScope,
+    $translate,
     CommonConstants,
 
     GlobalSettings
@@ -286,19 +288,20 @@ function DeliveryPointController(
             };
 
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
-            if (response.createDeliveryPointModelDTOs || response.postalAddressDTOs) {
+            if (response.isMultiple) {
+                var title = "Duplicates Found";
+                var css = "info-dialog";
                 if (response.hasAllDuplicates) {
                     // Only popup needs to be displayed & on click of OK, it should go back to the Create DP screen
                     //vm.errorMessage = response.message;
                     //  $rootScope.$broadcast("InfoPopup", response.message);
-                    var title = "Duplicates Found";
-                    var css = "info-dialog";
-                    $rootScope.$broadcast("InfoPopup", message, title, css);
+                    
+                    $rootScope.$broadcast("InfoPopup", response.message, title, css);
                 }
                 else {
                     if (response.hasDuplicates) {
                         // Show the popup Get the response.postalAddressDTOs object and make a service call to save the DPs on click 
-                        saveDeliveryPointsPartially(response.message, response.postalAddressDTOs);
+                        saveDeliveryPointsPartially(response.message, response.postalAddressDTOs, title, css);
                     }
                 }
             }
@@ -335,7 +338,7 @@ function DeliveryPointController(
         });
     }
 
-    function saveDeliveryPointsPartially(message, postalAddressDetails) {
+    function saveDeliveryPointsPartially(message, postalAddressDetails, title, css) {
 
         var alert = $mdDialog.alert()
             .parent()

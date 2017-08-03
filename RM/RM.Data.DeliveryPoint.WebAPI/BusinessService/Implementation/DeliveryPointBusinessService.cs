@@ -20,6 +20,7 @@
     using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
     using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
     using Utils;
+    using AutoMapper;
 
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
@@ -793,6 +794,11 @@
                     {
                         // if the exact location is not present
                         deliveryPointdataDTO.NetworkNode.Location.Shape = deliveryPointIntegrationService.GetApproxLocation(postalAddressDTO.Postcode).Result;
+                        SqlGeometry approxLocation = SqlGeometry.STGeomFromWKB(new SqlBytes(deliveryPointdataDTO.NetworkNode.Location.Shape.AsBinary()), DeliveryPointConstants.BNGCOORDINATESYSTEM);
+
+                        createDeliveryPointModelDTO.XCoordinate = approxLocation.STX.Value;
+                        createDeliveryPointModelDTO.YCoordinate = approxLocation.STY.Value;
+
 
                         DeliveryPointStatusDataDTO deliveryPointStatusDataDTO = new DeliveryPointStatusDataDTO();
 
@@ -1132,15 +1138,15 @@
 
             if (rangeType.Equals(DeliveryPointConstants.RangeTypeOdds))
             {
-                rangeValues = Enumerable.Range(fromRange, toRange).Where(x => x % 2 == 1);
+                rangeValues = Enumerable.Range(fromRange, (toRange - fromRange) + 1).Where(x => x % 2 == 1);
             }
             else if (rangeType.Equals(DeliveryPointConstants.RangeTypeEvens))
             {
-                rangeValues = Enumerable.Range(fromRange, toRange).Where(x => x % 2 == 0);
+                rangeValues = Enumerable.Range(fromRange, (toRange - fromRange) + 1).Where(x => x % 2 == 0);
             }
             else if (rangeType.Equals(DeliveryPointConstants.RangeTypeConsecutive))
             {
-                rangeValues = Enumerable.Range(fromRange, toRange);
+                rangeValues = Enumerable.Range(fromRange, (toRange - fromRange) + 1);
             }
             else
             {
@@ -1171,14 +1177,14 @@
         {
             string[] ranges = GetValuesOnRangeType(addDeliveryPointDTO.RangeType, addDeliveryPointDTO.FromRange, addDeliveryPointDTO.ToRange).Split(',');
             List<PostalAddressDTO> postalAddressDTOs = new List<PostalAddressDTO>();
-            PostalAddressDTO postalAddressDTO = null;
 
             if (addDeliveryPointDTO.DeliveryPointType.Equals(DeliveryPointConstants.DeliveryPointTypeRange))
             {
                 foreach (string range in ranges)
                 {
-                    postalAddressDTO = new PostalAddressDTO();
-                    postalAddressDTO = addDeliveryPointDTO.PostalAddressDTO;
+                    Mapper.Initialize(cfg => cfg.CreateMap<PostalAddressDTO, PostalAddressDTO>());
+                    PostalAddressDTO postalAddressDTO = Mapper.Map<PostalAddressDTO>(addDeliveryPointDTO.PostalAddressDTO);
+                    postalAddressDTO.ID = Guid.NewGuid();
                     postalAddressDTO.BuildingNumber = !string.IsNullOrEmpty(range) ? (short?)Convert.ToInt16(range) : null;
                     postalAddressDTO.DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID;
                     postalAddressDTO.DeliveryRoute_Guid = addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid;
@@ -1193,8 +1199,9 @@
             {
                 foreach (string range in ranges)
                 {
-                    postalAddressDTO = new PostalAddressDTO();
-                    postalAddressDTO = addDeliveryPointDTO.PostalAddressDTO;
+                    Mapper.Initialize(cfg => cfg.CreateMap<PostalAddressDTO, PostalAddressDTO>());
+                    PostalAddressDTO postalAddressDTO = Mapper.Map<PostalAddressDTO>(addDeliveryPointDTO.PostalAddressDTO);
+                    postalAddressDTO.ID = Guid.NewGuid();
                     postalAddressDTO.SubBuildingName = !string.IsNullOrEmpty(addDeliveryPointDTO.SubBuildingType) ? $"{addDeliveryPointDTO.SubBuildingType} {range}" : range;
                     postalAddressDTO.DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID;
                     postalAddressDTO.DeliveryRoute_Guid = addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid;
@@ -1207,8 +1214,9 @@
             {
                 foreach (string range in ranges)
                 {
-                    postalAddressDTO = new PostalAddressDTO();
-                    postalAddressDTO = addDeliveryPointDTO.PostalAddressDTO;
+                    Mapper.Initialize(cfg => cfg.CreateMap<PostalAddressDTO, PostalAddressDTO>());
+                    PostalAddressDTO postalAddressDTO = Mapper.Map<PostalAddressDTO>(addDeliveryPointDTO.PostalAddressDTO);
+                    postalAddressDTO.ID = Guid.NewGuid();
                     postalAddressDTO.BuildingNumber = short.Parse(range);
                     postalAddressDTO.DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID;
                     postalAddressDTO.DeliveryRoute_Guid = addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid;
@@ -1224,14 +1232,65 @@
 
         private void RemoveDuplicateAddresses(List<PostalAddressDTO> postalAddresses, List<PostalAddressDTO> duplicatePostalAddresses)
         {
-            duplicatePostalAddresses.ForEach(duplicatePA => postalAddresses.Remove(postalAddresses.Where(pa => (pa.BuildingName != null && pa.BuildingName.ToUpper() == duplicatePA.BuildingName.ToUpper())
-                                                                                        && (pa.BuildingNumber != null && pa.BuildingNumber == duplicatePA.BuildingNumber)
-                                                                                        && (pa.SubBuildingName != null && pa.SubBuildingName.ToUpper() == duplicatePA.SubBuildingName.ToUpper())
-                                                                                        && (pa.OrganisationName != null && pa.OrganisationName.ToUpper() == duplicatePA.OrganisationName.ToUpper())
-                                                                                        && (pa.DepartmentName != null && pa.DepartmentName.ToUpper() == duplicatePA.DepartmentName.ToUpper())
-                                                                                        && (pa.Thoroughfare != null && pa.Thoroughfare.ToUpper() == duplicatePA.Thoroughfare.ToUpper())
-                                                                                        && (pa.DependentThoroughfare != null && pa.DependentThoroughfare.ToUpper() == duplicatePA.DependentThoroughfare.ToUpper()))
-                                                                                        .FirstOrDefault()));
+            foreach (PostalAddressDTO postalAddress in duplicatePostalAddresses)
+            {
+                IQueryable<PostalAddressDTO> postalAddressDTO = postalAddresses.AsQueryable();
+
+                if (!string.IsNullOrEmpty(postalAddress.BuildingName))
+                {
+                    postalAddressDTO = postalAddressDTO.Where(n => n.BuildingName.Equals(postalAddress.BuildingName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (postalAddress.BuildingNumber != null)
+                {
+                    postalAddressDTO = postalAddressDTO.Where(n => n.BuildingNumber == postalAddress.BuildingNumber);
+                }
+
+                if (!string.IsNullOrEmpty(postalAddress.SubBuildingName))
+                {
+                    postalAddressDTO = postalAddressDTO.Where(n => n.SubBuildingName.Equals(postalAddress.SubBuildingName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(postalAddress.OrganisationName))
+                {
+                    postalAddressDTO = postalAddressDTO.Where(n => n.OrganisationName.Equals(postalAddress.OrganisationName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(postalAddress.DepartmentName))
+                {
+                    postalAddressDTO = postalAddressDTO.Where(n => n.DepartmentName.Equals(postalAddress.DepartmentName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(postalAddress.Thoroughfare))
+                {
+                    postalAddressDTO = postalAddressDTO.Where(n => n.Thoroughfare.Equals(postalAddress.Thoroughfare, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(postalAddress.DependentThoroughfare))
+                {
+                    postalAddressDTO = postalAddressDTO.Where(n => n.DependentThoroughfare.Equals(postalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
+                }
+
+                //PostalAddressDTO duplicatePostalAddress = postalAddresses.Where(pa => (pa.BuildingName != null && pa.BuildingName.ToUpper() == postalAddress.BuildingName.ToUpper())
+                //                                                                        && (pa.BuildingNumber != null && pa.BuildingNumber == postalAddress.BuildingNumber)
+                //                                                                        && (pa.SubBuildingName != null && pa.SubBuildingName.ToUpper() == postalAddress.SubBuildingName.ToUpper())
+                //                                                                        && (pa.OrganisationName != null && pa.OrganisationName.ToUpper() == postalAddress.OrganisationName.ToUpper())
+                //                                                                        && (pa.DepartmentName != null && pa.DepartmentName.ToUpper() == postalAddress.DepartmentName.ToUpper())
+                //                                                                        && (pa.Thoroughfare != null && pa.Thoroughfare.ToUpper() == postalAddress.Thoroughfare.ToUpper())
+                //                                                                        && (pa.DependentThoroughfare != null && pa.DependentThoroughfare.ToUpper() == postalAddress.DependentThoroughfare.ToUpper()))
+                //                                                                        .FirstOrDefault();
+
+                postalAddresses.Remove(postalAddressDTO.FirstOrDefault());
+            }
+
+            //duplicatePostalAddresses.ForEach(duplicatePA => postalAddresses.Remove(postalAddresses.Where(pa => (pa.BuildingName != null && pa.BuildingName.ToUpper() == duplicatePA.BuildingName.ToUpper())
+            //                                                                            && (pa.BuildingNumber != null && pa.BuildingNumber == duplicatePA.BuildingNumber)
+            //                                                                            && (pa.SubBuildingName != null && pa.SubBuildingName.ToUpper() == duplicatePA.SubBuildingName.ToUpper())
+            //                                                                            && (pa.OrganisationName != null && pa.OrganisationName.ToUpper() == duplicatePA.OrganisationName.ToUpper())
+            //                                                                            && (pa.DepartmentName != null && pa.DepartmentName.ToUpper() == duplicatePA.DepartmentName.ToUpper())
+            //                                                                            && (pa.Thoroughfare != null && pa.Thoroughfare.ToUpper() == duplicatePA.Thoroughfare.ToUpper())
+            //                                                                            && (pa.DependentThoroughfare != null && pa.DependentThoroughfare.ToUpper() == duplicatePA.DependentThoroughfare.ToUpper()))
+            //                                                                            .FirstOrDefault()));
         }
 
         #endregion Private Methods

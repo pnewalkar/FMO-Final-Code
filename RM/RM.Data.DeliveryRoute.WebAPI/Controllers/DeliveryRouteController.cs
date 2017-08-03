@@ -379,7 +379,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 throw new ArgumentNullException(nameof(routeId));
             }
 
-            if (deliveryPointIds != null && deliveryPointIds.Count > 0)
+            if (deliveryPointIds == null || deliveryPointIds.Count == 0)
             {
                 throw new ArgumentNullException(nameof(deliveryPointIds));
             }
