@@ -377,8 +377,18 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     // addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
 
                     addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID = liveAddressStatusId;
+
                     addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias = addDeliveryPointDTO.PostalAddressAliasDTOs;
-                    addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias.ForEach(p => p.AliasTypeGUID = deliveryPointAliasId);
+
+                    if (addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias != null)
+                    {
+                        if (addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias.Count == 1)
+                        {
+                            addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias.First().PreferenceOrderIndex = 1;
+                        }
+
+                        addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias.ForEach(p => p.AliasTypeGUID = deliveryPointAliasId);
+                    }
                 }
 
                 var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(ConvertToDataDTO(addDeliveryPointDTO.PostalAddressDTO));
