@@ -354,7 +354,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                              ID = Guid.NewGuid(),
                          }
                      },
-                     CategoryName= PostalAddressType
+                     CategoryName = PostalAddressType
                  },
 
                  new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO()
@@ -367,7 +367,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                              ID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"),
                          }
                      },
-                     CategoryName= PostalAddressType
+                     CategoryName = PostalAddressType
                  },
 
                  new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO()

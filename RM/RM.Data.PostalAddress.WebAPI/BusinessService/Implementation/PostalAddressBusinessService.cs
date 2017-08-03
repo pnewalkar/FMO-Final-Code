@@ -413,7 +413,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     }
 
                     addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = usrAddressTypeId;
-                    // addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
 
                     addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID = liveAddressStatusId;
                     addDeliveryPointDTO.PostalAddressDTO.PostalAddressAlias = addDeliveryPointDTO.PostalAddressAliasDTOs;
@@ -892,7 +891,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                     postalAddressDataDTO.PostalAddressAlias = postalAddressAliases;
                 }
-
             }
 
             return postalAddressDataDTO;
@@ -1029,7 +1027,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         // If Postal address updated then update DeliveryPointUseIndicatorGUID for DeliveryPoint
                         if (recordUpdated)
                         {
-                            //Update DPUse in delivery point for matching UDPRN
+                            // Update DPUse in delivery point for matching UDPRN
                             var isDPUseUpdated = postalAddressIntegrationService.UpdateDPUse(postalAddressDetails).Result;
                             if (!isDPUseUpdated)
                             {
@@ -1050,6 +1048,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 {
                     loggingHelper.Log(string.Format(PostalAddressConstants.NoMatchToAddressOnUDPRN, postalAddressDetails.UDPRN), TraceEventType.Information);
                 }
+
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
             }
         }
@@ -1066,13 +1065,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             {
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(DeletePostalAddress);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
-                
-                
+
                 // PostalAddress physical delete
                 isPostalAddressDeleted = await addressDataService.DeletePostalAddress(addressId);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
             }
+
             return isPostalAddressDeleted;
         }
 
