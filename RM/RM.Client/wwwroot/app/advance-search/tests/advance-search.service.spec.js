@@ -1,8 +1,8 @@
 'use strict';
-describe('Advance Search: Service', function() {
-	var $q;
+describe('Advance Search: Service', function() {	
 	var $rootScope;
 	var advanceSearchAPIService;
+    var $q;
 	var searchService;
 	var mapFactory;
 	var CommonConstants;
@@ -107,12 +107,24 @@ describe('Advance Search: Service', function() {
         	return deferred.promise;
     	});
         
+        /*var MockDeliveryPointData = {"searchResultItems":[
+                                                            {"udprn":null,"displayText":" HIGHFIELD WAY","type":"StreetNetwork","deliveryPointGuid":"00000000-0000-0000-0000-000000000000"},
+                                                            {"udprn":null,"displayText":" HIGH STREET","type":"StreetNetwork","deliveryPointGuid":"00000000-0000-0000-0000-000000000000"}]};
+        */
+        spyOn(roleAccessService,'fetchActionItems').and.callFake(function(){
+            var MockDeliveryPointData = {"searchResultItems":[{"udprn":10872591,"displayText":" HIGHFIELD WAY ","type":"DeliveryPoint","deliveryPointGuid":"00000000-0000-0000-0000-000000000000"}]};
+            return {
+                RolesActionResult: 
+            }
+        });
+
         advanceSearchService.queryAdvanceSearch('high').then(function(result){
             response = result;
         });
         $rootScope.$apply();
 
         expect(response).toEqual([{ type: 'DeliveryPoint', name: [{ displayText: ' HIGHFIELD WAY ', UDPRN: 10872591, type: 'DeliveryPoint', ID: '00000000-0000-0000-0000-000000000000' }],open: true}]);
+
     });
 
     it('should promise to return a success response when type match with `DeliveryPoint` and `Deliverypoints` array length is greater then 1 once queryAdvanceSearch method is called', function() {
@@ -262,8 +274,10 @@ describe('Advance Search: Service', function() {
         expect($state.go).toHaveBeenCalledWith('deliveryPointDetails',{selectedDeliveryPoint:{ deliveryPointId: '06f7a44d-ad06-449f-97eb-d1d38288e47b', street: 'Chandos Road', subBuildingName: null, routeName: [ 'Organisation' ], dpUse: 'Residential' }},{reload:true});
     });
 
-    it('should promise to return a success response once showDeliveryPointDetails method is called', function() {
-        var MockShowDeliveryPointDetailsData = [{"key":"ROUTENAME","value":""},{"key":"DPUSE","value":"Residential"}];
+
+
+    it('should promise to return a success response and response match with RouteName once showDeliveryPointDetails method is called', function() {
+        var MockShowDeliveryPointDetailsData = [{"key":"ROUTENAME","value":"Organisation"},{"key":"DPUSE","value":"Residential"}];
         var deferred = $q.defer();
         var deliveryPointDetails = {"deliveryPointId":"06f7a44d-ad06-449f-97eb-d1d38288e47b","street":"Chandos Road","subBuildingName":null}
         spyOn(mapFactory,'GetRouteForDeliveryPoint').and.returnValue(deferred.promise);
@@ -274,6 +288,22 @@ describe('Advance Search: Service', function() {
         $rootScope.$apply();
 
         expect(mapFactory.GetRouteForDeliveryPoint).toHaveBeenCalledWith('06f7a44d-ad06-449f-97eb-d1d38288e47b');        
-        expect($state.go).toHaveBeenCalledWith('deliveryPointDetails',{ selectedDeliveryPoint:{ deliveryPointId: '06f7a44d-ad06-449f-97eb-d1d38288e47b', street: 'Chandos Road', subBuildingName: null, routeName: [ '' ], dpUse: 'Residential' }},{reload:true});            
+        expect($state.go).toHaveBeenCalledWith('deliveryPointDetails',{ selectedDeliveryPoint:{ deliveryPointId: '06f7a44d-ad06-449f-97eb-d1d38288e47b', street: 'Chandos Road', subBuildingName: null, routeName: [ 'Organisation' ], dpUse: 'Residential' }},{reload:true});            
+    });
+
+    it('should promise to return a success response and response match with DpUse once showDeliveryPointDetails method is called', function() {
+        var MockShowDeliveryPointDetailsData = [{"key":"","value":"Organisation"},{"key":"DPUSE","value":"Residential"}];
+        var deferred = $q.defer();
+        var deliveryPointDetails = {"deliveryPointId":"06f7a44d-ad06-449f-97eb-d1d38288e47b","street":"Chandos Road","subBuildingName":null}
+        spyOn(mapFactory,'GetRouteForDeliveryPoint').and.returnValue(deferred.promise);
+        spyOn($state,'go');
+
+        advanceSearchService.showDeliveryPointDetails(deliveryPointDetails);
+        deferred.resolve(MockShowDeliveryPointDetailsData);
+        $rootScope.$apply();
+
+        expect(mapFactory.GetRouteForDeliveryPoint).toHaveBeenCalledWith('06f7a44d-ad06-449f-97eb-d1d38288e47b');        
+        expect($state.go).toHaveBeenCalledWith('deliveryPointDetails', {selectedDeliveryPoint:{deliveryPointId:'06f7a44d-ad06-449f-97eb-d1d38288e47b', street: 'Chandos Road',subBuildingName: null, routeName: null }},{reload:true});
+
     });
 });

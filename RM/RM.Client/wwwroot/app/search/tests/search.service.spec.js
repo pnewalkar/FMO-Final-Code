@@ -1,6 +1,5 @@
 'use strict';
-describe('Search: Service', function() {
-	var $scope;
+describe('Search: Service', function() {    
 	var $rootScope;
 	var searchService;
 	var $state;
@@ -8,8 +7,12 @@ describe('Search: Service', function() {
 	var mapStylesFactory;
     var popUpSettingService;
     var $mdDialog;
-    var $q;    
+    var $stateParams;
+    var $timeout;
+    var $q; 
     var CommonConstants;
+    var mapService;
+    var searchDPSelectedService;
     var searchBusinessService;
     var MockCommonConstants = {    
     	SearchLessThanThreeCharactersErrorMessage: "At least three characters must be input for a Search",
@@ -58,6 +61,12 @@ describe('Search: Service', function() {
                     GetDeliveryPointByGuid: GetDeliveryPointByGuid
                 }
             });
+            $provide.factory('mapService', function($q){
+                return {deselectDP: function(){}}                                    
+            });
+            $provide.factory('searchDPSelectedService',function(){
+                return {setSelectedDP: function(param){}}
+            });
     	});
 
     	inject(function(
@@ -70,11 +79,12 @@ describe('Search: Service', function() {
             _$mdDialog_,
             _$q_,
             _CommonConstants_,
-            _stringFormatService_,
+            _stringFormatService_,            
+            _mapService_,
+            _searchDPSelectedService_,
             _searchBusinessService_){
 
             $rootScope = _$rootScope_;
-    		$scope = _$rootScope_.$new();
     		searchService = _searchService_;
 		    $state = _$state_;
 		    mapFactory = _mapFactory_;
@@ -83,7 +93,9 @@ describe('Search: Service', function() {
 		    $mdDialog = _$mdDialog_;
 		    $q = _$q_;
 		    CommonConstants = _CommonConstants_;
-		    searchBusinessService = _searchBusinessService_;
+		    mapService = _mapService_;
+            searchDPSelectedService = _searchDPSelectedService_;
+            searchBusinessService = _searchBusinessService_;
     	});
     });
 

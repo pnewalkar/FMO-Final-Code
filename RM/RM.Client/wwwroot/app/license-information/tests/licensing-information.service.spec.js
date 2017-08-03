@@ -23,14 +23,9 @@
     ];
 
     beforeEach(function () {
-        module('licensingInfo');
-
-        //Mock data with session storage
-      
-        //inject with mockdata printMapAPIService
+        module('licensingInfo');              
         module(function ($provide) {
             $provide.service('licensingInfoService', function ($q) {
-
                 function LicensingInfo(pdfFilename) {
                     var deferred = $q.defer();
                     deferred.resolve(LicensingInfoMockData);
@@ -84,7 +79,6 @@
 
         });
 
-        //get Instance of controller with inject properties
         inject(function (_$rootScope_, _$q_, _mapService_, _licensingInfoService_, _referencedataApiService_, _sessionStorage_) {
             scope = _$rootScope_.$new();
             rootScope = _$rootScope_;
@@ -124,7 +118,6 @@
     it('should be return promise response when call LicensingInfo', function () {
 
         var Map_License_Information = "dommyInfo";
-        console.log(sessionStorage);
         referencedataApiService.getNameValueReferenceData(Map_License_Information).then(function (response) {
             var aValue = sessionStorage.getItem('selectedDeliveryUnit');
             var selectedUnitArea = angular.fromJson(aValue);

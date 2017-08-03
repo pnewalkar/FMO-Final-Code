@@ -12,8 +12,7 @@ describe('Security: authInterceptorService', function() {
 				return {
 					get: function(){}
 				}
-			});
-			$provide.
+			});			
 		});
 
 		inject(function(_authInterceptorService_,_$injector_){
