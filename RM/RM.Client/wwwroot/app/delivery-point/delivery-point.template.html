@@ -203,7 +203,7 @@
 
                             <md-input-container flex="50" ng-show="vm.selectedType === vm.single">
                                 <label>{{ 'DELIVERY_POINTS.ORGANISATION' |  translate }}</label>
-                                <input name="organisationName" ng-model="vm.addressDetails.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="organisationName" ng-model="vm.addressDetails.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="(!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)) && vm.selectedType != vm.range" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.organisationName.$error"
                                      ng-show="vm.deliveryPointForm.organisationName.$touched" role="alert">
                                     <div ng-message="required">This field is required*</div>
@@ -214,7 +214,7 @@
                         <div layout="row">
                             <md-input-container flex="45" ng-show="vm.selectedType === vm.single">
                                 <label> {{ 'DELIVERY_POINTS.DEPARTMENT_NAME' | translate }}</label>
-                                <input name="departmentName" ng-model="vm.addressDetails.departmentName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="departmentName" ng-model="vm.addressDetails.departmentName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="(!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)) && vm.selectedType != vm.range" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.departmentName.$error"
                                      ng-show="vm.deliveryPointForm.departmentName.$touched" role="alert">
                                     <div ng-message="required">This field is required*</div>
@@ -297,7 +297,7 @@
                     </div>
                 </md-input-container>
             </div>
-        </md-dialog-content>
+        </md-dialog-content>        
         <md-dialog-actions layout="row">
             <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40" ng-disabled="vm.isDisable" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}">
                 {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
