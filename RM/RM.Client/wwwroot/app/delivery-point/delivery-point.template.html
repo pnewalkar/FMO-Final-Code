@@ -47,12 +47,11 @@
                 <md-button class="md-icon-button" aria-label="Search" title="{{ 'GENERAL.SEARCH' | translate }}">
                     <i class="fa fa-search" aria-hidden="true"></i>
                 </md-button>
-                
-                
+
                 <md-input-container flex="35" ng-show="vm.display" ng-class="{'disabledText':vm.nybAddressDetails.length==1}">
                     <label>{{ 'DELIVERY_POINTS.NOT_YET_BUILT'| translate }}</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.nybAddressDetails.length==1">
-                        <md-option ng-repeat="type in vm.nybAddressDetails"  ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
+                        <md-option ng-repeat="type in vm.nybAddressDetails" ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
                             {{type.displayText}}
                         </md-option>
                     </md-select>
@@ -73,7 +72,6 @@
                 </md-input-container>
             </div>
 
-
             <div layout="row" ng-show="vm.display">
                 <div layout="column" flex="30">
                     <md-input-container>
@@ -81,7 +79,6 @@
                         <input ng-model="vm.addressDetails.postcode" type="text" disabled>
                     </md-input-container>
                 </div>
-
 
                 <span flex="5"></span>
 
@@ -102,37 +99,78 @@
 
                 <md-input-container flex="30">
                     <label>DP Use</label>
-                    <md-select ng-model="vm.selectedDPUse" ng-disabled="true">
+                    <md-select ng-model="vm.selectedDPUse" ng-disabled="vm.selectedType === vm.single">
                         <md-option ng-repeat="type in vm.dpUse" ng-value="type">
                             {{type.value}}
                         </md-option>
                     </md-select>
                 </md-input-container>
-                
             </div>
             <div layout="row" ng-show="vm.display">
+
                 <md-input-container flex="30">
                     <label>{{ 'DELIVERY_POINTS.TYPE'| translate }}</label>
-                    <md-select ng-model="deliveryPointTypes" ng-disabled="vm.notyetBuilt != vm.defaultNYBValue">
-                        <md-option ng-repeat="type in vm.deliveryPointTypes" ng-value="type.id" ng-selected="{{type.value=='Single'?true:false}}">
+                    <md-select ng-model="vm.selectedType" ng-change="vm.setOrganisation()">
+                        <md-option ng-repeat="type in vm.deliveryPointTypes" ng-value="type.value.trim()" ng-selected="{{type.value=='Single'?true:false}}">
                             {{type.value}}
                         </md-option>
                     </md-select>
                 </md-input-container>
             </div>
 
+            <div layout="row" ng-show="vm.display" class="dp-range">
+                <div layout="column" flex="25" ng-show="vm.selectedType != vm.single">
+                    <md-input-container>
+                        <label>{{ 'DELIVERY_POINTS.RANGE_FROM'| translate }}</label>
+                        <input name="rangefrom" ng-model="vm.rangeFrom" type="text" ng-pattern="/^\d*[1-9]\d*$/" ng-maxlength="4" ng-required="vm.selectedType != vm.single">
+                        <div ng-messages="vm.deliveryPointForm.rangefrom.$error"
+                             ng-show="vm.deliveryPointForm.rangefrom.$touched" role="alert">
+                            <div ng-message="required">This field is required</div>
+                            <div ng-message="maxlength">Value entered is too large</div>
+                            <div ng-message="pattern">Value entered is not valid</div>
+                            <div ng-show="vm.displayRangeFromMessage">From should be less than To</div>
+                        </div>
+                       
+                    </md-input-container>
+                </div>
+
+                <span flex="5"></span>
+
+                <md-input-container flex="25" ng-show="vm.selectedType != vm.single">
+                    <label>{{ 'DELIVERY_POINTS.RANGE_TO' | translate }}</label>
+                    <input name="rangeto" ng-model="vm.rangeTo" type="text" ng-pattern="/^\d*[1-9]\d*$/" ng-blur="vm.setRangeValidation(vm.rangeFrom,vm.rangeTo,'RangeTo')" ng-maxlength="4" ng-required="vm.selectedType != vm.single">
+                    <div ng-messages="vm.deliveryPointForm.rangeto.$error"
+                         ng-show="vm.deliveryPointForm.rangeto.$touched" role="alert">
+                        <div ng-message="required">This field is required</div>
+                        <div ng-message="maxlength">Value entered is too large</div>
+                        <div ng-message="pattern">Value entered is not valid</div>
+                        <div ng-show="vm.displayRangeToMessage">To should be bigger than From</div>
+                    </div>
+                </md-input-container>
+
+                <span flex="5"></span>
+                <md-input-container flex="40" ng-show="vm.selectedType != vm.single">
+
+                    <md-radio-group layout="row" ng-model="vm.rangeOptionsSelected">
+                        <md-radio-button ng-repeat="type in vm.rangeOptions" ng-value="type.value">
+                            {{type.value}}
+                        </md-radio-button>
+                    </md-radio-group>
+                </md-input-container>
+            </div>
             <div layout="row">
-                <div layout="column" flex="60" ng-show="vm.display">
+                <div layout="column" flex="65" ng-show="vm.display && vm.selectedType != vm.range">
                     <fieldset>
                         <legend>{{ 'DELIVERY_POINTS.ADDRESS' | translate }}<sub>*</sub></legend>
 
                         <div layout="row">
-                            <md-input-container flex="45">
+                            <md-input-container flex="45" ng-show="vm.selectedType === vm.single || vm.selectedType === vm.subBuilding">
                                 <label> {{ 'DELIVERY_POINTS.BUILDING_NUMBER' | translate }} </label>
-                                <input name="buildingNumber" ng-required="!(vm.addressDetails.buildingNumber.toString().length  || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)" ng-model="vm.addressDetails.buildingNumber"  ng-blur="vm.setOrganisation()" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" ng-minlength="1"
-                                     >
+                                <input name="buildingNumber" ng-model="vm.addressDetails.buildingNumber" ng-blur="vm.setOrganisation()" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
+                                       ng-required="(!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)) && vm.selectedType != vm.range">
                                 <div ng-messages="vm.deliveryPointForm.buildingNumber.$error"
                                      ng-show="vm.deliveryPointForm.buildingNumber.$touched" role="alert">
+                                    <div ng-message="required">This field is required*</div>
                                     <div ng-message="maxlength">Value entered is longer than 4</div>
                                     <div ng-message="pattern">Value entered is not valid</div>
                                 </div>
@@ -140,21 +178,22 @@
 
                             <span flex="5"></span>
 
-                            <md-input-container flex="50">
+                            <md-input-container flex="50" ng-show="vm.selectedType === vm.single || vm.selectedType === vm.subBuilding || vm.selectedType === vm.numberInName">
                                 <label> {{'DELIVERY_POINTS.BUILDING_NAME' | translate }}</label>
-                                <input name="buildingName" ng-model="vm.addressDetails.buildingName" type="text" ng-maxlength="50" ng-blur="vm.setOrganisation()"  ng-required="!(vm.addressDetails.buildingNumber.toString().length  || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false"
-                                       >
+                                <input name="buildingName" ng-model="vm.addressDetails.buildingName" type="text" ng-maxlength="50" ng-blur="vm.setOrganisation()" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false"
+                                       ng-required="(!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)) && vm.selectedType != vm.range">
                                 <div ng-messages="vm.deliveryPointForm.buildingName.$error"
                                      ng-show="vm.deliveryPointForm.buildingName.$touched" role="alert">
+                                    <div ng-message="required">This field is required*</div>
                                     <div ng-message="maxlength">Value entered is longer than 50</div>
                                 </div>
                             </md-input-container>
                         </div>
 
                         <div layout="row">
-                            <md-input-container flex="45">
+                            <md-input-container flex="45" ng-show="vm.selectedType === vm.single">
                                 <label> {{ 'DELIVERY_POINTS.SUB_BUILDING_NAME' | translate }}</label>
-                                <input name="subBuildingName" ng-model="vm.addressDetails.subBuildingName" type="text" ng-maxlength="50"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="subBuildingName" ng-model="vm.addressDetails.subBuildingName" type="text" ng-maxlength="50" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.subBuildingName.$error"
                                      ng-show="vm.deliveryPointForm.subBuildingName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 50</div>
@@ -163,62 +202,82 @@
 
                             <span flex="5"></span>
 
-                            <md-input-container flex="50">
+                            <md-input-container flex="50" ng-show="vm.selectedType === vm.single">
                                 <label>{{ 'DELIVERY_POINTS.ORGANISATION' |  translate }}</label>
-                                <input  name="organisationName" ng-model="vm.addressDetails.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()"  ng-required="!(vm.addressDetails.buildingNumber.toString().length  || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="organisationName" ng-model="vm.addressDetails.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.organisationName.$error"
                                      ng-show="vm.deliveryPointForm.organisationName.$touched" role="alert">
+                                    <div ng-message="required">This field is required*</div>
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
                                 </div>
                             </md-input-container>
                         </div>
                         <div layout="row">
-                            <md-input-container flex="45">
+                            <md-input-container flex="45" ng-show="vm.selectedType === vm.single">
                                 <label> {{ 'DELIVERY_POINTS.DEPARTMENT_NAME' | translate }}</label>
-                                <input name="departmentName" ng-model="vm.addressDetails.departmentName" type="text" ng-maxlength="60"  ng-blur="vm.setOrganisation()"   ng-required="!(vm.addressDetails.buildingNumber.toString().length  || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="departmentName" ng-model="vm.addressDetails.departmentName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.toString().length || vm.addressDetails.buildingName.toString().length || vm.addressDetails.departmentName.toString().length || vm.addressDetails.organisationName.toString().length)" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.departmentName.$error"
                                      ng-show="vm.deliveryPointForm.departmentName.$touched" role="alert">
+                                    <div ng-message="required">This field is required*</div>
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
                                 </div>
                             </md-input-container>
                         </div>
-
                     </fieldset>
                 </div>
-                <span flex="5"></span>
-                <div layout="column" flex="40" ng-show="false">
-                    <div layout="row" class="addressRow">
-                        <md-input-container flex="90">
-                            <label>{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}</label>
-                            <input ng-model="vm.alias" type="text" flex="90">
-                        </md-input-container>
-                        <md-button class="md-icon-button" aria-label="Add DP Alias" ng-click="vm.addAlias()" title="{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}">
-                            <i class="fa fa-plus-circle" aria-hidden="true" flex></i>
-                        </md-button>
-                    </div>
-                    <div layout="column">
-                        <label>{{ 'DELIVERY_POINTS.ALIAS' | translate }}</label>
-                        <div class="aliasBox" flex="90">
-                            <div ng-repeat="item in vm.items">
-                                <md-input-container class="aliasInputContainer">
-                                    <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.DPAlias" class="aliasinput">
-                                </md-input-container>
-                                <input type="radio" name="check" value="inline" ng-model="item.Preferred">
-                                <md-button class="md-icon-button" aria-label="Remove DP Alias" ng-click="vm.removeAlias()" title="{{ 'DELIVERY_POINTS.REMOVE_DP_ALIAS' | translate }}">
-                                    <i class="fa fa-minus-circle" aria-hidden="true"></i>
-                                </md-button>
-                            </div>
-                        </div>
+
+                <div layout="column" flex="35" ng-show="vm.selectedType === vm.subBuilding" class="DPAliasBox">
+                    <!--AddAlias start-->
+                    <div layout="row" ng-show="vm.selectedType === vm.subBuilding">
+                        <label>{{ 'DELIVERY_POINTS.SUB_BUILDING_TYPE'| translate }}</label>
+                        <md-select ng-model="vm.subBuildingType">
+                            <md-option ng-repeat="type in vm.subBuildingTypes" ng-value="type.id">
+                                {{type.value}}
+                            </md-option>
+                        </md-select>
                     </div>
                 </div>
 
-            </div>
-
+                    <!--Alias-->
+                    <div layout="column" flex="35" ng-show="vm.display && vm.selectedType === vm.single" class="DPAliasBox">
+                        <!--AddAlias start-->
+                        <div layout="row">
+                            <md-input-container md-no-float class="md-block" flex-gt-sm>
+                                <label>{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}</label>
+                                <input ng-model="vm.alias" type="text" ng-maxlength="60">
+                            </md-input-container>
+                            <md-button class="md-icon-button" id="DPAliasBoxBtn" aria-label="Add DP Alias" ng-disabled="vm.alias.toString().length==0" ng-click="vm.addAlias()" title="{{ 'DELIVERY_POINTS.ADD_DP_ALIAS' | translate }}">
+                                <i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i>
+                            </md-button>
+                        </div>
+                        <!--AddAlias End-->
+                        <!--List Alias Start-->
+                        <div layout="column">
+                            <div class="listAliasHeader">
+                                <label>{{ 'DELIVERY_POINTS.ALIAS' | translate }}</label>
+                                <span class="listAliasStar"><i class="fa fa-star" aria-hidden="true"></i></span>
+                            </div>
+                            <div class="">
+                                <md-list class="listAliasMdlist" style="padding: 0px;">
+                                    <md-list-item ng-repeat="item in vm.postalAddressAliases" class="listAlias">
+                                        <p>{{ item.AliasName }}</p>
+                                        <input type="radio" class="listAliasRadioBtn" name="check" value="1" ng-model="item.PreferenceOrderIndex">
+                                        <md-button class="md-icon-button" aria-label="Remove DP Alias" ng-click="vm.removeAlias()" title="{{ 'DELIVERY_POINTS.REMOVE_DP_ALIAS' | translate }}">
+                                            <i class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
+                                        </md-button>
+                                    </md-list-item>
+                                </md-list>
+                            </div>
+                        </div>
+                        <!--List Alias End-->
+                    </div>
+                    <!--Alias End-->
+                </div>
 
             <div layout="row" ng-show="vm.display" class="occRow">
                 <md-input-container>
                     <label> {{ 'DELIVERY_POINTS.MULTI_OCC' | translate }}</label>
-                    <input name="multiocc" ng-model="vm.multiocc" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
+                    <input name="multiocc" ng-model="vm.multiocc" type="text" ng-pattern="/^\d*[1-9]\d*$/" ng-maxlength="4" required>
                     <div ng-messages="vm.deliveryPointForm.multiocc.$error"
                          ng-show="vm.deliveryPointForm.multiocc.$touched" role="alert">
                         <div ng-message="required">This field is required*</div>
@@ -227,16 +286,10 @@
                     </div>
                 </md-input-container>
                 <span flex="5"></span>
-                <!--
-                        <label>DP Use<sub>*</sub></label>
-                        <input type="text" ng-model="vm.dpUse[0].displayText">-->
-
-             
-
 
                 <md-input-container>
                     <label> {{ 'DELIVERY_POINTS.MAIL_VOL' | translate }} </label>
-                    <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="6" required>
+                    <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^\d*[1-9]\d*$/" ng-maxlength="6" required>
                     <div ng-messages="vm.deliveryPointForm.mailvol.$error"
                          ng-show="vm.deliveryPointForm.mailvol.$touched" role="alert">
                         <div ng-message="required">This field is required*</div>
@@ -245,15 +298,13 @@
                     </div>
                 </md-input-container>
             </div>
-
         </md-dialog-content>
-
         <md-dialog-actions layout="row">
             <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40" ng-disabled="vm.isDisable" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}">
                 {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
             </md-button>
             <span flex></span>
-            <md-button ng-disabled="(!vm.deliveryPointForm.$valid) || vm.isOnceClicked" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary rightAligned" flex="40" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+            <md-button ng-disabled="(!vm.deliveryPointForm.$valid) || vm.displayRangeFromMessage || vm.displayRangeToMessage || vm.isOnceClicked " ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
                 {{ 'GENERAL.BUTTONS.SAVE' | translate }}
             </md-button>
         </md-dialog-actions>

@@ -35,15 +35,13 @@
 
                 <md-input-container flex="25">
                     <label>{{ 'ROUTE_LOG.SCENARIO' | translate }}</label>
-                    <md-select ng-model="vm.selectedRouteScenario" title={{vm.selectedRouteScenario.scenarioName}} ng-disabled="vm.isRouteScenarioDisabled || (!filterScenario.length && vm.isSelectionType)" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
-                        <md-option ng-repeat="scenario in  filterScenario =(vm.RouteScenario)" title={{scenario.scenarioName}} ng-value="scenario">{{scenario.scenarioName}}</md-option>
-                       
+                    <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
+                        <md-option ng-repeat="scenario in  filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
+                        <md-option ng-show="!filterScenario.length && vm.isSelectionType"> {{ 'VALIDATION.NO_RESULT_FOUND' | translate }} </md-option>
                     </md-select>
-                   
-                    <div ng-show="!filterScenario.length && vm.isSelectionType" class="noResult">{{ 'GENERAL.ERRORS.NO_RESULT_FOUND' | translate }}</div>
                 </md-input-container>
 
-                <custom-searchable-dropdown disabled="vm.isDeliveryRouteDisabled" search-placeholder="ROUTE_LOG.SEARCH_ROUTE" header-text="ROUTE_LOG.ROUTE" order-by="displayText"
+                <custom-searchable-dropdown disabled="!filterScenario.length && vm.isSelectionType" search-placeholder="ROUTE_LOG.SEARCH_ROUTE" header-text="ROUTE_LOG.ROUTE" order-by="displayText"
                                             items="vm.deliveryRoute" selected-item="vm.selectedRoute" on-selected-item="vm.deliveryRouteChange" class="routeSelectSearch" flex />
             </div>
         </div>

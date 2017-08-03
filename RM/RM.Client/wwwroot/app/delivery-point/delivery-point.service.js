@@ -29,8 +29,7 @@ function deliveryPointService(
     vm.positionedDeliveryPointList = [];
 
     return {
-        deliveryPointTypes: deliveryPointTypes,
-        deliveryPointUseType: deliveryPointUseType,
+        initialize: initialize,
         resultSet: resultSet,
         openModalPopup: openModalPopup,
         closeModalPopup: closeModalPopup,
@@ -38,23 +37,28 @@ function deliveryPointService(
         bindAddressDetails: bindAddressDetails,
         setOrganisation: setOrganisation,
         isUndefinedOrNull: isUndefinedOrNull,
-        UpdateDeliverypoint: UpdateDeliverypoint
+        UpdateDeliverypoint: UpdateDeliverypoint,
+        getSubBuildingTypes: getSubBuildingTypes
     };
 
-    //function initialize() {
-    //    var deferred = $q.defer();
-    //    var referenceData = {};
-    //    deliveryPointTypes().then(function (response) {
-    //        referenceData.deliveryPointTypes = response;
-    //        deferred.resolve(referenceData);
+    function initialize() {
+        var deferred = $q.defer();
 
-    //    });
-    //    deliveryPointUseType().then(function (response) {
-    //        referenceData.dpUseType = response;
-    //        deferred.resolve(referenceData);
-    //    });
-    //    return deferred.promise;
-    //}
+        var result = { "DeliveryPointTypes": null, "DpUseType": null, "SubBuildingTypes": null, "RangeOptions": null };
+        $q.all([
+            deliveryPointTypes(),
+            deliveryPointUseType(),
+           getSubBuildingTypes(),
+          getRangeOptions()
+        ]).then(function (response) {
+            result.DeliveryPointTypes = response[0];
+            result.DpUseType = response[1];
+            result.SubBuildingTypes = response[2];
+            result.RangeOptions = response[3];
+            deferred.resolve(result)
+        })
+        return deferred.promise;
+    }
 
     function deliveryPointTypes() {
         var deferred = $q.defer();
@@ -72,7 +76,6 @@ function deliveryPointService(
         });
         return deferred.promise;
     }
-
 
     function resultSet(query) {
         var deferred = $q.defer();
@@ -98,7 +101,7 @@ function deliveryPointService(
 
     function getPostalAddress(postcode) {
         var deferred = $q.defer();
-        var result = {"postalAddressData": null, "selectedValue": null, "display": null };
+        var result = { "postalAddressData": null, "selectedValue": null, "display": null };
         deliveryPointAPIService.GetAddressByPostCode(postcode).then(function (response) {
             result.postalAddressData = response;
             if (response && response.nybAddressDetails) {
@@ -166,7 +169,22 @@ function deliveryPointService(
             mapFactory.setDeliveryPointOnLoad(result.xCoordinate, result.yCoordinate);
             guidService.setGuid(result.id);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
+        });
+        return deferred.promise;
+    }
 
+    function getSubBuildingTypes() {
+        var deferred = $q.defer();
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.SubBuildingType.DBCategoryName).then(function (response) {
+            deferred.resolve(response.listItems);
+        });
+        return deferred.promise;
+    }
+
+    function getRangeOptions() {
+        var deferred = $q.defer();
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.UI_Range_Options.DBCategoryName).then(function (response) {
+            deferred.resolve(response.listItems);
         });
         return deferred.promise;
     }

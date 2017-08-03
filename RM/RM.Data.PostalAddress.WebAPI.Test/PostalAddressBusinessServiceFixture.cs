@@ -124,7 +124,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         {
             AddDeliveryPointDTO addDeliveryPointDTO = new AddDeliveryPointDTO()
             {
-                PostalAddressDTO = new PostalAddressDataDTO()
+                PostalAddressDTO = new PostalAddressDTO()
                 {
                     Postcode = "1234",
                     ID = Guid.Empty
