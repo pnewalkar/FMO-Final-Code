@@ -16,5 +16,8 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO.Model
         public List<CreateDeliveryPointModelDTO> CreateDeliveryPointModelDTOs { get; set; }
 
         public List<PostalAddressDTO> PostalAddressDTOs { get; set; }
+
+        public bool IsMultiple { get; set; } = true;
+
     }
 }
