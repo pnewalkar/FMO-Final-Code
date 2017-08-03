@@ -92,67 +92,6 @@
             }
         }
 
-        ///// <summary>
-        ///// Method to create manual access link in db
-        ///// </summary>
-        ///// <param name="networkLinkDataDTO"></param>
-        ///// <returns></returns>
-        //public bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO)
-        //{
-        //    try
-        //    {
-        //        using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateManualAccessLink"))
-        //        {
-        //            string methodName = typeof(AccessLinkDataService) + "." + nameof(CreateManualAccessLink);
-        //            loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
-        //            bool accessLinkCreationSuccess = false;
-        //            AccessLink accessLink = new Entities.AccessLink();
-
-        //            NetworkNode networkNode = new NetworkNode();
-        //            NetworkLink networkLink = new Entities.NetworkLink();
-
-        //            NetworkLink networkLink1 = DataContext.NetworkLinks.Where(n => n.ID == networkLinkDataDTO.ID).SingleOrDefault();
-        //            AccessLinkDataDTO accessLinkDataDTO = null; //networkLinkDataDTO.AccessLink;
-
-        //            accessLink.ID = accessLinkDataDTO.ID;
-        //            accessLink.WorkloadLengthMeter = accessLinkDataDTO.WorkloadLengthMeter;
-        //            accessLink.Approved = accessLinkDataDTO.Approved;
-        //            accessLink.ConnectedNetworkLinkID = new Guid();
-        //            accessLink.AccessLinkTypeGUID = accessLinkDataDTO.AccessLinkTypeGUID;
-        //            accessLink.LinkDirectionGUID = accessLinkDataDTO.LinkDirectionGUID;
-        //            accessLink.RowCreateDateTime = DateTime.UtcNow;
-
-        //            // networkLink.AccessLink = accessLink;
-
-        //            AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatus.First();
-        //            AccessLinkStatus accessLinkStatus = new AccessLinkStatus
-        //            {
-        //                ID = accessLinkStatusDataDTO.ID,
-        //                NetworkLinkID = accessLinkStatusDataDTO.NetworkLinkID,
-        //                AccessLinkStatusGUID = accessLinkStatusDataDTO.AccessLinkStatusGUID,
-        //                StartDateTime = accessLinkStatusDataDTO.StartDateTime,
-        //                RowCreateDateTime = accessLinkStatusDataDTO.RowCreateDateTime
-        //            };
-        //            accessLink.AccessLinkStatus.Add(accessLinkStatus);
-
-        //            accessLink.NetworkLink = networkLink1;
-        //            accessLink.NetworkLink1 = networkLink1;
-        //            DataContext.AccessLinks.Add(accessLink);
-
-        //            accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
-
-        //            loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-
-        //            return accessLinkCreationSuccess;
-        //        }
-        //    }
-        //    catch (DbUpdateException dbUpdateException)
-        //    {
-        //        throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("automatic access link")));
-        //    }
-        //}
-
         /// <summary>
         /// this method is used to get the access links crossing the created access link
         /// </summary>
@@ -221,25 +160,6 @@
                                                      && !a.LinkGeometry.Intersection(accessLink).SpatialEquals(a.NetworkNode.Location.Shape));
 
             return isAccessLinkCountForCrossesorOverLaps;
-        }
-
-        /// <summary>
-        /// This Method is used to Access Link data for defined coordinates.
-        /// </summary>
-        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
-        /// <param name="unitGuid">unit unique identifier.</param>
-        /// <returns>Link of Access Link Entity</returns>
-        private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid locationGuid)
-        {
-            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
-            {
-                DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationGuid).Select(x => x.Shape).SingleOrDefault();
-
-                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
-                return DataContext.AccessLinks.Include(m => m.NetworkLink).AsNoTracking().Where(x => x.NetworkLink.LinkGeometry.Intersects(extent) && x.NetworkLink.LinkGeometry.Intersects(polygon)).ToList();
-            }
-
-            return null;
         }
 
         /// <summary> This method is used to get the delivery points crossing the operationalObject
@@ -335,6 +255,25 @@
             });
 
             Mapper.Configuration.CreateMapper();
+        }
+
+        /// <summary>
+        /// This Method is used to Access Link data for defined coordinates.
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">unit unique identifier.</param>
+        /// <returns>Link of Access Link Entity</returns>
+        private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid locationGuid)
+        {
+            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
+            {
+                DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationGuid).Select(x => x.Shape).SingleOrDefault();
+
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
+                return DataContext.AccessLinks.Include(m => m.NetworkLink).AsNoTracking().Where(x => x.NetworkLink.LinkGeometry.Intersects(extent) && x.NetworkLink.LinkGeometry.Intersects(polygon)).ToList();
+            }
+
+            return null;
         }
     }
 }

@@ -205,9 +205,11 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                                         where route.UnSequencedBlockID == block.BlockID || routeActivity.BlockID == block.BlockID
                                         select route).FirstOrDefault();
 
-                    if (routeDetails != null)
+                    var deliveryPointDetails = DataContext.DeliveryPoints.Include(n => n.PostalAddress).Where(m => m.ID == deliveryPointId).SingleOrDefault();
+
+                    if (routeDetails != null && deliveryPointDetails != null && deliveryPointDetails.PostalAddress != null)
                     {
-                        var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == routeDetails.ID || n.SecondaryRouteGUID == routeDetails.ID).SingleOrDefaultAsync();
+                        var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => (n.PrimaryRouteGUID == routeDetails.ID || n.SecondaryRouteGUID == routeDetails.ID) && n.PostcodeUnit == deliveryPointDetails.PostalAddress.Postcode).SingleOrDefaultAsync();
                         if (postCode != null)
                         {
                             if (routeDetails.ID == postCode.PrimaryRouteGUID)
