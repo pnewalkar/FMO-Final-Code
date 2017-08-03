@@ -4,8 +4,8 @@ using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using RM.CommonLibrary.ConfigurationMiddleware;
 using CommomLibrary = RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DataDTO;
@@ -38,7 +38,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         private List<DeliveryPointDataDTO> actualDeliveryPointDataDto = null;
         private DeliveryPointDataDTO actualDeliveryPointDTO = null;
         private RouteDTO routeDTO = null;
-        private DuplicateDeliveryPointDTO duplicateDeliveryPointDTO = null;
 
         [Test]
         public void Test_GetDeliveryPoints_PositiveScenario()
@@ -266,50 +265,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             postalAddressesDTO = new List<PostalAddressDTO>()
             {
                 new PostalAddressDTO()
-        {
-            BuildingName = "bldg1",
-                    BuildingNumber = 1,
-                    SubBuildingName = "subbldg",
-                    OrganisationName = "org",
-                    DepartmentName = "department",
-                    Thoroughfare = "ThoroughFare1",
-                    DependentThoroughfare = "DependentThoroughFare1",
-                    Postcode = "PostcodeNew",
-                    PostTown = "PostTown",
-                    POBoxNumber = "POBoxNumber",
-                    UDPRN = 12345,
-                    PostcodeType = "xyz",
-                    SmallUserOrganisationIndicator = "indicator",
-                    DeliveryPointSuffix = "DeliveryPointSuffix",
-                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
-                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
-                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
-            },
-                new PostalAddressDTO()
-        {
-            BuildingName = "bldg1",
-                    BuildingNumber = 1,
-                    SubBuildingName = "subbldg",
-                    OrganisationName = "org",
-                    DepartmentName = "department",
-                    Thoroughfare = "ThoroughFare1",
-                    DependentThoroughfare = "DependentThoroughFare1",
-                    Postcode = "Postcode",
-                    PostTown = "PostTown",
-                    POBoxNumber = "POBoxNumber",
-                    UDPRN = 12345,
-                    PostcodeType = "xyz",
-                    SmallUserOrganisationIndicator = "indicator",
-                    DeliveryPointSuffix = "DeliveryPointSuffix",
-                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
-                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
-                    ID = Guid.Empty
-            }
-    };
-
-            addDeliveryPointDTO = new AddDeliveryPointDTO()
-            {
-                PostalAddressDTO = new PostalAddressDTO()
                 {
                     BuildingName = "bldg1",
                     BuildingNumber = 1,
@@ -327,13 +282,33 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     DeliveryPointSuffix = "DeliveryPointSuffix",
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
-                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
-                },
-                DeliveryPointDTO = deliveryPointDTO,
-                DeliveryPointType = "Range",
-                FromRange = 2,
-                ToRange = 11,
-                RangeType = "Odds"
+            },
+                new PostalAddressDTO()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "Postcode",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 12345,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    ID = Guid.Empty
+            }
+            };
+
+            addDeliveryPointDTO = new AddDeliveryPointDTO()
+            {
+                PostalAddressDTO = postalAddressesDTO[0],
+                DeliveryPointDTO = deliveryPointDTO
             };
             addDeliveryPointDTO1 = new AddDeliveryPointDTO()
             {
@@ -355,8 +330,8 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             actualDeliveryPointDataDto = new List<DeliveryPointDataDTO>()
             {
                 new DeliveryPointDataDTO()
-    {
-        ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                {
+                ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                 MailVolume = 5, PostalAddress = new PostalAddressDataDTO()
                 {
                     BuildingName = "bldg1",
@@ -395,10 +370,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                  new DeliveryPointDataDTO()
                  {
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A17"),
-                }, NetworkNode = new NetworkNodeDataDTO { ID = new Guid(), NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() { Shape = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } }, DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } } },
-                 new DeliveryPointDataDTO()
-    {
-        ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A17"),
                 MailVolume = 2, PostalAddress = new PostalAddressDataDTO()
                 {
                     BuildingName = "bldg2",
@@ -436,7 +407,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                          }
                      }
             }
-};
+            };
 
             actualDeliveryPointDTO = new DeliveryPointDataDTO()
             {
@@ -492,7 +463,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             var locationXy = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700);
             DbGeometry location = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
 
-            List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceData = GetReferenceDataCategory();
+            List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceData = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>() { new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO { CategoryName = "Delivery Point" } };
             double xLocation = 399545.5590911182;
             double yLocation = 649744.6394892789;
             routeDTO = new RouteDTO
@@ -526,7 +497,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointIntegrationService.Setup(x => x.MapRouteForDeliveryPoint(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
             mockDeliveryPointIntegrationService.Setup(x => x.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).Returns(Guid.NewGuid());
             mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnID(It.IsAny<DeliveryPointDataDTO>())).ReturnsAsync(Guid.NewGuid());
-            mockDeliveryPointIntegrationService.Setup(x => x.CreateAddressForDeliveryPointForRange(It.IsAny<List<PostalAddressDTO>>())).ReturnsAsync(new List<CreateDeliveryPointModelDTO> { new CreateDeliveryPointModelDTO() { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12"), IsAddressLocationAvailable = true, Message = "Delivery Point Created", XCoordinate = xLocation, YCoordinate = yLocation } });
+
             mockDeliveryPointIntegrationService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(routeDTO);
 
             mockDeliveryPointsDataService.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).ReturnsAsync(true);
@@ -546,37 +517,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointsDataService.Setup(x => x.DeleteDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(true);
 
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsDataService.Object, mockLoggingDataService.Object, mockConfigurationDataService.Object, mockDeliveryPointIntegrationService.Object);
-        }
-
-        private DuplicateDeliveryPointDTO GetDuplicateDeliveryPointDTO()
-        {
-            return new DuplicateDeliveryPointDTO
-            {
-                IsDuplicate = true,
-                PostalAddressDTO = new List<PostalAddressDTO>()
-            {
-                new PostalAddressDTO()
-                {
-                    BuildingName = "bldg1",
-                    BuildingNumber = 1,
-                    SubBuildingName = "subbldg",
-                    OrganisationName = "org",
-                    DepartmentName = "department",
-                    Thoroughfare = "ThoroughFare1",
-                    DependentThoroughfare = "DependentThoroughFare1",
-                    Postcode = "PostcodeNew",
-                    PostTown = "PostTown",
-                    POBoxNumber = "POBoxNumber",
-                    UDPRN = 12345,
-                    PostcodeType = "xyz",
-                    SmallUserOrganisationIndicator = "indicator",
-                    DeliveryPointSuffix = "DeliveryPointSuffix",
-                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
-                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
-                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
-            },
-            }
-            };
         }
 
         private List<CommomLibrary.ReferenceDataCategoryDTO> GetReferenceDataCategory()
@@ -641,6 +581,37 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                 FromRange = 2,
                 ToRange = 11,
                 RangeType = "Odds"
+            };
+        }
+
+        private DuplicateDeliveryPointDTO GetDuplicateDeliveryPointDTO()
+        {
+            return new DuplicateDeliveryPointDTO
+            {
+                IsDuplicate = true,
+                PostalAddressDTO = new List<PostalAddressDTO>()
+            {
+                new PostalAddressDTO()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "PostcodeNew",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 12345,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
+            },
+            }
             };
         }
     }

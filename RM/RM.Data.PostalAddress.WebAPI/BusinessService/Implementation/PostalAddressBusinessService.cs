@@ -458,7 +458,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         });
                     });
                 }
-                
 
                 return createDeliveryPointModelDTOs;
             }
@@ -1065,7 +1064,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetReferenceData"))
             {
-                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ConvertDTOToDataDTO);
+                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ConvertCollectionDTOToCollectionDataDTO);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
                 List<PostalAddressDataDTO> postalAddressDTOs = new List<PostalAddressDataDTO>();

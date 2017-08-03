@@ -1197,7 +1197,7 @@
                     postalAddressDTO = addDeliveryPointDTO.PostalAddressDTO;
                     postalAddressDTO.SubBuildingName = !string.IsNullOrEmpty(addDeliveryPointDTO.SubBuildingType) ? $"{addDeliveryPointDTO.SubBuildingType} {range}" : range;
                     postalAddressDTO.DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID;
-                    postalAddressDTO.DeliveryRoute_Guid = addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid;                    
+                    postalAddressDTO.DeliveryRoute_Guid = addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid;
                     postalAddressDTO.OrganisationName = null;
                     postalAddressDTO.DepartmentName = null;
                     postalAddressDTOs.Add(postalAddressDTO);
