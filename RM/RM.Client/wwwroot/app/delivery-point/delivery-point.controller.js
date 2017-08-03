@@ -176,7 +176,7 @@ function DeliveryPointController(
     }
 
     function setOrganisation() {
-        if (vm.selectedType === vm.single) {
+        if (vm.selectedType === vm.single && !angular.isUndefined(vm.addressDetails)) {
             deliveryPointService.setOrganisation(vm.addressDetails, vm.dpUseType).then(function (response) {
                 vm.dpUse = response.dpUse;
                 vm.selectedDPUse = response.selectedDPUse;
