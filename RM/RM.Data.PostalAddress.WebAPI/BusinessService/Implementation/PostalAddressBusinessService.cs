@@ -1037,7 +1037,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(ModifyPAFRecords);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-                FileProcessingLogDTO objFileProcessingLog = null;
                 Guid deliveryPointUseIndicatorPAF = Guid.Empty;
                 Guid postCodeGuid = Guid.Empty;
 

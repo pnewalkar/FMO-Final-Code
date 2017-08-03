@@ -461,7 +461,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         }
 
         /// <summary>
-        /// Update DPUse in delivery point for matching UDPRN 
+        /// Update DPUse in delivery point for matching UDPRN
         /// </summary>
         /// <param name="postalAddressDetails">postal address record in PAF</param>
         /// <returns>Flag to indicate DPUse updated or not</returns>
@@ -472,7 +472,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(UpdateDPUse);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/UpdateDPUse/" ,postalAddressDetails);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/UpdateDPUse/", postalAddressDetails);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;

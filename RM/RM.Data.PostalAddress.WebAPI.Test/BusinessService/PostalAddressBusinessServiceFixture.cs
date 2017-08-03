@@ -36,7 +36,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         private int paf = 0;
         private List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceDataCategoryDTOList;
 
-        // TODO: Nunits to be fixed
         [Test]
         public void Test_SavePostalAddressForNYB_PositiveScenario()
         {
@@ -71,6 +70,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             Assert.IsTrue(result.ID == Guid.Empty);
         }
 
+        /// <summary>
+        /// Insert PAF record in Postal address
+        /// </summary>
         [Test]
         public void SavePAFDetails_Check_MatchPostalAddressOnAddress_Insert()
         {
@@ -99,23 +101,158 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         }
 
         /// <summary>
-        /// Update record in Postal address
+        /// Update record in Postal address and update DeliveryPointUseIndicatorGUID in delivery point table
         /// </summary>
         [Test]
-        public void SavePAFDetails_Check_MatchPostalAddressOnAddress_Update()
+        public void ProcessPAFDetails_Update_PositiveScenario()
         {
             mockPostalAddressIntegrationService.Setup(n => n.UpdateDPUse(It.IsAny<PostalAddressDTO>())).ReturnsAsync(true);
+            mockPostalAddressDataService.Setup(x => x.UpdateAddress(It.IsAny<PostalAddressDataDTO>(), It.IsAny<string>())).ReturnsAsync(true);
             PostalAddressDTO objPostalAddress = new PostalAddressDTO()
             {
                 Time = "7/19/2016",
                 Date = "8:37:00",
                 AmendmentType = "C",
-                AmendmentDesc = "new insert",
+                AmendmentDesc = "update",
                 Postcode = "YO23 1DQ",
                 PostTown = "York",
                 UDPRN = 54162429,
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+            };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
+            var result = testCandidate.ProcessPAFDetails(lstPostalAddress);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
+        /// <summary>
+        /// Matching UDPRN not found for postal address
+        /// </summary>
+        [Test]
+        public void ProcessPAFDetails_Update_NegativeScenario1()
+        {
+            mockPostalAddressIntegrationService.Setup(n => n.UpdateDPUse(It.IsAny<PostalAddressDTO>())).ReturnsAsync(true);
+            mockPostalAddressDataService.Setup(x => x.UpdateAddress(It.IsAny<PostalAddressDataDTO>(), It.IsAny<string>())).ReturnsAsync(false);
+            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            {
+                Time = "7/19/2016",
+                Date = "8:37:00",
+                AmendmentType = "C",
+                AmendmentDesc = "update",
+                Postcode = "YO23 1DQ",
+                PostTown = "York",
+                UDPRN = 54162429,
+                DeliveryPointSuffix = "1A",
+                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+            };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
+            var result = testCandidate.ProcessPAFDetails(lstPostalAddress);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
+        /// <summary>
+        /// Matching Delivery point not found for given UDPRN
+        /// </summary>
+        [Test]
+        public void ProcessPAFDetails_Update_NegativeScenario2()
+        {
+            mockPostalAddressIntegrationService.Setup(n => n.UpdateDPUse(It.IsAny<PostalAddressDTO>())).ReturnsAsync(false);
+            mockPostalAddressDataService.Setup(x => x.UpdateAddress(It.IsAny<PostalAddressDataDTO>(), It.IsAny<string>())).ReturnsAsync(true);
+            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            {
+                Time = "7/19/2016",
+                Date = "8:37:00",
+                AmendmentType = "C",
+                AmendmentDesc = "update",
+                Postcode = "YO23 1DQ",
+                PostTown = "York",
+                UDPRN = 54162429,
+                DeliveryPointSuffix = "1A",
+                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+            };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
+            var result = testCandidate.ProcessPAFDetails(lstPostalAddress);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
+        /// <summary>
+        /// Update postal address status to Pending delete
+        /// </summary>
+        [Test]
+        public void ProcessPAFDetails_Delete_PositiveScenario()
+        {
+            mockPostalAddressDataService.Setup(x => x.UpdatePostalAddressStatus(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            {
+                Time = "7/19/2016",
+                Date = "8:37:00",
+                AmendmentType = "D",
+                AmendmentDesc = "delete",
+                Postcode = "YO23 1DQ",
+                PostTown = "York",
+                UDPRN = 54162429,
+                DeliveryPointSuffix = "1A",
+                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+            };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
+            var result = testCandidate.ProcessPAFDetails(lstPostalAddress);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
+        /// <summary>
+        /// No matching UDPRN found for postal address
+        /// </summary>
+        [Test]
+        public void ProcessPAFDetails_Delete_NegativeScenario1()
+        {
+            PostalAddressDataDTO postalAddressDataDTO = null;
+            mockPostalAddressDataService.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
+            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            {
+                Time = "7/19/2016",
+                Date = "8:37:00",
+                AmendmentType = "D",
+                AmendmentDesc = "delete",
+                Postcode = "YO23 1DQ",
+                PostTown = "York",
+                UDPRN = 54162429,
+                DeliveryPointSuffix = "1A",
+                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+            };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
+            var result = testCandidate.ProcessPAFDetails(lstPostalAddress);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
+        /// <summary>
+        /// Postal Address type is not PAF
+        /// </summary>
+        [Test]
+        public void ProcessPAFDetails_Delete_NegativeScenario2()
+        {
+            PostalAddressDataDTO postalAddressDataDTO = new PostalAddressDataDTO() { AddressType_GUID = Guid.NewGuid() };
+            mockPostalAddressDataService.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
+            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            {
+                Time = "7/19/2016",
+                Date = "8:37:00",
+                AmendmentType = "D",
+                AmendmentDesc = "delete",
+                Postcode = "YO23 1DQ",
+                PostTown = "York",
+                UDPRN = 54162429,
+                DeliveryPointSuffix = "1A",
+                AddressType_GUID = new Guid("C08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
@@ -152,7 +289,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         {
             AddDeliveryPointDTO addDeliveryPointDTO = new AddDeliveryPointDTO()
             {
-                PostalAddressDTO = new PostalAddressDataDTO()
+                PostalAddressDTO = new PostalAddressDTO()
                 {
                     Postcode = "1234",
                     ID = new Guid()
@@ -163,6 +300,12 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                     {
                         Postcode = "1234",
                         ID = new Guid()
+                    }
+                },
+                PostalAddressAliasDTOs = new List<PostalAddressAliasDTO>()
+                {
+                    new PostalAddressAliasDTO()
+                    {
                     }
                 }
             };
@@ -210,6 +353,32 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                      {
                          new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
                          {
+                             ReferenceDataValue = FileType.Usr.ToString(),
+                             ID = Guid.NewGuid(),
+                         }
+                     },
+                     CategoryName= PostalAddressType
+                 },
+
+                 new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO()
+                 {
+                     ReferenceDatas = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataDTO>()
+                     {
+                         new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
+                         {
+                             ReferenceDataValue = FileType.Paf.ToString(),
+                             ID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"),
+                         }
+                     },
+                     CategoryName= PostalAddressType
+                 },
+
+                 new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO()
+                 {
+                     ReferenceDatas = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataDTO>()
+                     {
+                         new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
+                         {
                              ReferenceDataValue = PostCodeStatus.Live.GetDescription(),
                              ID = Guid.NewGuid(),
                          }
@@ -223,12 +392,12 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                      {
                          new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
                          {
-                             ReferenceDataValue = FileType.Usr.ToString(),
+                             ReferenceDataValue = PostCodeStatus.PendingDeleteInFMO.GetDescription(),
                              ID = Guid.NewGuid(),
                          }
                      },
                      CategoryName= PostalAddressStatus
-                 }
+                 },
              };
 
             AddressLocationDTO addressLocationDTO = new AddressLocationDTO()
@@ -250,17 +419,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             {
                 ID = new Guid()
             };
-            //List<PostalAddressDataDTO> lstPostalAddress = new List<PostalAddressDataDTO>() { postalAddressDTO };
-
-            //addDeliveryPointDTO = new AddDeliveryPointDTO()
-            //{
-            //    PostalAddressDTO = new PostalAddressDataDTO()
-            //    {
-            //        PostCodeGUID = Guid.NewGuid(),
-            //        AddressType_GUID = Guid.NewGuid(),
-            //        AddressStatus_GUID = Guid.NewGuid()
-            //    }
-            //};
 
             mockPostalAddressDataService = CreateMock<IPostalAddressDataService>();
             mockFileProcessingLogDataService = CreateMock<IFileProcessingLogDataService>();
@@ -272,17 +430,12 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
-            //   mockPostalAddressIntegrationService.Setup(n => n.GetReferenceData(It.IsAny<string>())).Returns(Task.FromResult(AddressType_GUID));
             mockPostalAddressIntegrationService.Setup(n => n.GetReferenceDataSimpleLists(It.IsAny<string>())).Returns(Task.FromResult(referenceDataCategoryDTOList[2]));
             mockPostalAddressIntegrationService.Setup(n => n.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).Returns(Task.FromResult(referenceDataCategoryDTOList));
-            //mockPostalAddressIntegrationService.Setup(n => n.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             mockPostalAddressIntegrationService.Setup(n => n.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             mockPostalAddressIntegrationService.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(Task.FromResult(addressLocationDTO));
-            //mockPostalAddressDataService.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDataDTO>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             mockPostalAddressDataService.Setup(n => n.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
 
-            //mockPostalAddressDataService.Setup(n => n.GetPostalAddressDetails(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>>())).Returns(Task.FromResult(lstPostalAddress));
-            //mockPostalAddressDataService.Setup(n => n.GetPostalAddressSearchDetails(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<Guid>>(), It.IsAny<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>>())).Returns(Task.FromResult(new List<string>() { "abc" }));
             mockPostalAddressDataService.Setup(n => n.GetPostalAddresses(It.IsAny<List<Guid>>())).ReturnsAsync(new List<PostalAddressDataDTO>() { new PostalAddressDataDTO() { Postcode = "1234" } });
             mockPostalAddressDataService.Setup(n => n.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDataDTO>(), It.IsAny<Guid>())).Returns(("PO1234"));
             mockPostalAddressDataService.Setup(n => n.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDataDTO>())).Returns(Task.FromResult(true));
