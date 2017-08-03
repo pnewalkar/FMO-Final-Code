@@ -23,9 +23,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         private Mock<ILoggingHelper> mockLoggingHelper;
         private Mock<IFileProcessingLogDataService> mockFileProcessingLog;
         private Mock<IDatabaseFactory<PostalAddressDBContext>> mockDatabaseFactory;
-
-        // private Mock<CommonLibrary.EntityFramework.DataService.Interfaces.IPostCodeDataService> mockPostCodeDataService;
-        // private Mock<CommonLibrary.EntityFramework.DataService.Interfaces.IReferenceDataCategoryDataService> mockReferenceDataCategoryDataService;
         private Mock<IPostalAddressDataService> mockAddressDataService;
 
         private IPostalAddressDataService testCandidate;
@@ -183,6 +180,30 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             Assert.IsNotNull(result);
         }
 
+        /// <summary>
+        /// Postal address status updated
+        /// </summary>
+        [Test]
+        public void Test_UpdatePostalAddressStatus()
+        {
+            OnSetupPaf();
+            var result = testCandidate.UpdatePostalAddressStatus(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"), new Guid("A21F3E46-2D0D-4989-A5D5-872D23B479A2"));
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
+        /// <summary>
+        /// Postal address status not updated
+        /// </summary>
+        [Test]
+        public void Test_UpdatePostalAddressStatus_NegativeScenario1()
+        {
+            OnSetupPaf();
+            var result = testCandidate.UpdatePostalAddressStatus(new Guid("119DBBBB-03FB-489C-8C8D-F1085E0D2A15"), new Guid("A21F3E46-2D0D-4989-A5D5-872D23B479A2"));
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.Result);
+        }
+
         protected override void OnSetup()
         {
             lstPostCodeDTO = new List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>()
@@ -246,12 +267,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             }
             };
 
-            // List<RM.DataManagement.PostalAddress.WebAPI.Entities.deli> deliveryPoint = new List<DeliveryPoint>()
-            // {
-            //    new DeliveryPoint()
-            //    {
-            //    }
-            // };
             List<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress> postalAddresses = new List<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress>()
             {
                 new RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress()
@@ -353,12 +368,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             }
             };
 
-            // List<DeliveryPoint> deliveryPoint = new List<DeliveryPoint>()
-            // {
-            //    new DeliveryPoint()
-            //    {
-            //    }
-            // };
             List<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress> postalAddresses = new List<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress>()
             {
                 new RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress()
@@ -397,11 +406,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             var mockPostalAddressDTO = CreateMock<PostalAddressDataDTO>();
             mockPostalAddressDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
 
-            // mockPostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             mockAddressDataService.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddressesDataDTO[0]);
             mockAddressDataService.Setup(x => x.CreateAddressForDeliveryPoint(mockPostalAddressDTO.Object)).Returns(It.IsAny<Guid>());
 
-            // mockReferenceDataCategoryDataService.Setup(x => x.GetReferenceDataId("Postal Address Type", "Nyb")).Returns(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
@@ -448,7 +455,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                 SmallUserOrganisationIndicator = "indicator",
                 DeliveryPointSuffix = "DeliveryPointSuffix",
 
-                // PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                 AddressType_GUID = new Guid("222C68A4-D959-4B37-B468-4B1855950A81"),
                 ID = new Guid("5275F14A-766D-4DCD-B475-001707F5D905"),
                 PostalAddressStatus = new List<PostalAddressStatusDataDTO>()
@@ -531,7 +537,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
 
-            // mockPostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
@@ -596,6 +601,15 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                         }
                     };
 
+            List<PostalAddressStatus> postalAddressStatusList = new List<PostalAddressStatus>()
+            {
+                new PostalAddressStatus()
+                {
+                    PostalAddressGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
+                }
+            };
+
+            mockPostalAddressDbContext = CreateMock<PostalAddressDBContext>();
             var mockPostalAddressEnumerable = new DbAsyncEnumerable<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress>(lstPostalAddress);
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
             mockPostalAddressDBSet.Setup(x => x.Include("PostalAddressStatus"));
@@ -607,11 +621,22 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             mockPostalAddressDBSet.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockPostalAddressEnumerable.AsQueryable().ElementType);
             mockPostalAddressDBSet.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress>)mockPostalAddressEnumerable).GetAsyncEnumerator());
 
-            mockPostalAddressDbContext = CreateMock<PostalAddressDBContext>();
             mockPostalAddressDbContext.Setup(x => x.Set<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
-            mockLoggingHelper = CreateMock<ILoggingHelper>();
 
+            var mockPostalAddressEnumerable1 = new DbAsyncEnumerable<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddressStatus>(postalAddressStatusList);
+            var mockPostalAddressStatusDBSet = MockDbSet(postalAddressStatusList);
+            mockPostalAddressStatusDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressStatusDBSet.Object);
+
+            mockPostalAddressStatusDBSet.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockPostalAddressEnumerable1.AsQueryable().Provider);
+            mockPostalAddressStatusDBSet.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockPostalAddressEnumerable1.AsQueryable().Expression);
+            mockPostalAddressStatusDBSet.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockPostalAddressEnumerable1.AsQueryable().ElementType);
+            mockPostalAddressStatusDBSet.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddressStatus>)mockPostalAddressEnumerable1).GetAsyncEnumerator());
+
+            mockPostalAddressDbContext.Setup(x => x.Set<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddressStatus>()).Returns(mockPostalAddressStatusDBSet.Object);
+            mockPostalAddressDbContext.Setup(x => x.PostalAddressStatus).Returns(mockPostalAddressStatusDBSet.Object);
+
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockFileProcessingLog = CreateMock<IFileProcessingLogDataService>();
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<PostalAddressDBContext>>();
