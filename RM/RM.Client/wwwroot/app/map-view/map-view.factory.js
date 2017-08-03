@@ -161,6 +161,7 @@ function MapFactory($http,
         $timeout(function() {
             var overviewMapContainer = document.querySelector('#overviewMap');
             var overviewMapControl =new ol.control.OverviewMap({
+                layers: layers.filter(function (l) { return l.onMiniMap; }).map(function (a) { return a.layer }),
                 view: new ol.View({
                    projection: BNGProjection
                 }),
