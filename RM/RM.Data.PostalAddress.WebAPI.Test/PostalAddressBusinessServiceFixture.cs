@@ -157,8 +157,76 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public async Task TestCheckForDuplicateNybRecordsForRange_PositiveScenario()
+        {
+            var result = await testCandidate.CheckForDuplicateNybRecordsForRange(new List<PostalAddressDTO>());
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.PostalAddressDTO.Count > 0);
+            Assert.IsTrue(result.IsDuplicate);
+        }
+
+        [Test]
+        public async Task TestCheckForDuplicateNybRecordsForRange_NegativeScenario()
+        {
+            Assert.ThrowsAsync<ArgumentNullException>(() => testCandidate.CheckForDuplicateNybRecordsForRange(null));
+        }
+
+        [Test]
+        public async Task TestCheckForDuplicateAddressWithDeliveryPointsForRange_PositiveScenario()
+        {
+            var result = await testCandidate.CheckForDuplicateAddressWithDeliveryPointsForRange(new List<PostalAddressDTO>());
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.PostalAddressDTO.Count > 0);
+            Assert.IsTrue(result.IsDuplicate);
+        }
+
+        [Test]
+        public async Task TestCheckForDuplicateAddressWithDeliveryPointsForRange_NegativeScenario()
+        {
+            Assert.ThrowsAsync<ArgumentNullException>(() => testCandidate.CheckForDuplicateAddressWithDeliveryPointsForRange(null));
+        }
+
+        [Test]
+        public async Task TestCreateAddressForDeliveryPointForRange_PositiveScenario()
+        {
+            var postalAddressesDTO = new List<PostalAddressDTO>()
+            {
+                new PostalAddressDTO()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "PostcodeNew",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 1234,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                      ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
+            }
+           };
+            var result = await testCandidate.CreateAddressForDeliveryPointForRange(postalAddressesDTO);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Count == 1);
+        }
+
+        [Test]
+        public async Task TestCreateAddressForDeliveryPointForRange_NegativeScenario()
+        {
+            Assert.ThrowsAsync<ArgumentNullException>(() => testCandidate.CreateAddressForDeliveryPointForRange(null));
+        }
+
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             // OnSetup to be configured
             referenceDataCategoryDTOList = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>()
              {
@@ -240,6 +308,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             // mockPostalAddressIntegrationService.Setup(n => n.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             mockPostalAddressIntegrationService.Setup(n => n.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             mockPostalAddressIntegrationService.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(Task.FromResult(addressLocationDTO));
+            mockPostalAddressIntegrationService.Setup(n => n.GetAddressLocationsByUDPRN(It.IsAny<List<int>>())).Returns(Task.FromResult(new List<AddressLocationDTO> { addressLocationDTO }));
 
             // mockPostalAddressDataService.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDataDTO>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             mockPostalAddressDataService.Setup(n => n.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
@@ -252,7 +321,8 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             mockPostalAddressDataService.Setup(n => n.CreateAddressForDeliveryPoint(It.IsAny<PostalAddressDataDTO>())).Returns(addressTypeGUID);
             mockPostalAddressDataService.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
             mockPostalAddressDataService.Setup(n => n.GetPAFAddress(It.IsAny<int>(), It.IsAny<Guid>())).Returns(Task.FromResult(postalAddressDTO));
-
+            mockPostalAddressDataService.Setup(n => n.CheckForDuplicateNybRecordsForRange(It.IsAny<List<PostalAddressDataDTO>>(), It.IsAny<Guid>())).Returns(Task.FromResult(new Tuple<bool, List<PostalAddressDataDTO>>(true, new List<PostalAddressDataDTO> { postalAddressDataDTO })));
+            mockPostalAddressDataService.Setup(n => n.CheckForDuplicateAddressWithDeliveryPointsForRange(It.IsAny<List<PostalAddressDataDTO>>())).Returns(Task.FromResult(new Tuple<bool, List<PostalAddressDataDTO>>(true, new List<PostalAddressDataDTO> { postalAddressDataDTO })));
             testCandidate = new DataManagement.PostalAddress.WebAPI.BusinessService.Implementation.PostalAddressBusinessService(mockPostalAddressDataService.Object, mockFileProcessingLogDataService.Object, mockLoggingHelper.Object, mockConfigurationHelper.Object, mockHttpHandler.Object, mockPostalAddressIntegrationService.Object);
         }
     }
