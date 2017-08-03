@@ -175,7 +175,6 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                     content.AppendChild(section);
                 }
 
-
                 // Section 5
                 section = document.CreateElement(MapManagerConstants.Section);
                 heading1CenterAligned = document.CreateElement(MapManagerConstants.Heading1CenterAligned);

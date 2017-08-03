@@ -108,7 +108,23 @@
     "GENERATE": "Generate",
     "ROUTE_LOG_SUMMARY": "Route Log Summary",
     "DETAILED_ROUTE_LOG": "Detailed Route Log",
-    "HAZARD_CARD": "Hazard Card"
+    "HAZARD_CARD": "Hazard Card",
+    "ROUTE_DETAILS_KEYS": {
+    "NAME": "Name",
+    "ROUTE_NUMBER": "Route Number",
+    "DELIVERY_METHOD": "Delivery Method",
+    "TOTAL_TIME": "Total Time",
+    "HAZARDS": "Hazards",
+    "SPECIAL_INSTRUCTION": "Special Instructions",
+    "ALIASES": "Aliases",
+    "BLOCKS": "Blocks",
+    "PAIRED_ROUTE": "Paired Route",
+    "CPS": "CPs",
+    "DPS": "DPs",
+    "BUSINESS_DPS": "Business DPs",
+    "RESIDENTIAL_DPS": "Residential DPs",
+    "ALIAS_INFORMATION": "All Alias information is shown on detailed route log "
+    }
   },
   "ROUTE_SIMULATION": {
     "TITTLE": "Route Simulation",

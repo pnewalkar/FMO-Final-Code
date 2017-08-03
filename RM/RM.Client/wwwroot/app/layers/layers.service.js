@@ -80,7 +80,6 @@ function layersService(mapService,
     }
   
     function setSelectedObjectsVisibility(selectedLayer) {
-        debugger;
         mapService.setSelectedObjectsVisibility(selectedLayer);
         var selectedLayer = mapService.getLayerSummary();
         if (selectedLayer === $translate.instant('LICESING_INFO.NO_LAYERS_SELECTED')) {
