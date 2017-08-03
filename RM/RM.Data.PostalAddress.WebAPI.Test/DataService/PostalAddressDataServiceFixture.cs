@@ -280,11 +280,11 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                 ID = Guid.NewGuid()
             };
 
-            addDeliveryPointDTO1 = new AddDeliveryPointDTO()
-            {
-                PostalAddressDTO = postalAddressesDTO[0],
-                DeliveryPointDTO = deliveryPointDTO
-            };
+            //addDeliveryPointDTO1 = new AddDeliveryPointDTO()
+            //{
+            //    PostalAddressDTO = postalAddressesDTO[0],
+            //    DeliveryPointDTO = deliveryPointDTO
+            //};
 
             var mockPostalAddressDBSet = MockDbSet(postalAddresses);
 
@@ -389,21 +389,21 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                 ID = Guid.NewGuid()
             };
 
-            addDeliveryPointDTO1 = new AddDeliveryPointDTO()
-            {
-                PostalAddressDTO = postalAddressesDTO[0],
-                DeliveryPointDTO = deliveryPointDTO
-            };
-            addDeliveryPointDTO2 = new AddDeliveryPointDTO()
-            {
-                PostalAddressDTO = postalAddressesDTO[1],
-                DeliveryPointDTO = deliveryPointDTO
-            };
-            addDeliveryPointDTO3 = new AddDeliveryPointDTO()
-            {
-                PostalAddressDTO = null,
-                DeliveryPointDTO = null
-            };
+            //addDeliveryPointDTO1 = new AddDeliveryPointDTO()
+            //{
+            //    PostalAddressDTO = postalAddressesDTO[0],
+            //    DeliveryPointDTO = deliveryPointDTO
+            //};
+            //addDeliveryPointDTO2 = new AddDeliveryPointDTO()
+            //{
+            //    PostalAddressDTO = postalAddressesDTO[1],
+            //    DeliveryPointDTO = deliveryPointDTO
+            //};
+            //addDeliveryPointDTO3 = new AddDeliveryPointDTO()
+            //{
+            //    PostalAddressDTO = null,
+            //    DeliveryPointDTO = null
+            //};
 
             var mockPostalAddressDBSet = MockDbSet(postalAddresses);
 
