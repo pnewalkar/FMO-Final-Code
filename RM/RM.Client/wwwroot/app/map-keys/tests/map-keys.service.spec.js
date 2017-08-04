@@ -1,107 +1,70 @@
-﻿describe('mapKey: Service', function() {
-
+﻿'use strict';
+describe('Map Key: Service', function() {
   var mapStylesFactory;
   var mapService;
   var CommonConstants;
-  var mapKeyService;
-
-//
-var getSylefun = function activeStyle(feature) {
-        return [];
-      }
-
-  //MockSet
-  var MockMapKeyService = {
-        mapLayers: function() {return []},
-        
-     };
-
-     //MockSet
-  var MockMapStylesFactory = {
-        getStyle: function() { return getSylefun; },
-        styleTypes: {}
-     };
-
-     //MockSet
-  var MockCommonConstants = {
-        pointTypes: { 
-          DeliveryPoint: { 
-            text: "Delivery Point", 
-            value: 'deliverypoint', 
-            style: "deliverypoint" }, 
-        AcessLink: { 
-            text: "Access Link", 
-            value: 'accesslink', 
-            style: "accesslink" }, 
-        Road: { 
-            text: "Road", 
-            value: 'roadlink', 
-            style: "roadlink" }, 
-        Selected: { 
-          text: "Selected", 
-          value: '', 
-          style: "deliverypoint" } 
+  var mapKeyService;     
+  var MockMapStyleFactory = {      
+        getStyle: function(){
+          return function test(){}
         },
-     };
+        styleTypes:function(){
+          return{
+            SELECTEDSTYLE: ''
+          } 
+        }
+      };      
+  var MockCommonConstants = {
+      pointTypes: { 
+        DeliveryPoint: { text: "Delivery Point", value: 'deliverypoint', style: "deliverypoint" },             
+        AcessLink: { text: "Access Link", value: 'accesslink',style: "accesslink" },
+        Road: { text: "Road",value: 'roadlink', style: "roadlink" },    
+        Selected: {text: "Selected", value: '',style: "deliverypoint"}               
+      }
+    };  
 
+  beforeEach(function(){
+    module('mapKey');
+    module(function($provide) {
+      $provide.value('CommonConstants', MockCommonConstants);
+      $provide.value('mapStylesFactory',MockMapStyleFactory);
+      $provide.factory('mapService', function(){
+          return {
+            mapLayers: function(){
+              return {
+                filter:function(){
+                  return {
+                    map:function(){
+                      return 'aasdfd-5a5df5sdf-5fdfsdf';
+                    }
+                  }
+                }
+                
+              }
+            }
+          }
+      });      
+    });    
 
-  beforeEach(module('mapKey'));
-
-  //load to our provider
-   beforeEach(function(){
-        module(function ($provide) {
-        $provide.value('mapStylesFactory', MockMapStylesFactory);
-        $provide.value('mapService', MockMapKeyService);
-        $provide.value('CommonConstants', MockCommonConstants);
-
-        });
+    inject(function(_mapKeyService_,_mapStylesFactory_,_mapService_,_CommonConstants_) {
+      mapKeyService = _mapKeyService_;
+      mapStylesFactory = _mapStylesFactory_;
+      mapService = _mapService_;
+      CommonConstants = _CommonConstants_;
     });
+  });
 
+  it('should return true if id is empty', function() {
+    expect(mapKeyService.showKey('')).toBe(true);
+  });
+  
+  it('should return false if id is not-empty', function() {    
 
-  //Inject to get instance
-  beforeEach(inject(function (_mapKeyService_,_mapStylesFactory_,_mapService_,_CommonConstants_) {
-          mapKeyService = _mapKeyService_;
-          mapStylesFactory = _mapStylesFactory_;
-          mapService = _mapService_;
-          CommonConstants = _CommonConstants_;
+    expect(mapKeyService.showKey('aasdfd-5a5df5sdf-5fdfsdf')).toBe(false);
+  });
 
-    }));
-
-    it('should be return showKey true if id null', function() {
-        
-          spyOn(mapKeyService,'showKey').and.callThrough();
-
-          var id  = '';
-          var val = mapKeyService.showKey(id);
-          expect(val).toEqual(true); 
-      });
-
-    it('should be return showKey false if id not null', function() {
-        
-          spyOn(mapKeyService,'showKey').and.callThrough();
-
-          var id  = '2';
-          var val = mapKeyService.showKey(id);
-          expect(val).toEqual(false); 
-      });
-
-    it('should be initialize method and return pointTypes Object Values', function() {
-        spyOn(mapKeyService,'initialize').and.callThrough();
-        
-        //cal to mapStyleFactory
-        var result = mapKeyService.initialize();
-        
-        //check with argument based object what we expect
-        var arg1 = { text: 'Selected', id: '' };
-        var arg2 = { text: 'Delivery Point', id: 'deliverypoint', style: [  ] };
-        var arg3 = { text: 'Access Link', id: 'accesslink', style: [  ] };
-        var arg4 = { text: 'Road', id: 'roadlink', style: [  ] };
-
-        expect(mapKeyService.initialize).toHaveBeenCalled();
-        expect(result[0]).toEqual(jasmine.objectContaining(arg1));
-        expect(result[1]).toEqual(jasmine.objectContaining(arg2));
-        expect(result[2]).toEqual(jasmine.objectContaining(arg3));
-        expect(result[3]).toEqual(jasmine.objectContaining(arg4));
-
-    });
+  it('should return pointTypes when initialize method called', function() {      
+      var pointTypes = [{text:'Selected',id:'',style:undefined},{text:'Delivery Point',id:'deliverypoint',style:undefined},{text:'Access Link',id:'accesslink',style:undefined},{text:'Road',id:'roadlink',style:undefined}]
+      expect(mapKeyService.initialize()).toEqual(pointTypes);
+  });
 });

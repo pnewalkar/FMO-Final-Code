@@ -15,22 +15,66 @@
     <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
     <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
     <script src="../node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>
-    <!--angular scripts-->
+    <!--angular material scripts-->
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="../bower_components/angular-material/angular-material.min.js"></script>
     <script src="../bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="../bower_components/angular-aria/angular-aria.min.js"></script>
+    <script src="../bower_components/angular-messages/angular-messages.min.js"></script>
+    <script src="../bower_components/angular-material/angular-material.min.js"></script>
     <script src="../bower_components/angular-route/angular-route.min.js"></script>
+    <script src="../bower_components/svg-assets-cache.js/svg-assets-cache.js"></script>
+   
+   <!-- Angular translate-->  
+    <script src="../bower_components/angular-translate/angular-translate.js"></script>
+    
+    <!--angular material data-table script-->
+    <script src="../bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
+    <!--Open Layer-->
+    <script src="../node_modules/openlayers/dist/ol-debug.js"></script>    
+    <script src="../bower_components/proj4/dist/proj4.js"></script>
     <script src="../bower_components/angular-mocks/angular-mocks.js"></script>
     <!--custom scripts-->
     <script src="./app.module.js"></script>
+    <script src="./app.config.js"></script>
+    <script src="./app.constant.js"></script>
+    <script src="./security/auth.Interceptor.service.js"></script>
+    <script src="./security/tests/auth.Interceptor.service.spec.js"></script>
+
+    <!--common scripts-->
+    <script src="./common/popup-setting.service.js"></script>
+    <script src="./common/common.constants.js"></script>
+    <script src="./common/string-format.service.js"></script>
+    <script src="./common/previous-page.directive.js"></script>
+    <!--common Scripts-->
+    <script src="./common/tests/popup-setting.service.spec.js"></script>    
+    <script src="./common/tests/string-format.service.spec.js"></script>    
+
+    <!--Manage Access-->
+    <script src="./manage-access/manage-access.module.js"></script>
+    <script src="./manage-access/manage-access.service.js"></script>
+    <script src="./manage-access/manage-access.factory.js"></script>
+    <script src="./manage-access/manage-access.controller.js"></script>
+    <script src="./manage-access/manage-access.component.js"></script>
+    <!--Manage Access Specs-->    
+    <script src="./manage-access/tests/manage-access.service.spec.js"></script>
+    <script src="./manage-access/tests/manage-access.factory.spec.js"></script>
+    <script src="./manage-access/tests/manage-access.controller.spec.js"></script>
+    
+
+    <!-- Reusable Component -->
+    <script src="./common/dropdown.module.js"></script>
+    <script src="./common/searchable-dropdown.controller.js"></script>    
+    <script src="./common/searchable-dropdown.component.js"></script>
+    <!--Reusable Component -->
+    <script src="./common/tests/searchable-dropdown.controller.spec.js"></script>    
+
     <!--home-->
     <script src="./home/home.module.js"></script>
     <script src="./home/home.controller.js"></script>
     <script src="./home/home.component.js"></script>
     <!--home spec--> 
-    <script src="home/tests/home.controller.spec.js"></script>
+    <script src="./home/tests/home.controller.spec.js"></script>
 
     <!--route log-->
     <script src="./route-log/route-log.module.js"></script>
@@ -52,7 +96,8 @@
     <script src="./side-nav/side-nav.route.js"></script>
     <!--side nav spec-->
 
-    <script src="../app/side-nav/tests/side-nav.controller.spec.js"></script>
+    <script src="./side-nav/tests/side-nav.controller.spec.js"></script>
+    <script src="./side-nav/tests/side-nav.service.spec.js"></script>
 
     <!--unit selector-->
     <script src="./unit-selector/unit-selector.module.js"></script>
@@ -60,6 +105,11 @@
     <script src="./unit-selector/unit-selector.factory.js"></script>
     <script src="./unit-selector/unit-selector.controller.js"></script>
     <script src="./unit-selector/unit-selector.component.js"></script>
+    <!--unit selector spec-->
+    <script src="./unit-selector/tests/unit-selector.service.spec.js"></script>
+    <script src="./unit-selector/tests/unit-selector.factory.spec.js"></script>
+    <script src="./unit-selector/tests/unit-selector.controller.spec.js"></script>
+
     <!--search-->
     <script src="./search/search.module.js"></script>
     <script src="./search/search.service.js"></script>
@@ -69,6 +119,20 @@
     <script src="./search/search.controller.js"></script>
     <script src="./search/search.component.js"></script>
     <script src="./search/context.controller.js"></script>
+    <!--Search spec-->
+    <script src="./search/tests/search.service.spec.js"></script>
+    <script src="./search/tests/search.factory.spec.js"></script>
+    <script src="./search/tests/search.controller.spec.js"></script>
+    <script src="./search/tests/context.controller.spec.js"></script>
+
+    <!--Error-->
+    <script src="./common/error/error.module.js"></script>
+    <script src="./common/error/error.service.js"></script>
+    <script src="./common/error/error.interceptor.service.js"></script>
+    <!--Error Spec-->
+    <script src="./common/error/tests/error.service.spec.js"></script>
+    <script src="./common/error/tests/error.interceptor.service.spec.js"></script>
+
     <!--task-->
     <script src="./task/task.module.js"></script>
     <script src="./task/task.controller.js"></script>
@@ -121,15 +185,16 @@
     <script src="./simulation/tests/simulation.controller.spec.js"></script>
     <script src="./simulation/tests/simulation.factory.spec.js"></script>
     <script src="./simulation/tests/simulation.service.spec.js"></script>
-    <!--advance-search-->
+     <!--advance-search-->
     <script src="./advance-search/advance-search.module.js"></script>
     <script src="./advance-search/advance-search.factory.js"></script>
     <script src="./advance-search/advance-search.service.js"></script>
     <script src="./advance-search/advance-search.controller.js"></script>
 
-    <!--advanced search spec-->
-
-    <script src="advance-search/test/advance-search.spec.js"></script>
+     <!--advance-search spec files-->
+    <script src="./advance-search/tests/advance-search.factory.spec.js"></script>
+    <script src="./advance-search/tests/advance-search.service.spec.js"></script>
+    <script src="./advance-search/tests/advance-search.controller.spec.js"></script>
 
     <!--delivery-point-->
     <script src="./delivery-point/delivery-point.module.js"></script>
@@ -138,12 +203,24 @@
     <script src="./delivery-point/delivery-point.service.js"></script>
     <script src="./delivery-point/delivery-point.controller.js"></script>
     <script src="./delivery-point/delivery-point.component.js"></script>
+    <script src="./delivery-point/delivery-point-context.controller.js"></script>
+
     <!--delivery point spec-->
-     <script src="./delivery-point/tests/delivery-point.controller.spec.js"></script> 
-     <script src="./delivery-point/tests/delivery-point.context.controller.spec.js"></script> 
-     <script src="./delivery-point/tests/delivery-point.factory.spec.js"></script> 
-     <script src="./delivery-point/tests/delivery-point.service.spec.js"></script> 
+    <script src="./delivery-point/tests/delivery-point.controller.spec.js"></script>
+    <script src="./delivery-point/tests/delivery-point-context.controller.spec.js"></script>
+     <script src="./delivery-point/tests/delivery-point.factory.spec.js"></script>
+    <script src="./delivery-point/tests/delivery-point.service.spec.js"></script>
     <script src="./delivery-point/tests/coordinates.service.spec.js"></script>
+    <script src="./delivery-point/tests/guid.service.spec.js"></script>
+
+    <!--Reference Data-->
+    <script src="./reference-data/reference-data.module.js"></script>
+    <script src="./reference-data/reference-data.factory.js"></script>
+    <script src="./reference-data/reference-data.controller.js"></script>
+    <!--Reference Data Spec-->
+    <script src="./reference-data/tests/reference-data.controller.spec.js"></script>
+    <script src="./reference-data/tests/reference-data.factory.spec.js"></script>
+    
     <!--access link-->
     <script src="./access-link/access-link.module.js"></script>
     <script src="./access-link/access-link.factory.js"></script>
@@ -151,32 +228,39 @@
     <script src="./access-link/access-link.controller.js"></script>
     <script src="./access-link/access-link.component.js"></script>
 
-    <!--access link spec--> 
-    <script src="./access-link/tests/access-link.controller.spec.js"></script>
+    <!-- Access link spec files-->
     <script src="./access-link/tests/access-link.factory.spec.js"></script>
     <script src="./access-link/tests/access-link.service.spec.js"></script>
+    <script src="./access-link/tests/access-link.intersectionPointService.spec.js"></script>
+    <script src="./access-link/tests/access-link.coordinatesService.spec.js"></script>
+    <script src="./access-link/tests/access-link.roadLinkGuidService.spec.js"></script>
+    <script src="./access-link/tests/access-link.controller.spec.js"></script>
 
-    <!-- Licensing information-->
-    <script src="./license-information/licensing-information.module.js"></script>
-    <script src="./license-information/licensing-information.service.js"></script>
-    <script src="./license-information/tests/licensing-information.service.spec.js"></script>
+    <!--back button-->
+    <script src="./back-button/back-button.module.js"></script>
+    <script src="./back-button/back-button.config.js"></script>
+    <script src="./back-button/back-button.controller.js"></script>
+    <script src="./back-button/back-button.component.js"></script>
+    
     <!--Print Map-->
     <script src="./print-map/print-map.module.js"></script>
     <script src="./print-map/print-map.controller.js"></script>
     <script src="./print-map/print-map.factory.js"></script>
     <script src="./print-map/print-map.service.js"></script>
     <!--Print Map Spec-->
-    <script src="print-map/tests/print-map.controller.spec.js"></script>
-    <script src="print-map/tests/print-map.factory.spec.js"></script>
-    <script src="print-map/tests/print-map.service.spec.js"></script>
+    <script src="./print-map/tests/print-map.controller.spec.js"></script>
+    <script src="./print-map/tests/print-map.factory.spec.js"></script>
+    <script src="./print-map/tests/print-map.service.spec.js"></script>
+
+    <!-- Licensing information-->
+    <script src="./license-information/licensing-information.module.js"></script>
+    <script src="./license-information/licensing-information.service.js"></script>
+    <script src="./license-information/tests/licensing-information.service.spec.js"></script>
+
+    <!--mini map-->
+    <script src="./mini-map/mini-map.module.js"></script>
+    <script src="./mini-map/mini-map.component.js"></script>    
 </head>
-<body>
-    <div>
-        <ul>
-            <li><b>Done:-3</b></li>
-            <li><b>Pending:-13</b></li>
-            <li><b>Current:-Route Log</b></li>
-        </ul>
-    </div>
+<body>    
 </body>
 </html>
