@@ -117,7 +117,7 @@ function DeliveryPointController(
         $scope.$emit("dialogOpen", "deliveryPoint");
     }
 
-    function closeWindow() {       
+    function closeWindow() {
         vm.hide = false;
         vm.display = false;
         vm.searchText = "";
@@ -154,8 +154,6 @@ function DeliveryPointController(
     }
 
     function bindAddressDetails() {
-        vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
-        vm.selectedType = vm.single;
         if (vm.notyetBuilt !== vm.defaultNYBValue) {
             deliveryPointService.bindAddressDetails(vm.notyetBuilt)
                    .then(function (response) {
@@ -173,6 +171,8 @@ function DeliveryPointController(
             vm.addressDetails.departmentName = "";
             vm.dpUse = "";
         }
+        vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
+        vm.selectedType = vm.single;
         vm.rangeFrom = "";
         vm.rangeTo = "";
         vm.mailvol = "";
@@ -291,18 +291,16 @@ function DeliveryPointController(
             if (response.isMultiple) {
                 var title = "Duplicates Found";
                 var css = "info-dialog";
+
                 if (response.hasAllDuplicates) {
-                    // Only popup needs to be displayed & on click of OK, it should go back to the Create DP screen
-                    //vm.errorMessage = response.message;
-                    //  $rootScope.$broadcast("InfoPopup", response.message);
-                    
                     $rootScope.$broadcast("InfoPopup", response.message, title, css);
                 }
+                else if (response.hasDuplicates) {
+                    saveDeliveryPointsPartially(response.message, response.postalAddressDTOs, title, css);
+                }
                 else {
-                    if (response.hasDuplicates) {
-                        // Show the popup Get the response.postalAddressDTOs object and make a service call to save the DPs on click 
-                        saveDeliveryPointsPartially(response.message, response.postalAddressDTOs, title, css);
-                    }
+                    vm.closeWindow();
+                    vm.hide = true;
                 }
             }
             else {
@@ -389,12 +387,12 @@ function DeliveryPointController(
                 });
     }
 
-    function addAlias() {       
+    function addAlias() {
         if (vm.alias !== "" && vm.alias !== null && angular.isDefined(vm.alias)) {
-            
+
             vm.postalAddressAliases.push({
-                PreferenceOrderIndex:  0,
-                AliasName: vm.alias              
+                PreferenceOrderIndex: 0,
+                AliasName: vm.alias
             });
             vm.alias = "";
             vm.isAliasDisabled = true;

@@ -445,7 +445,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     udprns = new List<int>();
 
                     postalAddressDataDTOs.ForEach(pa =>
-                    {                        
+                    {
                         pa.AddressType_GUID = usrAddressTypeId;
                         pa.PostalAddressStatus.Add(GetPostalAddressStatus(pa.ID, liveAddressStatusId));
 
@@ -455,14 +455,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                     createDeliveryPointModelDTOs = new List<CreateDeliveryPointModelDTO>();
 
-                    var addressLocations = await postalAddressIntegrationService.GetAddressLocationsByUDPRN(udprns);
+                    var addressLocations = (udprns != null && udprns.Count > 0) ? await postalAddressIntegrationService.GetAddressLocationsByUDPRN(udprns) : null;
 
                     postalAddressDataDTOs.ForEach(pa =>
                     {
-                        AddressLocationDTO addressLocationDTO = addressLocations.Where(al => al.UDPRN == pa.UDPRN).FirstOrDefault();
+                        AddressLocationDTO addressLocationDTO = (addressLocations != null && addressLocations.Count > 0) ? addressLocations.Where(al => al.UDPRN == pa.UDPRN).FirstOrDefault() : null;
                         SqlGeometry deliveryPointSqlGeometry = null;
 
-                        if (addressLocationDTO!= null)
+                        if (addressLocationDTO != null)
                             deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(addressLocationDTO.LocationXY.AsBinary()), PostalAddressConstants.BNGCOORDINATESYSTEM);
 
                         var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(pa);
@@ -553,7 +553,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 List<PostalAddressDataDTO> postalAddressDataDTOs = ConvertToDataDTO(postalAddresses);
 
                 var duplicatePostalAddresses = await addressDataService.CheckForDuplicateNybRecordsForRange(postalAddressDataDTOs, addressTypeNYB);
-                                
+
                 duplicateDeliveryPointDTO.PostalAddressDTO = ConvertToDTO(duplicatePostalAddresses.Item2);
                 duplicateDeliveryPointDTO.IsDuplicate = duplicatePostalAddresses.Item1;
 
@@ -579,7 +579,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 DuplicateDeliveryPointDTO duplicateDeliveryPointDTO = new DuplicateDeliveryPointDTO();
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(CheckForDuplicateNybRecords);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
-                                
+
                 List<PostalAddressDataDTO> postalAddressDataDTOs = ConvertToDataDTO(postalAddressDTOs);
 
                 var duplicatePostalAddresses = await addressDataService.CheckForDuplicateAddressWithDeliveryPointsForRange(postalAddressDataDTOs);
@@ -1053,7 +1053,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 postalAddressDTO.Thoroughfare = postalAddressDataDTO.Thoroughfare;
                 postalAddressDTO.UDPRN = postalAddressDataDTO.UDPRN;
 
-                if (postalAddressDataDTO.PostalAddressStatus != null)
+                if (postalAddressDataDTO.PostalAddressStatus != null && postalAddressDataDTO.PostalAddressStatus.Count > 0)
                 {
                     postalAddressDTO.AddressStatus_GUID = postalAddressDataDTO.PostalAddressStatus.First().OperationalStatusGUID;
                 }
