@@ -176,7 +176,7 @@
                                 </div>
                             </md-input-container>
 
-                            <span flex="5"></span>
+                            <span flex="5" ng-show="vm.selectedType === vm.single || vm.selectedType === vm.subBuilding"></span>
 
                             <md-input-container flex="50" ng-show="vm.selectedType === vm.single || vm.selectedType === vm.subBuilding || vm.selectedType === vm.numberInName">
                                 <label> {{'DELIVERY_POINTS.BUILDING_NAME' | translate }}</label>
@@ -233,10 +233,11 @@
                     <md-input-container layout="row" ng-show="vm.selectedType === vm.subBuilding" class="subBuildingtype">
                         <label>{{ 'DELIVERY_POINTS.SUB_BUILDING_TYPE'| translate }}</label>
                         <md-select ng-model="vm.subBuildingType">
-                            <md-option ng-repeat="type in vm.subBuildingTypes" ng-value="type.value">
-                                {{type.value}}
-                            </md-option>
-                        </md-select>
+                            <md-option ng-value="''" ></md-option>
+                                <md-option ng-repeat="type in vm.subBuildingTypes" ng-value="type.value">
+                                    {{type.value}}
+                                </md-option>
+</md-select>
                     </md-input-container>
                 </div>
 
