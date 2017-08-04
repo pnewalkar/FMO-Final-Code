@@ -227,7 +227,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 List<DeliveryPointDTO> deliveryPointDTo = null;
                 try
                 {
-                    deliveryPointDTo = await businessService.GetDeliveryPointsForBasicSearch(searchText, CurrentUserUnit);
+                    deliveryPointDTo = await businessService.GetDeliveryPointsForBasicSearch(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(deliveryPointDTo);
                 }
@@ -261,7 +261,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 
                 try
                 {
-                    int deliveryPointCount = await businessService.GetDeliveryPointsCount(searchText, CurrentUserUnit);
+                    int deliveryPointCount = await businessService.GetDeliveryPointsCount(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(deliveryPointCount);
                 }
@@ -297,7 +297,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 
                 try
                 {
-                    deliveryPointDTo = await businessService.GetDeliveryPointsForAdvanceSearch(searchText, CurrentUserUnit);
+                    deliveryPointDTo = await businessService.GetDeliveryPointsForAdvanceSearch(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                 }
                 catch (AggregateException ae)
                 {

@@ -39,13 +39,24 @@ function advanceSearchService(advanceSearchAPIService,
         onChangeItem: onChangeItem
     };
 
+    function clearSearchResult() {
+        route = [];
+       arrDeliverypoints = [];
+       arrPostCodes = [];
+        arrStreetNames = [];
+       arrDeliveryRoutes = [];
+       arrRoutes = [];
+    }
+
     function queryAdvanceSearch(query) {
         var deferred = $q.defer();
         var advanceSearchResults = null;
       
         advanceSearchAPIService.advanceSearch(query).then(function (response) {
-            advanceSearchResults = response;
-            angular.forEach(advanceSearchResults.searchResultItems, function (value, key) {
+            clearSearchResult();
+            //advanceSearchResults = response;
+            //angular.forEach(advanceSearchResults.searchResultItems, function (value, key) {
+            angular.forEach(response.searchResultItems, function (value, key) {
                 if (value.type === CommonConstants.EntityType.DeliveryPoint)
                 {
                     obj = { 'displayText': value.displayText, 'UDPRN': value.udprn, 'type': CommonConstants.EntityType.DeliveryPoint, 'ID': value.deliveryPointGuid }

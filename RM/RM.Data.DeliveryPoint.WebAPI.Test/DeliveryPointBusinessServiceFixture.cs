@@ -37,6 +37,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         private List<DeliveryPointDataDTO> actualDeliveryPointDataDto = null;
         private DeliveryPointDataDTO actualDeliveryPointDTO = null;
         private RouteDTO routeDTO = null;
+        private string currentUserUnit = null;
 
         [Test]
         public void Test_GetDeliveryPoints_PositiveScenario()
@@ -63,7 +64,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public async Task Test_FetchDeliveryPointsForBasicSearch_PositiveScenario()
         {
-            List<DeliveryPointDTO> result = await testCandidate.GetDeliveryPointsForBasicSearch("abc", Guid.NewGuid());
+            List<DeliveryPointDTO> result = await testCandidate.GetDeliveryPointsForBasicSearch("abc", Guid.NewGuid(), "Delivery Office");
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count == 2);
         }
@@ -71,7 +72,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public async Task Test_GetDeliveryPointsCount_PositiveScenario()
         {
-            int result = await testCandidate.GetDeliveryPointsCount("abc", Guid.NewGuid());
+            int result = await testCandidate.GetDeliveryPointsCount("abc", Guid.NewGuid(), "Delivery Office");
             Assert.IsNotNull(result);
             Assert.IsTrue(result == 2);
         }
@@ -79,7 +80,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public async Task GetDeliveryPointsForAdvanceSearch_PositiveScenario()
         {
-            List<DeliveryPointDTO> result = await testCandidate.GetDeliveryPointsForAdvanceSearch("abc", Guid.NewGuid());
+            List<DeliveryPointDTO> result = await testCandidate.GetDeliveryPointsForAdvanceSearch("abc", Guid.NewGuid(), "Delivery Office");
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count == 2);
         }
@@ -279,6 +280,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         /// </summary>
         protected override void OnSetup()
         {
+            currentUserUnit = "Delivery Office";
             mockDeliveryPointsDataService = CreateMock<IDeliveryPointsDataService>();
             mockConfigurationDataService = CreateMock<IConfigurationHelper>();
             mockLoggingDataService = CreateMock<ILoggingHelper>();
@@ -571,9 +573,9 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(actualDeliveryPointDataDto);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).Returns(actualDeliveryPointDTO);
             mockDeliveryPointsDataService.Setup(x => x.GetDetailDeliveryPointByUDPRN(It.IsAny<int>())).Returns(actualAddDeliveryPointDTO);
-            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsForBasicSearch(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<Guid>())).ReturnsAsync(actualDeliveryPointDataDto);
-            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsCount(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(actualDeliveryPointDataDto.Count);
-            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(actualDeliveryPointDataDto);
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsForBasicSearch(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<Guid>(), currentUserUnit)).ReturnsAsync(actualDeliveryPointDataDto);
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsCount(It.IsAny<string>(), It.IsAny<Guid>(), currentUserUnit)).ReturnsAsync(actualDeliveryPointDataDto.Count);
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>(), currentUserUnit)).ReturnsAsync(actualDeliveryPointDataDto);
 
             // GetDeliveryPointsForAdvanceSearch
             mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDataDTO>())).Returns(Task.FromResult(1));

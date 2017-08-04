@@ -53,18 +53,28 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// </summary>
         /// <param name="searchText">searchText as string</param>
         /// <param name="locationID">The location unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>StreetNames</returns>
-        public async Task<List<StreetNameDataDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid locationID)
+        public async Task<List<StreetNameDataDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid locationID, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetStreetNamesForAdvanceSearch"))
             {
                 string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetStreetNamesForAdvanceSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationID)
-                .Select(x => x.Shape).SingleOrDefault();
+                DbGeometry polygon = null;
+                List<StreetNameDataDTO> streetNamesDto = new List<StreetNameDataDTO>();
 
-                var streetNames = await DataContext.StreetNames.AsNoTracking()
+                if (!currentUserUnitType.Equals(UserUnit.National.GetDescription(), StringComparison.OrdinalIgnoreCase))
+                {
+                    polygon = DataContext.Locations.Where(x => x.ID == locationID)
+                            .Select(x => x.Shape)
+                            .SingleOrDefault();
+                }
+
+                if (polygon != null)
+                {
+                    streetNamesDto = await DataContext.StreetNames.AsNoTracking()
                     .Where(
                         l =>
                             l.Geometry.Intersects(polygon) &&
@@ -72,14 +82,25 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                     .Select(l => new StreetNameDataDTO
                     {
                         ID = l.ID,
-                        StreetType = l.StreetType,
                         NationalRoadCode = l.NationalRoadCode,
-                        DesignatedName = l.DesignatedName,
-                        Descriptor = l.Descriptor
+                        DesignatedName = l.DesignatedName
                     }).ToListAsync();
+                }
+                else
+                {
+                    streetNamesDto = await DataContext.StreetNames.AsNoTracking()
+                    .Where(
+                        l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
+                    .Select(l => new StreetNameDataDTO
+                    {
+                        ID = l.ID,
+                        NationalRoadCode = l.NationalRoadCode,
+                        DesignatedName = l.DesignatedName
+                    }).ToListAsync();
+                }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return streetNames;
+                return streetNamesDto;
             }
         }
 
@@ -88,8 +109,9 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <param name="locationID">The location unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>The result set of street name.</returns>
-        public async Task<List<StreetNameDataDTO>> GetStreetNamesForBasicSearch(string searchText, Guid locationID)
+        public async Task<List<StreetNameDataDTO>> GetStreetNamesForBasicSearch(string searchText, Guid locationID, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetStreetNamesForBasicSearch"))
             {
@@ -97,13 +119,19 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 int takeCount = Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(SearchResultCount));
                 searchText = searchText ?? string.Empty;
+                DbGeometry polygon = null;
+                List<StreetNameDataDTO> streetNamesDto = new List<StreetNameDataDTO>();
 
-                DbGeometry polygon =
-                    DataContext.Locations.Where(x => x.ID == locationID)
-                        .Select(x => x.Shape)
-                        .SingleOrDefault();
+                if (!currentUserUnitType.Equals(UserUnit.National.GetDescription(), StringComparison.OrdinalIgnoreCase))
+                {
+                    polygon = DataContext.Locations.Where(x => x.ID == locationID)
+                            .Select(x => x.Shape)
+                            .SingleOrDefault();
+                }
 
-                var streetNamesDto =
+                if (polygon != null)
+                {
+                    streetNamesDto =
                     await DataContext.StreetNames.Where(
                             l =>
                                 l.Geometry.Intersects(polygon) &&
@@ -112,12 +140,23 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                         .Select(l => new StreetNameDataDTO
                         {
                             ID = l.ID,
-                            StreetType = l.StreetType,
                             NationalRoadCode = l.NationalRoadCode,
-                            DesignatedName = l.DesignatedName,
-                            Descriptor = l.Descriptor
-                        })
-                        .ToListAsync();
+                            DesignatedName = l.DesignatedName
+                        }).ToListAsync();
+                }
+                else
+                {
+                    streetNamesDto =
+                        await DataContext.StreetNames.Where(
+                                l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
+                            .Take(takeCount)
+                            .Select(l => new StreetNameDataDTO
+                            {
+                                ID = l.ID,
+                                NationalRoadCode = l.NationalRoadCode,
+                                DesignatedName = l.DesignatedName
+                            }).ToListAsync();
+                }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return streetNamesDto;
@@ -129,8 +168,9 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <param name="locationID">The location unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>The total count of street name</returns>
-        public async Task<int> GetStreetNameCount(string searchText, Guid locationID)
+        public async Task<int> GetStreetNameCount(string searchText, Guid locationID, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetStreetNameCount"))
             {
@@ -140,18 +180,34 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                 try
                 {
                     searchText = searchText ?? string.Empty;
-                    DbGeometry polygon =
-                        DataContext.Locations.Where(x => x.ID == locationID)
-                            .Select(x => x.Shape)
-                            .SingleOrDefault();
-                    var getStreetNameCount = await DataContext.StreetNames.Where(
+                    DbGeometry polygon = null;
+                    int streetNameCount = default(int);
+                    List<StreetNameDataDTO> streetNamesDto = new List<StreetNameDataDTO>();
+
+                    if (!currentUserUnitType.Equals(UserUnit.National.GetDescription(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        polygon = DataContext.Locations.Where(x => x.ID == locationID)
+                                .Select(x => x.Shape)
+                                .SingleOrDefault();
+                    }
+
+                    if (polygon != null)
+                    {
+                        streetNameCount = await DataContext.StreetNames.Where(
                             l =>
                                 l.Geometry.Intersects(polygon) &&
                                 (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
                         .CountAsync();
+                    }
+                    else
+                    {
+                        streetNameCount = await DataContext.StreetNames.Where(
+                            l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
+                        .CountAsync();
+                    }
 
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                    return getStreetNameCount;
+                    return streetNameCount;
                 }
                 catch (InvalidOperationException ex)
                 {
