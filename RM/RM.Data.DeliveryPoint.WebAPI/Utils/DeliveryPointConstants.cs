@@ -52,5 +52,15 @@
         internal const string PRIMARYROUTE = "Primary - ";
         internal const string SECONDARYROUTE = "Secondary - ";
         internal const string SearchResultCount = "SearchResultCount";
+
+        internal const string DeliveryPointTypeRange = "Range";
+        internal const string DeliveryPointTypeNumberInName = "Number in Name";
+        internal const string DeliveryPointTypeSubBuildingRange = "Sub building";
+        internal const string RangeTypeOdds = "Odds";
+        internal const string RangeTypeEvens = "Evens";
+        internal const string RangeTypeConsecutive = "Consecutives";
+
+        internal const string DUPLICATEDELIVERYPOINTRANGE = "One or more addresses in the given range already exist.";
+        internal const string DUPLICATEDELIVERYPOINTRANGEALLDUPLICATES = "All the addresses in the given range already exist, please modify the range.";
     }
 }

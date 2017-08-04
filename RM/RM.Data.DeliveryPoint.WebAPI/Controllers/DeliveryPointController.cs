@@ -690,6 +690,87 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Check duplicate addresses and save non-duplicate ones
+        /// </summary>
+        /// <param name="deliveryPointDto">Add Delivery Point DTO </param>
+        /// <returns>CreateDeliveryPointForRangeModelDTO</returns>
+        [Route("deliverypoint/newdeliverypoint/range/check")]
+        [HttpPost]
+        public async Task<IActionResult> CheckDeliveryPointForRange([FromBody]AddDeliveryPointDTO deliveryPointDto)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.CheckDeliveryPointForRange"))
+                {
+                    CreateDeliveryPointForRangeModelDTO createDeliveryPointForRangeModelDTO = null;
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(CheckDeliveryPointForRange);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    createDeliveryPointForRangeModelDTO = await businessService.CheckDeliveryPointForRange(deliveryPointDto);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return Ok(createDeliveryPointForRangeModelDTO);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        /// <summary>
+        /// Create Delivery Points with specified range
+        /// </summary>
+        /// <param name="postalAddressDTOs">PostalAddressDTO</param>
+        /// <returns></returns>
+        [Route("deliverypoint/newdeliverypoint/range")]
+        [HttpPost]
+        public async Task<IActionResult> CreateDeliveryPointForRange([FromBody]List<PostalAddressDTO> postalAddressDTOs)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.CreateDeliveryPointForRange"))
+                {
+                    CreateDeliveryPointForRangeModelDTO createDeliveryPointForRangeModelDTO = null;
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(CreateDeliveryPointForRange);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    createDeliveryPointForRangeModelDTO = await businessService.CreateDeliveryPointForRange(postalAddressDTOs);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return Ok(createDeliveryPointForRangeModelDTO);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+
         #endregion Methods
     }
 }

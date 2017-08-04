@@ -1,505 +1,380 @@
-describe('deliveryPoint: Controller', function () {
-
-    var mapToolbarService;
+'use strict';
+describe('Delivery Point: Controller', function () {    
+    
     var $scope;
-    var $mdDialog;
-    var popUpSettingService;
-    var deliveryPointAPIService;
-    var $filter;
-    var mapFactory;
-    var coordinatesService;
-    var guidService;
-    var $state;
-    var $stateParams;
-    var deliveryPointService
     var vm;
-    var $q;
-    var deffered;
-    var $controller;
+    var $q; 
+    var $mdDialog;
+    var mapToolbarService;    
+    var popUpSettingService;
+    var deliveryPointAPIService;    
+    var mapFactory;
+    var coordinatesService;    
     var stateMockData;
     var stateParamsMockingData;
-
-    // set default stateParams
+    var mapService;
+    var guidService;
+    var $state;    
+    var $stateParams;
+    var deliveryPointService           
+    var $rootScope;    
+    var CommonConstants;
+    var GlobalSettings;
+    
+    var MockGlobalSettings = {};
     stateMockData = {"selectedUnit":{"displayText":"BN    Worthing  Office","ID":"b51aa229-c984-4ca6-9c12-510187b81050","icon":"fa-map-marker delivery","$$mdSelectId":1,"$$hashKey":"object:114"}};
     stateParamsMockingData = {
       hide:true,
       positionedThirdPartyDeliveryPointList: 'thirdparty',
-      positionedDeliveryPointList: 'poiintlist',
+      positionedDeliveryPointList: 'firstPointList',
       deliveryPointList: '2ndpointlist'
     };
-
-    //Set GlobalSettings mockData
-    //Mocking Value of Global Setting
-    var MockGlobalSettings = {
-      apiUrl: 'http://localhost:34583/api',
-      env: 'localhost', // Here set the current environment
-      indexUrl: '',
-      /*getAdjustedPathLength: "/accessLink/GetWorkloadLength/",
-      createAccessLink: "/accessLink/CreateManual/",
-      checkAccessLinkIsValid: "/accessLink/CheckAccessLinkIsValid/",*/
-      deliveryPointLayerName: "Delivery Points"
-      //----
-    };
    
-   
-    //Load our module and inject with dependencies provider
     beforeEach(function () {
-
-        module('deliveryPoint'); //load module
-
-        //inject with $mdDialog 
+        module('deliveryPoint'); 
         module(function ($provide) {
-          $provide.value('GlobalSettings', MockGlobalSettings);
-          //MockMdCancel = jasmine.createSpy();
-          //MockclickOutsideToClose
-          $provide.factory('$mdDialog', function() {
-            //return {confirm: MockMdCancel};
-            return {};
-          });
-        });
+            $provide.value('GlobalSettings',MockGlobalSettings);
+            $provide.value('CommonConstants',{});
+            $provide.value('$state', stateMockData);
+            $provide.value('$stateParams', stateParamsMockingData);  
+            $provide.value('GlobalSettings', {});
+            $provide.value('stringFormatService', {});          
+            $provide.factory('$mdDialog', function() {
+                return {hide:jasmine.createSpy()};
+            });
 
-        //inject with mockdata mapToolbarService
-        module(function ($provide) {
             $provide.factory('mapToolbarService', function ($q) {
-              function getShapeForButton(button) {
-                    return [];
-                }
-
+              function getShapeForButton(button) {}
                 return {
                   getShapeForButton: getShapeForButton
                 }
             });
-        });
 
-
-        module(function($provide){
-          $provide.factory('referencedataApiService', function(){
-              
-              return {
-                
-              }
-          });
-        });
-
-        module(function ($provide) {
-            $provide.factory('stringFormatService', function ($q) {                
-                return '';
-            });
-        });
-
-        module(function($provide){
-          $provide.factory('deliveryPointService', function($q){
-              function initialize() {
-                  deferred = $q.defer();
-                  deferred.resolve({deliveryPointTypes:'single',dpUseType:'circle'});
-                  return deferred.promise;
-              }
-
-              function resultSet(query) {
-                  deferred = $q.defer();
-                  deferred.resolve('');
-                  return deferred.promise;
-              }
-
-              function openModalPopup(popupSetting) {
-                  //$mdDialog.show(popupSetting)
-              }
-
-              function closeModalPopup() {
-                  $mdDialog.hide();
-              }
-
-              function getPostalAddress(postcode) {
-                  deferred = $q.defer();
-                  deferred.resolve('');
-                  return deferred.promise;
-              }
-
-              function bindAddressDetails(notyetBuilt) {
-                  deferred = $q.defer();
-                  deferred.resolve('');
-                  return deferred.promise;
-              }
-
-              function setOrganisation(addressDetails, dpUseType) {
-                  deferred = $q.defer();
-                  deferred.resolve('');
-                  return deferred.promise;
-              }
-
-              function isUndefinedOrNull(obj) {
-                  if (obj !== null && angular.isDefined(obj)) {
-                      return obj;
-                  }
-                  else {
-                      return "";
-                  }
-              }
-
-              function UpdateDeliverypoint(positionedDeliveryPointList) {
-                return ;
-              }
-
-              function deliveryPointTypes(positionedDeliveryPointList) {
-                return ;
-              }
-
-              
-
-
-              return {
-                  initialize: initialize,
-                  resultSet: resultSet,
-                  openModalPopup: openModalPopup,
-                  closeModalPopup: closeModalPopup,
-                  getPostalAddress: getPostalAddress,
-                  bindAddressDetails: bindAddressDetails,
-                  setOrganisation: setOrganisation,
-                  isUndefinedOrNull: isUndefinedOrNull,
-                  UpdateDeliverypoint: UpdateDeliverypoint,
-                  deliveryPointTypes: deliveryPointTypes
-              };
-          });
-        });
-
-        module(function($provide){
-          $provide.factory('popUpSettingService', function(){
-              function deliveryPoint() {
-                
-              }
-              return {
-                deliveryPoint: deliveryPoint
-              }
-          });
-        });
-
-        //inject with mockdata mapFactory
-        module(function ($provide) {
-            $provide.factory('mapFactory', function () {
-
-              //Set up variable for mapFactory
-              var map = {
-              getView: function(){
+            $provide.factory('mapService', function () {
+                function clearDrawingLayer(param){}
                 return {
-                calculateExtent: function(){
-                  
+                    clearDrawingLayer : clearDrawingLayer 
+                }
+            });
+
+            $provide.factory('deliveryPointService', function($q){
+                function initialize() {
+                    var deferred = $q.defer();                    
+                    return deferred.promise;
+                }                
+                function resultSet() {}                    
+                function openModalPopup() {}              
+                function closeModalPopup() {}
+                function getPostalAddress(postcode) {
+                  var getPostalAddressMockData = {display:true,selectedValue:true,postalAddressData:{nybAddressDetails:'testDetails',routeDetails:''}};
+                    var deferred = $q.defer();
+                    deferred.resolve(getPostalAddressMockData);
+                    return deferred.promise;
+                }
+
+                function bindAddressDetails(notyetBuilt) {
+                    var deferred = $q.defer();
+                    return deferred.promise;
+                }
+
+                function setOrganisation(addressDetails, dpUseType) {
+                    var deferred = $q.defer();
+                    return deferred.promise;
+                }
+
+                function deliveryPointTypes() {
+                    var deferred = $q.defer();                    
+                    return deferred.promise;
+                }
+                 function deliveryPointUseType() {
+                    var deferred = $q.defer();                    
+                    return deferred.promise;
+                }
+
+                function UpdateDeliverypoint(argument) {
+                    var deferred = $q.defer(); 
+                    return deferred.promise;
+                }
+                
+                return {
+                    initialize: initialize,
+                    resultSet: resultSet,
+                    openModalPopup: openModalPopup,
+                    closeModalPopup: closeModalPopup,
+                    getPostalAddress: getPostalAddress,
+                    bindAddressDetails: bindAddressDetails,
+                    setOrganisation: setOrganisation,  
+                    deliveryPointTypes: deliveryPointTypes, 
+                    deliveryPointUseType: deliveryPointUseType,
+                    UpdateDeliverypoint: UpdateDeliverypoint           
+                };
+            });
+
+            $provide.factory('popUpSettingService', function(){
+                function deliveryPoint() {}
+                return {
+                  deliveryPoint: deliveryPoint
+                }
+            });
+
+            $provide.factory('mapFactory', function () {
+              var map = {
+                getView: function(){
+                  return {
+                      calculateExtent: function(){}                 
                   }
+                },
+                getSize: function(){}               
+             };
+
+            function initialiseMap() {}               
+            function getMap() { return map; }           
+            function setAccessLink() { }              
+            return {
+              initialiseMap: initialiseMap,
+                getMap: getMap,             
+                setAccessLink : setAccessLink             
               }
-              },
-              getSize: function(){
-                
-              }        
-          };
+            });            
+        });        
 
-          
-        var miniMap = null;
-          var view = null;
-          var vectorLayer = null;
-          var vectorSource = null;
-          var viewMiniMap = null;
-          var customScaleLine = null;
-
-          var layers = [];
-
-          var units = null;
-          var dpi = 25.4 / 0.28;
-          var mpu = null;
-
-          var defaultResolutions = [700.0014000028002, 336.0006720013441, 168.00033600067206, 84.00016800033603, 39.20007840015681, 19.600039200078406, 9.800019600039203, 5.600011200022402, 2.800005600011201, 2.240004480008961, 1.1200022400044805, 0.5600011200022402, 0.2800005600011201, 0.14000028000056006, 0.05600011200022402, 0.02800005600011201];
-          var definedScales = [2500000, 1200000, 600000, 300000, 140000, 70000, 35000, 20000, 10000, 8000, 4000, 2000, 1000, 500, 200, 100];
-          var zoomLimitReached = false;
-          var defaultZoomScale = 2000;
-
-          var availableResolutionForCurrentExtent = [];
-          var maxScale = null;
-          var BNGProjection = 'EPSG:27700';
-
-              function initialiseMap() {
-              
-          }
-
-          function initialiseMiniMap() {
-             
-          }
-
-          function setMapScale(scale) {
-       
-          }
-
-          function getVectorLayer() {
-              return vectorLayer;
-          }
-
-          function getVectorSource() {
-              return vectorSource;
-          }
-
-          function getAllLayers() {
-            return layers;
-        }
-
-              function getMap() {
-            return map;
-        }
-
-        function getMiniMap() {
-            return miniMap;
-        }
-
-        function getLayer(layerName) {
-              return;
-          }
-
-          function addLayer(layerObj) {
-
-              return layerObj;
-          }
-
-          function removeLayer(layerName) {
-              
-          }
-
-          function createLayerAsync(paramObj) {
-              return ;
-          }
-
-          function convertGeoJsonToOl(featureData, formatOptions) {
-              return;
-          }
-
-          function deleteAllFeaturesFromLayer(layerName) {
-              return;
-          }
-
-          function getLayerDataFromUrl(url) {
-              return;
-          }
-
-          function convertGeoJsonToOl(featureData, formatOptions) {
-              return;
-          }
-
-          function createLayerFromFeatures(features) {
-              return;
-          }
-
-          function addFeaturesToMap(layerName, layerGroup, features, keys, selectorVisible) {
-              return;
-          }
-
-        function getShapeAsync(url) {
-              return ;
-          }
-
-          function getResolutionFromScale(scale) {
-            return;
-        }
-
-        function getScaleFromResolution(resolution) {
-              return ;
-          }
-
-          function setUnitBoundaries(bbox, center, unitBoundaryGeoJSONData) {
-              return;
-          }
-
-          function setDeliveryPoint(long, lat) {
-              return;   
-          }
-
-          function locateDeliveryPoint(long, lat) {
-              return;
-          }
-
-          function setAccessLink() {
-              return;
-
-          }
-
-          function GetRouteForDeliveryPoint(deliveryPointId) {
-              var deferred = $q.defer();
-              return deferred.promise;
-          }
-
-        return {
-          initialiseMap: initialiseMap,
-              getMap: getMap,
-              initialiseMiniMap: initialiseMiniMap,
-              getShapeAsync: getShapeAsync,
-              getMiniMap: getMiniMap,
-              getVectorLayer: getVectorLayer,
-              getVectorSource: getVectorSource,
-              getAllLayers: getAllLayers,
-              addLayer: addLayer,
-              removeLayer: removeLayer,
-              getLayer: getLayer,
-              createLayerAsync: createLayerAsync,
-              convertGeoJsonToOl: convertGeoJsonToOl,
-              deleteAllFeaturesFromLayer: deleteAllFeaturesFromLayer,
-              addFeaturesToMap: addFeaturesToMap,
-              defaultResolutions: defaultResolutions,
-              definedScales: definedScales,
-              getResolutionFromScale: getResolutionFromScale,
-              getScaleFromResolution: getScaleFromResolution,
-              setUnitBoundaries: setUnitBoundaries,
-              setDeliveryPoint: setDeliveryPoint,
-              setAccessLink : setAccessLink,
-              setMapScale: setMapScale,
-              locateDeliveryPoint: locateDeliveryPoint,
-              GetRouteForDeliveryPoint: GetRouteForDeliveryPoint
-          }
-            });
-        });
-
-        //inject with mockdata mapFactory
-        module(function ($provide) {
-            $provide.factory('coordinatesService', function ($q) {
-                
-                var coordinates = '';
-              return {
-                  getCordinates: function () {
-                      return coordinates;
-                  },
-                  setCordinates: function (value) {
-                      coordinates = value;
-                  }
-              }
-            });
-        });
-
-        //inject with mockdata mapFactory
-        module(function ($provide) {
-            $provide.factory('guidService', function ($q) {
-                
-                var guid = '';
-          return {
-              getGuid: function () {
-                 return guid;
-              },
-              setGuid: function (value) {
-                  guid = value;
-              }
-          }
-            });
-        });
-
-
-        //Inejct with mockdata state
-        module(function ($provide) {
-            $provide.value('$state', stateMockData);
-         
-        });
-
-        //Inejct with mockdata stateParams
-        module(function ($provide) {
-            $provide.value('$stateParams', stateParamsMockingData);
-         
-        });
-
-
-        //get Instance of controller with inject properties
-        inject(function (_$controller_,_$rootScope_,_mapToolbarService_,_$mdDialog_,_popUpSettingService_,_deliveryPointAPIService_,_$filter_,_mapFactory_,_coordinatesService_,_guidService_,_$state_,_$stateParams_,_deliveryPointService_) {
+        inject(function (
+            _$controller_,
+            _$rootScope_,
+            _mapToolbarService_,
+            _$mdDialog_,
+            _popUpSettingService_,
+            _deliveryPointAPIService_,
+            _mapFactory_,
+            _$state_,
+            _$stateParams_,
+            _deliveryPointService_,
+            _$q_,
+            _mapService_,
+            _CommonConstants_) {
+            
             $rootScope = _$rootScope_;
             $scope = $rootScope.$new();
             mapToolbarService = _mapToolbarService_;
             $mdDialog = _$mdDialog_;
             popUpSettingService = _popUpSettingService_;
-            deliveryPointAPIService = _deliveryPointAPIService_;
-            $filter = _$filter_;
             mapFactory = _mapFactory_;
-            coordinatesService = _coordinatesService_;
-            guidService = _guidService_;
             $state = _$state_;
             $stateParams = _$stateParams_;
             deliveryPointService = _deliveryPointService_;
-
+            $q = _$q_;
+            CommonConstants = _CommonConstants_;
 
             vm = _$controller_('DeliveryPointController', {
                 $scope : $scope,
                 mapToolbarService : mapToolbarService,
                 $mdDialog : $mdDialog,
                 popUpSettingService : popUpSettingService,
-                deliveryPointAPIService : deliveryPointAPIService,
-                $filter : $filter,
                 mapFactory : mapFactory,
-                coordinatesService : coordinatesService,
-                guidService : guidService,
                 $state : $state,
                 $stateParams : $stateParams,
-                deliveryPointService : deliveryPointService
-            })
+                deliveryPointService : deliveryPointService,
+                mapService: _mapService_,
+                CommonConstants: CommonConstants
+            });
 
+            spyOn($scope, '$emit').and.callThrough();
+            spyOn($scope, '$on').and.callThrough();
+            $scope.$emit.and.stub();
         });
-
     });
-
-    it('should be set isError `false`', function() {
+    
+    it('should set positionedThirdPartyDeliveryPoint value as `array`', function() {
+        expect(vm.positionedThirdPartyDeliveryPoint).toEqual([ ]);
+    });
+    
+    it('should set isError value as `false`', function() {
         expect(vm.isError).toBe(false);
     });
 
-    it('should be set isDisable `false`', function() {
+    it('should set `isDisable` value as `false`', function() {
         expect(vm.isDisable).toBe(false);
     });
 
-    it('should be set positionedSaveDeliveryPointList `array`', function() {
+    it('should set `positionedSaveDeliveryPointList` value as `array`', function() {
         expect(vm.positionedSaveDeliveryPointList).toEqual([ ]);
     });
 
-    it('should be set defaultNYBValue', function() {
+    it('should set defaultNYBValue', function() {
         expect(vm.defaultNYBValue).toBeDefined();
         expect(vm.defaultNYBValue).toBe("00000000-0000-0000-0000-000000000000");
     });
 
-    it('should be set errorMessageDisplay is `false`', function() {
+    it('should set `errorMessageDisplay` value as `false`', function() {
         expect(vm.errorMessageDisplay).toBe(false);
     });
 
-    it('should be set selectedItem `null`', function() {
+    it('should set `selectedItem` value as `null`', function() {
         expect(vm.selectedItem).toBe(null);
     });
 
-    it('should be set positionedCoOrdinates `[]`', function() {
+    it('should set `positionedCoOrdinates` value as `[]`', function() {
         expect(vm.positionedCoOrdinates).toEqual([]);
     });
 
-    it('should be set alias `null`', function() {
+    it('should set default alias value as `null`', function() {
         expect(vm.alias).toBe(null);
     });
 
-    it('should be set display `false`', function() {
+    it('should set display value as `false`', function() {
         expect(vm.display).toBe(false);
     });
 
-    it('should be set disable `true`', function() {
+    it('should set disable value as `true`', function() {
         expect(vm.disable).toBe(true);
+    });   
+
+    it('should set `dpIsChecked` value as `false`', function() {
+        expect(vm.dpIsChecked).toBe(false);
+    });    
+
+    it('should promise to return a success response once initialize method is called', function() {            
+        var deferred = $q.defer();
+        var response = {deliveryPointTypes:'single',dpUseType:'circle',SubBuildingTypes:'GigaPlex',RangeOptions:'548759'};
+
+        spyOn(deliveryPointService, 'initialize').and.returnValue(deferred.promise);        
+        spyOn(deliveryPointService, 'deliveryPointUseType').and.returnValue(deferred.promise);
+
+        vm.initialize();    
+
+        deferred.resolve(response);    
+        $scope.$digest();
+
+        expect(deliveryPointService.initialize).toHaveBeenCalled();
+        expect(vm.deliveryPointTypes).toEqual('single');
+        expect(vm.dpUseType).toEqual('circle');
+        expect(vm.subBuildingTypes).toEqual('GigaPlex');
+        expect(vm.rangeOptions).toEqual('548759');
     });
 
-    it('should be set items `array`', function() {
-        expect(vm.items).toEqual([]);
+    it('should be open popup model', function() {
+        spyOn(deliveryPointService,'openModalPopup');
+        spyOn(popUpSettingService,'deliveryPoint');
+        vm.deliveryPoint();        
+
+        expect(deliveryPointService.openModalPopup).toHaveBeenCalled();
+        expect(popUpSettingService.deliveryPoint).toHaveBeenCalled();        
+        expect($scope.$emit).toHaveBeenCalledWith('dialogOpen','deliveryPoint');
+
     });
 
-    it('should be hide stateParams value', function() {
+    it('should close dialog window', function() {    
+        spyOn(deliveryPointService,'closeModalPopup');
+        vm.closeWindow();
 
-        expect(vm.hide).toBeDefined();
-        expect(vm.hide).toBe(true);
+        expect(vm.hide).toBe(false);
+        expect(vm.display).toBe(false);
+        expect(vm.searchText).toEqual("");
+        expect(vm.mailvol).toEqual("");
+        expect(vm.multiocc).toEqual("");
+        expect(deliveryPointService.closeModalPopup).toHaveBeenCalled();
     });
 
-    xit('should be auto initialize method', function() {
-        spyOn(vm,'initialize');
-        vm.initialize();
-        expect(vm.initialize).toHaveBeenCalled();
+    it('should promise to return a success response once resultSet method is called', function() {
+        var deferred = $q.defer();
+        var query = {};
+        var response = {deliveryPointTypes:'single',dpUseType:'circle'};
+        spyOn(deliveryPointService, 'resultSet').and.returnValue(deferred.promise);
+        
+        vm.resultSet(query);
+
+        deferred.resolve(response);
+        $scope.$digest();
+        
+        expect(deliveryPointService.resultSet).toHaveBeenCalledWith({});
+        expect(response).toEqual({deliveryPointTypes:'single',dpUseType:'circle'});        
     });
 
-    xit('should be return promise responce when initialize ', function() {
+    it('should promise to return a success response once OnChangeItem method is called', function() {
+        var deferred = $q.defer();
+        var selectedItem = 'mapSearch';
+        var response = {display:true,selectedValue:true,postalAddressData:{nybAddressDetails:'testDetails',routeDetails:''}};
 
-        vm.initialize();
+        spyOn(deliveryPointService, 'getPostalAddress').and.returnValue(deferred.promise);
 
-        deliveryPointService.initialize().then(function (response) {
-            expect(vm.deliveryPointTypes).toBe(response.deliveryPointTypes);
-            expect(vm.dpUseType).toBe(response.dpUseType);
-        });
+        vm.OnChangeItem(selectedItem);
 
-        $rootScope.$apply();
+        expect(vm.routeId).toBe("");
+        expect(vm.notyetBuilt).toBe("");
+        expect(vm.searchText).toBe(selectedItem);
+        expect(vm.results).toEqual({});
+
+        deferred.resolve(response);
+        $scope.$digest();
+
+        expect(deliveryPointService.getPostalAddress).toHaveBeenCalledWith('mapSearch');
+        expect(vm.addressDetails).toEqual(response.postalAddressData);
+        expect(vm.nybAddressDetails).toBe(response.postalAddressData.nybAddressDetails);
+        expect(vm.routeDetails).toBe(response.postalAddressData.routeDetails);
+        expect(vm.display).toBe(response.display);
+        expect(vm.selectedValue).toBe(response.selectedValue);        
+    });
+
+    it('should promise to return a success response once bindAddressDetails method is called', function() {
+        var deferred = $q.defer();
+        var response = {addressDetails:{id:'1234',udprn:'testudprn',buildingNumber:1,buildingName:'SEZ',subBuildingName:'GigaPlex',organisationName:'CG',departmentName:'DCX'}}
+
+        spyOn(deliveryPointService, 'bindAddressDetails').and.returnValue(deferred.promise);
+
+        vm.bindAddressDetails();
+
+        deferred.resolve(response);
+        $scope.$digest();
+       
+        expect(deliveryPointService.bindAddressDetails).toHaveBeenCalled();
+        expect(vm.addressDetails).toBe(response);
+    });
+
+    it('should be defined address when default NYB value match', function() {
+      vm.bindAddressDetails();
+
+      vm.notyetBuilt = true;
+      vm.addressDetails = {id:"00000000-0000-0000-0000-000000000000",udprn:"",buildingNumber:"",buildingName:"",subBuildingName:"",organisationName:"",departmentName:""};
+
+      expect(vm.addressDetails.id).toBe(vm.defaultNYBValue);
+      expect(vm.addressDetails.udprn).toBe("");
+      expect(vm.addressDetails.buildingNumber).toBe("");
+      expect(vm.addressDetails.buildingName).toBe("");
+      expect(vm.addressDetails.subBuildingName).toBe("");
+      expect(vm.addressDetails.organisationName).toBe("");
+      expect(vm.addressDetails.departmentName).toBe("");        
+
+    });
+
+    it('should promise to return a success response once setOrganisation method is called', function() {
+        var deferred = $q.defer(); 
+        var response = {dpUse:true,selectedDPUse:true};
+        spyOn(deliveryPointService, 'setOrganisation').and.returnValue(deferred.promise);
+        
+        vm.setOrganisation();
+        
+        deferred.resolve(response);
+        $scope.$digest();
+
+        expect(deliveryPointService.setOrganisation).toHaveBeenCalled();
+        expect(vm.dpUse).toBe(response.dpUse);
+        expect(vm.selectedDPUse).toBe(response.selectedDPUse);
+    });
+
+    it('should be set toggle', function() {
+        vm.toggle(true);
+        expect(vm.selectedItem).toBe(true);       
+    });    
+
+    it('should be call update UpdateDeliverypoint once savePositionedDeliveryPoint method called ', function() {
+        spyOn(deliveryPointService,'UpdateDeliverypoint').and.callThrough();
+
+        vm.savePositionedDeliveryPoint();
+
+        expect(vm.isOnceClicked).toBe(true);        
+        expect(vm.positionedDeliveryPointList).toBe(null);
+        expect(deliveryPointService.UpdateDeliverypoint).toHaveBeenCalled();
+        expect(deliveryPointService.UpdateDeliverypoint).toHaveBeenCalledWith('firstPointList');
     });
 
     it('should be return isError and isDisable `false` when called Ok method', function() {
@@ -523,22 +398,19 @@ describe('deliveryPoint: Controller', function () {
         expect(vm.getCommaSeparatedVale('', 'value2')).toEqual('value2');
     });
 
-    it('should be return a object addAlias ', function() {
+    it('should add an item when `addAlias` method called ', function() {
         vm.addAlias();
-
-        expect(JSON.stringify(vm.items)).toBe(JSON.stringify([{ Preferred: false, DPAlias: null }]));
+        expect(vm.items).toEqual([{ Preferred: false, DPAlias: null }]);
         expect(vm.alias).toBeDefined();
         expect(vm.alias).toBe('');
     });
 
-    it('should be remove alias', function() {
+    it('should remove an item when removeAlias method called', function() {
         vm.items = [1,2,3,4,5];
         vm.removeAlias();
         var lastItem = vm.items.length - 1;
         vm.items.splice(lastItem);
         expect(lastItem).toBe(3);
     });
-
-
 });
 

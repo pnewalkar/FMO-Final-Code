@@ -83,5 +83,13 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// <param name="deliveryPointId">Delivery point unique id</param>
         /// <returns>boolean</returns>
         Task<bool> DeleteAccesslink(Guid deliveryPointId);
+
+        Task<DuplicateDeliveryPointDTO> CheckForDuplicateNybRecordsForRange(List<PostalAddressDTO> postalAddresses);
+
+        Task<DuplicateDeliveryPointDTO> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDTO> postalAddresses);
+
+        Task<List<CreateDeliveryPointModelDTO>> CreateAddressForDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs);
+
+        Task<bool> MapRouteForDeliveryPointForRange(Guid deliveryRouteId, List<Guid> deliveryPointIds);
     }
 }

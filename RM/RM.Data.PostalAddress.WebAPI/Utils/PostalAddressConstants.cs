@@ -10,6 +10,7 @@
         internal const string PAFTaskBodyPreText = "Please position the DP ";
         internal const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
         internal const int NOTIFICATIONDUE = 24;
+        internal const int BNGCOORDINATESYSTEM = 27700;
         internal const string EXTERNAL = "External";
         internal const string TASKACTION = "Action required";
         internal const string TASKSOURCE = "SYSTEM";

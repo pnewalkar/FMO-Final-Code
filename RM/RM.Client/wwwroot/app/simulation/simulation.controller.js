@@ -13,17 +13,21 @@ function SimulationController($stateParams,
                              simulationService, $scope) {
     var vm = this;
     vm.selectClass = "routeSearch md-text";
-    vm.loadRouteLogStatus = loadRouteLogStatus();
+    vm.loadRouteLogStatus = loadRouteLogStatus;
     vm.loadScenario = loadScenario;
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.clearSearchTerm = clearSearchTerm;
     vm.selectionChanged = selectionChanged;
-
+    vm.initialize = initialize;
+    vm.initialize();
     vm.selectedDeliveryUnitObj = $stateParams;
     vm.isDeliveryRouteDisabled = true;
     vm.selectedRoute;
 
+    function initialize() {
+        vm.loadRouteLogStatus();
+    }
 
     function clearSearchTerm() {
         vm.searchTerm = "";
