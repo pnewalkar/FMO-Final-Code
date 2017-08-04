@@ -1,26 +1,13 @@
+
+
 {
-  "env": {
-    "browser": true,
-    "node": true
-  },
 
-
-  "plugins": [
-    "angular",
-    "jasmine"
-
-  ],
-
-  "extends": [
-    "eslint:recommended",
-    "plugin:jasmine/recommended"
-  ],
-
-  "rules": {
-    "no-console": "off",
-    "eqeqeq": "error",
-    "angular/controller_name": 0
-
-  }
-
+    "extends": "plugin:jasmine/recommended",
+    "plugins": [
+        "jasmine"
+    ],
+    "rules": {
+        "eqeqeq": "off",
+        "curly": "error"
+    }
 }

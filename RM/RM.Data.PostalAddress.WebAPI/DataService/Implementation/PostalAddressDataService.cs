@@ -354,6 +354,7 @@
                         if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
                         {
                             isDuplicate = true;
+                            break;
                         }
                     }
                 }
@@ -416,13 +417,13 @@
             {
                 // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateConcurrencyException.ToString());
-                throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
+                throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (DbUpdateException dbUpdateException)
             {
                 // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateException.ToString());
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (NotSupportedException notSupportedException)
             {
@@ -525,8 +526,6 @@
                                 alias.StartDateTime = DateTime.UtcNow;
                             }
 
-
-
                             // add new address
                             DataContext.PostalAddresses.Add(objPostalAddress);
                         }
@@ -543,35 +542,6 @@
             catch (DbUpdateException dbUpdateException)
             {
                 throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", postalAddressDataDTO.UDPRN)));
-            }
-        }
-
-        public async Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateNybRecordsForRange(List<PostalAddressDataDTO> postalAddressesDTOs, Guid addressTypeNYBGuid)
-        {
-            string postCode = string.Empty;
-            bool hasDuplicates = false;
-
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.CheckForDuplicateNybRecordsForRange"))
-            {
-                string methodName = typeof(PostalAddressDataService) + "." + nameof(CheckForDuplicateNybRecordsForRange);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
-                // Get the Postal Address Entity matching the address fields
-                List<PostalAddress> postalAddresses = await GetPostalAddressEntitiesForRange(postalAddressesDTOs, addressTypeNYBGuid).ToListAsync();
-
-                if (postalAddresses != null && postalAddresses.Count > 0)
-                {
-                    hasDuplicates = true;
-                }
-
-                ConfigureMapper();
-
-                List<PostalAddressDataDTO> postalAddressDataDTO = Mapper.Map<List<PostalAddress>, List<PostalAddressDataDTO>>(postalAddresses);
-
-                Tuple<bool, List<PostalAddressDataDTO>> returnValue = new Tuple<bool, List<PostalAddressDataDTO>>(hasDuplicates, postalAddressDataDTO);
-
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return returnValue;
             }
         }
 
@@ -620,47 +590,68 @@
             }
         }
 
-
         /// <summary>
-        /// Check For Duplicate Address With DeliveryPoints
+        /// Delete postal Address details
         /// </summary>
-        /// <param name="objPostalAddress">Postal address</param>
-        /// <returns>Whether the record is a duplicate or not</returns>
-        public async Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDataDTO> postalAddressDTOs)
+        /// <param name="addressId">Postal Address Id</param>
+        /// <returns>boolean</returns>
+        public async Task<bool> DeletePostalAddress(Guid addressId)
         {
-            bool isDuplicate = false;
-            List<PostalAddressDataDTO> duplicateDTOs = null;
-            Tuple<bool, List<PostalAddressDataDTO>> returnValue = null;
-
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.CheckForDuplicateAddressWithDeliveryPoints"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.DeletePostalAddress"))
             {
-                string methodName = typeof(PostalAddressDataService) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                bool postalAddressDeleted = false;
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(DeletePostalAddress);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-                var postalAddressesEntity = await GetPostalAddressEntitiesForRange(postalAddressDTOs).ToListAsync();
+                var postalAddress = DataContext.PostalAddresses.Include(n => n.PostalAddressAlias).AsNoTracking().Where(n => n.ID == addressId).SingleOrDefault();
 
-                ConfigureMapper();
-
-                List<PostalAddressDataDTO> postaAddressDataDTOs = Mapper.Map<List<PostalAddress>, List<PostalAddressDataDTO>>(postalAddressesEntity);
-                duplicateDTOs = new List<PostalAddressDataDTO>();
-
-                if (postaAddressDataDTOs != null && postaAddressDataDTOs.Count > 0)
+                if (postalAddress != null)
                 {
-                    foreach (var address in postaAddressDataDTOs)
-                    {
-                        if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
-                        {
-                            duplicateDTOs.Add(address);
-                            isDuplicate = true;                            
-                        }
-                    }
+                    DataContext.PostalAddresses.Remove(postalAddress);
+                    DataContext.PostalAddressAlias.RemoveRange(postalAddress.PostalAddressAlias);
+                    await DataContext.SaveChangesAsync();
+                    postalAddressDeleted = true;
                 }
 
-                returnValue = new Tuple<bool, List<PostalAddressDataDTO>>(isDuplicate, duplicateDTOs);
-
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return returnValue;
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
+                return postalAddressDeleted;
             }
+        }
+
+        /// <summary>
+        /// Update postal address status to live or pending delete
+        /// </summary>
+        /// <param name="postalAddressId">Address id</param>
+        /// <param name="postalAddressStatus">Address status</param>
+        /// <returns>boolean value true if status has been updated successfully</returns>
+        public async Task<bool> UpdatePostalAddressStatus(Guid postalAddressId, Guid postalAddressStatus)
+        {
+            bool isPostalAddressUpdated = false;
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdatePostalAddressStatus"))
+                {
+                    string methodName = typeof(PostalAddressDataService) + "." + nameof(UpdatePostalAddressStatus);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    var postalAddress = DataContext.PostalAddressStatus.Where(n => n.PostalAddressGUID == postalAddressId).SingleOrDefault();
+
+                    if (postalAddress != null)
+                    {
+                        postalAddress.OperationalStatusGUID = postalAddressStatus;
+                        await DataContext.SaveChangesAsync();
+                        isPostalAddressUpdated = true;
+                    }
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                }
+            }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                throw new DataAccessException(dbUpdateConcurrencyException, ErrorConstants.Err_SqlAddException);
+            }
+
+            return isPostalAddressUpdated;
         }
 
         private static void ConfigureMapper()
@@ -733,80 +724,6 @@
                 {
                     postalAddress =
                         postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
-                }
-
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return postalAddress;
-            }
-        }
-
-        /// <summary>
-        /// Get the Postal Address Entity based on the Address Fields
-        /// </summary>
-        /// <param name="objPostalAddress">Postal Address Transfer Object</param>
-        /// <param name="addressTypeNYBGuid">Static NYB Address Type Guid</param>
-        /// <returns>Posta Address matching the criteria</returns>
-        private IQueryable<PostalAddress> GetPostalAddressEntitiesForRange(List<PostalAddressDataDTO> postalAddresses, Guid addressTypeGuid = new Guid())
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressEntitiesForRange"))
-            {
-                string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddressEntitiesForRange);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-                List<string> postcodes = postalAddresses.Where(pa => !string.IsNullOrEmpty(pa.Postcode)).Select(pa => pa.Postcode).ToList();
-                List<string> buildingNames = postalAddresses.Where(pa => !string.IsNullOrEmpty(pa.BuildingName)).Select(pa => pa.BuildingName.ToUpper()).ToList();
-                List<short?> buildingNumbers = postalAddresses.Where(pa => pa.BuildingNumber != null).Select(pa => pa.BuildingNumber).ToList();
-                List<string> subBuildingNames = postalAddresses.Where(pa => !string.IsNullOrEmpty(pa.SubBuildingName)).Select(pa => pa.SubBuildingName.ToUpper()).ToList();
-                List<string> organisationNames = postalAddresses.Where(pa => !string.IsNullOrEmpty(pa.OrganisationName)).Select(pa => pa.OrganisationName.ToUpper()).ToList();
-                List<string> departmentNames = postalAddresses.Where(pa => !string.IsNullOrEmpty(pa.DepartmentName)).Select(pa => pa.DepartmentName.ToUpper()).ToList();
-                List<string> thoroughfares = postalAddresses.Where(pa => !string.IsNullOrEmpty(pa.Thoroughfare)).Select(pa => pa.Thoroughfare.ToUpper()).ToList();
-                List<string> dependentThoroughfares = postalAddresses.Where(pa => !string.IsNullOrEmpty(pa.DependentThoroughfare)).Select(pa => pa.DependentThoroughfare.ToUpper()).ToList();
-
-                IQueryable<PostalAddress> postalAddress = null;
-
-                if (addressTypeGuid != Guid.Empty)
-                {
-                    postalAddress = DataContext.PostalAddresses.AsNoTracking()
-                            .Where(n => n.AddressType_GUID == addressTypeGuid);
-                }
-                else
-                {
-                    postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => postcodes.Contains(n.Postcode));
-                }
-
-                if (buildingNames!= null && buildingNames.Count > 0)
-                {
-                    postalAddress = postalAddress.Where(n => buildingNames.Contains(n.BuildingName.ToUpper()));
-                }
-
-                if (buildingNumbers != null && buildingNumbers.Count > 0)
-                {
-                    postalAddress = postalAddress.Where(n => buildingNumbers.Contains(n.BuildingNumber));
-                }
-
-                if (subBuildingNames != null && subBuildingNames.Count > 0)
-                {
-                    postalAddress = postalAddress.Where(n => subBuildingNames.Contains(n.SubBuildingName.ToUpper()));
-                }
-
-                if (organisationNames != null && organisationNames.Count > 0)
-                {
-                    postalAddress = postalAddress.Where(n => organisationNames.Contains(n.OrganisationName.ToUpper()));
-                }
-
-                if (departmentNames != null && departmentNames.Count > 0)
-                {
-                    postalAddress = postalAddress.Where(n => departmentNames.Contains(n.DepartmentName.ToUpper()));
-                }
-
-                if (thoroughfares != null && thoroughfares.Count > 0)
-                {
-                    postalAddress = postalAddress.Where(n => thoroughfares.Contains(n.Thoroughfare.ToUpper()));
-                }
-
-                if (dependentThoroughfares!= null && dependentThoroughfares.Count > 0)
-                {
-                    postalAddress =
-                        postalAddress.Where(n => dependentThoroughfares.Contains(n.DependentThoroughfare.ToUpper()));
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -927,6 +844,5 @@
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
             }
         }
-
     }
 }

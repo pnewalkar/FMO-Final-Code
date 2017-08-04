@@ -394,6 +394,60 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             }
         }
 
+        /// <summary>
+        /// Delete delivery point reference from route activity table.
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        /// <returns>boolean</returns>
+        public async Task<bool> DeleteDeliveryPointRouteMapping(Guid deliveryPointId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.DeleteDeliveryPointRouteMapping"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(DeleteDeliveryPointRouteMapping);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.DeleteAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/delete/" + deliveryPointId);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isDeleted = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return isDeleted;
+            }
+        }
+
+        /// <summary>
+        /// Delete access link
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        /// <returns>boolean</returns>
+        public async Task<bool> DeleteAccesslink(Guid deliveryPointId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.DeleteAccesslink"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(DeleteAccesslink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.DeleteAsync(accessLinkWebAPIName + deliveryPointId);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isDeleted = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return isDeleted;
+            }
+        }
+
         #endregion public methods
     }
 }

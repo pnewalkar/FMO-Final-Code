@@ -1,97 +1,161 @@
+'use strict';
 describe('SideNav: Controller', function () {
-
-    var ctrl;
-    var $scope, $state, $stateParams, $mdSidenav, $mdDialog;
+    var vm;
+    var $scope;
+    var $rootScope;
+    var $state;
+    var $stateParams;
+    var popUpSettingService;
+    var $mdSidenav;
+    var $mdDialog;
+    var sideNavService;
     var sideNavCloseMock;
-
-    var MockSideNavController = {
-        initialize: function () { return [] },
-        closeSideNav: function () { return [] },
-        fetchActions: function () { return [] },
+    var CommonConstantsMock = {
+        TitleSimulation: "Simulation",
+        RouteLogActionName: "Route Log",
+        RouteSimulationActionName: "Route Simulation",
+        DeliveryPointActionName: "Delivery Point",
+        AccessLinkActionName: "Access Link",
+        PrintMapActionName: "Print Map"
+    };    
+    var stateMockData = {"selectedUnit":{"displayText":"BN    Worthing  Office","ID":"b51aa229-c984-4ca6-9c12-510187b81050","icon":"fa-map-marker delivery","$$mdSelectId":1,"$$hashKey":"object:114"}};
+    var stateParamsMockData = {
+      hide:true,
+      positionedThirdPartyDeliveryPointList: 'thirdparty',
+      positionedDeliveryPointList: 'firstPointList',
+      deliveryPointList: '2ndpointlist'
     };
 
-    var MockCommonConstants = {
-        TitleContextPanel: function () { return [] }
-    };
-
-    beforeEach(module('ui.router'));
-    beforeEach(module('ngMaterial'));
-
-    beforeEach(module("sideNav", function ($provide) {
-     sideNavCloseMock = jasmine.createSpy();
-        $provide.factory('$mdSidenav', function () {
-            return function (sideNavId) {
-                return { close: sideNavCloseMock };
-            };
+    beforeEach(function() {
+        module('sideNav');
+        module(function ($provide) {
+            $provide.value('CommonConstants', CommonConstantsMock);                        
+            $provide.value('$stateParams', {});
+            $provide.value('$state', { go: function(state, args){}});
+            $provide.factory('$mdDialog', function() {
+                return {hide:jasmine.createSpy(), show:jasmine.createSpy()};
+            });
+            sideNavCloseMock = jasmine.createSpy();
+            $provide.factory('$mdSidenav', function() {
+                return function(sideNavId) {
+                  return {close: sideNavCloseMock }
+                }
+            });
+            $provide.service('sideNavService', function() {                
+                function fetchActionItems(){
+                    return {
+                          RolesActionResult: function(){}                 
+                      }
+                }
+                return {
+                    fetchActionItems: fetchActionItems
+                };
+            });
+            $provide.factory('popUpSettingService', function(){
+                function routeLog() {}
+                function printMap(){}
+                return {
+                  routeLog: routeLog,
+                  printMap: printMap
+                }
+            });
         });
-        $provide.factory('popUpSettingService', function ($q) {
-            function printMap() {
-                deferred = $q.defer();
-                return deferred.promise;
-            }
-            return {
-               printMap: printMap
-            };
-        });
-        //$provide.factory('$mdDialog', function ($q) {
-        //    return function show(content) {
-        //        deferred = $q.defer();
-        //        return deferred.promise;
-        //    }
-        //});
-        $provide.value('CommonConstants', MockCommonConstants);
-    }));
- 
-    beforeEach(inject(function ($rootScope, $state, $stateParams, popUpSettingService, $mdSidenav, $mdDialog, sideNavService, CommonConstants, $controller) {
-        mockpopUpSettingService = popUpSettingService;
-        mocksideNavService = sideNavService;
-        mockCommonConstants = CommonConstants;
-        mockmdDialog = $mdDialog;
-        ctrl = $controller('SideNavController', {
-            $state: $state,
-            $stateParams: $stateParams,
-            popUpSettingService: mockpopUpSettingService,
-            $mdSidenav: $mdSidenav,
-            $mdDialog: $mdDialog,
-            sideNavService: mocksideNavService,
-            CommonConstants: CommonConstants,
-            $scope: $rootScope.$new(),
-        });
-    }));
 
-     describe('Should close the dialog-window', function () {
-         it('Should close window', function () {
-               ctrl.closeSideNav();
-               expect(sideNavCloseMock).toHaveBeenCalled();
-               expect(sideNavCloseMock).toHaveBeenCalledTimes(1);
-         });
-     });
+        inject(function(
+            _$rootScope_,
+            _$controller_,
+            _$state_,
+            _$stateParams_,
+            _popUpSettingService_,
+            _$mdSidenav_,
+            _$mdDialog_,
+            _sideNavService_,
+            _CommonConstants_){
 
-     describe('Should perform action with respect to the selected item', function () {
-         it('If user selects `Print Map` : Check the pop up setting function is been called', function () {
-             spyOn(mockpopUpSettingService, 'printMap').and.callThrough();
-             ctrl.fetchActions('PrintMap');
-             expect(mockpopUpSettingService.printMap).not.toBeUndefined();
-             expect(mockpopUpSettingService.printMap).toHaveBeenCalled();
-             expect(mockpopUpSettingService.printMap).toHaveBeenCalledTimes(1);
-         });
+            $rootScope = _$rootScope_;
+            $scope = _$rootScope_.$new();
+            $state = _$state_;
+            $stateParams = _$stateParams_;
+            popUpSettingService = _popUpSettingService_;
+            $mdSidenav = _$mdSidenav_;
+            $mdDialog = _$mdDialog_;
+            sideNavService = _sideNavService_;
+            CommonConstants = _CommonConstants_;
 
-         it('If user selects `Print Map` : Check the fetch action function is been called with correct parameter', function () {
-             spyOn(ctrl, 'fetchActions');
-             ctrl.fetchActions('PrintMap');
-             expect(ctrl.fetchActions).not.toBeUndefined();
-             expect(ctrl.fetchActions).toHaveBeenCalledWith('PrintMap');
-             expect(ctrl.fetchActions).toHaveBeenCalled();
-             expect(ctrl.fetchActions).toHaveBeenCalledTimes(1);
-         });
+            vm = _$controller_('SideNavController',{
+                $state: $state,
+                $stateParams: $stateParams,
+                popUpSettingService: popUpSettingService,
+                $mdSidenav: $mdSidenav,
+                $mdDialog: $mdDialog,
+                sideNavService: sideNavService,
+                CommonConstants: CommonConstants
+            });
+        });        
+    });
 
-         it('If user selects `Print Map` : Check the angular modal dialog is shown', function () {
-             spyOn(mockmdDialog, 'show');
-             ctrl.fetchActions('PrintMap');
-             expect(mockmdDialog.show).not.toBeUndefined();
-             expect(mockmdDialog.show).toHaveBeenCalled();
-             expect(mockmdDialog.show).toHaveBeenCalledTimes(1);
-         });
-     });
+
+    it('should close left side nav bar', function() {
+        vm.closeSideNav();
+        expect(sideNavCloseMock).toHaveBeenCalled();
+    });
+
+    it('should call `closeSideNav` once FetchActions method called', function() {
+        spyOn(vm,'closeSideNav');
+
+        vm.fetchActions('Print Map');
+
+        expect(vm.closeSideNav).toHaveBeenCalled();
+    });
+
+    it('should Dialog show when RouteLogActionName is `Route Log`', function() {        
+        vm.selectedDeliveryUnit = true;
+        spyOn(popUpSettingService,'routeLog');
+
+        vm.fetchActions('Route Log');
+
+        expect($mdDialog.show).toHaveBeenCalled();
+        expect(popUpSettingService.routeLog).toHaveBeenCalledWith(true);
+
+    });
+
+    it('should redirect to routeSimulation when RouteSimulationActionName is `Route Simulation`', function() {        
+        vm.selectedDeliveryUnit = true;
+        spyOn($state,'go');
+
+        vm.fetchActions('Route Simulation');
+
+        expect(vm.contextTitle).toEqual('Simulation');
+        expect($state.go).toHaveBeenCalledWith("routeSimulation", { selectedUnit: true });
+    });
+
+    it('should redirect to deliveryPoint when DeliveryPointActionName is `Delivery Point`', function() {        
+        vm.selectedDeliveryUnit = true;
+        spyOn($state,'go');
+
+        vm.fetchActions('Delivery Point');
+
+        expect(vm.contextTitle).toEqual('Delivery Point');
+        expect($state.go).toHaveBeenCalledWith("deliveryPoint", { selectedUnit: true },{ inherit: false });
+    });
+
+    it('should redirect to referenceData when AccessLinkActionName is `Access Link`', function() {        
+        spyOn($state,'go');
+
+        vm.fetchActions('Access Link');
+
+        expect(vm.contextTitle).toEqual('Access Link');
+        expect($state.go).toHaveBeenCalledWith("referenceData");
+    });
+
+    it('should Dialog show when PrintMapActionName is `Print Map`', function() {        
+        spyOn(popUpSettingService,'printMap');
+
+        vm.fetchActions('Print Map');
+
+        expect($mdDialog.show).toHaveBeenCalled();
+        expect(popUpSettingService.printMap).toHaveBeenCalled();
+
+    });
 });
 

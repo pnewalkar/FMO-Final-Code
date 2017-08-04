@@ -460,25 +460,56 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
-
-        public async Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns)
+        /// <summary>
+        /// Update DPUse in delivery point for matching UDPRN
+        /// </summary>
+        /// <param name="postalAddressDetails">postal address record in PAF</param>
+        /// <returns>Flag to indicate DPUse updated or not</returns>
+        public async Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.GetAddressLocationsByUDPRN"))
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.UpdateDPUse"))
             {
-                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetAddressLocationsByUDPRN);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(UpdateDPUse);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(addressLocationManagerDataWebAPIName + "addresslocation/range/", udprns);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/UpdateDPUse/", postalAddressDetails);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
 
-                List<AddressLocationDTO> addressLocationDTOs = JsonConvert.DeserializeObject<List<AddressLocationDTO>>(result.Content.ReadAsStringAsync().Result);
-                
+                var isDPUseUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return addressLocationDTOs;
+
+                return isDPUseUpdated;
+            }
+        }
+
+        /// <summary>
+        /// Delete delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        /// <returns>boolean</returns>
+        public async Task<bool> DeleteDeliveryPoint(Guid deliveryPointId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.DeleteDeliveryPoint"))
+            {
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(DeleteDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.DeleteAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/delete/id:" + deliveryPointId);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isDeleted = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return isDeleted;
             }
         }
 

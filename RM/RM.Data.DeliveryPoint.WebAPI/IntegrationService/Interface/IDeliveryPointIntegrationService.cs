@@ -70,12 +70,18 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// <returns>The approx location/</returns>
         Task<DbGeometry> GetApproxLocation(string postcode);
 
-        Task<DuplicateDeliveryPointDTO> CheckForDuplicateNybRecordsForRange(List<PostalAddressDTO> postalAddresses);
+        /// <summary>
+        /// Delete delivery point reference from route activity table.
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        /// <returns>boolean</returns>
+        Task<bool> DeleteDeliveryPointRouteMapping(Guid deliveryPointId);
 
-        Task<DuplicateDeliveryPointDTO> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDTO> postalAddresses);
-
-        Task<List<CreateDeliveryPointModelDTO>> CreateAddressForDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs);
-
-        Task<bool> MapRouteForDeliveryPointForRange(Guid deliveryRouteId, List<Guid> deliveryPointIds);
+        /// <summary>
+        /// Delete access link
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        /// <returns>boolean</returns>
+        Task<bool> DeleteAccesslink(Guid deliveryPointId);
     }
 }

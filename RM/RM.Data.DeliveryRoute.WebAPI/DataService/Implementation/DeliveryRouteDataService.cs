@@ -395,6 +395,40 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         }
 
         /// <summary>
+        /// Delete delivery point reference from route activity table.
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point Id</param>
+        /// <returns>boolean value</returns>
+        public async Task<bool> DeleteDeliveryPointRouteMapping(Guid deliveryPointId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteDeliveryPointRouteMapping"))
+            {
+                bool routeActivityDeleted = false;
+                string methodName = typeof(DeliveryRouteDataService) + "." + nameof(DeleteDeliveryPointRouteMapping);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
+
+                var blockSequence = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
+                var routeActivity = DataContext.RouteActivities.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
+
+                if (blockSequence != null)
+                {
+                    DataContext.BlockSequences.Remove(blockSequence);
+                }
+
+                if (routeActivity != null)
+                {
+                    DataContext.RouteActivities.Remove(routeActivity);
+                }
+
+                await DataContext.SaveChangesAsync();
+                routeActivityDeleted = true;
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId);
+                return routeActivityDeleted;
+            }
+        }
+
+        /// <summary>
         /// Gets the number of blocks specific to route.
         /// </summary>
         /// <param name="routeId">The delivery route identifier.</param>
