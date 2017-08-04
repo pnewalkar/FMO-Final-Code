@@ -125,7 +125,7 @@ function DeliveryPointController(
         vm.multiocc = "";
         vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
         deliveryPointService.closeModalPopup();
-        vm.results.length = 0;
+        vm.results = {};       
         vm.postalAddressAliases = [];
         vm.alias = "";
     }

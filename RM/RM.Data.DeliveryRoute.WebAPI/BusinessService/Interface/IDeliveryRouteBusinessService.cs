@@ -75,5 +75,12 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService
         /// <param name="deliveryPointId">Delivery Point Id</param>
         /// <returns>Route Details</returns>
         Task<RouteDTO> GetRouteByDeliveryPoint(Guid deliveryPointId);
+
+        /// <summary>
+        /// Delete delivery point reference from route activity table.
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point Id</param>
+        /// <returns>boolean value</returns>
+        Task<bool> DeleteDeliveryPointRouteMapping(Guid deliveryPointId);
     }
 }

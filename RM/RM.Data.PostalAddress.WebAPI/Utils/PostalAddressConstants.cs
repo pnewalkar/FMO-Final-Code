@@ -16,6 +16,8 @@
         internal const string TASKSOURCE = "SYSTEM";
         internal const string PostalAddressStatus = "Postal Address Status";
         internal const string PostalAddressType = "Postal Address Type";
+        internal const string Comma = ", ";
+        internal const string PendingDeleteInFMO = "Pending Delete in FMO";
 
         internal const string LiveAddressStatus = "Live";
         internal const string OperationalStatusGUIDLive = "Live";
@@ -24,7 +26,7 @@
         internal const string NOTIFICATIONCLOSED = "Closed";
 
         internal const string INSERT = "I";
-        internal const string UPDATE = "U";
+        internal const string UPDATE = "C";
         internal const string DELETE = "D";
         internal const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
         internal const string DeliveryPointAlias = "Delivery Point Alias";
@@ -35,5 +37,8 @@
         internal const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
         internal const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
         internal const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";
+        internal const string NoMatchToAddressOnUDPRN = "No Match to Address on UDPRN : {0}";
+        internal const string WrongAddressType = "Wrong Address Type UDPRN : {0}";
+        internal const string NoMatchingDP = "No matching Delivery Point for UDPRN :{0}";
     }
 }

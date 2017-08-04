@@ -334,5 +334,30 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
                 return route;
             }
         }
+
+        /// <summary>
+        /// Delete delivery point reference from route activity table.
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point Id</param>
+        /// <returns>boolean value</returns>
+        public async Task<bool> DeleteDeliveryPointRouteMapping(Guid deliveryPointId)
+        {
+            if (deliveryPointId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(deliveryPointId));
+            }
+
+            using (loggingHelper.RMTraceManager.StartTrace("Business.DeleteDeliveryPointRouteMapping"))
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(DeleteDeliveryPointRouteMapping);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
+
+                bool routeActivityDeleted = await deliveryRouteDataService.DeleteDeliveryPointRouteMapping(deliveryPointId);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+
+                return routeActivityDeleted;
+            }
+        }
     }
 }

@@ -23,6 +23,5 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         public DateTime? EndDateTime { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
-
     }
 }
