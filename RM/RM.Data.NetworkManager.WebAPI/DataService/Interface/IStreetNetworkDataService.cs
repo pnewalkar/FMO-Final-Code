@@ -18,24 +18,27 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>List<StreetNameDTO></returns>
-        Task<List<StreetNameDataDTO>> GetStreetNamesForBasicSearch(string searchText, Guid unitGuid);
+        Task<List<StreetNameDataDTO>> GetStreetNamesForBasicSearch(string searchText, Guid unitGuid, string currentUserUnitType);
 
         /// <summary>
         /// Fetches the street names for advance search.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>List<StreetNameDTO></returns>
-        Task<List<StreetNameDataDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<StreetNameDataDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid unitGuid, string currentUserUnitType);
 
         /// <summary>
         /// Gets the street name count.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>int</returns>
-        Task<int> GetStreetNameCount(string searchText, Guid unitGuid);
+        Task<int> GetStreetNameCount(string searchText, Guid unitGuid, string currentUserUnitType);
 
         /// <summary>
         /// Get the nearest street for operational object.

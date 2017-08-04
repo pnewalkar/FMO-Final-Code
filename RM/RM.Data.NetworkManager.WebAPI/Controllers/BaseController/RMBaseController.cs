@@ -57,5 +57,19 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 return userName;
             }
         }
+
+        /// <summary>
+        /// Gets Current User Unit Type. e.g: Delivery Hub or Collection Hub, etc.
+        /// </summary>
+        public string CurrentUserUnitType
+        {
+            get
+            {
+                var userUnitType = User.Claims.Where(c => c.Type == ClaimTypes.Upn)
+                               .Select(c => c.Value).SingleOrDefault();
+
+                return userUnitType;
+            }
+        }
     }
 }

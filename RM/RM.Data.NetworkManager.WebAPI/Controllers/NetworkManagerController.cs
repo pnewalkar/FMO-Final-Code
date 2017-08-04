@@ -204,7 +204,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 
                 try
                 {
-                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForBasicSearch(searchText, CurrentUserUnit).ConfigureAwait(false);
+                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForBasicSearch(searchText, this.CurrentUserUnit, this.CurrentUserUnitType).ConfigureAwait(false);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(streetNames);
                 }
@@ -238,7 +238,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 
                 try
                 {
-                    int streetCount = await networkManagerBusinessService.GetStreetNameCount(searchText, CurrentUserUnit).ConfigureAwait(false);
+                    int streetCount = await networkManagerBusinessService.GetStreetNameCount(searchText, this.CurrentUserUnit, this.CurrentUserUnitType).ConfigureAwait(false);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(streetCount);
                 }
@@ -272,7 +272,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 
                 try
                 {
-                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForAdvanceSearch(searchText, CurrentUserUnit);
+                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForAdvanceSearch(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(streetNames);
                 }
