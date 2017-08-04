@@ -267,25 +267,7 @@ function DeliveryPointController(
 
     function createDeliveryPoint() {
         vm.isOnceClicked = true;
-        var addDeliveryPointDTO =
-            {
-                "PostalAddressDTO": vm.addressDetails,
-                "DeliveryPointDTO":
-                {
-                    "MultipleOccupancyCount": vm.multiocc,
-                    "MailVolume": vm.mailvol,
-                    "DeliveryPointAliasDTO": vm.items,
-                    "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
-                    "DeliveryRoute_Guid": vm.routeId
-                },
-                "AddressLocationDTO": null,
-                "PostalAddressAliasDTOs": vm.postalAddressAliases,
-                "DeliveryPointType": vm.selectedType,
-                "RangeType": vm.rangeOptionsSelected,
-                "FromRange": vm.rangeFrom,
-                "ToRange": vm.rangeTo,
-                "SubBuildingType": vm.subBuildingType,
-            };
+        var addDeliveryPointDTO = getDeliveryPointDTO();
 
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
             if (response.isMultiple) {
@@ -304,7 +286,6 @@ function DeliveryPointController(
                 }
             }
             else {
-
                 if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
                     setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
                     mapService.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
@@ -336,8 +317,50 @@ function DeliveryPointController(
         });
     }
 
-    function saveDeliveryPointsPartially(message, postalAddressDetails, title, css) {
+    function getDeliveryPointDTO() {
+        var addDeliveryPointDTO;
+        if (vm.selectedType === vm.single) {
+            addDeliveryPointDTO =
+              {
+                  "PostalAddressDTO": vm.addressDetails,
+                  "DeliveryPointDTO":
+                  {
+                      "MultipleOccupancyCount": vm.multiocc,
+                      "MailVolume": vm.mailvol,
+                      "DeliveryPointAliasDTO": vm.items,
+                      "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
+                      "DeliveryRoute_Guid": vm.routeId
+                  },
+                  "AddressLocationDTO": null,
+                  "DeliveryPointType": vm.selectedType,
+                  "PostalAddressAliasDTOs": vm.postalAddressAliases
+              };
+        }
+        else {
+            addDeliveryPointDTO =
+                          {
+                              "PostalAddressDTO": vm.addressDetails,
+                              "DeliveryPointDTO":
+                              {
+                                  "MultipleOccupancyCount": vm.multiocc,
+                                  "MailVolume": vm.mailvol,
+                                  "DeliveryPointAliasDTO": vm.items,
+                                  "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
+                                  "DeliveryRoute_Guid": vm.routeId
+                              },
+                              "AddressLocationDTO": null,
+                              "PostalAddressAliasDTOs": vm.postalAddressAliases,
+                              "DeliveryPointType": vm.selectedType,
+                              "RangeType": vm.rangeOptionsSelected,
+                              "FromRange": vm.rangeFrom,
+                              "ToRange": vm.rangeTo,
+                              "SubBuildingType": vm.subBuildingType,
+                          };
+        }
+        return addDeliveryPointDTO;
+    }
 
+    function saveDeliveryPointsPartially(message, postalAddressDetails, title, css) {
         var alert = $mdDialog.alert()
             .parent()
             .clickOutsideToClose(false)
@@ -352,7 +375,6 @@ function DeliveryPointController(
                 createDeliveryPointsRange(postalAddressDetails);
             });
     };
-
 
     function setDeliveryPoint(id, rowversion, postalAddress, hasLocation) {
         if (vm.selectedDPUse.value === CommonConstants.DpUseType.Residential) {
@@ -389,7 +411,6 @@ function DeliveryPointController(
 
     function addAlias() {
         if (vm.alias !== "" && vm.alias !== null && angular.isDefined(vm.alias)) {
-
             vm.postalAddressAliases.push({
                 PreferenceOrderIndex: 0,
                 AliasName: vm.alias
@@ -488,9 +509,6 @@ function DeliveryPointController(
     function createDeliveryPointsRange(postalAddressDetails) {
         deliveryPointService.createDeliveryPointsRange(postalAddressDetails)
                    .then(function (response) {
-
                    });
-
     }
-
 };
