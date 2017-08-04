@@ -39,11 +39,11 @@ function advanceSearchService(advanceSearchAPIService,
         onChangeItem: onChangeItem
     };
 
-    function clearSearchResult() {
-        route = [];
+    function clearPreviousSearchResult() {
+       route = [];
        arrDeliverypoints = [];
        arrPostCodes = [];
-        arrStreetNames = [];
+       arrStreetNames = [];
        arrDeliveryRoutes = [];
        arrRoutes = [];
     }
@@ -53,9 +53,7 @@ function advanceSearchService(advanceSearchAPIService,
         var advanceSearchResults = null;
       
         advanceSearchAPIService.advanceSearch(query).then(function (response) {
-            clearSearchResult();
-            //advanceSearchResults = response;
-            //angular.forEach(advanceSearchResults.searchResultItems, function (value, key) {
+            clearPreviousSearchResult();
             angular.forEach(response.searchResultItems, function (value, key) {
                 if (value.type === CommonConstants.EntityType.DeliveryPoint)
                 {
