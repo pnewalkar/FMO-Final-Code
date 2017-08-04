@@ -146,6 +146,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
 
         Task<bool> DeleteDeliveryPoint(Guid id);
 
+        Task<CreateDeliveryPointForRangeModelDTO> CheckDeliveryPointForRange(AddDeliveryPointDTO addDeliveryPointDTO);
+
+        Task<CreateDeliveryPointForRangeModelDTO> CreateDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs);
+
         Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails);
     }
 }

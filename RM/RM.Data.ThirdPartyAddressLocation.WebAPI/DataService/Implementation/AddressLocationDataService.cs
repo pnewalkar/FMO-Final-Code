@@ -11,6 +11,7 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Entities;
+using System.Collections.Generic;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 {
@@ -65,6 +66,26 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
                 var getAddressLocationByUDPRN = Mapper.Map<AddressLocation, AddressLocationDataDTO>(objAddressLocation);
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return getAddressLocationByUDPRN;
+            }
+        }
+
+        /// <summary>
+        /// Get AddressLocations by UDPRN
+        /// </summary>
+        /// <param name="udprns">List of UDPRNs</param>
+        /// <returns>Address Locations</returns>
+        public async Task<List<AddressLocationDataDTO>> GetAddressLocationsByUDPRN(List<int> udprns)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetAddressLocationsByUDPRN"))
+            {
+                string methodName = typeof(AddressLocationDataService) + "." + nameof(GetAddressLocationByUDPRN);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
+
+                var objAddressLocations = await DataContext.AddressLocations.Where(n => udprns.Contains(n.UDPRN)).ToListAsync();
+                ConfigureMapper();
+                var getAddressLocationsByUDPRN = Mapper.Map<List<AddressLocation>, List<AddressLocationDataDTO>>(objAddressLocations);
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
+                return getAddressLocationsByUDPRN;
             }
         }
 

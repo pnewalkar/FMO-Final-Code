@@ -141,5 +141,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="postalAddressStatus">Address status</param>
         /// <returns>boolean value true if status has been updated successfully</returns>
         Task<bool> UpdatePostalAddressStatus(Guid postalAddressId, Guid postalAddressStatus);
+
+        /// <summary>
+        /// Check the duplicates for NYB records for a range
+        /// </summary>
+        /// <param name="objPostalAddress"></param>
+        /// <param name="addressTypeNYBGuid"></param>
+        /// <returns></returns>
+        Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateNybRecordsForRange(List<PostalAddressDataDTO> postalAddressesDTOs, Guid addressTypeNYBGuid);
+
+
+        Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDataDTO> postalAddressDTOs);
     }
 }

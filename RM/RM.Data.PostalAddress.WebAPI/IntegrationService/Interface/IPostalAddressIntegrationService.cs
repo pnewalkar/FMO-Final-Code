@@ -88,5 +88,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <param name="deliveryPointId">Delivery point unique id</param>
         /// <returns>boolean</returns>
         Task<bool> DeleteDeliveryPoint(Guid deliveryPointId);
+
+        Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns);
     }
 }

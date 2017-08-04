@@ -402,5 +402,38 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// method to save delivery point and selected route mapping in block sequence table
+        /// </summary>
+        /// <param name="routeId">selected route id</param>
+        /// <param name="deliveryPointIds">List of Delivery point unique id</param>
+        [HttpPost("deliveryroute/deliverypointrange/{routeId}")]
+        public IActionResult SaveDeliveryPointRouteMappingForRange(Guid routeId, [FromBody]List<Guid> deliveryPointIds)
+        {
+            if (routeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(routeId));
+            }
+
+            if (deliveryPointIds == null || deliveryPointIds.Count == 0)
+            {
+                throw new ArgumentNullException(nameof(deliveryPointIds));
+            }
+
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.SaveDeliveryPointRouteMappingForRange"))
+            {
+                string methodName = typeof(DeliveryRouteController) + "." + nameof(SaveDeliveryPointRouteMappingForRange);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId);
+
+                foreach (var deliveryPointId in deliveryPointIds)
+                {
+                    deliveryRouteLogBusinessService.SaveDeliveryPointRouteMapping(routeId, deliveryPointId);
+                }
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId);
+                return Ok();
+            }
+        }
     }
 }

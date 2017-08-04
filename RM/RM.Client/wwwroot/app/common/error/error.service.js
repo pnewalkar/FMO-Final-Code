@@ -3,7 +3,8 @@
 
 function errorService($mdDialog, $rootScope, $translate, $timeout) {
     return {
-        openAlert: openAlert
+        openAlert: openAlert,
+        openInfoPopup: openInfoPopup
     };
     function openAlert(text) {
         var alert = $mdDialog.alert()
@@ -20,5 +21,25 @@ function errorService($mdDialog, $rootScope, $translate, $timeout) {
                 $rootScope.$broadcast("errorClosed");
             });
     };
+
+    function openInfoPopup(text,title,css) {
+        var alert = $mdDialog.alert()
+            .parent()
+            .clickOutsideToClose(false)
+            .title($translate.instant(title))
+            .textContent(text)
+            .ariaLabel('Duplicates Found')
+            .css(css)
+            .ok($translate.instant('GENERAL.BUTTONS.OK'))
+
+        $mdDialog.show(alert)
+            .then(function () {
+                $rootScope.$broadcast("errorClosed");
+            });
+    };
+
+  
+    return errorService;
 };
+
 

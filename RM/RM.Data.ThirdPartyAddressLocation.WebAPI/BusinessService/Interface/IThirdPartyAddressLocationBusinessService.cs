@@ -33,5 +33,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// <param name="udprn"> UDPRN id</param>
         /// <returns>AddressLocationDTO object</returns>
         Task<AddressLocationDTO> GetAddressLocationByUDPRN(int udprn);
+
+        Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns);
     }
 }
