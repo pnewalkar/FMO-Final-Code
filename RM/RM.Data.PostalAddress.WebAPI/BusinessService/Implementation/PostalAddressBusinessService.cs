@@ -205,11 +205,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                     break;
 
                                 case AmmendmentType.D:
-
-                                    await DeletePAFRecords(item.UDPRN.Value, addressTypePAF, pendingDelete);
-
-                                    // Soft delete
-                                    MatchAddressOnUdprn(item.UDPRN.Value, addressTypePAF, pendingDelete);
+                                    await DeleteAddressOnUdprn(item.UDPRN.Value, addressTypePAF, pendingDelete);
                                     break;
                             }
                         }
@@ -1059,15 +1055,29 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="addressId">Postal Address Id</param>
         /// <returns>boolean</returns>
-        private async Task<bool> DeletePostalAddress(Guid addressId)
+        private async Task<bool> DeletePostalAddress(Guid addressId, Guid deliveryPointId)
         {
             bool isPostalAddressDeleted = false;
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.DeletePostalAddress"))
             {
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(DeletePostalAddress);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
-                
-                
+
+                if (deliveryPointId != Guid.Empty)
+                {
+                    // Delete delivery point for respective postal address
+                    var isDeliveryPointDeleted = postalAddressIntegrationService.DeleteDeliveryPoint(deliveryPointId).Result;
+                    if (!isDeliveryPointDeleted)
+                    {
+                        loggingHelper.Log(string.Format(PostalAddressConstants.ErrorMessageForDPPAFDelete, addressId), TraceEventType.Information);
+                    }
+                }
+                else
+                {
+                    // delivery point not found for respective postal address
+                    loggingHelper.Log(string.Format(PostalAddressConstants.ErrorMessageForDPNotFoundPAFDelete, addressId), TraceEventType.Information);
+                }
+
                 // PostalAddress physical delete
                 isPostalAddressDeleted = await addressDataService.DeletePostalAddress(addressId);
 
@@ -1082,8 +1092,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="udprn">Postal address UDPRN</param>
         /// <param name="pafAddressType">Address type as PAF</param>
         /// <param name="postalAddressStatus">Address status</param>
-        private async Task MatchAddressOnUdprn(int udprn, Guid pafAddressType, Guid postalAddressStatus)
+        private async Task DeleteAddressOnUdprn(int udprn, Guid pafAddressType, Guid postalAddressStatus)
         {
+            bool isPostalAddressDeleted = false;
             var postalAddress = addressDataService.GetPostalAddress(udprn).Result;
 
             if (postalAddress == null)
@@ -1096,31 +1107,20 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
             else
             {
-                await addressDataService.UpdatePostalAddressStatus(postalAddress.ID, postalAddressStatus);
-            }
-        }
+                // Soft delete
+                if (await addressDataService.UpdatePostalAddressStatus(postalAddress.ID, postalAddressStatus))
+                {
+                    if (postalAddress.DeliveryPoints != null && postalAddress.DeliveryPoints.Count == 1)
+                    {
+                        isPostalAddressDeleted = await DeletePostalAddress(postalAddress.ID, postalAddress.DeliveryPoints.SingleOrDefault().ID);
+                    }
+                    else
+                    {
+                        isPostalAddressDeleted = await DeletePostalAddress(postalAddress.ID, Guid.Empty);
+                    }
 
-        /// <summary>
-        /// Match postal Address on the basis of udprn.
-        /// </summary>
-        /// <param name="udprn">Postal address UDPRN</param>
-        /// <param name="pafAddressType">Address type as PAF</param>
-        /// <param name="postalAddressStatus">Address status</param>
-        private async Task DeletePAFRecords(int udprn, Guid pafAddressType, Guid postalAddressStatus)
-        {
-            var postalAddress = addressDataService.GetPostalAddress(udprn).Result;
+                }
 
-            if (postalAddress == null)
-            {
-                loggingHelper.Log(string.Format(PostalAddressConstants.NoMatchToAddressOnUDPRN, udprn), TraceEventType.Information);
-            }
-            else if (postalAddress != null && postalAddress.AddressType_GUID != pafAddressType)
-            {
-                loggingHelper.Log(string.Format(PostalAddressConstants.WrongAddressType, udprn), TraceEventType.Information);
-            }
-            else
-            {
-                await addressDataService.UpdatePostalAddressStatus(postalAddress.ID, postalAddressStatus);
             }
         }
 

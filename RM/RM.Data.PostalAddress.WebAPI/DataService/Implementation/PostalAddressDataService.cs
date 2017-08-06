@@ -263,7 +263,7 @@
                 string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddress);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
+                var postalAddress = await DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
 
                 ConfigureMapper();
 
@@ -605,12 +605,14 @@
                 string methodName = typeof(PostalAddressDataService) + "." + nameof(DeletePostalAddress);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-                var postalAddress = DataContext.PostalAddresses.Include(n => n.PostalAddressAlias).AsNoTracking().Where(n => n.ID == addressId).SingleOrDefault();
+                var postalAddress = DataContext.PostalAddresses.Include(n => n.PostalAddressAlias).Include(n => n.PostalAddressStatus).Where(n => n.ID == addressId).SingleOrDefault();
 
                 if (postalAddress != null)
                 {
-                    DataContext.PostalAddresses.Remove(postalAddress);
+
                     DataContext.PostalAddressAlias.RemoveRange(postalAddress.PostalAddressAlias);
+                    DataContext.PostalAddressStatus.RemoveRange(postalAddress.PostalAddressStatus);
+                    DataContext.PostalAddresses.Remove(postalAddress);
                     await DataContext.SaveChangesAsync();
                     postalAddressDeleted = true;
                 }

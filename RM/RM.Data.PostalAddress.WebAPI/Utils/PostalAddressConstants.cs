@@ -39,5 +39,7 @@
         internal const string NoMatchToAddressOnUDPRN = "No Match to Address on UDPRN : {0}";
         internal const string WrongAddressType = "Wrong Address Type UDPRN : {0}";
         internal const string NoMatchingDP = "No matching Delivery Point for UDPRN :{0}";
+        internal const string ErrorMessageForDPPAFDelete = "PAF Delete record : Associated Delivery Point for PostalAddresId is not deleted : {0}";
+        internal const string ErrorMessageForDPNotFoundPAFDelete = "PAF Delete record : Associated Delivery Point not found for PostalAddresId : {0}";
     }
 }

@@ -407,8 +407,8 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(DeleteDeliveryPointRouteMapping);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
 
-                var blockSequence = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
-                var routeActivity = DataContext.RouteActivities.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
+                var blockSequence = DataContext.BlockSequences.Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
+                var routeActivity = DataContext.RouteActivities.Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
 
                 if (blockSequence != null)
                 {

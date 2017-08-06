@@ -629,14 +629,20 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         {
             try
             {
-                Location location = await DataContext.Locations.Include(l => l.NetworkNode).Include(l => l.NetworkNode.DeliveryPoint).Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus).Where(l => l.ID == id).SingleOrDefaultAsync();
+                Location location = await DataContext.Locations.Include(l => l.NetworkNode)
+                                                               .Include(l => l.NetworkNode.DeliveryPoint)
+                                                               .Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus)
+                                                               .Include(l => l.LocationOfferings)
+                                                               .Where(l => l.ID == id).SingleOrDefaultAsync();
 
                 if (location != null)
                 {
+                    DataContext.LocationOfferings.RemoveRange(location.LocationOfferings);
                     DataContext.DeliveryPointStatus.RemoveRange(location.NetworkNode.DeliveryPoint.DeliveryPointStatus);
                     DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
-                    DataContext.NetworkNodes.Remove(location.NetworkNode);
-                    DataContext.Locations.Remove(location);
+                    // TODO : Uncomment as a part of house keeping story
+                    // DataContext.NetworkNodes.Remove(location.NetworkNode);
+                    // DataContext.Locations.Remove(location);
                     await DataContext.SaveChangesAsync();
                     return true;
                 }
