@@ -417,13 +417,13 @@
             {
                 // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateConcurrencyException.ToString());
-                throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
+                throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (DbUpdateException dbUpdateException)
             {
                 // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateException.ToString());
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (NotSupportedException notSupportedException)
             {
@@ -525,8 +525,6 @@
                                 alias.RowCreateDateTime = DateTime.UtcNow;
                                 alias.StartDateTime = DateTime.UtcNow;
                             }
-
-
 
                             // add new address
                             DataContext.PostalAddresses.Add(objPostalAddress);

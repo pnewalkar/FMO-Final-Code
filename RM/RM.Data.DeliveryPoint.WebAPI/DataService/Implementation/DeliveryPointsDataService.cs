@@ -699,9 +699,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <returns>Flag to indicate DPUse updated or not</returns>
         public async Task<bool> UpdateDPUse(int udprn, Guid deliveryPointUseIndicatorGUID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Data.InsertDeliveryPoint"))
+            using (loggingHelper.RMTraceManager.StartTrace("Data.UpdateDPUse"))
             {
-                string methodName = typeof(DeliveryPointsDataService) + "." + nameof(InsertDeliveryPoint);
+                string methodName = typeof(DeliveryPointsDataService) + "." + nameof(UpdateDPUse);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 bool dpUseStatusUpdated = false;
 

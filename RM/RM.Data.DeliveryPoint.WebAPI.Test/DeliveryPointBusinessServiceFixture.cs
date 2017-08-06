@@ -260,12 +260,12 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         {
             try
             {
-                var PostalAddressDTO = new PostalAddressDTO()
+                var postalAddressDTO = new PostalAddressDTO()
                 {
                     UDPRN = null,
                     OrganisationName = "abc"
                 };
-                bool result = await testCandidate.UpdateDPUse(PostalAddressDTO);
+                bool result = await testCandidate.UpdateDPUse(postalAddressDTO);
                 Assert.Fail("An exception should have been thrown");
             }
             catch (ArgumentNullException ae)

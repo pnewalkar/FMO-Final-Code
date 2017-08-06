@@ -667,9 +667,9 @@
         /// <returns>Flag to indicate DPUse updated or not</returns>
         public async Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPointsCrossingOperationalObject"))
+            using (loggingHelper.RMTraceManager.StartTrace("Business.UpdateDPUse"))
             {
-                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(GetDeliveryPointsCrossingOperationalObject);
+                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(UpdateDPUse);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 if (postalAddressDetails == null)
                 {
@@ -685,7 +685,7 @@
                 Guid deliveryPointUseIndicatorGUID = Guid.Empty;
                 List<string> listNames = new List<string> { ReferenceDataCategoryNames.DeliveryPointUseIndicator };
 
-                //Get IDs for DeliveryPointUseIndicatorGUID from reference data
+                // Get IDs for DeliveryPointUseIndicatorGUID from reference data
                 var referenceDataCategoryList = deliveryPointIntegrationService.GetReferenceDataSimpleLists(listNames).Result;
                 if (referenceDataCategoryList != null && referenceDataCategoryList.Count > 0)
                 {
@@ -695,7 +695,6 @@
                                                         .SelectMany(x => x.ReferenceDatas)
                                                         .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
                                                         .SingleOrDefault();
-
                     }
                     else
                     {
