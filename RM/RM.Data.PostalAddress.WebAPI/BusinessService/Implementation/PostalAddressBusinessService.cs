@@ -28,7 +28,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         #region Property Declarations
 
         private IPostalAddressDataService addressDataService = default(IPostalAddressDataService);
-        private IFileProcessingLogDataService fileProcessingLogDataService = default(IFileProcessingLogDataService);
 
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
@@ -41,14 +40,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
         public PostalAddressBusinessService(
             IPostalAddressDataService addressDataService,
-            IFileProcessingLogDataService fileProcessingLogDataService,
             ILoggingHelper loggingHelper,
             IConfigurationHelper configurationHelper,
             IHttpHandler httpHandler,
             IPostalAddressIntegrationService postalAddressIntegrationService)
         {
             this.addressDataService = addressDataService;
-            this.fileProcessingLogDataService = fileProcessingLogDataService;
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
             this.httpHandler = httpHandler;
@@ -559,19 +556,22 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     }
                     else
                     {
-                        objFileProcessingLog = new FileProcessingLogDTO
-                        {
-                            FileID = Guid.NewGuid(),
-                            UDPRN = objPostalAddress.UDPRN ?? default(int),
-                            AmendmentType = objPostalAddressBatch.AmendmentType,
-                            FileName = strFileName,
-                            FileProcessing_TimeStamp = DateTime.UtcNow,
-                            FileType = FileType.Paf.ToString(),
-                            ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound,
-                            SuccessFlag = false
-                        };
+                        loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound, objPostalAddress.UDPRN, objPostalAddressBatch.AmendmentType, strFileName,
+                                            FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
 
-                        fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                        //objFileProcessingLog = new FileProcessingLogDTO
+                        //{
+                        //    FileID = Guid.NewGuid(),
+                        //    UDPRN = objPostalAddress.UDPRN ?? default(int),
+                        //    AmendmentType = objPostalAddressBatch.AmendmentType,
+                        //    FileName = strFileName,
+                        //    FileProcessing_TimeStamp = DateTime.UtcNow,
+                        //    FileType = FileType.Paf.ToString(),
+                        //    ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound,
+                        //    SuccessFlag = false
+                        //};
+
+                        //fileProcessingLogDataService.LogFileException(objFileProcessingLog);
                     }
                 }
                 else if (objPostalAddressMatchedAddress != null)
@@ -607,19 +607,22 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     }
                     else
                     {
-                        objFileProcessingLog = new FileProcessingLogDTO
-                        {
-                            FileID = Guid.NewGuid(),
-                            UDPRN = objPostalAddress.UDPRN ?? default(int),
-                            AmendmentType = objPostalAddressBatch.AmendmentType,
-                            FileName = strFileName,
-                            FileProcessing_TimeStamp = DateTime.UtcNow,
-                            FileType = FileType.Paf.ToString(),
-                            ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeUSRNotFound,
-                            SuccessFlag = false
-                        };
+                        loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.PAFErrorMessageForAddressTypeUSRNotFound, objPostalAddress.UDPRN, objPostalAddressBatch.AmendmentType, strFileName,
+                                            FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
 
-                        fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                        //objFileProcessingLog = new FileProcessingLogDTO
+                        //{
+                        //    FileID = Guid.NewGuid(),
+                        //    UDPRN = objPostalAddress.UDPRN ?? default(int),
+                        //    AmendmentType = objPostalAddressBatch.AmendmentType,
+                        //    FileName = strFileName,
+                        //    FileProcessing_TimeStamp = DateTime.UtcNow,
+                        //    FileType = FileType.Paf.ToString(),
+                        //    ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeUSRNotFound,
+                        //    SuccessFlag = false
+                        //};
+
+                        //fileProcessingLogDataService.LogFileException(objFileProcessingLog);
                     }
                 }
                 else
@@ -1068,13 +1071,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     var isDeliveryPointDeleted = postalAddressIntegrationService.DeleteDeliveryPoint(deliveryPointId).Result;
                     if (!isDeliveryPointDeleted)
                     {
-                        loggingHelper.Log(string.Format(PostalAddressConstants.ErrorMessageForDPPAFDelete, addressId), TraceEventType.Information);
+                        loggingHelper.Log(string.Format(PostalAddressConstants.PAFErrorMessageForDPDelete, addressId), TraceEventType.Information);
                     }
                 }
                 else
                 {
                     // delivery point not found for respective postal address
-                    loggingHelper.Log(string.Format(PostalAddressConstants.ErrorMessageForDPNotFoundPAFDelete, addressId), TraceEventType.Information);
+                    loggingHelper.Log(string.Format(PostalAddressConstants.PAFErrorMessageForDPNotFoundDelete, addressId), TraceEventType.Information);
                 }
 
                 // PostalAddress physical delete

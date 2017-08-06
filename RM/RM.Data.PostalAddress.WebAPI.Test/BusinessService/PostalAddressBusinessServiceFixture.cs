@@ -28,7 +28,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         private Mock<ILoggingHelper> mockLoggingHelper;
         private Mock<IHttpHandler> mockHttpHandler;
         private Mock<IPostalAddressIntegrationService> mockPostalAddressIntegrationService;
-        private Mock<IFileProcessingLogDataService> mockFileProcessingLogDataService;
+        // private Mock<IFileProcessingLogDataService> mockFileProcessingLogDataService;
         private PostalAddressDTO publicPostalAddressDTO = default(PostalAddressDTO);
         private Guid addressTypeGUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974");
         private int paf = 0;
@@ -418,7 +418,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             };
 
             mockPostalAddressDataService = CreateMock<IPostalAddressDataService>();
-            mockFileProcessingLogDataService = CreateMock<IFileProcessingLogDataService>();
+            // mockFileProcessingLogDataService = CreateMock<IFileProcessingLogDataService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockHttpHandler = CreateMock<IHttpHandler>();
@@ -440,9 +440,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             mockPostalAddressDataService.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
             mockPostalAddressDataService.Setup(n => n.GetPAFAddress(It.IsAny<int>(), It.IsAny<Guid>())).Returns(Task.FromResult(postalAddressDTO));
 
-            mockFileProcessingLogDataService.Setup(x => x.LogFileException(It.IsAny<FileProcessingLogDTO>()));
+            // mockFileProcessingLogDataService.Setup(x => x.LogFileException(It.IsAny<FileProcessingLogDTO>()));
 
-            testCandidate = new DataManagement.PostalAddress.WebAPI.BusinessService.Implementation.PostalAddressBusinessService(mockPostalAddressDataService.Object, mockFileProcessingLogDataService.Object, mockLoggingHelper.Object, mockConfigurationHelper.Object, mockHttpHandler.Object, mockPostalAddressIntegrationService.Object);
+            testCandidate = new DataManagement.PostalAddress.WebAPI.BusinessService.Implementation.PostalAddressBusinessService(mockPostalAddressDataService.Object, mockLoggingHelper.Object, mockConfigurationHelper.Object, mockHttpHandler.Object, mockPostalAddressIntegrationService.Object);
         }
     }
 }

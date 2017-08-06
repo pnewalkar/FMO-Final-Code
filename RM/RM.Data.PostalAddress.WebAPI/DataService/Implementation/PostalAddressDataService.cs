@@ -25,16 +25,14 @@
     public class PostalAddressDataService : DataServiceBase<PostalAddress, PostalAddressDBContext>, IPostalAddressDataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private IFileProcessingLogDataService fileProcessingLog = default(IFileProcessingLogDataService);
         private int priority = LoggerTraceConstants.PostalAddressAPIPriority;
         private int entryEventId = LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId;
 
-        public PostalAddressDataService(IDatabaseFactory<PostalAddressDBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogDataService fileProcessingLog)
+        public PostalAddressDataService(IDatabaseFactory<PostalAddressDBContext> databaseFactory, ILoggingHelper loggingHelper) //, IFileProcessingLogDataService fileProcessingLog)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
-            this.fileProcessingLog = fileProcessingLog;
         }
 
         /// <summary>
@@ -168,7 +166,8 @@
                     // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
                     if (objPostalAddressDataDTO.UDPRN != null)
                     {
-                        LogFileException(objPostalAddressDataDTO.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                        loggingHelper.Log(string.Format(PostalAddressConstants.NYBERRORLOGMESSAGE, ex.ToString(), objPostalAddress.UDPRN, null, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
+                        // LogFileException(objPostalAddressDataDTO.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
                     }
 
                     throw ex;
@@ -223,27 +222,23 @@
             }
             catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
             {
-                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateConcurrencyException.ToString());
+                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, dbUpdateConcurrencyException.ToString(), objPostalAddress.UDPRN, null, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                 throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (DbUpdateException dbUpdateException)
             {
-                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateException.ToString());
+                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, dbUpdateException.ToString(), objPostalAddress.UDPRN, null, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                 throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), notSupportedException.ToString());
+                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, notSupportedException.ToString(), objPostalAddress.UDPRN, null, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                 notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), disposedException.ToString());
+                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, disposedException.ToString(), objPostalAddress.UDPRN, null, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                 disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
@@ -415,27 +410,23 @@
             }
             catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
             {
-                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateConcurrencyException.ToString());
+                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, dbUpdateConcurrencyException.ToString(), objPostalAddress.UDPRN, null, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                 throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (DbUpdateException dbUpdateException)
             {
-                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateException.ToString());
+                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, dbUpdateException.ToString(), objPostalAddress.UDPRN, null, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                 throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), notSupportedException.ToString());
+                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, notSupportedException.ToString(), objPostalAddress.UDPRN, null, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                 notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), disposedException.ToString());
+                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, disposedException.ToString(), objPostalAddress.UDPRN, null, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                 disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
@@ -825,26 +816,26 @@
         /// <param name="strFileName">FileName</param>
         /// <param name="fileType">Filetype</param>
         /// <param name="strException">Exception</param>
-        private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressEntity"))
-            {
-                string methodName = typeof(PostalAddressDataService) + "." + nameof(LogFileException);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-                FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
-                {
-                    FileID = Guid.NewGuid(),
-                    UDPRN = uDPRN,
-                    AmendmentType = PostalAddressConstants.INSERT,
-                    FileName = strFileName,
-                    FileProcessing_TimeStamp = DateTime.UtcNow,
-                    FileType = fileType,
-                    ErrorMessage = strException,
-                    SuccessFlag = false
-                };
-                fileProcessingLog.LogFileException(objFileProcessingLog);
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-            }
-        }
+        //private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
+        //{
+        //    using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressEntity"))
+        //    {
+        //        string methodName = typeof(PostalAddressDataService) + "." + nameof(LogFileException);
+        //        loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+        //        FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
+        //        {
+        //            FileID = Guid.NewGuid(),
+        //            UDPRN = uDPRN,
+        //            AmendmentType = PostalAddressConstants.INSERT,
+        //            FileName = strFileName,
+        //            FileProcessing_TimeStamp = DateTime.UtcNow,
+        //            FileType = fileType,
+        //            ErrorMessage = strException,
+        //            SuccessFlag = false
+        //        };
+        //        fileProcessingLog.LogFileException(objFileProcessingLog);
+        //        loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+        //    }
+        //}
     }
 }
