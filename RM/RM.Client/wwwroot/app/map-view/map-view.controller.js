@@ -47,8 +47,7 @@ function MapController($scope,
         if (data.featureType === 'deliverypoint') {
             vm.contextTitle = data.contextTitle;
         }
-        else
-        {
+        else{
             vm.contextTitle = CommonConstants.TitleContextPanel;
         }
     });

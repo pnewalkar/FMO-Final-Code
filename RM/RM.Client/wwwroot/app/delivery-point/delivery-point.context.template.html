@@ -21,10 +21,11 @@
             </li>
             <li ng-repeat="item in vm.deliveryPointList" flex="85">
                 {{item.locality}}
+                <span ng-click="vm.toggle(item)" flex="15" class="centerAlign">
+                    <md-checkbox class="dpCheckBox"></md-checkbox>
+                </span>
             </li>
-            <li ng-click="vm.toggle(item)" flex="15" class="centerAlign">
-                <md-checkbox class="dpCheckBox"></md-checkbox>
-            </li>
+            
         </ul>
     </div>
     <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">

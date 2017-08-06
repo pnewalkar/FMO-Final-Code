@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Threading.Tasks;
 using RM.Data.AccessLink.WebAPI.DataDTOs;
 
 namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
@@ -61,5 +62,14 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// <param name="accessLink">access link coordinate array</param>
         /// <returns>List<NetworkLinkDTO></returns>
         bool GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink);
+
+        /// <summary>
+        /// Delete Method to delete the Access link once the automatically deliverypoint deleted
+        /// </summary>
+        /// <param name="operationalObjectId"></param>
+        /// <param name="networkLinkTypeGUID"></param>
+        /// <param name="accessLinkStatusGUID"></param>
+        /// <returns></returns>
+        Task<bool> DeleteAccessLink(Guid operationalObjectId, Guid networkLinkTypeGUID, Guid accessLinkStatusGUID);
     }
 }

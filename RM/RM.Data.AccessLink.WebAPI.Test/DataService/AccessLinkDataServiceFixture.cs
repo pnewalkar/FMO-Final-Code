@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.DataMiddleware;
@@ -107,6 +108,18 @@ namespace RM.DataServices.Tests.DataService
             string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
             DbGeometry accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
             bool actualResult = testCandidate.GetCrossingNetworkLink(coordinates, accessLinkLine);
+            Assert.IsTrue(actualResult);
+        }
+
+        /// <summary>
+        /// Delete access link once Delivery point is deleted.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_DeleteAccessLink_PositiveScenario()
+        {
+            var actualResult = await testCandidate.DeleteAccessLink(unit1Guid, unit2Guid, unit3Guid);
+            Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult);
         }
 

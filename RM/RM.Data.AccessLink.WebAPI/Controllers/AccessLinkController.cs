@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
@@ -104,7 +105,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as string</param>
         /// <returns>GeoJson string of Access link data</returns>
-        // [Authorize]
+        [Authorize]
         [HttpGet("AccessLinks")]
         public IActionResult GetAccessLinks(string bbox)
         {
@@ -113,7 +114,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
                 string methodName = typeof(AccessLinkController) + "." + nameof(GetAccessLinks);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                string accessLink = accessLinkBusinessService.GetAccessLinks(bbox, Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050"));
+                string accessLink = accessLinkBusinessService.GetAccessLinks(bbox, this.CurrentUserUnit);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(accessLink);
@@ -160,6 +161,27 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(isValid);
+            }
+        }
+
+
+        /// <summary>
+        /// This method is used to Delete access link when Delivery Point is deleted.
+        /// </summary>
+        /// <param name="operationalObjectId">Operational Object unique identifier.</param>
+        /// <returns>If <true>then access link deleted succeeded(HttpStatusCode:200),else not found(HttpStatusCode:204).</true></returns>
+
+        [HttpDelete]
+        [Route("AccessLink/delete/id:{operationalObjectId}")]
+        public Task<bool> DeleteAccessLink(Guid operationalObjectId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteAccessLink"))
+            {
+                string methodName = typeof(AccessLinkController) + "." + nameof(DeleteAccessLink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                var success = accessLinkBusinessService.DeleteAccessLink(operationalObjectId);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return success;
             }
         }
 

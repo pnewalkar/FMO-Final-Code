@@ -1,48 +1,29 @@
-describe('mapKey: Controller', function() {
-
-  var ctrl;
+'use strict'
+describe('Map Key: Controller', function() {
+  var vm;  
   var mapKeyService;
-  var $rootScope;
-
-  //MockSet
   var MockMapKeyService = {
-        initialize: function() {return []},
-        showKey: function(id){
-           if (id == "") {
-            return true;
-            } else {
-              return id;
-            }
-        }
+        initialize: function() {},
+        showKey: function(id){}
      };
 
-  beforeEach(module('mapKey'));
-
-  //load to our provider
-   beforeEach(function(){
-        module(function ($provide) {
+    beforeEach(function(){
+      module('mapKey');
+      module(function ($provide) {
         $provide.value('mapKeyService', MockMapKeyService);
-        });
+      });    
+
+      inject(function(_$controller_,_mapKeyService_) {
+        mapKeyService = _mapKeyService_;
+        vm = _$controller_('MapKeyController', {mapKeyService: _mapKeyService_});            
+      });
+
     });
-  beforeEach(inject(function (_$rootScope_,$controller,_mapKeyService_) {
-        ctrl = $controller('MapKeyController', {
-            mapKeyService: _mapKeyService_,
-            $rootScope : $rootScope
-        });
 
-    }));
-
-    it('should be return a value showKey method', function() {
-        spyOn(ctrl,'showKey');
-
-        ctrl.showKey(2);
-        expect(ctrl.showKey).toHaveBeenCalled();
-        expect(ctrl.showKey).toHaveBeenCalledWith(2);
-
-        //Call to MockObje
-        var KeyShowVal = MockMapKeyService.showKey(2);
-        expect(KeyShowVal).toBe(2);
-        
+    it('should call `mapKeyService.showKey` method showKey method called', function(){ 
+        spyOn(mapKeyService,'showKey');
+        vm.showKey('2165981ca-454648945-54486046-684');
+        expect(mapKeyService.showKey).toHaveBeenCalledWith('2165981ca-454648945-54486046-684');
     });
 
 });

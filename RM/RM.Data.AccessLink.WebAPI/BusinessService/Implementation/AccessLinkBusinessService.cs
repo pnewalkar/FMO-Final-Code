@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Reflection;
 using Microsoft.SqlServer.Types;
@@ -793,6 +794,48 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return referenceDataGuid;
             }
+        }
+
+
+        /// <summary>
+        /// Method to delete access link once Delivery point deleted.
+        /// </summary>
+        /// <param name="operationalObjectId"></param>
+        /// <returns></returns>
+        public Task<bool> DeleteAccessLink(Guid operationalObjectId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.DeleteAccessLink"))
+            {
+                string methodName = typeof(AccessLinkBusinessService) + "." + nameof(DeleteAccessLink);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId);
+
+                List<string> categoryNamesNameValuePairs = new List<string>
+            {
+                ReferenceDataCategoryNames.AccessLinkParameters,
+            };
+
+                List<string> categoryNamesSimpleLists = new List<string>
+            {
+
+                ReferenceDataCategoryNames.AccessLinkType, // access link type (NLNodetype)
+                ReferenceDataCategoryNames.NetworkLinkType//NetworkLinkType to check whether accesslink,road link,path link          
+            };
+
+                var referenceDataCategoryList =
+                    accessLinkIntegrationService.GetReferenceDataNameValuePairs(categoryNamesNameValuePairs).Result;
+
+                referenceDataCategoryList.AddRange(
+                   accessLinkIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
+
+                Guid networkLinkTypeGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkLinkType, AccessLinkConstants.AccessLink, true);
+                Guid accessLinkTypeGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.AccessLinkType, ReferenceDataValues.AccessLinkTypeDefault, true);
+                var returnValue = accessLinkDataService.DeleteAccessLink(operationalObjectId, networkLinkTypeGUID, accessLinkTypeGUID);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId);
+
+                return returnValue;
+            }
+
         }
 
         #endregion Methods

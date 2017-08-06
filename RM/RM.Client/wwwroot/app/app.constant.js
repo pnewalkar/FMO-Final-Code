@@ -51,7 +51,6 @@ else if (GlobalSettings.env === "dev") {
     GlobalSettings.searchManagerApiUrl = "http://172.18.5.7/SearchManager/api";
     GlobalSettings.mapManagerApiUrl = "http://172.18.5.7/MapManager/api";
     GlobalSettings.indexUrl = "http://172.18.4.4/app/index.html";
-
 }
 else if (GlobalSettings.env === "test") {
     GlobalSettings.actionManagerApiUrl = "http://172.18.5.12/ActionManager/api";
@@ -90,6 +89,7 @@ GlobalSettings.subBuilding = "Sub building";
 GlobalSettings.numberInName = "Number in Name";
 GlobalSettings.defaultRangeOption = "Odds";
 
+
 angular.module('RMApp')
 .constant("GlobalSettings", GlobalSettings);
 
@@ -114,6 +114,8 @@ GlobalSettings.getAddressLocation = "/thirdpartyaddresslocationmanager/addresslo
 GlobalSettings.getPostalAddressByGuid = "/postaladdressmanager/postaladdress/filter/addressguid:{0}";
 GlobalSettings.createDeliveryPoint = "/DeliveryPointManager/deliverypoint/newdeliverypoint";
 GlobalSettings.updateDeliverypoint = "/DeliveryPointManager/deliverypoint/";
+GlobalSettings.validateDeliveryPoints = "/DeliveryPointManager/deliverypoint/newdeliverypoint/range/check";
+GlobalSettings.createDeliveryPointsRange = "/DeliveryPointManager/deliverypoint/newdeliverypoint/range";
 
 //-----Layers Factory---------------//
 GlobalSettings.fetchDeliveryPointsByBoundingBox = "/deliverypointmanager/deliverypoints?bbox=";
@@ -153,15 +155,13 @@ GlobalSettings.getPdfreport = "/PDFGenerator/PDFReports/";
 GlobalSettings.generateReportWithMap = "/MapManager/MapImage/";
 GlobalSettings.generatePdf = "/MapManager/MapPDF/";
 
-
 //--- Unit Area ---///
 GlobalSettings.BT = "BT";
-
 
 //--- Licensing Information-----//
 GlobalSettings.Map_License_Information = "Map_License_Information";
 GlobalSettings.OrdnanceSurvey_GB_Licensing = "OrdnanceSurvey_GB_Licensing";
-GlobalSettings.ThirdParty_GB_Licensing="ThirdParty_GB_Licensing";
-GlobalSettings.OrdnanceSurvey_NI_Licensing ="OrdnanceSurvey_NI_Licensing";
-GlobalSettings.ThirdParty_NI_Licensing="ThirdParty_NI_Licensing";
+GlobalSettings.ThirdParty_GB_Licensing = "ThirdParty_GB_Licensing";
+GlobalSettings.OrdnanceSurvey_NI_Licensing = "OrdnanceSurvey_NI_Licensing";
+GlobalSettings.ThirdParty_NI_Licensing = "ThirdParty_NI_Licensing";
 GlobalSettings.GeoPlan_Licensing = "GeoPlan_Licensing";

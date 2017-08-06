@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using Moq;
 using NUnit.Framework;
@@ -98,6 +99,20 @@ namespace RM.Data.AccessLink.WebAPI.Test
             decimal expectedResult = testCandidate.GetAdjPathLength(accessLinkManualCreateModelDTO);
             Assert.Greater(expectedResult, 0);
         }
+
+        /// <summary>
+        /// Test Method to delete access link once Delivery point deleted.
+        /// </summary>
+        /// <param name="operationalObjectId"></param>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_DeleteAccessLink_PositiveScenario()
+        {
+            var expectedResult = await testCandidate.DeleteAccessLink(operationalObjectId);
+            Assert.IsNotNull(expectedResult);
+            Assert.IsTrue(expectedResult);
+        }
+
 
         /// <summary>
         /// Setup for Nunit Tests.
