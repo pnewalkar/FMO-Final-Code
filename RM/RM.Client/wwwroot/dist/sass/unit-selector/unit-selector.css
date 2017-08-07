@@ -23,3 +23,6 @@
 }*/
 .unitText md-select-value#select_value_label_1 {
   border-bottom-color: white; }
+
+.select-header input[class*="fa-filter"] {
+  text-indent: 5px; }

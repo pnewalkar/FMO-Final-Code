@@ -19,4 +19,4 @@
   max-height: 240px; }
 
 .search-input::-ms-clear {
-  display: none; }
+  height: 30px; }

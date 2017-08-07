@@ -7,12 +7,13 @@
                ng-change="vm.onChange()"
                data-md-container-class="searchableDropdown">
         <md-select-header class="select-header">
+            <i class="fa {{ vm.searchInputIcon }} " aria-hidden="true"></i>
             <input type="search"
                    ng-model="vm.searchTerm"
                    placeholder="{{vm.items.length!==0?vm.searchPlaceholder:''| translate}}"
                    ng-keydown="$event.stopPropagation()"
                    ng-if="vm.items.length!==0"
-                   class="search-input md-text">
+                   class="search-input md-text {{ vm.searchInputIcon }}">
         </md-select-header>
         <md-option ng-value="item" ng-repeat="item in filteredItems = ( vm.items | filter:{displayText:vm.searchTerm } | orderBy: vm.orderBy)">
             <i ng-if="item.icon" class="fa {{item.icon}}" aria-hidden="true"></i> {{item.displayText}}

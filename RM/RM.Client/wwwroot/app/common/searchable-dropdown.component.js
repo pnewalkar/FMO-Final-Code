@@ -8,7 +8,8 @@
          items: "=",
          disabled: "=",
          selectedItem: "=",
-         onSelectedItem:"&"
+         onSelectedItem:"&",
+         searchInputIcon: "@"
      },
      templateUrl: './common/searchable-dropdown.template.html',
      controller: 'CustomSearchableDropdownController as vm'
