@@ -26,6 +26,7 @@ namespace RM.DataServices.Tests.DataService
         private string search = null;
         private int noOfRecords = 0;
         private Mock<ILoggingHelper> mockLoggingHelper;
+        private string currentUserUnitType = null;
 
         private DeliveryPointDataDTO deliveryPointDataDTO = null;
 
@@ -110,7 +111,7 @@ namespace RM.DataServices.Tests.DataService
         public async Task Test_GetDeliveryPointsForAdvanceSearch()
         {
             search = "road";
-            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForAdvanceSearch(search, unitGuid);
+            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForAdvanceSearch(search, unitGuid, currentUserUnitType);
             Assert.IsNotNull(expectedResult);
             Assert.IsTrue(expectedResult.Count == 1);
         }
@@ -120,7 +121,7 @@ namespace RM.DataServices.Tests.DataService
         {
             search = "road";
             noOfRecords = 5;
-            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForBasicSearch(search, noOfRecords, unitGuid);
+            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForBasicSearch(search, noOfRecords, unitGuid, currentUserUnitType);
             Assert.IsNotNull(expectedResult);
             Assert.IsTrue(expectedResult.Count == 1);
         }
@@ -130,7 +131,7 @@ namespace RM.DataServices.Tests.DataService
         {
             search = "road";
             noOfRecords = 5;
-            int expectedResult = await testCandidate.GetDeliveryPointsCount(search, unitGuid);
+            int expectedResult = await testCandidate.GetDeliveryPointsCount(search, unitGuid, currentUserUnitType);
             Assert.IsNotNull(expectedResult);
             Assert.IsTrue(expectedResult == 1);
         }
@@ -349,6 +350,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            currentUserUnitType = "Delivery Office";
+
             var deliveryPoint = new List<DeliveryPoint>()
             {
                new DeliveryPoint()

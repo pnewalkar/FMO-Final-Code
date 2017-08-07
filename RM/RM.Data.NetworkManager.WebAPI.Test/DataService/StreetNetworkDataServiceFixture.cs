@@ -32,6 +32,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         private DbGeometry accessLinkLine;
         private DbGeometry point;
         private List<ReferenceDataCategoryDTO> referenceDataCategoryList;
+        private string currentUserUnitType = null;
 
         /// <summary>
         /// Test for getting street names for advance search
@@ -40,7 +41,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetStreetNamesForAdvanceSearch()
         {
-            var actualResult = await testCandidate.GetStreetNamesForAdvanceSearch("Test", unit1Guid);
+            var actualResult = await testCandidate.GetStreetNamesForAdvanceSearch("Test", unit1Guid, currentUserUnitType);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 7);
         }
@@ -52,7 +53,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetStreetNamesForBasicSearch()
         {
-            var actualResult = await testCandidate.GetStreetNamesForBasicSearch("Test", unit1Guid);
+            var actualResult = await testCandidate.GetStreetNamesForBasicSearch("Test", unit1Guid, currentUserUnitType);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -64,7 +65,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetStreetNamesForBasicSearch_NegativeScenario()
         {
-            var actualResult = await testCandidate.GetStreetNamesForBasicSearch(null, unit1Guid);
+            var actualResult = await testCandidate.GetStreetNamesForBasicSearch(null, unit1Guid, currentUserUnitType);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -76,7 +77,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetStreetNameCount()
         {
-            var actualResult = await testCandidate.GetStreetNameCount("Test", unit1Guid);
+            var actualResult = await testCandidate.GetStreetNameCount("Test", unit1Guid, currentUserUnitType);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult == 7);
         }
@@ -88,7 +89,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetStreetNameCount_NegativeScenario()
         {
-            var actualResult = await testCandidate.GetStreetNameCount(null, unit1Guid);
+            var actualResult = await testCandidate.GetStreetNameCount(null, unit1Guid, currentUserUnitType);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult == 7);
         }
@@ -147,6 +148,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         {
             // Data setup
             unit1Guid = new Guid("8534AA41-391F-4579-A18D-D7EDF5B5F918");
+            currentUserUnitType = "Delivery Office";
             mockIConfigurationHelper = CreateMock<IConfigurationHelper>();
 
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);

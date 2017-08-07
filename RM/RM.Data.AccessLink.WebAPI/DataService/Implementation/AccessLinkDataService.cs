@@ -6,6 +6,8 @@
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Spatial;
     using System.Linq;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
     using AutoMapper;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.ExceptionMiddleware;
@@ -274,6 +276,54 @@
             }
 
             return null;
+        }
+
+
+        /// <summary>
+        /// Deletes a access link when delivery point is deleted
+        /// </summary>
+        /// <param name="operationalObjectId">Operation object id unique identifier.</param>
+        /// <returns>Success of delete operation.</returns>
+        public async Task<bool> DeleteAccessLink(Guid operationalObjectId, Guid networkLinkTypeGUID, Guid accessLinkTypeGUID)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteAccessLink"))
+                {
+                    string methodName = typeof(AccessLinkDataService) + "." + nameof(DeleteAccessLink);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                    AccessLink accessLink = await DataContext.AccessLinks.Include(l => l.NetworkLink).Where(l => l.NetworkLink.StartNodeID == operationalObjectId && l.NetworkLink.NetworkLinkTypeGUID == networkLinkTypeGUID && l.AccessLinkTypeGUID == accessLinkTypeGUID && l.ID == l.NetworkLink.ID).SingleOrDefaultAsync();
+
+                    if (accessLink != null)
+                    {
+                        if (accessLink.AccessLinkStatus != null)
+                        {
+                            DataContext.AccessLinkStatus.RemoveRange(accessLink.AccessLinkStatus);
+
+                        }
+                        if (accessLink.NetworkLink != null)
+                        {
+                            DataContext.NetworkLinks.Remove(accessLink.NetworkLink);
+
+                        }
+                        DataContext.AccessLinks.Remove(accessLink);
+
+                        await DataContext.SaveChangesAsync();
+                        loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                        return true;
+                    }
+                    else
+                    {
+                        loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                loggingHelper.Log(ex, TraceEventType.Error);
+                return false;
+            }
         }
     }
 }

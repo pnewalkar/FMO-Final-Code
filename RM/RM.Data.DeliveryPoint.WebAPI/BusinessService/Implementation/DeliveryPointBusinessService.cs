@@ -139,15 +139,16 @@
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">Guid</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Task</returns>
-        public async Task<List<DeliveryPointDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid userUnit)
+        public async Task<List<DeliveryPointDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid userUnit, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryPointsForBasicSearch"))
             {
                 string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(GetDeliveryPointsForBasicSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 int recordTakeCount = Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.SearchResultCount));
-                var fetchDeliveryPointsForBasicSearch = await deliveryPointsDataService.GetDeliveryPointsForBasicSearch(searchText, recordTakeCount, userUnit).ConfigureAwait(false);
+                var fetchDeliveryPointsForBasicSearch = await deliveryPointsDataService.GetDeliveryPointsForBasicSearch(searchText, recordTakeCount, userUnit, currentUserUnitType).ConfigureAwait(false);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return ConvertToDTO(fetchDeliveryPointsForBasicSearch);
@@ -159,15 +160,16 @@
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <param name="userUnit">Guid userUnit</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>The total count of delivery point</returns>
-        public async Task<int> GetDeliveryPointsCount(string searchText, Guid userUnit)
+        public async Task<int> GetDeliveryPointsCount(string searchText, Guid userUnit, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPointsCount"))
             {
                 string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(GetDeliveryPointsCount);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var getDeliveryPointsCount = await deliveryPointsDataService.GetDeliveryPointsCount(searchText, userUnit).ConfigureAwait(false);
+                var getDeliveryPointsCount = await deliveryPointsDataService.GetDeliveryPointsCount(searchText, userUnit, currentUserUnitType).ConfigureAwait(false);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return getDeliveryPointsCount;
@@ -179,15 +181,16 @@
         /// </summary>
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        public async Task<List<DeliveryPointDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid)
+        public async Task<List<DeliveryPointDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryPointsForAdvanceSearch"))
             {
                 string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(GetDeliveryPointsForAdvanceSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var fetchDeliveryPointsForAdvanceSearch = await deliveryPointsDataService.GetDeliveryPointsForAdvanceSearch(searchText, unitGuid).ConfigureAwait(false);
+                var fetchDeliveryPointsForAdvanceSearch = await deliveryPointsDataService.GetDeliveryPointsForAdvanceSearch(searchText, unitGuid, currentUserUnitType).ConfigureAwait(false);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return ConvertToDTO(fetchDeliveryPointsForAdvanceSearch);
