@@ -185,6 +185,44 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// This method gets called when a new OS 3rd Party Location file, with a new location comes.
+        /// In this case the DP location will be moved.
+        /// The scope of this method is to Delete Access link pointing to old location of the Delivery Point,
+        /// And to create a New access link for Deliver Point based on the new location.
+        /// </summary>
+        /// <param name="deliveryPointGuid">Delivery point unique identifier</param>
+        /// <returns>returns the status of update operation</returns>              
+        [HttpPut("AccessLink/UpdateAccessLinkForMovedDeliveryPoint/id:{deliveryPointId}")]
+        public IActionResult UpdateAccessLinkForMovedDeliveryPoint(Guid deliveryPointId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateAccessLinkForMovedDeliveryPoint"))
+            {
+                bool isAccessLinkCreateSuccessful = false;
+                try
+                {
+                    string methodName = typeof(AccessLinkController) + "." + nameof(UpdateAccessLinkForMovedDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    isAccessLinkCreateSuccessful = accessLinkBusinessService.UpdateAccessLinkForMovedDeliveryPoint(deliveryPointId);
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                }
+                catch (AggregateException ex)
+                {
+                    foreach (var exception in ex.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ex.Flatten().InnerException;
+
+                    throw realExceptions;
+                }
+
+                return Ok(isAccessLinkCreateSuccessful);
+            }
+        }
         #endregion Methods
     }
 }

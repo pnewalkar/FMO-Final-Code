@@ -48,5 +48,14 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface
         /// <param name="operationalObjectId">Operational Object unique identifier.</param>
         /// <returns>bool</returns>
         Task<bool> DeleteAccessLink(Guid operationalObjectId);
+
+        /// <summary>
+        /// This method is called during third party file process.
+        /// It deletes the Access link pointing to old location of the Delivery Point,
+        /// And to create a New access link for Deliver Point based on the new location.
+        /// </summary>
+        /// <param name="deliveryPointGuid">Delivery point Unique identifier</param>
+        /// <returns>Bool - status of update</returns>
+        bool UpdateAccessLinkForMovedDeliveryPoint(Guid deliveryPointGuid);
     }
 }
