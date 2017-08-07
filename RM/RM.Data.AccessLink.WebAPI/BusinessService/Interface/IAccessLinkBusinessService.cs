@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 
 namespace RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface
@@ -40,5 +41,12 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface
         /// <param name="accessLinkCoordinates">access link coordinate array</param>
         /// <returns>bool</returns>
         bool CheckManualAccessLinkIsValid(string boundingBoxCoordinates, string accessLinkCoordinates);
+
+        /// <summary>
+        /// Delete access link creation after delivery point deleted.
+        /// </summary>
+        /// <param name="operationalObjectId">Operational Object unique identifier.</param>
+        /// <returns>bool</returns>
+        Task<bool> DeleteAccessLink(Guid operationalObjectId);
     }
 }
