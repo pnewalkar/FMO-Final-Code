@@ -137,7 +137,7 @@ function MapFactory($http,
 
 
         map = new ol.Map({
-            layers: layers.map(function (a) { return a.layer }),
+            layers: layers.map(function (mapLayerObj) { return mapLayerObj.layer }),
             target: 'map',
             view: view,
             logo: false,
@@ -161,7 +161,7 @@ function MapFactory($http,
         $timeout(function() {
             var overviewMapContainer = document.querySelector('#overviewMap');
             var overviewMapControl =new ol.control.OverviewMap({
-                layers: layers.filter(function (l) { return l.onMiniMap; }).map(function (a) { return a.layer }),
+                layers: layers.filter(function (miniMapLayerObj) { return miniMapLayerObj.onMiniMap; }).map(function (mapLayerObj) { return mapLayerObj.layer }),
                 view: new ol.View({
                    projection: BNGProjection
                 }),
