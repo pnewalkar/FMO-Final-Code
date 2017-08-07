@@ -44,6 +44,7 @@
         internal const string PAFErrorMessageForUnmatchedDeliveryPointForUSRType = "Delivery point not present for Postal address whose address type is <USR>";
         internal const string PAFErrorMessageForAddressTypeNYBNotFound = "Address Type of the selected Postal Address record is not <NYB>";
         internal const string PAFErrorMessageForAddressTypeUSRNotFound = "Address Type of the selected Postal Address record is not <USR>";
+        internal const string PAFErrorMessageForPostalAddressStatusNotUpdated = "Postal Address Status Not found for delete PAF event";
 
         internal const string PAFERRORLOGMESSAGE = "Load PAF Error Message : {0}, UDPRN : {1}, Ammendment Type : {2}, File Name : {3}, File Name : {4}, Log Time : {5}";
         internal const string NYBERRORLOGMESSAGE = "Load NYB Error Message : {0}, UDPRN : {1}, Ammendment Type : {2}, File Name : {3}, File Name : {4}, Log Time : {5}";

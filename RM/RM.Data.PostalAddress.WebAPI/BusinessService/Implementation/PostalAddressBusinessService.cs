@@ -1269,6 +1269,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     }
 
                 }
+                else
+                {
+                    loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.PAFErrorMessageForPostalAddressStatusNotUpdated,
+                        udprn, PostalAddressConstants.DELETE, null, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
+                }
 
             }
         }
