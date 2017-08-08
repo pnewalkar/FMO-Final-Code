@@ -2,12 +2,13 @@
 angular
     .module('search')
     .controller('SearchController',['searchBusinessService',
-                                    '$timeout',
+                                    '$timeout','CommonConstants',
                                      SearchController]);
 
 function SearchController(
     searchBusinessService,
-    $timeout) {
+    $timeout,
+    CommonConstants) {
     var vm = this;
     vm.resultSet = resultSet;
     vm.onEnterKeypress = onEnterKeypress;
@@ -29,6 +30,11 @@ function SearchController(
         var result = searchBusinessService.onEnterKeypress(searchText, vm.results);
         vm.results = result.results;
         vm.contextTitle = result.contextTitle;
+        if (vm.results[0].displayText === CommonConstants.SearchLessThanThreeCharactersErrorMessage) {
+            if (vm.resultscount[0].count) {
+                vm.resultscount[0].count = 0;
+            }
+        }
     }
 
     function OnChangeItem(selectedItem) {
