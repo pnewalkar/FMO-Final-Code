@@ -101,60 +101,58 @@
             bool isPostalAddressInserted = false;
             PostalAddress objPostalAddress = default(PostalAddress);
             PostalAddress entity = new PostalAddress();
-            if (objPostalAddress != null)
+            try
             {
-                try
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveAddress"))
                 {
-                    using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveAddress"))
+                    string methodName = typeof(PostalAddressDataService) + "." + nameof(SaveAddress);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                    objPostalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddressDataDTO.UDPRN).SingleOrDefaultAsync();
+
+                    // Update existing Postal Address else Insert new Postal Address
+                    if (objPostalAddress != null)
                     {
-                        string methodName = typeof(PostalAddressDataService) + "." + nameof(SaveAddress);
-                        loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-                        objPostalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddressDataDTO.UDPRN).SingleOrDefaultAsync();
+                        objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
+                        objPostalAddress.PostTown = objPostalAddressDataDTO.PostTown;
+                        objPostalAddress.DependentLocality = objPostalAddressDataDTO.DependentLocality;
+                        objPostalAddress.DoubleDependentLocality = objPostalAddressDataDTO.DoubleDependentLocality;
+                        objPostalAddress.Thoroughfare = objPostalAddressDataDTO.Thoroughfare;
+                        objPostalAddress.DependentThoroughfare = objPostalAddressDataDTO.DependentThoroughfare;
+                        objPostalAddress.BuildingNumber = objPostalAddressDataDTO.BuildingNumber;
+                        objPostalAddress.BuildingName = objPostalAddressDataDTO.BuildingName;
+                        objPostalAddress.SubBuildingName = objPostalAddressDataDTO.SubBuildingName;
+                        objPostalAddress.POBoxNumber = objPostalAddressDataDTO.POBoxNumber;
+                        objPostalAddress.DepartmentName = objPostalAddressDataDTO.DepartmentName;
+                        objPostalAddress.OrganisationName = objPostalAddressDataDTO.OrganisationName;
+                        objPostalAddress.UDPRN = objPostalAddressDataDTO.UDPRN;
+                        objPostalAddress.PostcodeType = objPostalAddressDataDTO.PostcodeType;
+                        objPostalAddress.SmallUserOrganisationIndicator = objPostalAddressDataDTO.SmallUserOrganisationIndicator;
+                        objPostalAddress.DeliveryPointSuffix = objPostalAddressDataDTO.DeliveryPointSuffix;
+                        objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
+                    }
+                    else
+                    {
+                        Mapper.Initialize(cfg =>
+                       {
+                           cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
+                           cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
+                           cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
+                       });
+                        Mapper.Configuration.CreateMapper();
+                        objPostalAddressDataDTO.RowCreateDateTime = DateTime.UtcNow;
+                        entity = Mapper.Map<PostalAddressDataDTO, PostalAddress>(objPostalAddressDataDTO);
 
-                        // Update existing Postal Address else Insert new Postal Address
-                        if (objPostalAddress != null)
+                        entity.ID = Guid.NewGuid();
+                        PostalAddressStatus postalAddressStatus = new PostalAddressStatus
                         {
-                            objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
-                            objPostalAddress.PostTown = objPostalAddressDataDTO.PostTown;
-                            objPostalAddress.DependentLocality = objPostalAddressDataDTO.DependentLocality;
-                            objPostalAddress.DoubleDependentLocality = objPostalAddressDataDTO.DoubleDependentLocality;
-                            objPostalAddress.Thoroughfare = objPostalAddressDataDTO.Thoroughfare;
-                            objPostalAddress.DependentThoroughfare = objPostalAddressDataDTO.DependentThoroughfare;
-                            objPostalAddress.BuildingNumber = objPostalAddressDataDTO.BuildingNumber;
-                            objPostalAddress.BuildingName = objPostalAddressDataDTO.BuildingName;
-                            objPostalAddress.SubBuildingName = objPostalAddressDataDTO.SubBuildingName;
-                            objPostalAddress.POBoxNumber = objPostalAddressDataDTO.POBoxNumber;
-                            objPostalAddress.DepartmentName = objPostalAddressDataDTO.DepartmentName;
-                            objPostalAddress.OrganisationName = objPostalAddressDataDTO.OrganisationName;
-                            objPostalAddress.UDPRN = objPostalAddressDataDTO.UDPRN;
-                            objPostalAddress.PostcodeType = objPostalAddressDataDTO.PostcodeType;
-                            objPostalAddress.SmallUserOrganisationIndicator = objPostalAddressDataDTO.SmallUserOrganisationIndicator;
-                            objPostalAddress.DeliveryPointSuffix = objPostalAddressDataDTO.DeliveryPointSuffix;
-                            objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
-                        }
-                        else
-                        {
-                            Mapper.Initialize(cfg =>
-                           {
-                               cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
-                               cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
-                               cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
-                           });
-                            Mapper.Configuration.CreateMapper();
-
-                            entity = Mapper.Map<PostalAddressDataDTO, PostalAddress>(objPostalAddressDataDTO);
-
-                            entity.ID = Guid.NewGuid();
-                            PostalAddressStatus postalAddressStatus = new PostalAddressStatus
-                            {
-                                ID = Guid.NewGuid(),
-                                OperationalStatusGUID = operationalStatusGUID,
-                                StartDateTime = DateTime.UtcNow,
-                                RowCreateDateTime = DateTime.UtcNow
-                            };
-                            entity.PostalAddressStatus.Add(postalAddressStatus);
-                            DataContext.PostalAddresses.Add(entity);
-                        }
+                            ID = Guid.NewGuid(),
+                            OperationalStatusGUID = operationalStatusGUID,
+                            StartDateTime = DateTime.UtcNow,
+                            RowCreateDateTime = DateTime.UtcNow
+                        };
+                        entity.PostalAddressStatus.Add(postalAddressStatus);
+                        DataContext.PostalAddresses.Add(entity);
+                    }
 
                         await DataContext.SaveChangesAsync();
                         isPostalAddressInserted = true;
@@ -170,8 +168,7 @@
                         // LogFileException(objPostalAddressDataDTO.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
                     }
 
-                    throw ex;
-                }
+                throw ex;
             }
 
             return isPostalAddressInserted;
