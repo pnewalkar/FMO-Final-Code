@@ -711,7 +711,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockPostalAddressDbContext = CreateMock<PostalAddressDBContext>();
-            // mockFileProcessingLog = CreateMock<IFileProcessingLogDataService>();
             mockDatabaseFactory = CreateMock<IDatabaseFactory<PostalAddressDBContext>>();
 
             mockAddressDataService = CreateMock<IPostalAddressDataService>();

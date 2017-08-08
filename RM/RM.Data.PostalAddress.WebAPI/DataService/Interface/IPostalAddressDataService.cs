@@ -150,7 +150,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <returns></returns>
         Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateNybRecordsForRange(List<PostalAddressDataDTO> postalAddressesDTOs, Guid addressTypeNYBGuid);
 
-
         Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDataDTO> postalAddressDTOs);
     }
 }

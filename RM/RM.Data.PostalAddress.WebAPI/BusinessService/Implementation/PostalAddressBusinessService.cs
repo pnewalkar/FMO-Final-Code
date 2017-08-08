@@ -1,4 +1,12 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Data.SqlTypes;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+using AutoMapper;
 using Microsoft.SqlServer.Types;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
@@ -12,14 +20,6 @@ using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Data.SqlTypes;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 {
@@ -645,7 +645,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(SavePAFRecords);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-                FileProcessingLogDTO objFileProcessingLog = null;
                 Guid deliveryPointUseIndicatorPAF = Guid.Empty;
                 Guid postCodeGuid = Guid.Empty;
 
@@ -702,22 +701,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     }
                     else
                     {
-                        loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound, objPostalAddress.UDPRN, objPostalAddressBatch.AmendmentType, strFileName,
-                                            FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
-
-                        //objFileProcessingLog = new FileProcessingLogDTO
-                        //{
-                        //    FileID = Guid.NewGuid(),
-                        //    UDPRN = objPostalAddress.UDPRN ?? default(int),
-                        //    AmendmentType = objPostalAddressBatch.AmendmentType,
-                        //    FileName = strFileName,
-                        //    FileProcessing_TimeStamp = DateTime.UtcNow,
-                        //    FileType = FileType.Paf.ToString(),
-                        //    ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound,
-                        //    SuccessFlag = false
-                        //};
-
-                        //fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                        loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.PAFErrorMessageForAddressTypeNYBNotFound, objPostalAddress.UDPRN, objPostalAddressBatch.AmendmentType, strFileName, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                     }
                 }
                 else if (objPostalAddressMatchedAddress != null)
@@ -1176,8 +1160,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             var isDPUseUpdated = postalAddressIntegrationService.UpdateDPUse(postalAddressDetails).Result;
                             if (!isDPUseUpdated)
                             {
-                                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.NoMatchingDP,
-                                                objPostalAddress.UDPRN, PostalAddressConstants.UPDATE, null, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
+                                loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.NoMatchingDP, objPostalAddress.UDPRN, PostalAddressConstants.UPDATE, null, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                             }
                         }
                     }
@@ -1185,16 +1168,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     // If Address Type is not <PAF>, log error
                     else
                     {
-                        loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.WrongAddressType,
-                                                objPostalAddress.UDPRN, PostalAddressConstants.UPDATE, null, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
+                        loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.WrongAddressType, objPostalAddress.UDPRN, PostalAddressConstants.UPDATE, null, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                     }
                 }
 
                 // If UDPRN does not match, log error
                 else
                 {
-                    loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.NoMatchToAddressOnUDPRN,
-                                                objPostalAddress.UDPRN, PostalAddressConstants.UPDATE, null, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
+                    loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.NoMatchToAddressOnUDPRN, objPostalAddress.UDPRN, PostalAddressConstants.UPDATE, null, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                 }
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
@@ -1268,8 +1249,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     }
                     else
                     {
-                        loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.PAFErrorMessageForPostalAddressStatusNotUpdated,
-                            udprn, PostalAddressConstants.DELETE, null, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
+                        loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.PAFErrorMessageForPostalAddressStatusNotUpdated, udprn, PostalAddressConstants.DELETE, null, FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
                     }
                 }
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);

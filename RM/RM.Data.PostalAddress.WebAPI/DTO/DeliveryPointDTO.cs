@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;

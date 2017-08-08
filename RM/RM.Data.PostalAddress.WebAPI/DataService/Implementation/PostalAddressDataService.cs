@@ -626,7 +626,6 @@
 
                 if (postalAddress != null)
                 {
-
                     DataContext.PostalAddressAlias.RemoveRange(postalAddress.PostalAddressAlias);
                     DataContext.PostalAddressStatus.RemoveRange(postalAddress.PostalAddressStatus);
                     DataContext.PostalAddresses.Remove(postalAddress);
@@ -675,7 +674,6 @@
             return isPostalAddressUpdated;
         }
 
-
         /// <summary>
         /// Check For Duplicate Address With DeliveryPoints
         /// </summary>
@@ -706,7 +704,7 @@
                         if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
                         {
                             duplicateDTOs.Add(address);
-                            isDuplicate = true;                            
+                            isDuplicate = true;
                         }
                     }
                 }
@@ -828,7 +826,7 @@
                     postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => postcodes.Contains(n.Postcode));
                 }
 
-                if (buildingNames!= null && buildingNames.Count > 0)
+                if (buildingNames != null && buildingNames.Count > 0)
                 {
                     postalAddress = postalAddress.Where(n => buildingNames.Contains(n.BuildingName.ToUpper()));
                 }
@@ -858,7 +856,7 @@
                     postalAddress = postalAddress.Where(n => thoroughfares.Contains(n.Thoroughfare.ToUpper()));
                 }
 
-                if (dependentThoroughfares!= null && dependentThoroughfares.Count > 0)
+                if (dependentThoroughfares != null && dependentThoroughfares.Count > 0)
                 {
                     postalAddress =
                         postalAddress.Where(n => dependentThoroughfares.Contains(n.DependentThoroughfare.ToUpper()));

@@ -4,7 +4,7 @@
     {
         internal const string TASKPAFACTION = "Position new DP Location";
         internal const string DeliveryPointUseIndicatorPAF = "Organisation";
-        
+
         internal const string PAFTaskBodyPreText = "Please position the DP ";
         internal const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
         internal const int NOTIFICATIONDUE = 24;

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RM.Data.PostalAddress.WebAPI.DTO.Model;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
-using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
-using RM.Data.PostalAddress.WebAPI.DTO.Model;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
 {
