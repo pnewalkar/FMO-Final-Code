@@ -35,9 +35,9 @@
         internal const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
         internal const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
         internal const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";
-        internal const string NoMatchToAddressOnUDPRN = "No Match to Address on UDPRN : {0}";
-        internal const string WrongAddressType = "Wrong Address Type UDPRN : {0}";
-        internal const string NoMatchingDP = "No matching Delivery Point for UDPRN :{0}";
+        internal const string NoMatchToAddressOnUDPRN = "No Match to Address";
+        internal const string WrongAddressType = "Wrong Address Type";
+        internal const string NoMatchingDP = "No matching Delivery Point";
 
         internal const string PAFErrorMessageForDPDelete = "PAF Delete record : Associated Delivery Point for PostalAddresId is not deleted : {0}";
         internal const string PAFErrorMessageForDPNotFoundDelete = "PAF Delete record : Associated Delivery Point not found for PostalAddresId : {0}";
