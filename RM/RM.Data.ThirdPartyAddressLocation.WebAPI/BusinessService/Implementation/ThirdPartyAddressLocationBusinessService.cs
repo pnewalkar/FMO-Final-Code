@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -97,6 +98,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
+            string addressLocationChangeType = string.Empty;
             using (loggingHelper.RMTraceManager.StartTrace("Business.SaveUSRDetails"))
             {
                 string methodName = typeof(ThirdPartyAddressLocationBusinessService) + "." + nameof(SaveUSRDetails);
@@ -124,8 +126,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                 {
                     // Get the udprn id for each USR record.
                     fileUdprn = (int)addressLocationUSRPOSTDTO.UDPRN;
+                    addressLocationChangeType = addressLocationUSRPOSTDTO.ChangeType;                                
 
-                    if (!await addressLocationDataService.AddressLocationExists(fileUdprn))
+                    // To save new location                              
+                    if (addressLocationChangeType.Equals("I") && !await addressLocationDataService.AddressLocationExists(fileUdprn))
                     {
                         DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
 
@@ -224,9 +228,52 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                             }
                         }
                     }
+
+                    // To update existing location
+                    if (addressLocationChangeType.Equals("U"))
+                    {
+                        // Match to Location on UDPRN (update Location)
+                        if (await addressLocationDataService.AddressLocationExists(fileUdprn))
+                        {
+                            // Update the  Address location.
+                            UpdateAddressLocationByUDPRN(addressLocationUSRPOSTDTO);
+
+                            // Update the DP location. Story: RFMO-276
+                            UpdateDPLocation(addressLocationUSRPOSTDTO);
+                        }
+
+                        // No Match to Location on UDPRN - Log Error
+                        else
+                        {
+                            loggingHelper.Log(string.Format(ThirdPartyAddressLocationConstants.NoMatchToAddressOnUDPRN, fileUdprn), TraceEventType.Error);
+                        }
+                    }
                 }
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
+            }
+        }       
+
+        #endregion Save USR Details to Database
+
+        public async Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetAddressLocationsbyUDPRN"))
+            {
+                string methodName = typeof(ThirdPartyAddressLocationBusinessService) + "." + nameof(GetAddressLocationByUDPRN);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
+
+                var addressLocationDataDtos = await addressLocationDataService.GetAddressLocationsByUDPRN(udprns);
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<AddressLocationDataDTO, AddressLocationDTO>().MaxDepth(1);
+                });
+                Mapper.Configuration.CreateMapper();
+
+                List<AddressLocationDTO> addressLocationDtos = Mapper.Map<List<AddressLocationDataDTO>, List<AddressLocationDTO>>(addressLocationDataDtos);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
+                return addressLocationDtos;
             }
         }
 
@@ -273,30 +320,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                 return addressLocationGeoJson;
             }
         }
-
-        #endregion Save USR Details to Database
-
-        public async Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetAddressLocationsbyUDPRN"))
-            {
-                string methodName = typeof(ThirdPartyAddressLocationBusinessService) + "." + nameof(GetAddressLocationByUDPRN);
-                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
-
-                var addressLocationDataDtos = await addressLocationDataService.GetAddressLocationsByUDPRN(udprns);
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<AddressLocationDataDTO, AddressLocationDTO>().MaxDepth(1);
-                });
-                Mapper.Configuration.CreateMapper();
-
-                List<AddressLocationDTO> addressLocationDtos = Mapper.Map<List<AddressLocationDataDTO>, List<AddressLocationDTO>>(addressLocationDataDtos);
-
-                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
-                return addressLocationDtos;
-            }
-        }
-
         #region Calculate Spatial Location
 
         /// <summary>
@@ -416,6 +439,47 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return referenceDataGuid;
+            }
+        }
+
+        /// <summary>
+        /// Method to update the Address location based on UDPRN.
+        /// </summary>
+        /// <param name="addressLocationUSRPOSTDTO"></param>
+        private async void UpdateAddressLocationByUDPRN(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
+        {
+            DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
+
+            AddressLocationDataDTO updateAddressLocationDTO = new AddressLocationDataDTO()
+            {
+                UDPRN = (int)addressLocationUSRPOSTDTO.UDPRN,
+                LocationXY = spatialLocationXY,
+                Lattitude = (decimal)addressLocationUSRPOSTDTO.Latitude,
+                Longitude = (decimal)addressLocationUSRPOSTDTO.Longitude
+            };
+
+            // Update the address location data record to the database.
+            await addressLocationDataService.UpdateExistingAddressLocationByUDPRN(updateAddressLocationDTO);     
+        }
+
+        /// <summary>
+        /// Method to update the DP location based on UDPRN.
+        /// </summary>
+        /// <param name="addressLocationUSRPOSTDTO"></param>
+        private async void UpdateDPLocation(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
+        {
+            DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
+
+            PostalAddressDataDTO postalAddressDataDTO = await addressLocationDataService.GetPostalAddressData((int)addressLocationUSRPOSTDTO.UDPRN);
+
+            // If Delivery Point Exists for the given Postal Address
+            if (postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0)
+            {
+                DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress(postalAddressDataDTO.ID);
+                deliveryPointDTO.LocationXY = spatialLocationXY;
+
+                // Update the location details for the delivery point
+                await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
             }
         }
     }

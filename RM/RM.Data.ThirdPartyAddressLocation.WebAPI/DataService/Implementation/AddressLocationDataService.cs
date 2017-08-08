@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -11,7 +12,6 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Entities;
-using System.Collections.Generic;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 {
@@ -113,6 +113,50 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
                     var saveNewAddressLocation = await DataContext.SaveChangesAsync();
                     loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                     return saveNewAddressLocation;
+                }
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
+            }
+            catch (NotSupportedException notSupportedException)
+            {
+                notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
+            }
+            catch (ObjectDisposedException disposedException)
+            {
+                disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+            }
+        }
+
+        /// <summary>
+        /// Method to update the Existing Address Location by UDPRN
+        /// </summary>
+        /// <param name="addressLocationDTO"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateExistingAddressLocationByUDPRN(AddressLocationDataDTO addressLocationDTO)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdateExistingAddressLocationByUDPRN"))
+                {
+                    string methodName = typeof(AddressLocationDataService) + "." + nameof(UpdateExistingAddressLocationByUDPRN);
+                    loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
+
+                    var addressLocationEntity = DataContext.AddressLocations.Where(n => n.UDPRN == addressLocationDTO.UDPRN).SingleOrDefault();
+                    if (addressLocationEntity != null)
+                    {                       
+                        addressLocationEntity.UDPRN = addressLocationDTO.UDPRN;
+                        addressLocationEntity.LocationXY = addressLocationDTO.LocationXY;
+                        addressLocationEntity.Lattitude = addressLocationDTO.Lattitude;
+                        addressLocationEntity.Longitude = addressLocationDTO.Longitude;
+                    }
+                                        
+                    var updateNewAddressLocation = await DataContext.SaveChangesAsync();
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
+                    return updateNewAddressLocation;
                 }
             }
             catch (DbUpdateException dbUpdateException)
