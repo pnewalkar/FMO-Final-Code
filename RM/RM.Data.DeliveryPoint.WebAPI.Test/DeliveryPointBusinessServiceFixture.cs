@@ -199,14 +199,16 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         {
             var expectedresult = await testCandidate.CheckDeliveryPointForRange(addDeliveryPointDTO);
             Assert.IsNotNull(expectedresult);
-            Assert.IsTrue(expectedresult.CreateDeliveryPointModelDTOs.Count == 1);
+            Assert.IsFalse(expectedresult.HasAllDuplicates);
+            Assert.IsFalse(expectedresult.HasDuplicates);
+            Assert.IsTrue(expectedresult.IsMultiple);
         }
 
         [Test]
         public async Task Test_CheckDeliveryPointForRange_DuplicateNybAddress_PositiveScenario()
         {
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecordsForRange(It.IsAny<List<PostalAddressDTO>>())).Returns(Task.FromResult(GetDuplicateDeliveryPointDTO()));
-            var expectedresult = await testCandidate.CheckDeliveryPointForRange(GeteliveryPointDTO());
+            var expectedresult = await testCandidate.CheckDeliveryPointForRange(GetDeliveryPointDTO());
             Assert.IsNotNull(expectedresult);
             Assert.IsTrue(expectedresult.HasDuplicates == true);
             Assert.IsTrue(expectedresult.PostalAddressDTOs.Count > 0);
@@ -217,7 +219,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         public async Task Test_CheckDeliveryPointForRange_DuplicateDeliveryPoints_PositiveScenario()
         {
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateAddressWithDeliveryPointsForRange(It.IsAny<List<PostalAddressDTO>>())).Returns(Task.FromResult(GetDuplicateDeliveryPointDTO()));
-            var expectedresult = await testCandidate.CheckDeliveryPointForRange(GeteliveryPointDTO());
+            var expectedresult = await testCandidate.CheckDeliveryPointForRange(GetDeliveryPointDTO());
             Assert.IsNotNull(expectedresult);
             Assert.IsTrue(expectedresult.HasDuplicates == true);
             Assert.IsTrue(expectedresult.PostalAddressDTOs.Count > 0);
@@ -228,6 +230,23 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         public async Task Test_CheckDeliveryPointForRange_NegativeScenario()
         {
             Assert.ThrowsAsync<ArgumentNullException>(() => testCandidate.CheckDeliveryPointForRange(null));
+        }
+
+        [Test]
+        public async Task Test_CreateDeliveryPointForRange_NegativeScenario()
+        {
+            Assert.ThrowsAsync<ArgumentNullException>(() => testCandidate.CreateDeliveryPointForRange(null));
+        }
+
+        [Test]
+        public async Task Test_CreateDeliveryPointForRange_PositiveScenario()
+        {
+            var expectedresult = await testCandidate.CreateDeliveryPointForRange(postalAddressesDTO);
+            Assert.IsNotNull(expectedresult);
+            Assert.IsFalse(expectedresult.HasAllDuplicates);
+            Assert.IsFalse(expectedresult.HasDuplicates);
+            Assert.IsTrue(expectedresult.IsMultiple);
+            Assert.IsTrue(expectedresult.CreateDeliveryPointModelDTOs.Count == 1);
         }
 
         /// <summary>
@@ -656,7 +675,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         };
         }
 
-        private AddDeliveryPointDTO GeteliveryPointDTO()
+        private AddDeliveryPointDTO GetDeliveryPointDTO()
         {
             return new AddDeliveryPointDTO()
             {
@@ -696,13 +715,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             {
                 new PostalAddressDTO()
                 {
-                    BuildingName = "bldg1",
-                    BuildingNumber = 1,
-                    SubBuildingName = "subbldg",
-                    OrganisationName = "org",
-                    DepartmentName = "department",
-                    Thoroughfare = "ThoroughFare1",
-                    DependentThoroughfare = "DependentThoroughFare1",
+                    BuildingNumber = 3,
                     Postcode = "PostcodeNew",
                     PostTown = "PostTown",
                     POBoxNumber = "POBoxNumber",
