@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Data.SqlTypes;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Reflection;
-using Microsoft.SqlServer.Types;
+﻿using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
@@ -16,6 +9,13 @@ using RM.Data.AccessLink.WebAPI.Utils;
 using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Data.SqlTypes;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 {
@@ -329,21 +329,20 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 {
                     Guid locationGuid = Guid.NewGuid();
                     Guid accessLinkGuid = Guid.NewGuid();
-                    Guid networkNodeTypeGuid = Guid.NewGuid();
 
                     AccessLinkDataDTO accessLinkDataDto = new AccessLinkDataDTO();
 
                     // Create Location
-                    accessLinkDataDto.NetworkLink.NetworkNode.Location.ID = locationGuid;
-                    accessLinkDataDto.NetworkLink.NetworkNode.Location.Shape = networkIntersectionPoint.ToDbGeometry();
-                    accessLinkDataDto.NetworkLink.NetworkNode.Location.RowCreateDateTime = DateTime.UtcNow;
+                    accessLinkDataDto.NetworkLink.NetworkNode1 = new NetworkNodeDataDTO();
+                    accessLinkDataDto.NetworkLink.NetworkNode1.Location.ID = locationGuid;
+                    accessLinkDataDto.NetworkLink.NetworkNode1.Location.Shape = networkIntersectionPoint.ToDbGeometry();
+                    accessLinkDataDto.NetworkLink.NetworkNode1.Location.RowCreateDateTime = DateTime.UtcNow;
 
                     // Create NetworkNode
-                    accessLinkDataDto.NetworkLink.NetworkNode.ID = locationGuid;
-                    accessLinkDataDto.NetworkLink.NetworkNode.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true);
-
-                    accessLinkDataDto.NetworkLink.NetworkNode.NetworkNodeType_GUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, AccessLinkConstants.AccessLinkDataProviderGUID, true);
-                    accessLinkDataDto.NetworkLink.NetworkNode.RowCreateDateTime = DateTime.UtcNow;
+                    accessLinkDataDto.NetworkLink.NetworkNode1.ID = locationGuid;
+                    accessLinkDataDto.NetworkLink.NetworkNode1.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true);
+                    accessLinkDataDto.NetworkLink.NetworkNode1.NetworkNodeType_GUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, AccessLinkConstants.AccessLinkDataProviderGUID, true);
+                    accessLinkDataDto.NetworkLink.NetworkNode1.RowCreateDateTime = DateTime.UtcNow;
 
                     // Create AccessLink
                     accessLinkDataDto.ID = accessLinkGuid;
@@ -486,16 +485,16 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 AccessLinkDataDTO accessLinkDataDto = new AccessLinkDataDTO();
 
                 // Create Location
-                accessLinkDataDto.NetworkLink.NetworkNode.Location.ID = locationGuid;
-                accessLinkDataDto.NetworkLink.NetworkNode.Location.Shape = DbGeometry.PointFromText(networkIntersectionPointManual, AccessLinkConstants.BNGCOORDINATESYSTEM);
-                accessLinkDataDto.NetworkLink.NetworkNode.Location.RowCreateDateTime = DateTime.UtcNow;
+                accessLinkDataDto.NetworkLink.NetworkNode1 = new NetworkNodeDataDTO();
+                accessLinkDataDto.NetworkLink.NetworkNode1.Location.ID = locationGuid;
+                accessLinkDataDto.NetworkLink.NetworkNode1.Location.Shape = DbGeometry.PointFromText(networkIntersectionPointManual, AccessLinkConstants.BNGCOORDINATESYSTEM);
+                accessLinkDataDto.NetworkLink.NetworkNode1.Location.RowCreateDateTime = DateTime.UtcNow;
 
                 // Create NetworkNode
-                accessLinkDataDto.NetworkLink.NetworkNode.ID = locationGuid;
-                accessLinkDataDto.NetworkLink.NetworkNode.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true);
-
-                accessLinkDataDto.NetworkLink.NetworkNode.NetworkNodeType_GUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, AccessLinkConstants.AccessLinkDataProviderGUID, true);
-                accessLinkDataDto.NetworkLink.NetworkNode.RowCreateDateTime = DateTime.UtcNow;
+                accessLinkDataDto.NetworkLink.NetworkNode1.ID = locationGuid;
+                accessLinkDataDto.NetworkLink.NetworkNode1.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true);
+                accessLinkDataDto.NetworkLink.NetworkNode1.NetworkNodeType_GUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, AccessLinkConstants.AccessLinkDataProviderGUID, true);
+                accessLinkDataDto.NetworkLink.NetworkNode1.RowCreateDateTime = DateTime.UtcNow;
 
                 // Create AccessLink
                 accessLinkDataDto.ID = accessLinkGuid;
@@ -796,7 +795,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             }
         }
 
-
         /// <summary>
         /// Method to delete access link once Delivery point deleted.
         /// </summary>
@@ -816,9 +814,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 List<string> categoryNamesSimpleLists = new List<string>
             {
-
                 ReferenceDataCategoryNames.AccessLinkType, // access link type (NLNodetype)
-                ReferenceDataCategoryNames.NetworkLinkType//NetworkLinkType to check whether accesslink,road link,path link          
+                ReferenceDataCategoryNames.NetworkLinkType//NetworkLinkType to check whether accesslink,road link,path link
             };
 
                 var referenceDataCategoryList =
@@ -835,7 +832,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 return returnValue;
             }
-
         }
 
         /// <summary>
@@ -872,12 +868,13 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 // Delete existing Access link pointing to Old location
                 DeleteAccessLink(deliveryPointGuid);
 
-                // Create new access link based on new location   
+                // Create new access link based on new location
                 isAccessLinkCreateSuccessful = CreateAccessLink(deliveryPointGuid, operationalObjectTypeID);
             }
 
             return isAccessLinkCreateSuccessful;
         }
+
         #endregion Methods
     }
 }
