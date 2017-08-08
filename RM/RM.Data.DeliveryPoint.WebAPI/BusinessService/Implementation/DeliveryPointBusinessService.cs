@@ -1129,10 +1129,11 @@
         /// <returns>Delivery point public DTO.</returns>
         private DeliveryPointDTO ConvertToDTO(DeliveryPointDataDTO deliveryPointDataDTO)
         {
-            DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
+            DeliveryPointDTO deliveryPointDTO = null;
 
             if (deliveryPointDataDTO != null)
             {
+                deliveryPointDTO = new DeliveryPointDTO();
                 deliveryPointDTO.DeliveryPointUseIndicator_GUID = deliveryPointDataDTO.DeliveryPointUseIndicatorGUID;
                 deliveryPointDTO.ID = deliveryPointDataDTO.ID;
                 deliveryPointDTO.MailVolume = deliveryPointDataDTO.MailVolume;
