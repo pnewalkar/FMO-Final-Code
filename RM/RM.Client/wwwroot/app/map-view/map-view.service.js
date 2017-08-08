@@ -767,9 +767,12 @@ function mapService($http,
     }
     function mapToolChange(button) {
         if (getActiveFeature() != null) {
-            vm.layerName = "";
-            setSelections(null, []);
+            if (button.name === "point" || button.name === "line" || button.name === "area") {
+                setSelections(null, []);
+                $rootScope.$emit('resetMapToolbar', { "isObjectSelected": false });
+            }
         }
+
         vm.activeTool = button.name;
         removeCurrentInteractions();
         if (button.enabled) {
