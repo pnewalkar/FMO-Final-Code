@@ -205,7 +205,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                                         where route.UnSequencedBlockID == block.BlockID || routeActivity.BlockID == block.BlockID
                                         select route).FirstOrDefault();
 
-                    var deliveryPointDetails = DataContext.DeliveryPoints.Include(n => n.PostalAddress).Where(m => m.ID == deliveryPointId).SingleOrDefault();
+                    var deliveryPointDetails = DataContext.DeliveryPoints.Include(n => n.PostalAddress).AsNoTracking().Where(m => m.ID == deliveryPointId).SingleOrDefault();
 
                     if (routeDetails != null && deliveryPointDetails != null && deliveryPointDetails.PostalAddress != null)
                     {

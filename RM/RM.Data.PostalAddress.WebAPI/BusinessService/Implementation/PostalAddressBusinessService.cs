@@ -483,9 +483,46 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
-        #endregion public methods
+        /// <summary>
+        /// Delete Postal Addresses as part of Housekeeping
+        /// </summary>
+        /// <returns>Void</returns>
+        public async Task DeletePostalAddressesForHouseKeeping()
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.DeletePostalAddressesForHouseKeeping"))
+            {
+                string methodName = typeof(PostalAddressBusinessService) + "." + nameof(DeletePostalAddressesForHouseKeeping);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-        #region private methods
+                List<string> categoryNames = new List<string> { PostalAddressConstants.PostalAddressType, PostalAddressConstants.PostalAddressStatus };
+
+                var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
+
+                Guid pendingDelete = referenceDataCategoryList
+                  .Where(x => x.CategoryName == PostalAddressConstants.PostalAddressStatus)
+                  .SelectMany(x => x.ReferenceDatas)
+                  .Where(x => x.ReferenceDataValue == PostalAddressConstants.PendingDeleteInFMO).Select(x => x.ID)
+                  .SingleOrDefault();
+
+                List<PostalAddressDataDTO> postalAddresses = await addressDataService.GetAllPendingDeletePostalAddresses(pendingDelete);
+
+                if (postalAddresses != null && postalAddresses.Count > 0)
+                {
+#if DEBUG
+                    loggingHelper.Log("Count of Postal Addresses: " + postalAddresses.Count, TraceEventType.Information);
+                    await addressDataService.DeletePostalAddressForHousekeeping(postalAddresses);
+#else
+                    await addressDataService.DeletePostalAddressForHousekeeping(postalAddresses);
+#endif
+                }
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
+            }
+        }
+
+#endregion public methods
+
+#region private methods
 
         /// <summary>
         /// Business rule implementation for PAF create events
@@ -1124,6 +1161,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
-        #endregion private methods
+#endregion private methods
     }
 }

@@ -330,6 +330,38 @@ namespace Fmo.API.Services.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete Postal Addresses as part of Housekeeping
+        /// </summary>
+        /// <returns>Void</returns>
+        [HttpGet]
+        [Route("postaladdress/housekeeping/clear")]
+        public async Task DeletePostalAddressesForHouseKeeping()
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.DeletePostalAddressesForHouseKeeping"))
+                {
+                    string methodName = typeof(PostalAddressController) + "." + nameof(DeletePostalAddressesForHouseKeeping);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    await businessService.DeletePostalAddressesForHouseKeeping();
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                }
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var exception in ex.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ex.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
         #endregion Public Methods
     }
 }

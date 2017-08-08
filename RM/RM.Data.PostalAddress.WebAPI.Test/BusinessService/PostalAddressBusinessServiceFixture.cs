@@ -326,6 +326,78 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void Test_DeletePostalAddress_Housekeeping_PostiveScenario()
+        {
+                
+            List<PostalAddressDataDTO> postalAddressDataDTOs = new List<PostalAddressDataDTO>
+            {
+                new PostalAddressDataDTO
+                {
+                    ID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3"),
+                    DeliveryPoints = new List<DeliveryPointDataDTO>
+                    {
+                        new DeliveryPointDataDTO {
+                            ID = new Guid("B2E5DB38-7E57-48E2-A2F6-48A6277457AA"),
+                            PostalAddressID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3")
+                        }
+                    },
+                    PostalAddressStatus = new List<PostalAddressStatusDataDTO>
+                    {
+                        new PostalAddressStatusDataDTO {
+                            PostalAddressGUID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3"),
+                            OperationalStatusGUID = new Guid("254A92E1-4D6C-411B-A5A5-E0495A4F2525")
+                        }
+                    }
+
+                }
+            };
+
+            mockPostalAddressDataService.Setup(n => n.GetAllPendingDeletePostalAddresses(It.IsAny<Guid>())).Returns(Task.FromResult(postalAddressDataDTOs));
+            mockPostalAddressDataService.Setup(n => n.DeletePostalAddressForHousekeeping(It.IsAny<List<PostalAddressDataDTO>>())).Returns(Task.FromResult(true));
+
+            testCandidate.DeletePostalAddressesForHouseKeeping();
+
+            mockPostalAddressDataService.Verify(n => n.GetAllPendingDeletePostalAddresses(It.IsAny<Guid>()), Times.AtLeastOnce);
+            mockPostalAddressDataService.Verify(n => n.DeletePostalAddressForHousekeeping(It.IsAny<List<PostalAddressDataDTO>>()), Times.AtLeastOnce);
+        }
+
+        [Test]
+        public void Test_DeletePostalAddress_Housekeeping_NegativeScenario()
+        {
+            
+            List<PostalAddressDataDTO> postalAddressDataDTOs = new List<PostalAddressDataDTO>
+            {
+                new PostalAddressDataDTO
+                {
+                    ID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3"),
+                    DeliveryPoints = new List<DeliveryPointDataDTO>
+                    {
+                        new DeliveryPointDataDTO {
+                            ID = new Guid("B2E5DB38-7E57-48E2-A2F6-48A6277457AA"),
+                            PostalAddressID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3")
+                        }
+                    },
+                    PostalAddressStatus = new List<PostalAddressStatusDataDTO>
+                    {
+                        new PostalAddressStatusDataDTO {
+                            PostalAddressGUID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3"),
+                            OperationalStatusGUID = new Guid("254A92E1-4D6C-411B-A5A5-E0495A4F2525")
+                        }
+                    }
+
+                }
+            };
+
+            mockPostalAddressDataService.Setup(n => n.GetAllPendingDeletePostalAddresses(It.IsAny<Guid>())).Returns(Task.FromResult(new List<PostalAddressDataDTO>()));
+            mockPostalAddressDataService.Setup(n => n.DeletePostalAddressForHousekeeping(It.IsAny<List<PostalAddressDataDTO>>())).Returns(Task.FromResult(true));
+
+            testCandidate.DeletePostalAddressesForHouseKeeping();
+
+            mockPostalAddressDataService.Verify(n => n.GetAllPendingDeletePostalAddresses(It.IsAny<Guid>()), Times.Once);
+            mockPostalAddressDataService.Verify(n => n.DeletePostalAddressForHousekeeping(It.IsAny<List<PostalAddressDataDTO>>()), Times.Never);
+        } 
+
         protected override void OnSetup()
         {
             // OnSetup to be configured

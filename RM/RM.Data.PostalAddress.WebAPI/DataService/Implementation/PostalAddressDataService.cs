@@ -18,6 +18,7 @@
     using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
     using RM.DataManagement.PostalAddress.WebAPI.DTO;
     using RM.DataManagement.PostalAddress.WebAPI.Entities;
+    using System.Collections;
 
     /// <summary>
     /// DataService to interact with postal address entity
@@ -654,6 +655,67 @@
             }
 
             return isPostalAddressUpdated;
+        }
+
+        /// <summary>
+        /// Get All the pending delete postal addresses for deletion
+        /// </summary>
+        /// <param name="postalAddressPendingDeleteId">Postal Address Pending Delete Guid</param>
+        /// <returns>Postal Adddress Data DTOs</returns>
+        public async Task<List<PostalAddressDataDTO>> GetAllPendingDeletePostalAddresses(Guid postalAddressPendingDeleteId)
+        {
+            try
+            {
+                List<PostalAddress> postalAddresses = await DataContext.PostalAddresses.AsNoTracking()
+                                                           .Include(pa => pa.PostalAddressStatus).AsNoTracking()
+                                                           .Include(pa => pa.DeliveryPoints).AsNoTracking()
+                                                           .Where(pa => pa.PostalAddressStatus.FirstOrDefault().OperationalStatusGUID == postalAddressPendingDeleteId && pa.DeliveryPoints.Count == 0)
+                                                            .ToListAsync();
+
+                ConfigureMapper();
+
+                return Mapper.Map<List<PostalAddress>, List<PostalAddressDataDTO>>(postalAddresses);
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// Delete postal Addresses for housekeeping
+        /// </summary>
+        /// <param name="addressId">Postal Addresses Data DTOs</param>
+        /// <returns>whether the records are delted or not</returns>
+        public async Task<bool> DeletePostalAddressForHousekeeping(List<PostalAddressDataDTO> postalAddressDataDTOs)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.DeletePostalAddressForHousekeeping"))
+            {
+                bool postalAddressDeleted = false;
+                string methodName = typeof(PostalAddressDataService) + "." + nameof(DeletePostalAddressForHousekeeping);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId);
+
+                List<Guid> postalAddressGuids = postalAddressDataDTOs != null && postalAddressDataDTOs.Count > 0 ? postalAddressDataDTOs.Select(x => x.ID).ToList() : null;
+
+                var postalAddresses = postalAddressGuids != null && postalAddressGuids.Count > 0 ? await DataContext.PostalAddresses.Include(n => n.PostalAddressAlias).Include(n => n.PostalAddressStatus).Where(n => postalAddressGuids.Contains(n.ID)).ToListAsync() : null;
+
+                if (postalAddresses != null && postalAddresses.Count > 0)
+                {
+                    foreach (PostalAddress postalAddress in postalAddresses)
+                    {
+                        DataContext.PostalAddressAlias.RemoveRange(postalAddress.PostalAddressAlias);
+                        DataContext.PostalAddressStatus.RemoveRange(postalAddress.PostalAddressStatus);
+                    }
+                    DataContext.PostalAddresses.RemoveRange(postalAddresses);
+                    await DataContext.SaveChangesAsync();
+                    postalAddressDeleted = true;
+                }
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId);
+                return postalAddressDeleted;
+            }
         }
 
         private static void ConfigureMapper()

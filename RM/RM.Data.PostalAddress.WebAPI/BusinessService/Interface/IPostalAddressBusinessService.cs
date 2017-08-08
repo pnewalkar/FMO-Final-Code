@@ -74,5 +74,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <param name="udprn">udprn value of PostalAddress</param>
         /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn);
+
+        /// <summary>
+        /// Delete Postal Addresses as part of Housekeeping
+        /// </summary>
+        /// <returns>Void</returns>
+        Task DeletePostalAddressesForHouseKeeping();
     }
 }
