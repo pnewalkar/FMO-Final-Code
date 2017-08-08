@@ -10,7 +10,6 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         /// </summary>
         public NetworkLinkDataDTO()
         {
-            this.NetworkNode = new NetworkNodeDataDTO();
         }
 
         public Guid ID { get; set; }
