@@ -103,76 +103,73 @@
             bool isPostalAddressInserted = false;
             PostalAddress objPostalAddress = default(PostalAddress);
             PostalAddress entity = new PostalAddress();
-            if (objPostalAddress != null)
+            try
             {
-                try
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveAddress"))
                 {
-                    using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveAddress"))
+                    string methodName = typeof(PostalAddressDataService) + "." + nameof(SaveAddress);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                    objPostalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddressDataDTO.UDPRN).SingleOrDefaultAsync();
+
+                    // Update existing Postal Address else Insert new Postal Address
+                    if (objPostalAddress != null)
                     {
-                        string methodName = typeof(PostalAddressDataService) + "." + nameof(SaveAddress);
-                        loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-                        objPostalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddressDataDTO.UDPRN).SingleOrDefaultAsync();
-
-                        // Update existing Postal Address else Insert new Postal Address
-                        if (objPostalAddress != null)
-                        {
-                            objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
-                            objPostalAddress.PostTown = objPostalAddressDataDTO.PostTown;
-                            objPostalAddress.DependentLocality = objPostalAddressDataDTO.DependentLocality;
-                            objPostalAddress.DoubleDependentLocality = objPostalAddressDataDTO.DoubleDependentLocality;
-                            objPostalAddress.Thoroughfare = objPostalAddressDataDTO.Thoroughfare;
-                            objPostalAddress.DependentThoroughfare = objPostalAddressDataDTO.DependentThoroughfare;
-                            objPostalAddress.BuildingNumber = objPostalAddressDataDTO.BuildingNumber;
-                            objPostalAddress.BuildingName = objPostalAddressDataDTO.BuildingName;
-                            objPostalAddress.SubBuildingName = objPostalAddressDataDTO.SubBuildingName;
-                            objPostalAddress.POBoxNumber = objPostalAddressDataDTO.POBoxNumber;
-                            objPostalAddress.DepartmentName = objPostalAddressDataDTO.DepartmentName;
-                            objPostalAddress.OrganisationName = objPostalAddressDataDTO.OrganisationName;
-                            objPostalAddress.UDPRN = objPostalAddressDataDTO.UDPRN;
-                            objPostalAddress.PostcodeType = objPostalAddressDataDTO.PostcodeType;
-                            objPostalAddress.SmallUserOrganisationIndicator = objPostalAddressDataDTO.SmallUserOrganisationIndicator;
-                            objPostalAddress.DeliveryPointSuffix = objPostalAddressDataDTO.DeliveryPointSuffix;
-                            objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
-                        }
-                        else
-                        {
-                            Mapper.Initialize(cfg =>
-                           {
-                               cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
-                               cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
-                               cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
-                           });
-                            Mapper.Configuration.CreateMapper();
-
-                            entity = Mapper.Map<PostalAddressDataDTO, PostalAddress>(objPostalAddressDataDTO);
-
-                            entity.ID = Guid.NewGuid();
-                            PostalAddressStatus postalAddressStatus = new PostalAddressStatus
-                            {
-                                ID = Guid.NewGuid(),
-                                OperationalStatusGUID = operationalStatusGUID,
-                                StartDateTime = DateTime.UtcNow,
-                                RowCreateDateTime = DateTime.UtcNow
-                            };
-                            entity.PostalAddressStatus.Add(postalAddressStatus);
-                            DataContext.PostalAddresses.Add(entity);
-                        }
-
-                        await DataContext.SaveChangesAsync();
-                        isPostalAddressInserted = true;
-                        loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                        objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
+                        objPostalAddress.PostTown = objPostalAddressDataDTO.PostTown;
+                        objPostalAddress.DependentLocality = objPostalAddressDataDTO.DependentLocality;
+                        objPostalAddress.DoubleDependentLocality = objPostalAddressDataDTO.DoubleDependentLocality;
+                        objPostalAddress.Thoroughfare = objPostalAddressDataDTO.Thoroughfare;
+                        objPostalAddress.DependentThoroughfare = objPostalAddressDataDTO.DependentThoroughfare;
+                        objPostalAddress.BuildingNumber = objPostalAddressDataDTO.BuildingNumber;
+                        objPostalAddress.BuildingName = objPostalAddressDataDTO.BuildingName;
+                        objPostalAddress.SubBuildingName = objPostalAddressDataDTO.SubBuildingName;
+                        objPostalAddress.POBoxNumber = objPostalAddressDataDTO.POBoxNumber;
+                        objPostalAddress.DepartmentName = objPostalAddressDataDTO.DepartmentName;
+                        objPostalAddress.OrganisationName = objPostalAddressDataDTO.OrganisationName;
+                        objPostalAddress.UDPRN = objPostalAddressDataDTO.UDPRN;
+                        objPostalAddress.PostcodeType = objPostalAddressDataDTO.PostcodeType;
+                        objPostalAddress.SmallUserOrganisationIndicator = objPostalAddressDataDTO.SmallUserOrganisationIndicator;
+                        objPostalAddress.DeliveryPointSuffix = objPostalAddressDataDTO.DeliveryPointSuffix;
+                        objPostalAddress.Postcode = objPostalAddressDataDTO.Postcode;
                     }
-                }
-                catch (Exception ex)
-                {
-                    // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
-                    if (objPostalAddressDataDTO.UDPRN != null)
+                    else
                     {
-                        LogFileException(objPostalAddressDataDTO.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                        Mapper.Initialize(cfg =>
+                       {
+                           cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
+                           cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
+                           cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
+                       });
+                        Mapper.Configuration.CreateMapper();
+                        objPostalAddressDataDTO.RowCreateDateTime = DateTime.UtcNow;
+                        entity = Mapper.Map<PostalAddressDataDTO, PostalAddress>(objPostalAddressDataDTO);
+
+                        entity.ID = Guid.NewGuid();
+                        PostalAddressStatus postalAddressStatus = new PostalAddressStatus
+                        {
+                            ID = Guid.NewGuid(),
+                            OperationalStatusGUID = operationalStatusGUID,
+                            StartDateTime = DateTime.UtcNow,
+                            RowCreateDateTime = DateTime.UtcNow
+                        };
+                        entity.PostalAddressStatus.Add(postalAddressStatus);
+                        DataContext.PostalAddresses.Add(entity);
                     }
 
-                    throw ex;
+                    await DataContext.SaveChangesAsync();
+                    isPostalAddressInserted = true;
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 }
+            }
+            catch (Exception ex)
+            {
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
+                if (objPostalAddressDataDTO.UDPRN != null)
+                {
+                    LogFileException(objPostalAddressDataDTO.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                }
+
+                throw ex;
             }
 
             return isPostalAddressInserted;
@@ -713,7 +710,7 @@
                         if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
                         {
                             duplicateDTOs.Add(address);
-                            isDuplicate = true;                            
+                            isDuplicate = true;
                         }
                     }
                 }
@@ -835,7 +832,7 @@
                     postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => postcodes.Contains(n.Postcode));
                 }
 
-                if (buildingNames!= null && buildingNames.Count > 0)
+                if (buildingNames != null && buildingNames.Count > 0)
                 {
                     postalAddress = postalAddress.Where(n => buildingNames.Contains(n.BuildingName.ToUpper()));
                 }
@@ -865,7 +862,7 @@
                     postalAddress = postalAddress.Where(n => thoroughfares.Contains(n.Thoroughfare.ToUpper()));
                 }
 
-                if (dependentThoroughfares!= null && dependentThoroughfares.Count > 0)
+                if (dependentThoroughfares != null && dependentThoroughfares.Count > 0)
                 {
                     postalAddress =
                         postalAddress.Where(n => dependentThoroughfares.Contains(n.DependentThoroughfare.ToUpper()));
