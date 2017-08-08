@@ -143,6 +143,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         Task<bool> UpdatePostalAddressStatus(Guid postalAddressId, Guid postalAddressStatus);
 
         /// <summary>
+        /// Check the duplicates for NYB records for a range
+        /// </summary>
+        /// <param name="objPostalAddress"></param>
+        /// <param name="addressTypeNYBGuid"></param>
+        /// <returns></returns>
+        Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateNybRecordsForRange(List<PostalAddressDataDTO> postalAddressesDTOs, Guid addressTypeNYBGuid);
+
+        Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDataDTO> postalAddressDTOs);
+
+        /// <summary>
         /// Get All the pending delete postal addresses for deletion
         /// </summary>
         /// <param name="postalAddressPendingDeleteId">Postal Address Pending Delete Guid</param>

@@ -34,8 +34,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Collection of Delivery Points that matches the criteria.</returns>
-        Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid, string currentUserUnitType);
 
         /// <summary>
         /// This method is used to fetch Delivery Points as per basic search.
@@ -43,16 +44,18 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="searchText">searchText as string</param>
         /// <param name="numberOfRecordRequested">Number of records to be returned.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Collection of Delivery Points that matches the criteria.</returns>
-        Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, int numberOfRecordRequested, Guid unitGuid);
+        Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, int numberOfRecordRequested, Guid unitGuid, string currentUserUnitType);
 
         /// <summary>
         /// Gets the delivery points count.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Delivery point count that matches the criteria.</returns>
-        Task<int> GetDeliveryPointsCount(string searchText, Guid unitGuid);
+        Task<int> GetDeliveryPointsCount(string searchText, Guid unitGuid, string currentUserUnitType);
 
         /// <summary>
         /// This method is used to fetch Delivery Points data.

@@ -36,7 +36,7 @@
                 <md-input-container flex="25">
                     <label>{{ 'ROUTE_LOG.SCENARIO' | translate }}</label>
                     <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
-                        <md-option ng-repeat="scenario in  filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
+                        <md-option ng-repeat="scenario in  filterScenario =(vm.RouteScenario)" ng-value="scenario" title="{{ scenario.scenarioName }}">{{scenario.scenarioName}}</md-option>
                         <md-option ng-show="!filterScenario.length && vm.isSelectionType"> {{ 'VALIDATION.NO_RESULT_FOUND' | translate }} </md-option>
                     </md-select>
                 </md-input-container>

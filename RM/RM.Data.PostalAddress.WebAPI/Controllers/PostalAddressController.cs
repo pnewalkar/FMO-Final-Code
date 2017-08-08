@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.PostalAddress.WebAPI.DTO.Model;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
@@ -212,6 +213,29 @@ namespace Fmo.API.Services.Controllers
         }
 
         /// <summary>
+        /// This method is used to check Duplicate NYB records
+        /// </summary>
+        /// <param name="objPostalAddress">PostalAddressDTO as input</param>
+        /// <returns>string</returns>
+        // [HttpPost("CheckForDuplicateNybRecords")]
+        [HttpPost("postaladdress/nybduplicate/range/")]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        public async Task<IActionResult> CheckForDuplicateNybRecordsForRange([FromBody] List<PostalAddressDTO> postalAddressDTOs)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateNybRecordsForRange"))
+            {
+                string methodName = typeof(PostalAddressController) + "." + nameof(CheckForDuplicateNybRecords);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                DuplicateDeliveryPointDTO duplicateDeliveryPointDTO = await businessService.CheckForDuplicateNybRecordsForRange(postalAddressDTOs);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return Ok(duplicateDeliveryPointDTO);
+            }
+        }
+
+        /// <summary>
         /// This method is used to check for Duplicate Address with Delivery Points.
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
@@ -239,6 +263,29 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
+        // [HttpPost("CheckForDuplicateAddressWithDeliveryPoints")]
+        [HttpPost("postaladdress/duplicatedeliverypoint/range")]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        public async Task<IActionResult> CheckForDuplicateAddressWithDeliveryPointsForRange([FromBody] List<PostalAddressDTO> postalAddresses)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateAddressWithDeliveryPoints"))
+            {
+                string methodName = typeof(PostalAddressController) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                DuplicateDeliveryPointDTO duplicateDeliveryPointDTO = await businessService.CheckForDuplicateAddressWithDeliveryPointsForRange(postalAddresses);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return Ok(duplicateDeliveryPointDTO);
+            }
+        }
+
+        /// <summary>
+        /// This method is used to check for Duplicate Address with Delivery Points.
+        /// </summary>
+        /// <param name="objPostalAddress">Postal Addess Dto as input</param>
+        /// <returns>bool</returns>
         [HttpPost("postaladdress/savedeliverypointaddress/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         public IActionResult CreateAddressForDeliveryPoint([FromBody] AddDeliveryPointDTO addDeliveryPointDTO)
@@ -251,6 +298,39 @@ namespace Fmo.API.Services.Controllers
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     var deliveryPointAddressDetails = businessService.CreateAddressForDeliveryPoint(addDeliveryPointDTO);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return Ok(deliveryPointAddressDetails);
+                }
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var exception in ex.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ex.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to check for Duplicate Address with Delivery Points.
+        /// </summary>
+        /// <param name="objPostalAddress">Postal Addess Dto as input</param>
+        /// <returns>bool</returns>
+        [HttpPost("postaladdress/savedeliverypointaddress/range/")]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        public async Task<IActionResult> CreateAddressForDeliveryPointForRange([FromBody] List<PostalAddressDTO> postalAddressDTOs)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressForDeliveryPoint"))
+                {
+                    string methodName = typeof(PostalAddressController) + "." + nameof(CreateAddressForDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    var deliveryPointAddressDetails = await businessService.CreateAddressForDeliveryPointForRange(postalAddressDTOs);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(deliveryPointAddressDetails);
                 }

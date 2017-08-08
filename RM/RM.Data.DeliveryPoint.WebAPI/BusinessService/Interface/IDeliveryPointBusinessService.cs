@@ -39,24 +39,27 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">Guid</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid userUnit);
+        Task<List<DeliveryPointDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid userUnit, string currentUserUnitType);
 
         /// <summary>
         /// Get the count of delivery point
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <param name="userUnit">Guid userUnit</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>The total count of delivery point</returns>
-        Task<int> GetDeliveryPointsCount(string searchText, Guid userUnit);
+        Task<int> GetDeliveryPointsCount(string searchText, Guid userUnit, string currentUserUnitType);
 
         /// <summary>
         /// This method is used to fetch delivery points for advance search.
         /// </summary>
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<DeliveryPointDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid, string currentUserUnitType);
 
         /// <summary>
         /// Create delivery point for PAF and NYB records.
@@ -145,6 +148,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         Task<DeliveryPointDTO> GetDeliveryPointByPostalAddressWithLocation(Guid addressId);
 
         Task<bool> DeleteDeliveryPoint(Guid id);
+
+        Task<CreateDeliveryPointForRangeModelDTO> CheckDeliveryPointForRange(AddDeliveryPointDTO addDeliveryPointDTO);
+
+        Task<CreateDeliveryPointForRangeModelDTO> CreateDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs);
 
         Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails);
     }

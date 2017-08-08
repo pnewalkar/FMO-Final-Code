@@ -26,6 +26,7 @@ namespace RM.DataServices.Tests.DataService
         private string search = null;
         private int noOfRecords = 0;
         private Mock<ILoggingHelper> mockLoggingHelper;
+        private string currentUserUnitType = null;
 
         private DeliveryPointDataDTO deliveryPointDataDTO = null;
 
@@ -110,7 +111,7 @@ namespace RM.DataServices.Tests.DataService
         public async Task Test_GetDeliveryPointsForAdvanceSearch()
         {
             search = "road";
-            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForAdvanceSearch(search, unitGuid);
+            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForAdvanceSearch(search, unitGuid, currentUserUnitType);
             Assert.IsNotNull(expectedResult);
             Assert.IsTrue(expectedResult.Count == 1);
         }
@@ -120,7 +121,7 @@ namespace RM.DataServices.Tests.DataService
         {
             search = "road";
             noOfRecords = 5;
-            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForBasicSearch(search, noOfRecords, unitGuid);
+            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForBasicSearch(search, noOfRecords, unitGuid, currentUserUnitType);
             Assert.IsNotNull(expectedResult);
             Assert.IsTrue(expectedResult.Count == 1);
         }
@@ -130,7 +131,7 @@ namespace RM.DataServices.Tests.DataService
         {
             search = "road";
             noOfRecords = 5;
-            int expectedResult = await testCandidate.GetDeliveryPointsCount(search, unitGuid);
+            int expectedResult = await testCandidate.GetDeliveryPointsCount(search, unitGuid, currentUserUnitType);
             Assert.IsNotNull(expectedResult);
             Assert.IsTrue(expectedResult == 1);
         }
@@ -349,6 +350,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            currentUserUnitType = "Delivery Office";
+
             var deliveryPoint = new List<DeliveryPoint>()
             {
                new DeliveryPoint()
@@ -412,6 +415,13 @@ namespace RM.DataServices.Tests.DataService
                    DeliveryPointUseIndicatorGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A14")
                 }
                 }
+                      //,
+                      //LocationOfferings = new List<LocationOffering>() {
+                      //    new LocationOffering
+                      //    {
+                      //        ID= new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                      //    }
+                      //}
                 }
             };
 
@@ -457,6 +467,14 @@ namespace RM.DataServices.Tests.DataService
                         LocationID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13")
                     }
                 };
+
+            var locationOfferings = new List<LocationOffering>()
+            {
+                new LocationOffering
+                {
+                    ID= new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                }
+            };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockRMDBContext = CreateMock<DeliveryPointDBContext>();
@@ -521,6 +539,18 @@ namespace RM.DataServices.Tests.DataService
             mockRMDBContext.Setup(x => x.DeliveryPointStatus).Returns(mockdpStatus.Object);
             mockdpStatus.Setup(x => x.Include(It.IsAny<string>())).Returns(mockdpStatus.Object);
             mockdpStatus.Setup(x => x.AsNoTracking()).Returns(mockdpStatus.Object);
+
+            // setup for location offerings
+            var mockAsynlocOfferings = new DbAsyncEnumerable<LocationOffering>(locationOfferings);
+            var mocklocOfferings = MockDbSet(locationOfferings);
+            mocklocOfferings.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynlocOfferings.AsQueryable().Provider);
+            mocklocOfferings.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynlocOfferings.AsQueryable().Expression);
+            mocklocOfferings.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynlocOfferings.AsQueryable().ElementType);
+            mocklocOfferings.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<LocationOffering>)mockAsynlocOfferings).GetAsyncEnumerator());
+            mockRMDBContext.Setup(x => x.Set<LocationOffering>()).Returns(mocklocOfferings.Object);
+            mockRMDBContext.Setup(x => x.LocationOfferings).Returns(mocklocOfferings.Object);
+            mocklocOfferings.Setup(x => x.Include(It.IsAny<string>())).Returns(mocklocOfferings.Object);
+            mocklocOfferings.Setup(x => x.AsNoTracking()).Returns(mocklocOfferings.Object);
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));

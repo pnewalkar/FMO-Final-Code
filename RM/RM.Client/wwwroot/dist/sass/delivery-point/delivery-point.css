@@ -107,3 +107,49 @@ span.centerAlign.flex-20 {
 
 .map-panel li.initialCursor {
   cursor: default; }
+
+md-radio-button .md-container {
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  display: inline-block;
+  width: 20px;
+  height: 15px;
+  cursor: pointer;
+  left: 0;
+  right: auto; }
+
+md-radio-button .md-off, md-radio-button .md-on {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%; }
+
+md-radio-button .md-label {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  margin-left: 20px;
+  margin-right: 0;
+  vertical-align: middle;
+  white-space: normal;
+  pointer-events: none;
+  width: auto;
+  font-size: 14px; }
+
+.rangeOption {
+  margin-top: 10px; }
+
+.subBuildingtype {
+  margin-top: 45px; }
+
+.subBuildingtype md-select {
+  min-width: 220px; }
+
+.dp-range {
+  margin-top: 20px; }

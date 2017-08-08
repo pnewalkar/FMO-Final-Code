@@ -107,7 +107,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         [Test]
         public void Test_FetchStreetNamesForBasicSearch()
         {
-            var result = testCandidate.GetStreetNamesForBasicSearch("abc", Guid.NewGuid());
+            var result = testCandidate.GetStreetNamesForBasicSearch("abc", Guid.NewGuid(), "Delivery Office");
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Result[0].LocalName, "abc");
         }
@@ -118,7 +118,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         [Test]
         public void Test_GetStreetNameCount()
         {
-            var result = testCandidate.GetStreetNameCount("abc", Guid.NewGuid());
+            var result = testCandidate.GetStreetNameCount("abc", Guid.NewGuid(), "Delivery Office");
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Result, 5);
         }
@@ -129,7 +129,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         [Test]
         public void Test_FetchStreetNamesForAdvanceSearch()
         {
-            var result = testCandidate.GetStreetNamesForAdvanceSearch("abc", Guid.NewGuid());
+            var result = testCandidate.GetStreetNamesForAdvanceSearch("abc", Guid.NewGuid(), "Delivery Office");
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Result[0].LocalName, "abc");
         }
@@ -190,9 +190,9 @@ namespace RM.Data.NetworkManager.WebAPI.Test
             mockStreetNetworkDataService.Setup(x => x.GetNearestSegment(It.IsAny<DbGeometry>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(listOfTuple);
             mockStreetNetworkDataService.Setup(x => x.GetNetworkLink(It.IsAny<Guid>())).Returns(networkLink);
             mockStreetNetworkDataService.Setup(x => x.GetCrossingNetworkLink(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<NetworkLinkDataDTO>() { networkLink });
-            mockStreetNetworkDataService.Setup(x => x.GetStreetNamesForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<StreetNameDataDTO>() { new StreetNameDataDTO() { LocalName = "abc" } });
-            mockStreetNetworkDataService.Setup(x => x.GetStreetNameCount(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(5);
-            mockStreetNetworkDataService.Setup(x => x.GetStreetNamesForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<StreetNameDataDTO>() { new StreetNameDataDTO() { LocalName = "abc" } });
+            mockStreetNetworkDataService.Setup(x => x.GetStreetNamesForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Office")).ReturnsAsync(new List<StreetNameDataDTO>() { new StreetNameDataDTO() { LocalName = "abc" } });
+            mockStreetNetworkDataService.Setup(x => x.GetStreetNameCount(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Office")).ReturnsAsync(5);
+            mockStreetNetworkDataService.Setup(x => x.GetStreetNamesForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Office")).ReturnsAsync(new List<StreetNameDataDTO>() { new StreetNameDataDTO() { LocalName = "abc" } });
             mockOsRoadLinkDataService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("abc");
             mockRoadNameDataService.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(new List<NetworkLinkDataDTO>() { networkLink });
 

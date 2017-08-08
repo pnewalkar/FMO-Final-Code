@@ -56,23 +56,26 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="userUnit">The user unit.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns></returns>
-        Task<List<StreetNameDTO>> GetStreetNamesForBasicSearch(string searchText, Guid userUnit);
+        Task<List<StreetNameDTO>> GetStreetNamesForBasicSearch(string searchText, Guid userUnit, string currentUserUnitType);
 
         /// <summary>
         /// Gets the street name count.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="userUnit">The user unit.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns></returns>
-        Task<int> GetStreetNameCount(string searchText, Guid userUnit);
+        Task<int> GetStreetNameCount(string searchText, Guid userUnit, string currentUserUnitType);
 
         /// <summary>
         /// Fetches the street names for advance search.
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns></returns>
-        Task<List<StreetNameDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<StreetNameDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid unitGuid, string currentUserUnitType);
     }
 }

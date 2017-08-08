@@ -766,6 +766,13 @@ function mapService($http,
             }, 10);
     }
     function mapToolChange(button) {
+        if (getActiveFeature() != null) {
+            if (button.name === "point" || button.name === "line" || button.name === "area") {
+                setSelections(null, []);
+                $rootScope.$emit('resetMapToolbar', { "isObjectSelected": false });
+            }
+        }
+
         vm.activeTool = button.name;
         removeCurrentInteractions();
         if (button.enabled) {
@@ -825,7 +832,7 @@ function mapService($http,
     }
 
 function showDeliveryPointDetails(deliveryPointDetails) {
-        if (deliveryPointDetails != null) {
+    if (deliveryPointDetails != null && angular.isDefined(deliveryPointDetails.deliveryPointId)) {
             deliveryPointDetails.routeName = null;
             mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
                   .then(function (response) {
@@ -850,7 +857,7 @@ function showDeliveryPointDetails(deliveryPointDetails) {
                   });
         }
         else {
-            selectedDeliveryPointService.setSelectedDeliveryPoint(deliveryPointDetails);
+            selectedDeliveryPointService.setSelectedDeliveryPoint(null);
 
             $state.go('deliveryPointDetails'
                 , {

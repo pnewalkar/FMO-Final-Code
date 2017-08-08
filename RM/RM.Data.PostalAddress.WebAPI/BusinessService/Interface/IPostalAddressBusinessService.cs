@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RM.Data.PostalAddress.WebAPI.DTO.Model;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
 
@@ -74,6 +75,18 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <param name="udprn">udprn value of PostalAddress</param>
         /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn);
+
+        //Sprint 6 changes
+        /// <summary>
+        /// Check whether duplicate NYB records exists for a list of records.
+        /// </summary>
+        /// <param name="postalAddresses">postal address DTO</param>
+        /// <returns>whether the duplicates exist</returns>
+        Task<DuplicateDeliveryPointDTO> CheckForDuplicateNybRecordsForRange(List<PostalAddressDTO> postalAddresses);
+
+        Task<DuplicateDeliveryPointDTO> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDTO> postalAddressDTOs);
+
+        Task<List<CreateDeliveryPointModelDTO>> CreateAddressForDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs);
 
         /// <summary>
         /// Delete Postal Addresses as part of Housekeeping
