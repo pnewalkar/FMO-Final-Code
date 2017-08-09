@@ -32,11 +32,6 @@ function SearchController(
         var result = searchBusinessService.onEnterKeypress(searchText, vm.results);
         vm.results = result.results;
         vm.contextTitle = result.contextTitle;
-        if (vm.results[0].displayText === CommonConstants.SearchLessThanThreeCharactersErrorMessage) {
-            if (vm.resultscount[0].count) {
-                vm.resultscount[0].count = 0;
-            }
-        }
     }
 
     function OnChangeItem(selectedItem) {
@@ -47,6 +42,7 @@ function SearchController(
         $timeout(function () {
             vm.searchText = "";
             vm.isResultDisplay = false;
+            vm.resultscount[0].count = 0;
         }, 1000);
     }
 
