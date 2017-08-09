@@ -626,7 +626,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
-        #endregion public methods
+
         /// <summary>
         /// Delete Postal Addresses as part of Housekeeping
         /// </summary>
@@ -664,9 +664,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
-#endregion public methods
+        #endregion public methods
 
-#region private methods
+        #region private methods
 
         /// <summary>
         /// Business rule implementation for PAF create events
@@ -755,42 +755,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             // Update delivery point for USR records
                             await UpdateDeliveryPointProcess(objPostalAddress);
                         }
-
-                        /*else
-                        {
-                            objFileProcessingLog = new FileProcessingLogDTO
-                            {
-                                FileID = Guid.NewGuid(),
-                                UDPRN = objPostalAddress.UDPRN ?? default(int),
-                                AmendmentType = objPostalAddressBatch.AmendmentType,
-                                FileName = strFileName,
-                                FileProcessing_TimeStamp = DateTime.UtcNow,
-                                FileType = FileType.Paf.ToString(),
-                                ErrorMessage = PostalAddressConstants.PAFErrorMessageForUnmatchedDeliveryPointForUSRType,
-                                SuccessFlag = false
-                            };
-
-                            fileProcessingLogDataService.LogFileException(objFileProcessingLog);
-                        }*/
                     }
                     else
                     {
                         loggingHelper.Log(string.Format(PostalAddressConstants.PAFERRORLOGMESSAGE, PostalAddressConstants.PAFErrorMessageForAddressTypeUSRNotFound, objPostalAddress.UDPRN, objPostalAddressBatch.AmendmentType, strFileName,
                                             FileType.Paf, DateTime.UtcNow), TraceEventType.Error);
-
-                        //objFileProcessingLog = new FileProcessingLogDTO
-                        //{
-                        //    FileID = Guid.NewGuid(),
-                        //    UDPRN = objPostalAddress.UDPRN ?? default(int),
-                        //    AmendmentType = objPostalAddressBatch.AmendmentType,
-                        //    FileName = strFileName,
-                        //    FileProcessing_TimeStamp = DateTime.UtcNow,
-                        //    FileType = FileType.Paf.ToString(),
-                        //    ErrorMessage = PostalAddressConstants.PAFErrorMessageForAddressTypeUSRNotFound,
-                        //    SuccessFlag = false
-                        //};
-
-                        //fileProcessingLogDataService.LogFileException(objFileProcessingLog);
                     }
                 }
                 else
@@ -864,18 +833,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     }
                     else
                     {
-                        // var objTask = new NotificationDTO
-                        // {
-                        //    ID = Guid.NewGuid(),
-                        //    NotificationType_GUID = tasktypeId,
-                        //    NotificationPriority_GUID = null,
-                        //    NotificationSource = Constants.TASKSOURCE,
-                        //    Notification_Heading = Constants.TASKPAFACTION,
-                        //    Notification_Message = AddressFields(objPostalAddress),
-                        //    PostcodeDistrict = postCodeDistrict,
-                        //    NotificationDueDate = DateTime.UtcNow.AddHours(Constants.NOTIFICATIONDUE),
-                        //    NotificationActionLink = string.Format(Constants.PAFNOTIFICATIONLINK, objPostalAddress.UDPRN)
-                        // };
                         if (await postalAddressIntegrationService.CheckIfNotificationExists((int)objPostalAddress.UDPRN, PostalAddressConstants.TASKPAFACTION))
                         {
                             string message = AddressFields(objPostalAddress);
@@ -1321,6 +1278,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
-#endregion private methods
+        #endregion private methods
     }
 }
