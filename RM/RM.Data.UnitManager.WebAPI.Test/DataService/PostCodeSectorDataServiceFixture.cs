@@ -33,7 +33,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetPostcodeSectorByUdprn_PositiveScenario()
         {
-            var result = await testCandidate.GetPostcodeSectorByUdprn(123, postcodeTypeGUID, postcodeTypeGUID);
+            var result = await testCandidate.GetPostcodeSectorByUdprn(123);
             Assert.IsNotNull(result);
             Assert.AreEqual(result.District, "111");
             Assert.AreEqual(result.Sector, "111");
@@ -46,7 +46,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetPostcodeSectorByUdprn_NegativeScenario1()
         {
-            var result = await testCandidate.GetPostcodeSectorByUdprn(0, postcodeTypeGUID, postcodeTypeGUID);
+            var result = await testCandidate.GetPostcodeSectorByUdprn(0);
             Assert.IsNotNull(result);
             Assert.AreEqual(result.District, null);
             Assert.AreEqual(result.Sector, null);
@@ -59,7 +59,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetPostcodeSectorByUdprn_NegativeScenario2()
         {
-            var result = await testCandidate.GetPostcodeSectorByUdprn(123, Guid.Empty, postcodeTypeGUID);
+            var result = await testCandidate.GetPostcodeSectorByUdprn(123);
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Sector, null);
             Assert.AreEqual(result.District, "111");
@@ -72,7 +72,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetPostcodeSectorByUdprn_NegativeScenario3()
         {
-            var result = await testCandidate.GetPostcodeSectorByUdprn(123, postcodeTypeGUID, Guid.Empty);
+            var result = await testCandidate.GetPostcodeSectorByUdprn(123);
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Sector, "111");
             Assert.AreEqual(result.District, null);

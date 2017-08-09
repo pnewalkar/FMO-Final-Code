@@ -217,7 +217,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
             mockUnitManagerIntegrationService.Setup(x => x.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Guid("A867065B-B91E-E711-9F8C-28D244AEF9EC"));
             mockUnitLocationDataService.Setup(x => x.GetUnitsByUser(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(unitLocationDataDTOList);
             mockUnitManagerIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<string>())).ReturnsAsync(referenceDataCategoryDTO);
-            mockPostCodeSectorDataService.Setup(x => x.GetPostcodeSectorByUdprn(It.IsAny<int>(), It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(postcodeSectorDataDTO);
+            mockPostCodeSectorDataService.Setup(x => x.GetPostcodeSectorByUdprn(It.IsAny<int>())).ReturnsAsync(postcodeSectorDataDTO);
             mockPostCodeDataService.Setup(x => x.GetPostcodeUnitForBasicSearch(It.IsAny<SearchInputDataDto>())).ReturnsAsync(postcodeDataDTOList);
             mockPostCodeDataService.Setup(x => x.GetPostcodeUnitCount(It.IsAny<SearchInputDataDto>())).ReturnsAsync(5);
             mockPostCodeDataService.Setup(x => x.GetPostcodeUnitForAdvanceSearch(It.IsAny<SearchInputDataDto>())).ReturnsAsync(postcodeDataDTOList);
