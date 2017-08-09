@@ -381,10 +381,10 @@ function MapFactory($http,
             var scale = Math.round(getScaleFromResolution(resolution));
             var index = definedScales.indexOf(scale);
             var maxScaleIndex = definedScales.indexOf(maxScale);
-            if (index > -1) {
-                var zoomInButtons = $document[0].getElementsByClassName("ol-zoom-in");
-                var zoomOutButtons = $document[0].getElementsByClassName("ol-zoom-out");
+            var zoomInButtons = $document[0].getElementsByClassName("ol-zoom-in");
+            var zoomOutButtons = $document[0].getElementsByClassName("ol-zoom-out");
 
+            if (index > -1) {
                 if (index === definedScales.length - 1) {
                     setZoomButtonStatus(zoomInButtons, true);
 
@@ -406,6 +406,15 @@ function MapFactory($http,
                     $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
                 });
             }
+            else
+            {
+                if (scale > definedScales[definedScales.length - 1]) {                   
+                    setZoomButtonStatus(zoomInButtons, false);
+                }
+                if (scale < definedScales[maxScaleIndex]) {
+                    setZoomButtonStatus(zoomOutButtons, false);
+                }
+            }            
         };
 
         ol.inherits(customScaleLine, ol.control.ScaleLine);
