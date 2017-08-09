@@ -205,7 +205,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                                         where route.UnSequencedBlockID == block.BlockID || routeActivity.BlockID == block.BlockID
                                         select route).FirstOrDefault();
 
-                    var deliveryPointDetails = DataContext.DeliveryPoints.Include(n => n.PostalAddress).Where(m => m.ID == deliveryPointId).SingleOrDefault();
+                    var deliveryPointDetails = DataContext.DeliveryPoints.Include(n => n.PostalAddress).AsNoTracking().Where(m => m.ID == deliveryPointId).SingleOrDefault();
 
                     if (routeDetails != null && deliveryPointDetails != null && deliveryPointDetails.PostalAddress != null)
                     {
@@ -407,8 +407,8 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(DeleteDeliveryPointRouteMapping);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
 
-                var blockSequence = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
-                var routeActivity = DataContext.RouteActivities.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
+                var blockSequence = DataContext.BlockSequences.Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
+                var routeActivity = DataContext.RouteActivities.Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
 
                 if (blockSequence != null)
                 {

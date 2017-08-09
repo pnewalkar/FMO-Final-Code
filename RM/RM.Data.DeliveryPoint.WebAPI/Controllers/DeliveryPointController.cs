@@ -645,16 +645,33 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         [HttpDelete("deliverypoint/batch/delete/id:{id}")]
         public async Task<IActionResult> DeleteDeliveryPoint(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
             using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteDeliveryPoint"))
             {
-                string methodName = typeof(DeliveryPointController) + "." + nameof(DeleteDeliveryPoint);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                try
+                {
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(DeleteDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var isDeliveryPointDeleted = await businessService.DeleteDeliveryPoint(id);
+                    var isDeliveryPointDeleted = await businessService.DeleteDeliveryPoint(id);
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return Ok(isDeliveryPointDeleted);
+                    return Ok(isDeliveryPointDeleted);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
 

@@ -1,8 +1,6 @@
 namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
 {
     using System;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     public partial class PostalAddressAliasDataDTO
     {
