@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
-
-using System.Collections.Generic;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {

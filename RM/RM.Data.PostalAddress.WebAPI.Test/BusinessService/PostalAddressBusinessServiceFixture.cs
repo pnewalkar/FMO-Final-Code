@@ -28,7 +28,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         private Mock<ILoggingHelper> mockLoggingHelper;
         private Mock<IHttpHandler> mockHttpHandler;
         private Mock<IPostalAddressIntegrationService> mockPostalAddressIntegrationService;
-        private Mock<IFileProcessingLogDataService> mockFileProcessingLogDataService;
+        // private Mock<IFileProcessingLogDataService> mockFileProcessingLogDataService;
         private PostalAddressDTO publicPostalAddressDTO = default(PostalAddressDTO);
         private Guid addressTypeGUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974");
         private int paf = 0;
@@ -183,7 +183,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         /// Update postal address status to Pending delete
         /// </summary>
         [Test]
-        public void ProcessPAFDetails_Delete_PositiveScenario()
+        public void ProcessPAFDetails_DeleteDPNotFoundScenario()
         {
             mockPostalAddressDataService.Setup(x => x.UpdatePostalAddressStatus(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
             PostalAddressDTO objPostalAddress = new PostalAddressDTO()
@@ -196,7 +196,11 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                 PostTown = "York",
                 UDPRN = 54162429,
                 DeliveryPointSuffix = "1A",
-                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"),
+                DeliveryPoints = new List<DeliveryPointDTO>() { new DeliveryPointDTO()
+                {
+                    ID=new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+                } }
             };
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
@@ -209,10 +213,23 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         /// No matching UDPRN found for postal address
         /// </summary>
         [Test]
-        public void ProcessPAFDetails_Delete_NegativeScenario1()
+        public void ProcessPAFDetails_DeleteDPScenario()
         {
-            PostalAddressDataDTO postalAddressDataDTO = null;
+            PostalAddressDataDTO postalAddressDataDTO = new PostalAddressDataDTO()
+            {
+                Postcode = "YO23 1DQ",
+                PostTown = "York",
+                UDPRN = 54162429,
+                DeliveryPointSuffix = "1A",
+                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"),
+                DeliveryPoints = new List<DeliveryPointDataDTO>() { new DeliveryPointDataDTO()
+                {
+                    ID=new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+                } }
+            };
             mockPostalAddressDataService.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
+            mockPostalAddressDataService.Setup(x => x.UpdatePostalAddressStatus(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            mockPostalAddressIntegrationService.Setup(x => x.DeleteDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(true);
             PostalAddressDTO objPostalAddress = new PostalAddressDTO()
             {
                 Time = "7/19/2016",
@@ -326,6 +343,78 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void Test_DeletePostalAddress_Housekeeping_PostiveScenario()
+        {
+                
+            List<PostalAddressDataDTO> postalAddressDataDTOs = new List<PostalAddressDataDTO>
+            {
+                new PostalAddressDataDTO
+                {
+                    ID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3"),
+                    DeliveryPoints = new List<DeliveryPointDataDTO>
+                    {
+                        new DeliveryPointDataDTO {
+                            ID = new Guid("B2E5DB38-7E57-48E2-A2F6-48A6277457AA"),
+                            PostalAddressID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3")
+                        }
+                    },
+                    PostalAddressStatus = new List<PostalAddressStatusDataDTO>
+                    {
+                        new PostalAddressStatusDataDTO {
+                            PostalAddressGUID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3"),
+                            OperationalStatusGUID = new Guid("254A92E1-4D6C-411B-A5A5-E0495A4F2525")
+                        }
+                    }
+
+                }
+            };
+
+            mockPostalAddressDataService.Setup(n => n.GetAllPendingDeletePostalAddresses(It.IsAny<Guid>())).Returns(Task.FromResult(postalAddressDataDTOs));
+            mockPostalAddressDataService.Setup(n => n.DeletePostalAddressForHousekeeping(It.IsAny<List<PostalAddressDataDTO>>())).Returns(Task.FromResult(true));
+
+            testCandidate.DeletePostalAddressesForHouseKeeping();
+
+            mockPostalAddressDataService.Verify(n => n.GetAllPendingDeletePostalAddresses(It.IsAny<Guid>()), Times.AtLeastOnce);
+            mockPostalAddressDataService.Verify(n => n.DeletePostalAddressForHousekeeping(It.IsAny<List<PostalAddressDataDTO>>()), Times.AtLeastOnce);
+        }
+
+        [Test]
+        public void Test_DeletePostalAddress_Housekeeping_NegativeScenario()
+        {
+            
+            List<PostalAddressDataDTO> postalAddressDataDTOs = new List<PostalAddressDataDTO>
+            {
+                new PostalAddressDataDTO
+                {
+                    ID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3"),
+                    DeliveryPoints = new List<DeliveryPointDataDTO>
+                    {
+                        new DeliveryPointDataDTO {
+                            ID = new Guid("B2E5DB38-7E57-48E2-A2F6-48A6277457AA"),
+                            PostalAddressID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3")
+                        }
+                    },
+                    PostalAddressStatus = new List<PostalAddressStatusDataDTO>
+                    {
+                        new PostalAddressStatusDataDTO {
+                            PostalAddressGUID = new Guid("5C331F0C-5D6A-4524-AECE-47EBF4BFD2F3"),
+                            OperationalStatusGUID = new Guid("254A92E1-4D6C-411B-A5A5-E0495A4F2525")
+                        }
+                    }
+
+                }
+            };
+
+            mockPostalAddressDataService.Setup(n => n.GetAllPendingDeletePostalAddresses(It.IsAny<Guid>())).Returns(Task.FromResult(new List<PostalAddressDataDTO>()));
+            mockPostalAddressDataService.Setup(n => n.DeletePostalAddressForHousekeeping(It.IsAny<List<PostalAddressDataDTO>>())).Returns(Task.FromResult(true));
+
+            testCandidate.DeletePostalAddressesForHouseKeeping();
+
+            mockPostalAddressDataService.Verify(n => n.GetAllPendingDeletePostalAddresses(It.IsAny<Guid>()), Times.Once);
+            mockPostalAddressDataService.Verify(n => n.DeletePostalAddressForHousekeeping(It.IsAny<List<PostalAddressDataDTO>>()), Times.Never);
+        } 
+
         protected override void OnSetup()
         {
             // OnSetup to be configured
@@ -418,7 +507,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             };
 
             mockPostalAddressDataService = CreateMock<IPostalAddressDataService>();
-            mockFileProcessingLogDataService = CreateMock<IFileProcessingLogDataService>();
+            // mockFileProcessingLogDataService = CreateMock<IFileProcessingLogDataService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockHttpHandler = CreateMock<IHttpHandler>();
@@ -440,9 +529,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             mockPostalAddressDataService.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
             mockPostalAddressDataService.Setup(n => n.GetPAFAddress(It.IsAny<int>(), It.IsAny<Guid>())).Returns(Task.FromResult(postalAddressDTO));
 
-            mockFileProcessingLogDataService.Setup(x => x.LogFileException(It.IsAny<FileProcessingLogDTO>()));
+            // mockFileProcessingLogDataService.Setup(x => x.LogFileException(It.IsAny<FileProcessingLogDTO>()));
 
-            testCandidate = new DataManagement.PostalAddress.WebAPI.BusinessService.Implementation.PostalAddressBusinessService(mockPostalAddressDataService.Object, mockFileProcessingLogDataService.Object, mockLoggingHelper.Object, mockConfigurationHelper.Object, mockHttpHandler.Object, mockPostalAddressIntegrationService.Object);
+            testCandidate = new DataManagement.PostalAddress.WebAPI.BusinessService.Implementation.PostalAddressBusinessService(mockPostalAddressDataService.Object, mockLoggingHelper.Object, mockConfigurationHelper.Object, mockHttpHandler.Object, mockPostalAddressIntegrationService.Object);
         }
     }
 }
