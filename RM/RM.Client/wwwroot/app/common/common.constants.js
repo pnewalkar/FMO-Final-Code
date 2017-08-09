@@ -21,7 +21,10 @@ var CommonConstants = {
     PrintMapActionName: "Print Map",
     PrintMapmmPerInch: 25.4,
     UserType: { DeliveryUser: "Delivery User", CollectionUser: "Collection User", ManagerUser: "Manager User" },
-    DpUseType: { Residential: "Residential", Organisation: "Organisation" }
+    DpUseType: { Residential: "Residential", Organisation: "Organisation" },
+    DefaultResultCountForSearch: "5",
+    NoResultCountForSearch:"0"
+
 };
 
 angular.module('RMApp')

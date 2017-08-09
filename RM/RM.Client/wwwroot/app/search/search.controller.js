@@ -15,6 +15,8 @@ function SearchController(
     vm.OnChangeItem = OnChangeItem;
     vm.advanceSearch = advanceSearch;
     vm.onBlur = onBlur;
+    vm.defaultResultCount = CommonConstants.DefaultResultCountForSearch;
+    vm.noResultCount = CommonConstants.NoResultCountForSearch;
 
 
     function resultSet(query) {
