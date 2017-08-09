@@ -113,7 +113,6 @@ namespace RM.Data.AccessLink.WebAPI.Test
             Assert.IsTrue(expectedResult);
         }
 
-
         /// <summary>
         /// Setup for Nunit Tests.
         /// </summary>
@@ -178,7 +177,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             }
 
             Tuple<NetworkLinkDTO, SqlGeometry> tuple = new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
-            Tuple<NetworkLinkDTO, List<SqlGeometry>> tuple1 = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, lstnetworkIntersectionPoint);
+            List<Tuple<NetworkLinkDTO, SqlGeometry>> tuple1 = new List<Tuple<NetworkLinkDTO, SqlGeometry>> { new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, networkIntersectionPoint) };
 
             List<ReferenceDataCategoryDTO> refDataCategotyDTO = new List<ReferenceDataCategoryDTO>()
             {
