@@ -306,6 +306,8 @@
                                               .SingleOrDefault();
 
                             deliveryPointStatusDataDTO.DeliveryPointStatusGUID = liveWithLocationStatusId;
+
+                            deliveryPointdataDTO.DeliveryPointStatus.Add(deliveryPointStatusDataDTO);
                         }
                         else
                         {
@@ -346,7 +348,7 @@
                             Guid deliveryOperationObjectTypeId = deliveryPointIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
                             var isAccessLinkCreated =
                                 deliveryPointIntegrationService.CreateAccessLink(
-                                    createDeliveryPointModelDTO.ID,
+                                    newDeliveryPointId,
                                     deliveryOperationObjectTypeId);
                             message = isAccessLinkCreated
                                 ? DeliveryPointConstants.DELIVERYPOINTCREATED
