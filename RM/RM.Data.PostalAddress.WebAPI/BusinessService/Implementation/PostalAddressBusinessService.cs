@@ -626,7 +626,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
-        #endregion public methods
+
         /// <summary>
         /// Delete Postal Addresses as part of Housekeeping
         /// </summary>
@@ -664,9 +664,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
-#endregion public methods
+        #endregion public methods
 
-#region private methods
+        #region private methods
 
         /// <summary>
         /// Business rule implementation for PAF create events
@@ -1321,6 +1321,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
-#endregion private methods
+        #endregion private methods
     }
 }
