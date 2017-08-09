@@ -14,7 +14,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         public RouteLogSummaryConfiguration()
         {
             // Set up the default configuration
-            OutputTo = ReportFactoryHelper.ReportOutputToOption.A4Landscape;
+            OutputTo = ReportFactoryHelper.ReportOutputToOption.A4Portrait;
             PageHeaderShowPageNumbers = false;
             PageFooterShowPageNumbers = true;
             UseTableBorders = false;

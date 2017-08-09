@@ -317,7 +317,7 @@
   </xsl:template>
 
   <xsl:template match="legalNotices">
-    <fo:block font-size="9pt" space-before="0.2cm">
+    <fo:block font-size="6pt" space-before="0.2cm">
       <xsl:apply-templates/>
     </fo:block>
   </xsl:template>

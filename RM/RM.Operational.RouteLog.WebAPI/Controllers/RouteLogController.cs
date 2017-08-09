@@ -40,8 +40,8 @@ namespace RM.Operational.RouteLog.WebAPI.Controllers
         public RouteLogController(IRouteLogBusinessService routeLogBusinessService, ILoggingHelper loggingHelper)
         {
             // Validate the arguments
-            if (routeLogBusinessService == null) throw new ArgumentNullException(nameof(routeLogBusinessService));
-            if (loggingHelper == null) throw new ArgumentNullException(nameof(loggingHelper));
+            if (routeLogBusinessService == null) { throw new ArgumentNullException(nameof(routeLogBusinessService)); }
+            if (loggingHelper == null) { throw new ArgumentNullException(nameof(loggingHelper)); }
 
 
             // Store the injected dependencies

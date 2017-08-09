@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
@@ -7,7 +8,6 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.RouteLog.WebAPI.DTO;
-using System;
 
 namespace RM.Operational.RouteLog.WebAPI.IntegrationService
 {
@@ -55,9 +55,9 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         public RouteLogIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             // Validate the arguments
-            if (httpHandler == null) throw new ArgumentNullException(nameof(httpHandler));
-            if (configurationHelper == null) throw new ArgumentNullException(nameof(configurationHelper));
-            if (loggingHelper == null) throw new ArgumentNullException(nameof(loggingHelper));
+            if (httpHandler == null) { throw new ArgumentNullException(nameof(httpHandler)); }
+            if (configurationHelper == null) { throw new ArgumentNullException(nameof(configurationHelper)); }
+            if (loggingHelper == null) { throw new ArgumentNullException(nameof(loggingHelper)); }
 
 
             // Store the injected dependencies

@@ -391,11 +391,11 @@ namespace RM.CommonLibrary.Reporting.Pdf
         /// <param name="parent">Reference to the parent element</param>
         /// <param name="root">Reference to the root XML document</param>
         /// <param name="caption">The caption</param>
+        /// <param name="source">The path to the map image</param>
         /// <param name="timestamp">The timestamp</param>
         /// <param name="scale">The scale</param>
-        /// <param name="source">The path to the map image</param>
         /// <param name="legalNotices">The legal notices</param>
-        internal static void AddMapSection(XmlElement parent, XmlDocument root, string caption, string source, string timestamp, string scale, string[] legalNotices)
+        public static void AddMapSection(XmlElement parent, XmlDocument root, string caption, string source, string timestamp, string scale, string[] legalNotices)
         {
             // Validate the arguments
             if (parent == null) { throw new ArgumentNullException(nameof(parent)); }
@@ -762,8 +762,8 @@ namespace RM.CommonLibrary.Reporting.Pdf
             if (width.HasValue)
             {
                 // Format the width
-                if (width.Value < 0) width = 0;
-                if (width.Value > 100) width = 100;
+                if (width.Value < 0) { width = 0; }
+                if (width.Value > 100) { width = 100; }
                 string formattedWidth = width.Value.ToString() + "%";
 
                 const string attributeName = "width";

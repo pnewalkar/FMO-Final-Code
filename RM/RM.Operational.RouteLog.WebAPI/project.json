@@ -58,7 +58,8 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true,
-    "additionalArguments": [ "/ruleset:../RM.ruleset" ]
+    "additionalArguments": [ "/ruleset:RM.Operational.RouteLog.WebAPI.ruleset" ],
+    "xmlDoc": false
   },
 
   "runtimeOptions": {

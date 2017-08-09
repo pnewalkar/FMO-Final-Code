@@ -393,8 +393,8 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             XmlElement reportNode = ReportFactoryHelper.AddReportElement(xmlDoc, options.OutputTo, true);
 
             // The report element can contain pageHeader, pageFooter and content (required) elements
-            const string pageHeaderCaption = "Route Log Summary"; // TODO load from resource file
-            const string pageFooterCaption = ""; // TODO load from resource file
+            string pageHeaderCaption = string.Empty; // TODO load from resource file
+            string pageFooterCaption = string.Empty; // TODO load from resource file
             ReportFactoryHelper.AddPageHeaderElement(reportNode, xmlDoc, pageHeaderCaption, options.PageHeaderShowPageNumbers);
             ReportFactoryHelper.AddPageFooterElement(reportNode, xmlDoc, pageFooterCaption, options.PageFooterShowPageNumbers);
             XmlElement contentNode = ReportFactoryHelper.AddContentElement(reportNode, xmlDoc);

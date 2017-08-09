@@ -9,24 +9,6 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
     internal class RouteLogSummaryGroup
     {
         /// <summary>
-        /// Group type enumeration
-        /// </summary>
-        public enum GroupType
-        {
-            ConsecutiveAscending,
-            ConsecutiveDescending,
-            EvensAscending,
-            EvensDescending,
-            OddsAscending,
-            OddsDescending,
-            Unknown
-        }
-
-
-
-    
-
-        /// <summary>
         /// Constructs route log summary group with an initial address
         /// </summary>
         /// <param name="address">The address</param>
@@ -52,6 +34,26 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             this.SubBuildingName = address.SubBuildingName;
             this.BuildingName = address.BuildingName;
         }
+
+
+
+
+
+        /// <summary>
+        /// Group type enumeration
+        /// </summary>
+        public enum GroupType
+        {
+            ConsecutiveAscending,
+            ConsecutiveDescending,
+            EvensAscending,
+            EvensDescending,
+            OddsAscending,
+            OddsDescending,
+            Unknown
+        }
+
+
 
 
 

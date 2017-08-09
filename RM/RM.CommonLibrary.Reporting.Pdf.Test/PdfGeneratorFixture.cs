@@ -36,6 +36,17 @@ namespace RM.CommonLibrary.Reporting.Test
 
 
 
+        /// <summary>
+        /// Performs tear down operations after the entire fixture
+        /// </summary>
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            // Do nothing
+        }
+
+
+
 
 
         // No tests implemented because:

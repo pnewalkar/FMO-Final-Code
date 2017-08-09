@@ -1,12 +1,11 @@
-﻿using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
+﻿using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.RouteLog.WebAPI.DTO;
 using RM.Operational.RouteLog.WebAPI.IntegrationService;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
-using System;
 
 namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
@@ -39,8 +38,8 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         public RouteLogBusinessService(IRouteLogIntegrationService routeLogIntegrationService, ILoggingHelper loggingHelper)
         {
             // Validate the arguments
-            if (routeLogIntegrationService == null) throw new ArgumentNullException(nameof(routeLogIntegrationService));
-            if (loggingHelper == null) throw new ArgumentNullException(nameof(loggingHelper));
+            if (routeLogIntegrationService == null) { throw new ArgumentNullException(nameof(routeLogIntegrationService)); }
+            if (loggingHelper == null) { throw new ArgumentNullException(nameof(loggingHelper)); }
 
 
             // Store the injected dependencies
@@ -73,45 +72,45 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 if (routeLogSummary != null)
                 {
                     // Build the left hand table content
-                    string RouteSummaryName = "Name"; // TODO load from resource file
-                    string Number = "Number"; // TODO load from resource file
-                    string RouteMethod = "Method"; // TODO load from resource file
-                    string DeliveryOffice = "Delivery Office"; // TODO load from resource file
-                    string Aliases = "Aliases*"; // TODO load from resource file
-                    string Block = "Blocks"; // TODO load from resource file
-                    string Scenario = "Scenario"; // TODO load from resource file
+                    string routeSummaryName = "Name"; // TODO load from resource file
+                    string number = "Number"; // TODO load from resource file
+                    string routeMethod = "Method"; // TODO load from resource file
+                    string deliveryOffice = "Delivery Office"; // TODO load from resource file
+                    string aliases = "Aliases*"; // TODO load from resource file
+                    string block = "Blocks"; // TODO load from resource file
+                    string scenario = "Scenario"; // TODO load from resource file
                     List<Tuple<string, string>> leftTable = new List<Tuple<string, string>>();
-                    leftTable.Add(Tuple.Create<string, string>(RouteSummaryName, routeLogSummary.Route.RouteName));
-                    leftTable.Add(Tuple.Create<string, string>(Number, routeLogSummary.Route.RouteNumber));
-                    leftTable.Add(Tuple.Create<string, string>(RouteMethod, routeLogSummary.Route.Method));
-                    leftTable.Add(Tuple.Create<string, string>(DeliveryOffice, routeLogSummary.Route.DeliveryOffice));
-                    leftTable.Add(Tuple.Create<string, string>(Aliases, routeLogSummary.Route.Aliases.ToString()));
-                    leftTable.Add(Tuple.Create<string, string>(Block, routeLogSummary.Route.Blocks.ToString()));
-                    leftTable.Add(Tuple.Create<string, string>(Scenario, routeLogSummary.Route.ScenarioName));
+                    leftTable.Add(Tuple.Create<string, string>(routeSummaryName, routeLogSummary.Route.RouteName));
+                    leftTable.Add(Tuple.Create<string, string>(number, routeLogSummary.Route.RouteNumber));
+                    leftTable.Add(Tuple.Create<string, string>(routeMethod, routeLogSummary.Route.Method));
+                    leftTable.Add(Tuple.Create<string, string>(deliveryOffice, routeLogSummary.Route.DeliveryOffice));
+                    leftTable.Add(Tuple.Create<string, string>(aliases, routeLogSummary.Route.Aliases.ToString()));
+                    leftTable.Add(Tuple.Create<string, string>(block, routeLogSummary.Route.Blocks.ToString()));
+                    leftTable.Add(Tuple.Create<string, string>(scenario, routeLogSummary.Route.ScenarioName));
 
                     // Build the centre hand table content
-                    string CollectionPoint = "CPs"; // TODO load from resource file
-                    string DeliveryPoint = "DPs"; // TODO load from resource file
-                    string BusinessDeliveryPoint = "Business DPs"; // TODO load from resource file
-                    string ResidentialDeliveryPoint = "Residential DPs"; // TODO load from resource file
-                    string AccelerationIn = "Acceleration In"; // TODO load from resource file
-                    string AccelerationOut = "Acceleration Out"; // TODO load from resource file
-                    string PairedRoute = "Paired Route"; // TODO load from resource file
+                    string collectionPoint = "CPs"; // TODO load from resource file
+                    string deliveryPoint = "DPs"; // TODO load from resource file
+                    string businessDeliveryPoint = "Business DPs"; // TODO load from resource file
+                    string residentialDeliveryPoint = "Residential DPs"; // TODO load from resource file
+                    string accelerationIn = "Acceleration In"; // TODO load from resource file
+                    string accelerationOut = "Acceleration Out"; // TODO load from resource file
+                    string pairedRoute = "Paired Route"; // TODO load from resource file
                     List<Tuple<string, string>> centerTable = new List<Tuple<string, string>>();
-                    centerTable.Add(Tuple.Create<string, string>(CollectionPoint, "0")); // TODO add collection point value here
-                    centerTable.Add(Tuple.Create<string, string>(DeliveryPoint, routeLogSummary.Route.DPs.ToString()));
-                    centerTable.Add(Tuple.Create<string, string>(BusinessDeliveryPoint, routeLogSummary.Route.BusinessDPs.ToString()));
-                    centerTable.Add(Tuple.Create<string, string>(ResidentialDeliveryPoint, routeLogSummary.Route.ResidentialDPs.ToString()));
-                    centerTable.Add(Tuple.Create<string, string>(AccelerationIn, routeLogSummary.Route.AccelarationIn));
-                    centerTable.Add(Tuple.Create<string, string>(AccelerationOut, routeLogSummary.Route.AccelarationOut));
-                    centerTable.Add(Tuple.Create<string, string>(PairedRoute, routeLogSummary.Route.PairedRoute));
+                    centerTable.Add(Tuple.Create<string, string>(collectionPoint, "0")); // TODO add collection point value here
+                    centerTable.Add(Tuple.Create<string, string>(deliveryPoint, routeLogSummary.Route.DPs.ToString()));
+                    centerTable.Add(Tuple.Create<string, string>(businessDeliveryPoint, routeLogSummary.Route.BusinessDPs.ToString()));
+                    centerTable.Add(Tuple.Create<string, string>(residentialDeliveryPoint, routeLogSummary.Route.ResidentialDPs.ToString()));
+                    centerTable.Add(Tuple.Create<string, string>(accelerationIn, routeLogSummary.Route.AccelarationIn));
+                    centerTable.Add(Tuple.Create<string, string>(accelerationOut, routeLogSummary.Route.AccelarationOut));
+                    centerTable.Add(Tuple.Create<string, string>(pairedRoute, routeLogSummary.Route.PairedRoute));
 
                     // Build the right hand table content
-                    string NoD2D = "No D2D"; // TODO load from resource file
-                    string DPExemptions = "DP Exemptions"; // TODO load from resource file
+                    string noD2D = "No D2D"; // TODO load from resource file
+                    string dpExemptions = "DP Exemptions"; // TODO load from resource file
                     List<Tuple<string, string>> rightTable = new List<Tuple<string, string>>();
-                    rightTable.Add(Tuple.Create<string, string>(NoD2D, "0")); // TODO Add no D2D value here
-                    rightTable.Add(Tuple.Create<string, string>(DPExemptions, "0")); // TODO Add DP exemptions value here
+                    rightTable.Add(Tuple.Create<string, string>(noD2D, "0")); // TODO Add no D2D value here
+                    rightTable.Add(Tuple.Create<string, string>(dpExemptions, "0")); // TODO Add DP exemptions value here
 
                     // Get the sequenced points
                     List<RouteLogSummaryPoint> sequencedPoints = RouteLogSummaryFactory.GetSequencedPointSummary(routeLogSummary.RouteLogSequencedPoints);
