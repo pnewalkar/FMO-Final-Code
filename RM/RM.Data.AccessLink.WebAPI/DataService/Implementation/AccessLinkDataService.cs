@@ -5,8 +5,8 @@
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Spatial;
-    using System.Linq;
     using System.Diagnostics;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using CommonLibrary.DataMiddleware;
@@ -278,7 +278,6 @@
             return null;
         }
 
-
         /// <summary>
         /// Deletes a access link when delivery point is deleted
         /// </summary>
@@ -299,13 +298,13 @@
                         if (accessLink.AccessLinkStatus != null)
                         {
                             DataContext.AccessLinkStatus.RemoveRange(accessLink.AccessLinkStatus);
-
                         }
+
                         if (accessLink.NetworkLink != null)
                         {
                             DataContext.NetworkLinks.Remove(accessLink.NetworkLink);
-
                         }
+
                         DataContext.AccessLinks.Remove(accessLink);
 
                         await DataContext.SaveChangesAsync();

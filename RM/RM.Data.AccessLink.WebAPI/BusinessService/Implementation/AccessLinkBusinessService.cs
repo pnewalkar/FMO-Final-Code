@@ -1,4 +1,11 @@
-﻿using Microsoft.SqlServer.Types;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Data.SqlTypes;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
@@ -9,13 +16,6 @@ using RM.Data.AccessLink.WebAPI.Utils;
 using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 {
@@ -240,21 +240,23 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 Tuple<NetworkLinkDTO, SqlGeometry> nearestNamedStreetNetworkObjectWithIntersectionTuple =
                     accessLinkIntegrationService.GetNearestNamedRoad(operationalObjectPoint, roadName).Result;
 
-                SqlGeometry accesslink = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item2;
+                SqlGeometry accessLinkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item2;
                 NetworkLinkDTO networkLink = null;
                 SqlGeometry networkIntersectionPoint = null;
-                if (accesslink != null)
+                if (accessLinkIntersectionPoint != null)
                 {
+                    var accessLinkCandidate = operationalObjectPoint.ToSqlGeometry().ShortestLineTo(accessLinkIntersectionPoint).ToDbGeometry();
+
                     // Condition to check any intersection in the delivery point
-                    var intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accesslink.ToDbGeometry());
+                    var intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accessLinkCandidate);
 
                     // Condition to check any Crosses or overlaps in Access link
-                    var isAccessLinkCrossesorOverLaps = accessLinkDataService.CheckAccessLinkCrossesorOverLaps(operationalObjectPoint, accesslink.ToDbGeometry());
+                    var isAccessLinkCrossesorOverLaps = accessLinkDataService.CheckAccessLinkCrossesorOverLaps(operationalObjectPoint, accessLinkCandidate);
 
                     if (intersectionCountForDeliveryPoint == 0 && !isAccessLinkCrossesorOverLaps)
                     {
                         networkLink = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item1;
-                        networkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item2;
+                        networkIntersectionPoint = accessLinkIntersectionPoint;
                     }
                 }
 
@@ -284,22 +286,25 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 {
                     // Rule 2. - look for any path or road if there is any other road other than the
                     // return the road segment object and the access link intersection point
-                    Tuple<NetworkLinkDTO, List<SqlGeometry>> nearestStreetNetworkObjectWithIntersectionTuple =
+                    List<Tuple<NetworkLinkDTO, SqlGeometry>> nearestStreetNetworkObjectWithIntersectionList =
                         accessLinkIntegrationService.GetNearestSegment(operationalObjectPoint).Result;
-                    var networkLikdDTO = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;
 
                     // var accessLinks = operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLikdDTO.LinkGeometry.ToSqlGeometry());
-                    foreach (var interscetionPoint in nearestStreetNetworkObjectWithIntersectionTuple?.Item2)
+                    foreach (var nearestStreetNetworkObjectWithIntersectionTuple in nearestStreetNetworkObjectWithIntersectionList)
                     {
-                        if (interscetionPoint != null)
+                        var networkLikdDTO = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;
+                        var intersectionPoint = nearestStreetNetworkObjectWithIntersectionTuple?.Item2;
+                        if (intersectionPoint != null)
                         {
-                            var intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, interscetionPoint.ToDbGeometry());
-                            var isAccessLinkCrossesorOverLaps = accessLinkDataService.CheckAccessLinkCrossesorOverLaps(operationalObjectPoint, interscetionPoint.ToDbGeometry());
+                            var accessLinkCandidate = operationalObjectPoint.ToSqlGeometry().ShortestLineTo(intersectionPoint).ToDbGeometry();
+
+                            var intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accessLinkCandidate);
+                            var isAccessLinkCrossesorOverLaps = accessLinkDataService.CheckAccessLinkCrossesorOverLaps(operationalObjectPoint, accessLinkCandidate);
 
                             if (intersectionCountForDeliveryPoint == 0 && !isAccessLinkCrossesorOverLaps)
                             {
                                 networkLink = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;
-                                networkIntersectionPoint = interscetionPoint.STEndPoint();
+                                networkIntersectionPoint = intersectionPoint;
                                 break;
                             }
                         }

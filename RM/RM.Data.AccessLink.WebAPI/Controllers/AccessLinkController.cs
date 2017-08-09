@@ -164,13 +164,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
             }
         }
 
-
         /// <summary>
         /// This method is used to Delete access link when Delivery Point is deleted.
         /// </summary>
         /// <param name="operationalObjectId">Operational Object unique identifier.</param>
         /// <returns>If <true>then access link deleted succeeded(HttpStatusCode:200),else not found(HttpStatusCode:204).</true></returns>
-
         [HttpDelete]
         [Route("AccessLink/delete/id:{operationalObjectId}")]
         public Task<bool> DeleteAccessLink(Guid operationalObjectId)
@@ -192,7 +190,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         /// And to create a New access link for Deliver Point based on the new location.
         /// </summary>
         /// <param name="deliveryPointGuid">Delivery point unique identifier</param>
-        /// <returns>returns the status of update operation</returns>              
+        /// <returns>returns the status of update operation</returns>
         [HttpPut("AccessLink/UpdateAccessLinkForMovedDeliveryPoint/id:{deliveryPointId}")]
         public IActionResult UpdateAccessLinkForMovedDeliveryPoint(Guid deliveryPointId)
         {
@@ -223,6 +221,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
                 return Ok(isAccessLinkCreateSuccessful);
             }
         }
+
         #endregion Methods
     }
 }
