@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
+using System.Collections.Generic;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 {
@@ -43,5 +44,12 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
         /// <param name="action">action message to be updated</param>
         /// <returns>whether the notification exists or not</returns>
         Task<bool> CheckIfNotificationExists(int udprn, string action);
+
+        /// <summary>
+        /// Get AddressLocations by UDPRN
+        /// </summary>
+        /// <param name="udprns">List of UDPRNs</param>
+        /// <returns>Address Locations</returns>
+        Task<List<AddressLocationDataDTO>> GetAddressLocationsByUDPRN(List<int> udprns);
     }
 }

@@ -1,0 +1,13 @@
+
+
+{
+
+    "extends": "plugin:jasmine/recommended",
+    "plugins": [
+        "jasmine"
+    ],
+    "rules": {
+        "eqeqeq": "off",
+        "curly": "error"
+    }
+}

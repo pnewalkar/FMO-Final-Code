@@ -17,7 +17,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">NYB details DTO</param>
         /// <param name="fileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddress, string fileName);
+        Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddress, string fileName, Guid operationalStatusGUID);
 
         /// <summary>
         /// Update PostalAddress based on the PostalAddressDataDTO passed for PAF depending upon NYB and USR scenerios
@@ -126,5 +126,44 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="pafGuid">pafGuid as Address Type Guid</param>
         /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
+
+        /// <summary>
+        /// Delete postal Address details
+        /// </summary>
+        /// <param name="addressId">Postal Address Id</param>
+        /// <returns>boolean</returns>
+        Task<bool> DeletePostalAddress(Guid addressId);
+
+        /// <summary>
+        /// Update postal address status to live or pending delete
+        /// </summary>
+        /// <param name="postalAddressId">Address id</param>
+        /// <param name="postalAddressStatus">Address status</param>
+        /// <returns>boolean value true if status has been updated successfully</returns>
+        Task<bool> UpdatePostalAddressStatus(Guid postalAddressId, Guid postalAddressStatus);
+
+        /// <summary>
+        /// Check the duplicates for NYB records for a range
+        /// </summary>
+        /// <param name="objPostalAddress"></param>
+        /// <param name="addressTypeNYBGuid"></param>
+        /// <returns></returns>
+        Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateNybRecordsForRange(List<PostalAddressDataDTO> postalAddressesDTOs, Guid addressTypeNYBGuid);
+
+        Task<Tuple<bool, List<PostalAddressDataDTO>>> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDataDTO> postalAddressDTOs);
+
+        /// <summary>
+        /// Get All the pending delete postal addresses for deletion
+        /// </summary>
+        /// <param name="postalAddressPendingDeleteId">Postal Address Pending Delete Guid</param>
+        /// <returns>Postal Adddress Data DTOs</returns>
+        Task<List<PostalAddressDataDTO>> GetAllPendingDeletePostalAddresses(Guid postalAddressPendingDeleteId);
+
+        /// <summary>
+        /// Delete postal Addresses for housekeeping
+        /// </summary>
+        /// <param name="addressId">Postal Addresses Data DTOs</param>
+        /// <returns>whether the records are delted or not</returns>
+        Task<bool> DeletePostalAddressForHousekeeping(List<PostalAddressDataDTO> postalAddressDataDTOs);
     }
 }

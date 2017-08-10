@@ -174,7 +174,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 var straightLineDistance = GetDeliveryPointDistance(deliveryPointDTO, spatialLocationXY);
 
                                 // Check if the new point is within the tolerance limit
-                                if (straightLineDistance < ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
+                                if (straightLineDistance <= ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
                                 {
                                     deliveryPointDTO.LocationXY = spatialLocationXY;
                                     deliveryPointDTO.LocationProvider_GUID = locationProviderId;
@@ -275,6 +275,27 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         }
 
         #endregion Save USR Details to Database
+
+        public async Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetAddressLocationsbyUDPRN"))
+            {
+                string methodName = typeof(ThirdPartyAddressLocationBusinessService) + "." + nameof(GetAddressLocationByUDPRN);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
+
+                var addressLocationDataDtos = await addressLocationDataService.GetAddressLocationsByUDPRN(udprns);
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<AddressLocationDataDTO, AddressLocationDTO>().MaxDepth(1);
+                });
+                Mapper.Configuration.CreateMapper();
+
+                List<AddressLocationDTO> addressLocationDtos = Mapper.Map<List<AddressLocationDataDTO>, List<AddressLocationDTO>>(addressLocationDataDtos);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
+                return addressLocationDtos;
+            }
+        }
 
         #region Calculate Spatial Location
 

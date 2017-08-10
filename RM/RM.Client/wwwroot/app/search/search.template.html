@@ -20,7 +20,9 @@
             </li>
         </ul>
         <ul>
-            <li ng-show="vm.results.length >= 5" class="viewResult" ng-click="vm.advanceSearch(vm.searchText)">
+           
+            <li ng-if="vm.results.length >= vm.defaultResultCount && (vm.resultscount[0].count - vm.defaultResultCount) > vm.noResultCount" class="viewResult" ng-click="vm.advanceSearch(vm.searchText)">
+                
                 <span class="searchCount">{{vm.resultscount[0].count - 5}}</span> View More Results<i class="fa fa-angle-double-right" aria-hidden="true"></i>
             </li>
         </ul>
@@ -29,7 +31,7 @@
                 {{ 'VALIDATION.NO_RESULT_FOUND' | translate }}
             </li>
         </ul>
-    </div>
+               </div>
     </div>
     <div class="numberCircle" ng-show="vm.resultscount[0].count > 0 && vm.isResultDisplay">
         <span>{{vm.resultscount[0].count}}</span>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 
 namespace RM.Data.AccessLink.WebAPI.DataDTOs
@@ -11,7 +10,6 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         /// </summary>
         public NetworkLinkDataDTO()
         {
-            this.NetworkNode = new NetworkNodeDataDTO();
         }
 
         public Guid ID { get; set; }
@@ -39,7 +37,6 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         public string LinkName { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
-
 
         public NetworkNodeDataDTO NetworkNode { get; set; }
 

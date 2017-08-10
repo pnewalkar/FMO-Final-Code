@@ -6,7 +6,7 @@
       Files in format NYB corresponding to the example project
     </FolderDescription>
     <FolderFilter>*</FolderFilter>
-    <FolderPath>D:\NYB\</FolderPath>
+    <FolderPath>C:\Project\Sourcefile\NYB\Waiting</FolderPath>
     <FolderIncludeSub>false</FolderIncludeSub>
     <ExecutableFile>CMD.EXE</ExecutableFile>
     <!-- The block {0} will be automatically replaced with the

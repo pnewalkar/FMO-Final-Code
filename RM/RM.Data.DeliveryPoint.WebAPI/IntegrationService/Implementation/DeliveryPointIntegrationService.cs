@@ -132,6 +132,31 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         }
 
         /// <summary>
+        /// Create address for a delivery point with PAF/NYB details
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <returns>bool</returns>
+        public async Task<List<CreateDeliveryPointModelDTO>> CreateAddressForDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CreateAddressAndDeliveryPoint"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CreateAddressForDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/savedeliverypointaddress/range/", postalAddressDTOs);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                var createAddressAndDeliveryPoint = JsonConvert.DeserializeObject<List<CreateDeliveryPointModelDTO>>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return createAddressAndDeliveryPoint;
+            }
+        }
+
+        /// <summary>
         /// This method is used to check Duplicate NYB records
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress as input</param>
@@ -153,6 +178,31 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 var checkForDuplicateNybRecords = result.Content.ReadAsStringAsync().Result;
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return checkForDuplicateNybRecords;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to check Duplicate NYB records
+        /// </summary>
+        /// <param name="objPostalAddress">objPostalAddress as input</param>
+        /// <returns>string</returns>
+        public async Task<DuplicateDeliveryPointDTO> CheckForDuplicateNybRecordsForRange(List<PostalAddressDTO> postalAddresses)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CheckForDuplicateNybRecordsForRange"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CheckForDuplicateNybRecordsForRange);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/nybduplicate/range/", postalAddresses);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                var duplicateNybAddresses = JsonConvert.DeserializeObject<DuplicateDeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return duplicateNybAddresses;
             }
         }
 
@@ -183,6 +233,32 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         }
 
         /// <summary>
+        /// This method is used to check for Duplicate Address with Delivery Points.
+        /// </summary>
+        /// <param name="objPostalAddress">Postal Addess Dto as input</param>
+        /// <returns>bool</returns>
+        public async Task<DuplicateDeliveryPointDTO> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDTO> postalAddresses)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CheckForDuplicateAddressWithDeliveryPoints"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/duplicatedeliverypoint/range/", postalAddresses);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                var duplicateAddressWithDeliveryPoints = JsonConvert.DeserializeObject<DuplicateDeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return duplicateAddressWithDeliveryPoints;
+            }
+        }
+
+        /// <summary>
         /// Method to map a route  for delivery point
         /// </summary>
         /// <param name="deliveryRouteId">deliveryRouteId</param>
@@ -197,6 +273,34 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/" + deliveryRouteId + "/" + deliveryPointId, string.Empty);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    mapRouteForDeliveryPointSuccess = false;
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return mapRouteForDeliveryPointSuccess;
+            }
+        }
+
+        /// <summary>
+        /// Method to map a route  for delivery point
+        /// </summary>
+        /// <param name="deliveryRouteId">deliveryRouteId</param>
+        /// <param name="deliveryPointId">deliveryPointId</param>
+        /// <returns>bool</returns>
+        public async Task<bool> MapRouteForDeliveryPointForRange(Guid deliveryRouteId, List<Guid> deliveryPointIds)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.MapForDeliveryPoint"))
+            {
+                bool mapRouteForDeliveryPointSuccess = true;
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(MapRouteForDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypointrange/" + deliveryRouteId, deliveryPointIds);
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode
@@ -287,6 +391,60 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return approxLocation;
+            }
+        }
+
+        /// <summary>
+        /// Delete delivery point reference from route activity table.
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        /// <returns>boolean</returns>
+        public async Task<bool> DeleteDeliveryPointRouteMapping(Guid deliveryPointId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.DeleteDeliveryPointRouteMapping"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(DeleteDeliveryPointRouteMapping);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.DeleteAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/delete/" + deliveryPointId);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isDeleted = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return isDeleted;
+            }
+        }
+
+        /// <summary>
+        /// Delete access link
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        /// <returns>boolean</returns>
+        public async Task<bool> DeleteAccesslink(Guid deliveryPointId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.DeleteAccesslink"))
+            {
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(DeleteAccesslink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.DeleteAsync(accessLinkWebAPIName + "AccessLink/delete/id:" + deliveryPointId);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isDeleted = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return isDeleted;
             }
         }
 

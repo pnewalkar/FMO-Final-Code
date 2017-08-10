@@ -5,64 +5,182 @@
     @include margin(20px 0px 0px 5px);
 }
 
-.resultPanel{
+.resultPanel {
     @include margin(-23px 0px 0px 0px);
     @include height(100px);
     @include cursor(pointer);
-} 
+}
 
-.resultPanel, legend{
+.resultPanel, legend {
     @extend %body-content;
 }
 
-.dialogAction{
-    @include margin(100px 0px 0px 0px);    
+.dialogAction {
+    @include margin(100px 0px 0px 0px);
 }
 
-.dpCheckBox{
+.dpCheckBox {
     @include float(right);
 }
 
-fieldset{
+fieldset {
     margin-top: 15px;
     @include padding(5px 5px 5px 5px);
     @include border(1px solid $fieldsetColor);
 }
 
-.contentHeight{
+.contentHeight {
     @include height(2000px);
 }
-.aliasinput{
+
+.aliasinput {
     @include margin(0px 0px 5px 0px);
 }
 
-.aliasBox{
+.aliasBox {
     @include height(230px);
-    overflow-y:auto;
+    overflow-y: auto;
 }
-.aliasInputContainer{
+
+.aliasInputContainer {
     width: width-percent(1.205);
 }
 
-.alertPopup{
+.alertPopup {
     @include height(165px);
     @include padding(5px 5px 5px 5px);
     @include border-radius(15px);
     @include position(absolute);
     @include background($white,none);
-    @include margin(-50PX 0PX 0PX 400PX);
+    @include margin(-5% 0% 0% 13%);
     z-index: 1;
-    text-align:center;
+    text-align: center;
 }
 
 .overlay {
     background-color: rgb(189,189,189);
 }
 
-.disabledText{
-    color:rgb(169, 169, 169);
+.disabledText {
+    color: rgb(169, 169, 169);
 }
 
 .deliveryRoute .md-text {
     color: rgb(169, 169, 169);
+}
+
+.DPAliasBox {
+    padding-left: 15px;
+}
+
+#DPAliasBoxBtn {
+    margin-left: 0px;
+    margin-top: 10px;
+}
+
+.listAliasHeader {
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+
+.listAliasStar {
+    float: right;
+    margin-right: 60px;
+}
+
+.listAliasMdlist {
+    border: solid 1px #d0c9c9;
+    height: 145px;
+    overflow-y: scroll;
+}
+
+.listAliasMdlist .md-button.md-icon-button {
+    margin: 0 6px;
+    height: 20px;
+    min-width: 0;
+    line-height: 16px;
+    padding: 2px 8px;
+    width: 40px;
+    border-radius: 50%;
+}
+
+.listAlias {
+    padding: 0 0 0 5px;
+    Margin: 0;
+}
+
+.listAliasRadioBtn {
+    margin-right: -10px;
+}
+
+.md-list-item, md-list-item .md-list-item-inner, md-list-item, .md-list-item .md-list-item-inner {
+    min-height: 10px;
+}
+
+md-list-item .md-list-item-inner:before, md-list-item:before {
+    content: '';
+    min-height: 0;
+    visibility: hidden;
+    display: inline-block;
+}
+
+span.centerAlign.flex-20 {
+    margin: auto;
+}
+
+.map-panel li.initialCursor {
+    cursor: default;
+}
+
+md-radio-button .md-container {
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    box-sizing: border-box;
+    display: inline-block;
+    width: 20px;
+    height: 15px;
+    cursor: pointer;
+    left: 0;
+    right: auto;
+}
+
+md-radio-button .md-off, md-radio-button .md-on {
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+md-radio-button .md-label {
+    box-sizing: border-box;
+    position: relative;
+    display: inline-block;
+    margin-left: 20px;
+    margin-right: 0;
+    vertical-align: middle;
+    white-space: normal;
+    pointer-events: none;
+    width: auto;
+    font-size: 14px;
+}
+
+.rangeOption {
+    margin-top: 10px;
+}
+
+.subBuildingtype {
+    margin-top: 45px;
+}
+
+.subBuildingtype md-select {
+    min-width: 220px;
+}
+
+.dp-range {
+    margin-top: 20px;
 }

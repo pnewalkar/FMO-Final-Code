@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RM.Data.PostalAddress.WebAPI.DTO.Model;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
 
@@ -24,25 +25,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// </summary>
         /// <param name="postalAddress">list of PostalAddress DTO</param>
         /// <returns>returns true or false</returns>
-        Task<bool> SavePAFDetails(List<PostalAddressDTO> postalAddress);
-
-        // TODO : To be moved to Unit Manager
-        /*
-        /// <summary>
-        /// Filter PostalAddress based on the search text
-        /// </summary>
-        /// <param name="searchText">searchText</param>
-        /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of postcodes</returns>
-        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid);
-
-        /// <summary>
-        /// Get Postal Address based on postcode
-        /// </summary>
-        /// <param name="selectedItem">selectedItem</param>
-        /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of Postal Address</returns>
-        Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid);*/
+        Task<bool> ProcessPAFDetails(List<PostalAddressDTO> postalAddress);
 
         /// <summary>
         /// Get Postal Address based on postal address id.
@@ -92,5 +75,23 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <param name="udprn">udprn value of PostalAddress</param>
         /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn);
+
+        //Sprint 6 changes
+        /// <summary>
+        /// Check whether duplicate NYB records exists for a list of records.
+        /// </summary>
+        /// <param name="postalAddresses">postal address DTO</param>
+        /// <returns>whether the duplicates exist</returns>
+        Task<DuplicateDeliveryPointDTO> CheckForDuplicateNybRecordsForRange(List<PostalAddressDTO> postalAddresses);
+
+        Task<DuplicateDeliveryPointDTO> CheckForDuplicateAddressWithDeliveryPointsForRange(List<PostalAddressDTO> postalAddressDTOs);
+
+        Task<List<CreateDeliveryPointModelDTO>> CreateAddressForDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs);
+
+        /// <summary>
+        /// Delete Postal Addresses as part of Housekeeping
+        /// </summary>
+        /// <returns>Void</returns>
+        Task DeletePostalAddressesForHouseKeeping();
     }
 }

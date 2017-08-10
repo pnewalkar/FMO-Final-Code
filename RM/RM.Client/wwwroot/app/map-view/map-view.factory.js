@@ -70,7 +70,6 @@ function MapFactory($http,
         getResolutionFromScale: getResolutionFromScale,
         getScaleFromResolution: getScaleFromResolution,
         setUnitBoundaries: setUnitBoundaries,
-        setDeliveryPoint: setDeliveryPoint,
         setDeliveryPointOnLoad: setDeliveryPointOnLoad,
         setAccessLink: setAccessLink,
         setMapScale: setMapScale,
@@ -138,7 +137,7 @@ function MapFactory($http,
 
 
         map = new ol.Map({
-            layers: layers.map(function (a) { return a.layer }),
+            layers: layers.map(function (mapLayerObj) { return mapLayerObj.layer }),
             target: 'map',
             view: view,
             logo: false,
@@ -162,6 +161,7 @@ function MapFactory($http,
         $timeout(function() {
             var overviewMapContainer = document.querySelector('#overviewMap');
             var overviewMapControl =new ol.control.OverviewMap({
+                layers: layers.filter(function (miniMapLayerObj) { return miniMapLayerObj.onMiniMap; }).map(function (mapLayerObj) { return mapLayerObj.layer }),
                 view: new ol.View({
                    projection: BNGProjection
                 }),
@@ -381,10 +381,10 @@ function MapFactory($http,
             var scale = Math.round(getScaleFromResolution(resolution));
             var index = definedScales.indexOf(scale);
             var maxScaleIndex = definedScales.indexOf(maxScale);
-            if (index > -1) {
-                var zoomInButtons = $document[0].getElementsByClassName("ol-zoom-in");
-                var zoomOutButtons = $document[0].getElementsByClassName("ol-zoom-out");
+            var zoomInButtons = $document[0].getElementsByClassName("ol-zoom-in");
+            var zoomOutButtons = $document[0].getElementsByClassName("ol-zoom-out");
 
+            if (index > -1) {
                 if (index === definedScales.length - 1) {
                     setZoomButtonStatus(zoomInButtons, true);
 
@@ -406,6 +406,15 @@ function MapFactory($http,
                     $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
                 });
             }
+            else
+            {
+                if (scale > definedScales[definedScales.length - 1]) {                   
+                    setZoomButtonStatus(zoomInButtons, false);
+                }
+                if (scale < definedScales[maxScaleIndex]) {
+                    setZoomButtonStatus(zoomOutButtons, false);
+                }
+            }            
         };
 
         ol.inherits(customScaleLine, ol.control.ScaleLine);
@@ -465,42 +474,6 @@ function MapFactory($http,
         unitBoundaryLayer.layer.getSource().clear();
 
         unitBoundaryLayer.layer.getSource().addFeatures((new ol.format.GeoJSON({ defaultDataProjection: BNGProjection })).readFeatures(unitBoundaryGeoJSONData));
-    }
-
-    function setDeliveryPoint(long, lat) {
-        map.getView().setCenter([long, lat]);
-        map.getView().setResolution(0.5600011200022402);
-        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
-        deliveryPointsLayer.layer.getSource().clear();
-        deliveryPointsLayer.selected = true;
-        deliveryPointsLayer.layer.setVisible(true)
-        var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-        var extent = map.getView().calculateExtent(map.getSize());
-        layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
-            var features = new ol.format.GeoJSON({ defaultDataProjection: BNGProjection }).readFeatures(response);
-            deliveryPointsLayer.layer.getSource().addFeatures(features);
-
-            var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
-
-            var select = new ol.interaction.Select({ style: style });
-
-            map.addInteraction(select);
-
-            var selectedFeatures = select.getFeatures();
-
-            var featureToSelect;
-            angular.forEach(features, function (feature, index) {
-                var featureLatitude = feature.values_.geometry.getCoordinates()[1];
-                var featureLongitude = feature.values_.geometry.getCoordinates()[0];
-
-                if (featureLatitude === lat && featureLongitude === long) {
-                    featureToSelect = feature;
-                }
-            });
-
-            if (featureToSelect)
-                selectedFeatures.push(featureToSelect);
-        });
     }
 
     function setDeliveryPointOnLoad(long, lat) {
@@ -564,7 +537,7 @@ function MapFactory($http,
 
             var select = new ol.interaction.Select({ style: style });
 
-            map.addInteraction(select);
+            //map.addInteraction(select);
 
             var selectedFeatures = select.getFeatures();
         });

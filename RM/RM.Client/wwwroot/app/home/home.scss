@@ -96,6 +96,22 @@ md-select-menu._md {
     margin-left: 3%;
     width: 89%;
 }
+
+button.md-raised.md-primary.md-button.md-ink-ripple.rightAligned {
+    @include margin(1.5%);
+} 
+
+.ol-attribution.ol-unselectable.ol-control{
+    max-width: 50%;
+    ul{
+      text-align:left;
+  }
+}
+.ol-attribution.ol-unselectable.ol-control.ol-collapsed {
+    width: 28px;
+}
+
+
 /*fonts*/
 
 /*Chevin Light Font*/

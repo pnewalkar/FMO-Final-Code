@@ -13,17 +13,21 @@ function SimulationController($stateParams,
                              simulationService, $scope) {
     var vm = this;
     vm.selectClass = "routeSearch md-text";
-    vm.loadRouteLogStatus = loadRouteLogStatus();
+    vm.loadRouteLogStatus = loadRouteLogStatus;
     vm.loadScenario = loadScenario;
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.clearSearchTerm = clearSearchTerm;
     vm.selectionChanged = selectionChanged;
-
+    vm.initialize = initialize;
+    vm.initialize();
     vm.selectedDeliveryUnitObj = $stateParams;
     vm.isDeliveryRouteDisabled = true;
     vm.selectedRoute;
 
+    function initialize() {
+        vm.loadRouteLogStatus();
+    }
 
     function clearSearchTerm() {
         vm.searchTerm = "";
@@ -40,8 +44,8 @@ function SimulationController($stateParams,
         });
     }
     function scenarioChange() {
-        loadDeliveryRoute(vm.selectedRouteScenario.id);
-        vm.isDeliveryRouteDisabled = false;
+        loadDeliveryRoute(vm.selectedRouteScenario.id);  
+        vm.deliveryRoute = null;
     }
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitID) {
         simulationService.loadScenario(selectedRouteStatusObj, selectedDeliveryUnitID).then(function (response) {
@@ -59,7 +63,11 @@ function SimulationController($stateParams,
     function loadDeliveryRoute(deliveryScenarioID) {
         simulationService.loadDeliveryRoute(deliveryScenarioID).then(function (response) {
             vm.deliveryRoute = response;
-        });
+            if (vm.deliveryRoute.length > 0) {
+                vm.isDeliveryRouteDisabled = false;
+            }
+        });       
+            vm.isDeliveryRouteDisabled = true;  
     }
 
     function selectionChanged(selectedRoute) {

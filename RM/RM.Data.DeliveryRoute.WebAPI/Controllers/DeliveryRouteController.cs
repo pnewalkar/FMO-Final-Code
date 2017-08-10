@@ -365,5 +365,75 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 return Ok(route);
             }
         }
+
+        /// <summary>
+        /// Delete delivery point reference from route activity table.
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        [HttpDelete("deliveryroute/deliverypoint/delete/{deliveryPointId}")]
+        public async Task<IActionResult> DeleteDeliveryPointRouteMapping(Guid deliveryPointId)
+        {
+            if (deliveryPointId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(deliveryPointId));
+            }
+
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteDeliveryPointRouteMapping"))
+            {
+                try
+                {
+                    string methodName = typeof(DeliveryRouteController) + "." + nameof(SaveDeliveryPointRouteMapping);
+                    loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId);
+
+                    bool routeActivityDeleted = await deliveryRouteLogBusinessService.DeleteDeliveryPointRouteMapping(deliveryPointId);
+
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId);
+                    return Ok(routeActivityDeleted);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
+            }
+        }
+
+        /// <summary>
+        /// method to save delivery point and selected route mapping in block sequence table
+        /// </summary>
+        /// <param name="routeId">selected route id</param>
+        /// <param name="deliveryPointIds">List of Delivery point unique id</param>
+        [HttpPost("deliveryroute/deliverypointrange/{routeId}")]
+        public IActionResult SaveDeliveryPointRouteMappingForRange(Guid routeId, [FromBody]List<Guid> deliveryPointIds)
+        {
+            if (routeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(routeId));
+            }
+
+            if (deliveryPointIds == null || deliveryPointIds.Count == 0)
+            {
+                throw new ArgumentNullException(nameof(deliveryPointIds));
+            }
+
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.SaveDeliveryPointRouteMappingForRange"))
+            {
+                string methodName = typeof(DeliveryRouteController) + "." + nameof(SaveDeliveryPointRouteMappingForRange);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId);
+
+                foreach (var deliveryPointId in deliveryPointIds)
+                {
+                    deliveryRouteLogBusinessService.SaveDeliveryPointRouteMapping(routeId, deliveryPointId);
+                }
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId);
+                return Ok();
+            }
+        }
     }
 }

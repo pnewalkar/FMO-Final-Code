@@ -47,8 +47,7 @@ function MapController($scope,
         if (data.featureType === 'deliverypoint') {
             vm.contextTitle = data.contextTitle;
         }
-        else
-        {
+        else{
             vm.contextTitle = CommonConstants.TitleContextPanel;
         }
     });
@@ -84,7 +83,7 @@ function MapController($scope,
     });
 
     function onEnterKeypress(currentScale) {
-        if (currentScale != '' && (currentScale % 100 === 0 && vm.maximumScale >= currentScale)) {
+        if (currentScale != '' && currentScale >= 100 && vm.maximumScale >= currentScale) {
             mapFactory.setMapScale(currentScale)
         }
     }

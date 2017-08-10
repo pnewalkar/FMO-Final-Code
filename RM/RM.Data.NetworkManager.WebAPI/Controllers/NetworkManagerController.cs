@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Diagnostics;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.NetworkManager.WebAPI.BusinessService;
 using RM.DataManagement.NetworkManager.WebAPI.DTO;
 
@@ -79,11 +77,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 string methodName = typeof(NetworkManagerController) + "." + nameof(GetNearestSegment);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                Tuple<NetworkLinkDTO, List<SqlGeometry>> result;
+                List<Tuple<NetworkLinkDTO, SqlGeometry>> result;
 
                 result = networkManagerBusinessService.GetNearestSegment(JsonConvert.DeserializeObject<DbGeometry>(operationalObjectPointJson, new DbGeometryConverter()));
 
-                var convertedResult = new Tuple<NetworkLinkDTO, List<DbGeometry>>(result.Item1, result.Item2.ToDbGeometry());
+                List<Tuple<NetworkLinkDTO, DbGeometry>> convertedResult = new List<Tuple<DTO.NetworkLinkDTO, DbGeometry>>();
+                foreach (var item in result)
+                {
+                    convertedResult.Add(new Tuple<NetworkLinkDTO, DbGeometry>(item.Item1, item.Item2.ToDbGeometry()));
+                }
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(convertedResult);
             }
@@ -204,7 +207,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 
                 try
                 {
-                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForBasicSearch(searchText, CurrentUserUnit).ConfigureAwait(false);
+                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForBasicSearch(searchText, this.CurrentUserUnit, this.CurrentUserUnitType).ConfigureAwait(false);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(streetNames);
                 }
@@ -238,7 +241,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 
                 try
                 {
-                    int streetCount = await networkManagerBusinessService.GetStreetNameCount(searchText, CurrentUserUnit).ConfigureAwait(false);
+                    int streetCount = await networkManagerBusinessService.GetStreetNameCount(searchText, this.CurrentUserUnit, this.CurrentUserUnitType).ConfigureAwait(false);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(streetCount);
                 }
@@ -272,7 +275,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 
                 try
                 {
-                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForAdvanceSearch(searchText, CurrentUserUnit);
+                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForAdvanceSearch(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(streetNames);
                 }

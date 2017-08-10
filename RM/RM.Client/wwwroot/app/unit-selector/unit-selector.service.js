@@ -30,7 +30,7 @@ function unitSelectorService($q,
         if (deliveryRouteUnit.length === 0) {
             var authData = sessionStorage.getItem('authorizationData');
             authData = angular.fromJson(authData);
-            if (authData.unitGuid !==null) {
+            if (authData.unitGuid !== null) {
                 var deferred = $q.defer();
                 unitSelectorAPIService.getDeliveryUnit().then(function (response) {
                     if (response) {
@@ -54,7 +54,7 @@ function unitSelectorService($q,
                 });
                 return deferred.promise;
             } else {
-                if (authData.token!==null) {
+                if (authData.token !== null) {
                     var deferred = $q.defer();
                     unitSelectorAPIService.getDeliveryUnit().then(function (response) {
                         if (response) {

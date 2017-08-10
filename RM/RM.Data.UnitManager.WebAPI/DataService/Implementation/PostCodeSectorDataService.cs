@@ -34,10 +34,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// Get the postcode sector by the UDPRN id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
-        /// <param name="postcodeSectorTypeGuid">Postcode Sector Type Guid</param>
-        /// <param name="postcodeDistrictTypeGuid">Postcode District Type Guid</param>
         /// <returns>PostcodeSectorDataDTO</returns>
-        public async Task<PostcodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid)
+        public async Task<PostcodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeSectorByUdprn);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostcodeSectorByUdprn"))
@@ -45,14 +43,17 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeSectorDataServiceMethodEntryEventId);
 
                 var postcodeSector = await (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
+                                            join pc in DataContext.Postcodes.AsNoTracking() on ph.ID equals pc.ID
                                             join pa in DataContext.PostalAddresses on ph.Postcode equals pa.Postcode
-                                            where ph.PostcodeTypeGUID == postcodeSectorTypeGuid && pa.UDPRN == udprn
-                                            select ph.ParentPostcode).FirstOrDefaultAsync();
+                                            where pa.UDPRN == udprn
+                                            select ph.ParentPostcode.Trim()).FirstOrDefaultAsync();
 
                 var postcodeDistrict = await (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
+                                              join ph2 in DataContext.PostcodeHierarchies.AsNoTracking() on ph.ParentPostcode equals ph2.Postcode
+                                              join pc in DataContext.Postcodes.AsNoTracking() on ph.ID equals pc.ID
                                               join pa in DataContext.PostalAddresses on ph.Postcode equals pa.Postcode
-                                              where ph.PostcodeTypeGUID == postcodeDistrictTypeGuid && pa.UDPRN == udprn
-                                              select ph.ParentPostcode).FirstOrDefaultAsync();
+                                              where pa.UDPRN == udprn
+                                              select ph2.ParentPostcode.Trim()).FirstOrDefaultAsync();
 
                 PostcodeSectorDataDTO postCodeSectorDataDTO = new PostcodeSectorDataDTO
                 {

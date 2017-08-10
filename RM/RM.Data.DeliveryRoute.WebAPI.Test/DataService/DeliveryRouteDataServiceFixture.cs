@@ -114,7 +114,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         public async Task TestGetRouteByDeliverypoint_NegativeScenario()
         {
             var actualResult = await testCandidate.GetRouteByDeliverypoint(new Guid("2A0CDB34-7ABF-480E-B8BB-1A7C131ABAB5"));
-            Assert.IsNull(actualResult);
+            Assert.IsNull(actualResult.RouteName);
         }
 
         [Test]
@@ -166,8 +166,10 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
             var routeActivites = new List<RouteActivity>() { new RouteActivity() { ID = new Guid("F21BD083-9FB5-4420-86EF-7205A5075870"), RouteID = new Guid("F87F67EC-FAFA-4156-9C3D-85722719CE12"), ActivityTypeGUID = new Guid("7803247C-F866-E711-80ED-000D3A22173B"), ResourceGUID = new Guid("E1D25B7F-561B-E711-9F8C-28D244AEF9ED"), LocationID = new Guid("F08AAD61-B83F-463D-95D6-F0583F24644F") } };
             var blockSequences = new List<BlockSequence>() { new BlockSequence() { ID = new Guid("4FEB3A4A-A25E-42AF-AAD9-6B0BD51C9A1D"), BlockID = new Guid("61154482-8493-4130-A5E1-64E86C9757BC"), LocationID = new Guid("F08AAD61-B83F-463D-95D6-F0583F24644F") } };
             var postcodes = new List<Postcode>() { new Postcode() { ID = new Guid("E436B42D-A2C1-4E15-9E84-EB48A4474608"), PrimaryRouteGUID = new Guid("02B18F5E-1C1A-410F-AA51-C7CA0EC7216C"), PostcodeUnit = "EC4P 4GY" } };
-            var deliveryPoints = new List<DeliveryPoint>() { new DeliveryPoint() { ID = new Guid("F08AAD61-B83F-463D-95D6-F0583F24644F"), DeliveryPointUseIndicatorGUID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), MultipleOccupancyCount = 10, PostalAddressID = new Guid("7A5BF574-9ACA-4B8E-809D-00062A033342") } };
-            var postalAddresses = new List<PostalAddress>() { new PostalAddress() { ID = new Guid("7A5BF574-9ACA-4B8E-809D-00062A033342"), Thoroughfare = "Steyne Gardens", BuildingNumber = 10, SubBuildingName = "Apartment 33", BuildingName = "Warnes" } };
+            var deliveryPoints = new List<DeliveryPoint>() {
+                new DeliveryPoint() { ID = new Guid("F08AAD61-B83F-463D-95D6-F0583F24644F"), DeliveryPointUseIndicatorGUID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), MultipleOccupancyCount = 10, PostalAddressID = new Guid("7A5BF574-9ACA-4B8E-809D-00062A033342"),
+                    PostalAddress = new PostalAddress() { ID = new Guid("7A5BF574-9ACA-4B8E-809D-00062A033342"), Thoroughfare = "Steyne Gardens", BuildingNumber = 10, SubBuildingName = "Apartment 33", BuildingName = "Warnes", Postcode = "EC4P 4GY" } } };
+            var postalAddresses = new List<PostalAddress>() { new PostalAddress() { ID = new Guid("7A5BF574-9ACA-4B8E-809D-00062A033342"), Thoroughfare = "Steyne Gardens", BuildingNumber = 10, SubBuildingName = "Apartment 33", BuildingName = "Warnes", Postcode = "EC4P 4GY" } };
 
             mockRouteDBContext = CreateMock<RouteDBContext>();
 
@@ -246,7 +248,8 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
             mockdeliveryPointsDBSet.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<DeliveryPoint>)mockAsyndeliveryPoints).GetAsyncEnumerator());
             mockRouteDBContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockdeliveryPointsDBSet.Object);
             mockRouteDBContext.Setup(x => x.DeliveryPoints).Returns(mockdeliveryPointsDBSet.Object);
-            mockRouteDBContext.Setup(c => c.DeliveryPoints.AsNoTracking()).Returns(mockdeliveryPointsDBSet.Object);
+            mockdeliveryPointsDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockdeliveryPointsDBSet.Object);
+            mockdeliveryPointsDBSet.Setup(c => c.AsNoTracking()).Returns(mockdeliveryPointsDBSet.Object);
 
             var mockAsyncPostalAddresses = new DbAsyncEnumerable<PostalAddress>(postalAddresses);
             var mockPostalAddressesDBSet = MockDbSet(postalAddresses);

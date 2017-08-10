@@ -107,7 +107,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, List<SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint)
+        public List<Tuple<NetworkLinkDTO, SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetNearestSegment"))
             {
@@ -130,22 +130,27 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 referenceDataCategoryList.AddRange(
                    networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
 
-                Tuple<NetworkLinkDataDTO, List<SqlGeometry>> getNearestSegment = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
+                List<Tuple<NetworkLinkDataDTO, SqlGeometry>> nearestSegmentList = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
 
-                NetworkLinkDTO networkLink = null;
+                NetworkLinkDTO networkLinkDTO = null;
 
-                if (getNearestSegment != null && getNearestSegment.Item1 != null)
+                List<Tuple<NetworkLinkDTO, SqlGeometry>> nearestSegment = new List<Tuple<NetworkLinkDTO, SqlGeometry>>();
+                if (nearestSegmentList != null)
                 {
-                    networkLink = new NetworkLinkDTO()
+                    foreach (var item in nearestSegmentList)
                     {
-                        Id = getNearestSegment.Item1.ID,
-                        LinkGeometry = getNearestSegment.Item1.LinkGeometry,
-                        NetworkLinkType_GUID = getNearestSegment.Item1.NetworkLinkTypeGUID,
-                        TOID = getNearestSegment.Item1.TOID
-                    };
+                        networkLinkDTO = new NetworkLinkDTO()
+                        {
+                            Id = item.Item1.ID,
+                            LinkGeometry = item.Item1.LinkGeometry,
+                            NetworkLinkType_GUID = item.Item1.NetworkLinkTypeGUID,
+                            TOID = item.Item1.TOID
+                        };
+
+                        nearestSegment.Add(new Tuple<NetworkLinkDTO, SqlGeometry>(networkLinkDTO, item.Item2));
+                    }
                 }
 
-                Tuple<NetworkLinkDTO, List<SqlGeometry>> nearestSegment = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, getNearestSegment.Item2);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return nearestSegment;
@@ -299,15 +304,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">Guid</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Task</returns>
-        public async Task<List<StreetNameDTO>> GetStreetNamesForBasicSearch(string searchText, Guid userUnit)
+        public async Task<List<StreetNameDTO>> GetStreetNamesForBasicSearch(string searchText, Guid userUnit, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetStreetNamesForBasicSearch"))
             {
                 string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetStreetNamesForBasicSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var fetchStreetNamesForBasicSearch = await streetNetworkDataService.GetStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+                var fetchStreetNamesForBasicSearch = await streetNetworkDataService.GetStreetNamesForBasicSearch(searchText, userUnit, currentUserUnitType).ConfigureAwait(false);
                 var streetNameDTO = GenericMapper.MapList<StreetNameDataDTO, StreetNameDTO>(fetchStreetNamesForBasicSearch);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -321,16 +327,17 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <param name="userUnit">Guid userUnit</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>The total count of street name</returns>
-        public async Task<int> GetStreetNameCount(string searchText, Guid userUnit)
+        public async Task<int> GetStreetNameCount(string searchText, Guid userUnit, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetStreetNameCount"))
             {
                 string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetStreetNameCount);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var fetchStreetNamesForBasicSearch = await streetNetworkDataService.GetStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
-                var getStreetNameCount = await streetNetworkDataService.GetStreetNameCount(searchText, userUnit).ConfigureAwait(false);
+                var fetchStreetNamesForBasicSearch = await streetNetworkDataService.GetStreetNamesForBasicSearch(searchText, userUnit, currentUserUnitType).ConfigureAwait(false);
+                var getStreetNameCount = await streetNetworkDataService.GetStreetNameCount(searchText, userUnit, currentUserUnitType).ConfigureAwait(false);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
@@ -343,15 +350,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>StreetNames</returns>
-        public async Task<List<StreetNameDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid unitGuid)
+        public async Task<List<StreetNameDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid unitGuid, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetStreetNamesForAdvanceSearch"))
             {
                 string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetStreetNamesForAdvanceSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var fetchStreetNamesForAdvanceSearch = await streetNetworkDataService.GetStreetNamesForAdvanceSearch(searchText, unitGuid).ConfigureAwait(false);
+                var fetchStreetNamesForAdvanceSearch = await streetNetworkDataService.GetStreetNamesForAdvanceSearch(searchText, unitGuid, currentUserUnitType).ConfigureAwait(false);
 
                 var streetNameDTO = GenericMapper.MapList<StreetNameDataDTO, StreetNameDTO>(fetchStreetNamesForAdvanceSearch);
 

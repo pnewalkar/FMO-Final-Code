@@ -2,10 +2,10 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 
 //Styles-task
-gulp.task('styles', function() {
+gulp.task('styles', function () {
     gulp.src(['./app/**/*.scss', './app/variables.scss'])
         .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest('./build/sass'));
+        .pipe(gulp.dest('./dist/sass'));
 });
 
 

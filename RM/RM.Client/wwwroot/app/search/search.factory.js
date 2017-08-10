@@ -24,7 +24,7 @@ function searchService(
             deferred.resolve(response);
         }).error(function (err, status) {
            // deferred.reject(err);
-            return $q.reject(err);
+            return deferred.reject(err);
         });
         return deferred.promise;
     }

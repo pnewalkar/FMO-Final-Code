@@ -93,6 +93,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     {
                         objDeliveryPoint.ID = Guid.NewGuid();
                         deliveryPoint.ID = objDeliveryPoint.ID;
+                        deliveryPoint.MultipleOccupancyCount = objDeliveryPoint.MultipleOccupancyCount;
+                        deliveryPoint.MailVolume = objDeliveryPoint.MailVolume;
                         deliveryPoint.PostalAddressID = objDeliveryPoint.PostalAddressID;
                         deliveryPoint.DeliveryPointUseIndicatorGUID = objDeliveryPoint.DeliveryPointUseIndicatorGUID;
                         deliveryPoint.RowCreateDateTime = DateTime.UtcNow;
@@ -192,8 +194,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        public async Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid)
+        public async Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid, string currentUserUnitType)
         {
             if (searchText == null)
             {
@@ -205,36 +208,75 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 throw new ArgumentNullException(nameof(unitGuid), string.Format(ErrorConstants.Err_ArgumentmentNullException, unitGuid));
             }
 
-            DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.Shape).SingleOrDefault();
+            DbGeometry polygon = null;
+            List<DeliveryPointDataDTO> deliveryPointDataDto = new List<DeliveryPointDataDTO>();
 
-            var result = await DataContext.DeliveryPoints.AsNoTracking()
-                .Include(l => l.PostalAddress)
-                .Where(x => x.NetworkNode.Location.Shape.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
-                                ||
-                                x.PostalAddress.BuildingName.Contains(searchText)
-                                || x.PostalAddress.SubBuildingName.Contains(searchText)
-                                || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
-                                || x.PostalAddress.Thoroughfare.Contains(searchText)
-                                || x.PostalAddress.DependentLocality.Contains(searchText)))
-                                .Select(l => new DeliveryPointDataDTO
-                                {
-                                    ID = l.ID,
-                                    DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
-                                    PostalAddressID = l.PostalAddressID,
-                                    PostalAddress = new PostalAddressDataDTO
-                                    {
-                                        OrganisationName = l.PostalAddress.OrganisationName,
-                                        BuildingName = l.PostalAddress.BuildingName,
-                                        SubBuildingName = l.PostalAddress.SubBuildingName,
-                                        BuildingNumber = l.PostalAddress.BuildingNumber,
-                                        Thoroughfare = l.PostalAddress.Thoroughfare,
-                                        DependentLocality = l.PostalAddress.DependentLocality,
-                                        UDPRN = l.PostalAddress.UDPRN
-                                    }
-                                })
-                                .ToListAsync();
+            if (!currentUserUnitType.Equals(UserUnit.National.GetDescription(), StringComparison.OrdinalIgnoreCase))
+            {
+                polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid)
+                .Select(x => x.Shape).SingleOrDefault();
+            }
 
-            return result;
+            if (polygon != null)
+            {
+                deliveryPointDataDto = await DataContext.DeliveryPoints.AsNoTracking()
+                    .Include(l => l.PostalAddress)
+                    .Where(x => x.NetworkNode.Location.Shape.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
+                                                                     || x.PostalAddress.BuildingName.Contains(searchText)
+                                                                     || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                                                     || SqlFunctions.StringConvert((double)x.PostalAddress
+                                                                         .BuildingNumber).Trim().StartsWith(searchText)
+                                                                     || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                                                     || x.PostalAddress.DependentLocality.Contains(
+                                                                         searchText)))
+                    .Select(l => new DeliveryPointDataDTO
+                    {
+                        ID = l.ID,
+                        DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
+                        PostalAddressID = l.PostalAddressID,
+                        PostalAddress = new PostalAddressDataDTO
+                        {
+                            OrganisationName = l.PostalAddress.OrganisationName,
+                            BuildingName = l.PostalAddress.BuildingName,
+                            SubBuildingName = l.PostalAddress.SubBuildingName,
+                            BuildingNumber = l.PostalAddress.BuildingNumber,
+                            Thoroughfare = l.PostalAddress.Thoroughfare,
+                            DependentLocality = l.PostalAddress.DependentLocality,
+                            UDPRN = l.PostalAddress.UDPRN
+                        }
+                    }).ToListAsync();
+            }
+            else
+            {
+                deliveryPointDataDto = await DataContext.DeliveryPoints.AsNoTracking()
+                    .Include(l => l.PostalAddress)
+                    .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
+                                                                     || x.PostalAddress.BuildingName.Contains(searchText)
+                                                                     || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                                                     || SqlFunctions.StringConvert((double)x.PostalAddress
+                                                                         .BuildingNumber).StartsWith(searchText)
+                                                                     || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                                                     || x.PostalAddress.DependentLocality.Contains(
+                                                                         searchText))
+                    .Select(l => new DeliveryPointDataDTO
+                    {
+                        ID = l.ID,
+                        DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
+                        PostalAddressID = l.PostalAddressID,
+                        PostalAddress = new PostalAddressDataDTO
+                        {
+                            OrganisationName = l.PostalAddress.OrganisationName,
+                            BuildingName = l.PostalAddress.BuildingName,
+                            SubBuildingName = l.PostalAddress.SubBuildingName,
+                            BuildingNumber = l.PostalAddress.BuildingNumber,
+                            Thoroughfare = l.PostalAddress.Thoroughfare,
+                            DependentLocality = l.PostalAddress.DependentLocality,
+                            UDPRN = l.PostalAddress.UDPRN
+                        }
+                    }).ToListAsync();
+            }
+
+            return deliveryPointDataDto;
         }
 
         /// <summary>
@@ -242,9 +284,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="searchText">searchText as string</param>
         /// <param name="recordTakeCount">Number of records to be returned.</param>
-        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="unitGuid">The unique unit identifier or location identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>Collection of Delivery Points that matches the criteria.</returns>
-        public async Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, int recordTakeCount, Guid unitGuid)
+        public async Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, int recordTakeCount, Guid unitGuid, string currentUserUnitType)
         {
             if (searchText == null)
             {
@@ -256,39 +299,79 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 throw new ArgumentNullException(nameof(unitGuid), string.Format(ErrorConstants.Err_ArgumentmentNullException, unitGuid));
             }
 
-            DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid)
+            DbGeometry polygon = null;
+            List<DeliveryPointDataDTO> deliveryPointDataDto = new List<DeliveryPointDataDTO>();
+
+            if (!currentUserUnitType.Equals(UserUnit.National.GetDescription(), StringComparison.OrdinalIgnoreCase))
+            {
+                polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid)
                 .Select(x => x.Shape).SingleOrDefault();
+            }
 
-            var result = await DataContext.DeliveryPoints.AsNoTracking()
-                .Include(l => l.PostalAddress)
-                .Where(x => x.NetworkNode.Location.Shape.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
-                                                                 || x.PostalAddress.BuildingName.Contains(searchText)
-                                                                 || x.PostalAddress.SubBuildingName.Contains(searchText)
-                                                                 || SqlFunctions.StringConvert((double)x.PostalAddress
-                                                                     .BuildingNumber).StartsWith(searchText)
-                                                                 || x.PostalAddress.Thoroughfare.Contains(searchText)
-                                                                 || x.PostalAddress.DependentLocality.Contains(
-                                                                     searchText)))
-                .Select(l => new DeliveryPointDataDTO
-                {
-                    ID = l.ID,
-                    DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
-                    PostalAddressID = l.PostalAddressID,
-                    PostalAddress = new PostalAddressDataDTO
+            if (polygon != null)
+            {
+                deliveryPointDataDto = await DataContext.DeliveryPoints.AsNoTracking()
+                    .Include(l => l.PostalAddress)
+                    .Where(x => x.NetworkNode.Location.Shape.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
+                                                                     || x.PostalAddress.BuildingName.Contains(searchText)
+                                                                     || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                                                     || SqlFunctions.StringConvert((double)x.PostalAddress
+                                                                         .BuildingNumber).Trim().StartsWith(searchText)
+                                                                     || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                                                     || x.PostalAddress.DependentLocality.Contains(
+                                                                         searchText)))
+                    .Select(l => new DeliveryPointDataDTO
                     {
-                        OrganisationName = l.PostalAddress.OrganisationName,
-                        BuildingName = l.PostalAddress.BuildingName,
-                        SubBuildingName = l.PostalAddress.SubBuildingName,
-                        BuildingNumber = l.PostalAddress.BuildingNumber,
-                        Thoroughfare = l.PostalAddress.Thoroughfare,
-                        DependentLocality = l.PostalAddress.DependentLocality,
-                        UDPRN = l.PostalAddress.UDPRN
-                    }
-                })
-                .Take(recordTakeCount)
-                .ToListAsync();
+                        ID = l.ID,
+                        DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
+                        PostalAddressID = l.PostalAddressID,
+                        PostalAddress = new PostalAddressDataDTO
+                        {
+                            OrganisationName = l.PostalAddress.OrganisationName,
+                            BuildingName = l.PostalAddress.BuildingName,
+                            SubBuildingName = l.PostalAddress.SubBuildingName,
+                            BuildingNumber = l.PostalAddress.BuildingNumber,
+                            Thoroughfare = l.PostalAddress.Thoroughfare,
+                            DependentLocality = l.PostalAddress.DependentLocality,
+                            UDPRN = l.PostalAddress.UDPRN
+                        }
+                    })
+                    .Take(recordTakeCount)
+                    .ToListAsync();
+            }
+            else
+            {
+                deliveryPointDataDto = await DataContext.DeliveryPoints.AsNoTracking()
+                    .Include(l => l.PostalAddress)
+                    .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
+                                                                     || x.PostalAddress.BuildingName.Contains(searchText)
+                                                                     || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                                                     || SqlFunctions.StringConvert((double)x.PostalAddress
+                                                                         .BuildingNumber).StartsWith(searchText)
+                                                                     || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                                                     || x.PostalAddress.DependentLocality.Contains(
+                                                                         searchText))
+                    .Select(l => new DeliveryPointDataDTO
+                    {
+                        ID = l.ID,
+                        DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
+                        PostalAddressID = l.PostalAddressID,
+                        PostalAddress = new PostalAddressDataDTO
+                        {
+                            OrganisationName = l.PostalAddress.OrganisationName,
+                            BuildingName = l.PostalAddress.BuildingName,
+                            SubBuildingName = l.PostalAddress.SubBuildingName,
+                            BuildingNumber = l.PostalAddress.BuildingNumber,
+                            Thoroughfare = l.PostalAddress.Thoroughfare,
+                            DependentLocality = l.PostalAddress.DependentLocality,
+                            UDPRN = l.PostalAddress.UDPRN
+                        }
+                    })
+                    .Take(recordTakeCount)
+                    .ToListAsync();
+            }
 
-            return result;
+            return deliveryPointDataDto;
         }
 
         /// <summary>
@@ -296,8 +379,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>The total count of delivery points</returns>
-        public async Task<int> GetDeliveryPointsCount(string searchText, Guid unitGuid)
+        public async Task<int> GetDeliveryPointsCount(string searchText, Guid unitGuid, string currentUserUnitType)
         {
             try
             {
@@ -311,19 +395,42 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     throw new ArgumentNullException(nameof(unitGuid), string.Format(ErrorConstants.Err_ArgumentmentNullException, unitGuid));
                 }
 
-                DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.Shape).SingleOrDefault();
+                int deliveryPointCount = default(int);
+                DbGeometry polygon = null;
+                List<DeliveryPointDataDTO> deliveryPointDataDto = new List<DeliveryPointDataDTO>();
 
-                var result = await DataContext.DeliveryPoints.AsNoTracking()
+                if (!currentUserUnitType.Equals(UserUnit.National.GetDescription(), StringComparison.OrdinalIgnoreCase))
+                {
+                    polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid)
+                    .Select(x => x.Shape).SingleOrDefault();
+                }
+
+                if (polygon != null)
+                {
+                    deliveryPointCount = await DataContext.DeliveryPoints.AsNoTracking()
+                   .Include(l => l.PostalAddress)
+                   .Where(x => x.NetworkNode.Location.Shape.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
+                                   || x.PostalAddress.BuildingName.Contains(searchText)
+                                   || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                   || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).Trim().StartsWith(searchText)
+                                   || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                   || x.PostalAddress.DependentLocality.Contains(searchText)))
+                   .CountAsync();
+                }
+                else
+                {
+                    deliveryPointCount = await DataContext.DeliveryPoints.AsNoTracking()
                   .Include(l => l.PostalAddress)
-                  .Where(x => x.NetworkNode.Location.Shape.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
+                  .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
                                   || x.PostalAddress.BuildingName.Contains(searchText)
                                   || x.PostalAddress.SubBuildingName.Contains(searchText)
                                   || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                                   || x.PostalAddress.Thoroughfare.Contains(searchText)
-                                  || x.PostalAddress.DependentLocality.Contains(searchText)))
+                                  || x.PostalAddress.DependentLocality.Contains(searchText))
                   .CountAsync();
+                }
 
-                return result;
+                return deliveryPointCount;
             }
             catch (InvalidOperationException ex)
             {
@@ -443,7 +550,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
                         deliveryPoint.NetworkNode.NetworkNodeType_GUID = deliveryPointDto.NetworkNode.NetworkNodeType_GUID;
                         deliveryPoint.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID = deliveryPointDto.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID;
-                        deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
+
+                        // deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
                         DataContext.Entry(deliveryPoint).State = EntityState.Modified;
                         DataContext.Entry(deliveryPoint).OriginalValues[DeliveryPointConstants.ROWVERSION] = deliveryPointDto.RowVersion;
                         await DataContext.SaveChangesAsync();
@@ -626,14 +734,20 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         {
             try
             {
-                Location location = await DataContext.Locations.Include(l => l.NetworkNode).Include(l => l.NetworkNode.DeliveryPoint).Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus).Where(l => l.ID == id).SingleOrDefaultAsync();
+                Location location = await DataContext.Locations.Include(l => l.NetworkNode)
+                                                               .Include(l => l.NetworkNode.DeliveryPoint)
+                                                               .Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus)
+                                                               .Include(l => l.LocationOfferings)
+                                                               .Where(l => l.ID == id).SingleOrDefaultAsync();
 
                 if (location != null)
                 {
+                    DataContext.LocationOfferings.RemoveRange(location.LocationOfferings);
                     DataContext.DeliveryPointStatus.RemoveRange(location.NetworkNode.DeliveryPoint.DeliveryPointStatus);
                     DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
-                    DataContext.NetworkNodes.Remove(location.NetworkNode);
-                    DataContext.Locations.Remove(location);
+                    // TODO : Uncomment as a part of house keeping story
+                    // DataContext.NetworkNodes.Remove(location.NetworkNode);
+                    // DataContext.Locations.Remove(location);
                     await DataContext.SaveChangesAsync();
                     return true;
                 }
@@ -680,6 +794,33 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             List<DeliveryPointDataDTO> overLappingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDataDTO>>(overLappingDeliveryPoints);
             deliveryPointDTOs.AddRange(overLappingAccessLinkDTOs);
             return deliveryPointDTOs;
+        }
+
+        /// <summary>
+        /// Update DPUse in delivery point for matching UDPRN
+        /// </summary>
+        /// <param name="udprn">UDPRN for postal address</param>
+        /// <param name="deliveryPointUseIndicatorGUID">DeliveryPointUseIndicatorGUID to be updated for the matching delivery point</param>
+        /// <returns>Flag to indicate DPUse updated or not</returns>
+        public async Task<bool> UpdateDPUse(int udprn, Guid deliveryPointUseIndicatorGUID)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Data.UpdateDPUse"))
+            {
+                string methodName = typeof(DeliveryPointsDataService) + "." + nameof(UpdateDPUse);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                bool dpUseStatusUpdated = false;
+
+                var deliveryPointDetails = await DataContext.DeliveryPoints.Include(n => n.PostalAddress).Where(n => n.PostalAddress.UDPRN == udprn).SingleOrDefaultAsync();
+                if (deliveryPointDetails != null)
+                {
+                    deliveryPointDetails.DeliveryPointUseIndicatorGUID = deliveryPointUseIndicatorGUID;
+                    DataContext.SaveChanges();
+                    dpUseStatusUpdated = true;
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return dpUseStatusUpdated;
+            }
         }
 
         #endregion Public Methods

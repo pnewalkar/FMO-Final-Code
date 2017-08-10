@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
@@ -54,8 +53,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         public int? UDPRN { get; set; }
 
         public string DeliveryPointUseIndicator { get; set; }
-
-        public List<DeliveryPointAliasDTO> DeliveryPointAliasDTO { get; set; }
 
         public Guid? LocationProvider_GUID { get; set; }
 

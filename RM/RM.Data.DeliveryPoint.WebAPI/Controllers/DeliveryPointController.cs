@@ -227,7 +227,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 List<DeliveryPointDTO> deliveryPointDTo = null;
                 try
                 {
-                    deliveryPointDTo = await businessService.GetDeliveryPointsForBasicSearch(searchText, CurrentUserUnit);
+                    deliveryPointDTo = await businessService.GetDeliveryPointsForBasicSearch(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(deliveryPointDTo);
                 }
@@ -261,7 +261,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 
                 try
                 {
-                    int deliveryPointCount = await businessService.GetDeliveryPointsCount(searchText, CurrentUserUnit);
+                    int deliveryPointCount = await businessService.GetDeliveryPointsCount(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(deliveryPointCount);
                 }
@@ -297,7 +297,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 
                 try
                 {
-                    deliveryPointDTo = await businessService.GetDeliveryPointsForAdvanceSearch(searchText, CurrentUserUnit);
+                    deliveryPointDTo = await businessService.GetDeliveryPointsForAdvanceSearch(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                 }
                 catch (AggregateException ae)
                 {
@@ -637,21 +637,156 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete delivery point.
+        /// </summary>
+        /// <param name="deliveryPointid">Delivery point unique identifier.</param>
+        /// <returns>Boolean flag indicating success of operation.</returns>
         [HttpDelete("deliverypoint/batch/delete/id:{id}")]
-        public Task<bool> DeleteDeliveryPoint(Guid id)
+        public async Task<IActionResult> DeleteDeliveryPoint(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
             using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteDeliveryPoint"))
             {
-                string methodName = typeof(DeliveryPointController) + "." + nameof(DeleteDeliveryPoint);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                try
+                {
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(DeleteDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var isDeliveryPointUpdated = businessService.DeleteDeliveryPoint(id);
+                    var isDeliveryPointDeleted = await businessService.DeleteDeliveryPoint(id);
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return isDeliveryPointUpdated;
+                    return Ok(isDeliveryPointDeleted);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
+
+        /// <summary>
+        /// Update DPUse in delivery point for matching UDPRN
+        /// </summary>
+        /// <param name="postalAddressDetails">postal address record in PAF</param>
+        /// <returns>Flag to indicate DPUse updated or not</returns>
+        [HttpPost("deliverypoint/UpdateDPUse")]
+        public async Task<IActionResult> UpdateDPUse([FromBody] PostalAddressDTO postalAddressDetails)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDPUse"))
+                {
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(UpdateDPUse);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    bool success = await businessService.UpdateDPUse(postalAddressDetails);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return Ok(success);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        /// <summary>
+        /// Check duplicate addresses and save non-duplicate ones
+        /// </summary>
+        /// <param name="deliveryPointDto">Add Delivery Point DTO </param>
+        /// <returns>CreateDeliveryPointForRangeModelDTO</returns>
+        [Route("deliverypoint/newdeliverypoint/range/check")]
+        [HttpPost]
+        public async Task<IActionResult> CheckDeliveryPointForRange([FromBody]AddDeliveryPointDTO deliveryPointDto)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.CheckDeliveryPointForRange"))
+                {
+                    CreateDeliveryPointForRangeModelDTO createDeliveryPointForRangeModelDTO = null;
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(CheckDeliveryPointForRange);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    createDeliveryPointForRangeModelDTO = await businessService.CheckDeliveryPointForRange(deliveryPointDto);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return Ok(createDeliveryPointForRangeModelDTO);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        /// <summary>
+        /// Create Delivery Points with specified range
+        /// </summary>
+        /// <param name="postalAddressDTOs">PostalAddressDTO</param>
+        /// <returns></returns>
+        [Route("deliverypoint/newdeliverypoint/range")]
+        [HttpPost]
+        public async Task<IActionResult> CreateDeliveryPointForRange([FromBody]List<PostalAddressDTO> postalAddressDTOs)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.CreateDeliveryPointForRange"))
+                {
+                    CreateDeliveryPointForRangeModelDTO createDeliveryPointForRangeModelDTO = null;
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(CreateDeliveryPointForRange);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    createDeliveryPointForRangeModelDTO = await businessService.CreateDeliveryPointForRange(postalAddressDTOs);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return Ok(createDeliveryPointForRangeModelDTO);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
 
         #endregion Methods
     }

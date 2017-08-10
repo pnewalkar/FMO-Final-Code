@@ -30,6 +30,7 @@
         public const string PrintMap_mmPerInch = "PrintMap_mmPerInch";
         public const string PrintMap_ImageWidthmm = "PrintMap_ImageWidthmm";
         public const string PrintMap_ImageHeightmm = "PrintMap_ImageHeightmm";
+        public const string PostalAddressAliasType = "PostalAddressAliasType";
 
         public const string TASKNOTIFICATION = "Notification Type";
         public const string NETWORKLINKDATAPROVIDER = "Data Provider";

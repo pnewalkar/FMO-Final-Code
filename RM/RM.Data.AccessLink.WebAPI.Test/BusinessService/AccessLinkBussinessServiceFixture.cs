@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using Moq;
 using NUnit.Framework;
+using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.AccessLink.WebAPI.DataDTOs;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface;
 using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
-using RM.DataManagement.AccessLink.WebAPI.Integration;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
-using RM.Data.AccessLink.WebAPI.DataDTOs;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.DataManagement.AccessLink.WebAPI.Integration;
 
 namespace RM.Data.AccessLink.WebAPI.Test
 {
@@ -34,17 +35,6 @@ namespace RM.Data.AccessLink.WebAPI.Test
         private Guid operationObjectTypeId = new Guid("415c9129-0615-457e-98b7-3a60436320c5");
 
         /// <summary>
-        /// Test for Load AccessLink.
-        /// </summary>
-        [Test]
-        public void Test_GetAccessLinks()
-        {
-            string coordinates = "399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211";
-            Guid unitGuid = Guid.NewGuid();
-            var result = testCandidate.GetAccessLinks(coordinates, unitGuid);
-        }
-
-        /// <summary>
         /// Test for Create the Automatic AccessLink.
         /// </summary>
         [Test]
@@ -55,13 +45,28 @@ namespace RM.Data.AccessLink.WebAPI.Test
         }
 
         /// <summary>
-        /// Test for Create Manual AccessLink.
+        /// Test for create the Automatic AccessLink -NegativeScenario
         /// </summary>
         [Test]
-        public void Test_CreateAccessLinkForMannual()
+        public void Test_GetAccessLinks_NegativeScenario()
         {
-            var expectedResult = testCandidate.CreateAccessLink(accessLinkManualCreateModelDTO);
-            Assert.True(expectedResult);
+            string coordinates = null; // "399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211";
+            Guid unitGuid = Guid.Empty;
+            string strAccessLinkDTO = testCandidate.GetAccessLinks(coordinates, unitGuid);
+
+            Assert.IsNull(strAccessLinkDTO);
+        }
+
+        /// <summary>
+        /// Test for Load AccessLink.
+        /// </summary>
+        [Test]
+        public void Test_GetAccessLinks()
+        {
+            string coordinates = "399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211";
+            Guid unitGuid = Guid.NewGuid();
+            var result = testCandidate.GetAccessLinks(coordinates, unitGuid);
+            Assert.IsNotNull(result);
         }
 
         /// <summary>
@@ -73,7 +78,39 @@ namespace RM.Data.AccessLink.WebAPI.Test
             string coordinates = "[399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211]";
             string accessLinkLine = "[488938,197021],[488929.9088937093,197036.37310195228]";
             bool expectedResult = testCandidate.CheckManualAccessLinkIsValid(coordinates, accessLinkLine);
+            Assert.IsFalse(expectedResult);
+        }
+
+        /// <summary>
+        /// Test for Create Manual AccessLink.
+        /// </summary>
+        [Test]
+        public void Test_CreateAccessLinkForMannual()
+        {
+            OnSetup();
+            var expectedResult = testCandidate.CreateAccessLink(accessLinkManualCreateModelDTO);
             Assert.True(expectedResult);
+        }
+
+        [Test]
+        public void Test_GetAdjPathLength()
+        {
+            OnSetup();
+            decimal expectedResult = testCandidate.GetAdjPathLength(accessLinkManualCreateModelDTO);
+            Assert.Greater(expectedResult, 0);
+        }
+
+        /// <summary>
+        /// Test Method to delete access link once Delivery point deleted.
+        /// </summary>
+        /// <param name="operationalObjectId"></param>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_DeleteAccessLink_PositiveScenario()
+        {
+            var expectedResult = await testCandidate.DeleteAccessLink(operationalObjectId);
+            Assert.IsNotNull(expectedResult);
+            Assert.IsTrue(expectedResult);
         }
 
         /// <summary>
@@ -118,7 +155,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
                     }
                 };
 
-             networkLink = new NetworkLinkDTO
+            networkLink = new NetworkLinkDTO
             {
                 Id = Guid.Parse("4DBA7B39-D23E-493A-9B8F-B94D181A082F"),
                 TOID = "osgb4000000023358315",
@@ -140,7 +177,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             }
 
             Tuple<NetworkLinkDTO, SqlGeometry> tuple = new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
-            Tuple<NetworkLinkDTO, List<SqlGeometry>> tuple1 = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, lstnetworkIntersectionPoint);
+            List<Tuple<NetworkLinkDTO, SqlGeometry>> tuple1 = new List<Tuple<NetworkLinkDTO, SqlGeometry>> { new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, networkIntersectionPoint) };
 
             List<ReferenceDataCategoryDTO> refDataCategotyDTO = new List<ReferenceDataCategoryDTO>()
             {
@@ -275,11 +312,13 @@ namespace RM.Data.AccessLink.WebAPI.Test
                 },
             };
 
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+
             // Setup Methods.
             mockaccessLinkDataService = new Mock<IAccessLinkDataService>();
             mockAccessLinkIntegrationService = CreateMock<IAccessLinkIntegrationService>();
             mockaccessLinkDataService.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDataDTO>>);
-            mockaccessLinkDataService.Setup(x => x.GetAccessLinksCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<AccessLinkDataDTO>() { });
+            mockaccessLinkDataService.Setup(x => x.GetAccessLinksCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(default(bool));
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(new List<ReferenceDataCategoryDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(refDataCategotyDTO);
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(deliveryPointDTO);
@@ -289,7 +328,13 @@ namespace RM.Data.AccessLink.WebAPI.Test
             mockAccessLinkIntegrationService.Setup(x => x.GetCrossingNetworkLinks(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<NetworkLinkDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<DeliveryPointDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetNetworkLink(It.IsAny<Guid>())).ReturnsAsync(networkLink);
-            mockaccessLinkDataService.Setup(x => x.CreateManualAccessLink(It.IsAny<NetworkLinkDataDTO>())).Returns(true);
+
+            mockaccessLinkDataService.Setup(x => x.CreateAccessLink(It.IsAny<AccessLinkDataDTO>())).Returns(true);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             testCandidate = new AccessLinkBusinessService(mockaccessLinkDataService.Object, loggingHelperMock.Object, mockAccessLinkIntegrationService.Object);
         }
     }

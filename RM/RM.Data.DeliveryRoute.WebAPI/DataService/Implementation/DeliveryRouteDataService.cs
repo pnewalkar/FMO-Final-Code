@@ -195,7 +195,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
             {
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteByDeliverypoint);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
-                RouteDataDTO routeData = null;
+                RouteDataDTO routeData = new RouteDataDTO();
                 var block = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
 
                 if (block != null)
@@ -205,23 +205,28 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                                         where route.UnSequencedBlockID == block.BlockID || routeActivity.BlockID == block.BlockID
                                         select route).FirstOrDefault();
 
-                    if (routeDetails != null)
+                    var deliveryPointDetails = DataContext.DeliveryPoints.Include(n => n.PostalAddress).AsNoTracking().Where(m => m.ID == deliveryPointId).SingleOrDefault();
+
+                    if (routeDetails != null && deliveryPointDetails != null && deliveryPointDetails.PostalAddress != null)
                     {
-                        var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == routeDetails.ID || n.SecondaryRouteGUID == routeDetails.ID).SingleOrDefaultAsync();
+                        var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => (n.PrimaryRouteGUID == routeDetails.ID || n.SecondaryRouteGUID == routeDetails.ID) && n.PostcodeUnit == deliveryPointDetails.PostalAddress.Postcode).SingleOrDefaultAsync();
                         if (postCode != null)
                         {
                             if (routeDetails.ID == postCode.PrimaryRouteGUID)
                             {
-                                routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + routeDetails.RouteName };
+                                routeData.ID = routeDetails.ID;
+                                routeData.RouteName = DeliveryRouteConstants.PrimaryRoute + routeDetails.RouteName;
                             }
                             else if (routeDetails.ID == postCode.SecondaryRouteGUID)
                             {
-                                routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + routeDetails.RouteName };
+                                routeData.ID = routeDetails.ID;
+                                routeData.RouteName = DeliveryRouteConstants.SecondaryRoute + routeDetails.RouteName;
                             }
                         }
                         else
                         {
-                            routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = routeDetails.RouteName };
+                            routeData.ID = routeDetails.ID;
+                            routeData.RouteName = routeDetails.RouteName;
                         }
                     }
                 }
@@ -386,6 +391,40 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId);
 
                 return deliveryRoutes;
+            }
+        }
+
+        /// <summary>
+        /// Delete delivery point reference from route activity table.
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery point Id</param>
+        /// <returns>boolean value</returns>
+        public async Task<bool> DeleteDeliveryPointRouteMapping(Guid deliveryPointId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteDeliveryPointRouteMapping"))
+            {
+                bool routeActivityDeleted = false;
+                string methodName = typeof(DeliveryRouteDataService) + "." + nameof(DeleteDeliveryPointRouteMapping);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
+
+                var blockSequence = DataContext.BlockSequences.Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
+                var routeActivity = DataContext.RouteActivities.Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
+
+                if (blockSequence != null)
+                {
+                    DataContext.BlockSequences.Remove(blockSequence);
+                }
+
+                if (routeActivity != null)
+                {
+                    DataContext.RouteActivities.Remove(routeActivity);
+                }
+
+                await DataContext.SaveChangesAsync();
+                routeActivityDeleted = true;
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId);
+                return routeActivityDeleted;
             }
         }
 

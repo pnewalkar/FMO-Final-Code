@@ -1,75 +1,16 @@
-#header #head1, #header #head2, #header #head3, md-dialog h2 {
+md-dialog h2 {
   color: #ffffff;
   font-family: Chevin;
   font-size: 18px; }
 
-.td1, .td2, label, .md-text, .routeDetailstable table {
+label, .md-text, .routeDetailstable table {
   color: #2a2a2d;
   font-family: PF_DIN;
   font-size: 16px; }
 
-#table_wrapper {
-  background-color: #c1c6c8;
-  border: #2a2a2d;
-  float: right;
-  border: 1px solid #2a2a2d; }
-  #table_wrapper:hover {
-    background-color: none; }
-
-#tbody {
-  background-color: #ffffff;
-  width: 550px;
-  height: 150px;
-  overflow-y: auto; }
-  #tbody:hover {
-    background-color: none; }
-
-table {
-  width: 100%;
-  border-collapse: collapse; }
-
-#table_wrapper td {
-  border-bottom: 1px solid #2a2a2d;
-  padding: 1px 5px 1px 5px;
-  border-right: 1px solid black; }
-
-.td1 {
-  width: 250px; }
-
-.td2 {
-  width: 140px; }
-
-#header {
-  width: 550px;
-  background-color: #c1c6c8;
-  border-bottom: 1px solid #c1c6c8; }
-  #header:hover {
-    background-color: none; }
-
-#header div {
-  padding: 1px 5px 1px 5px;
-  float: left;
-  border-right: 1px solid black; }
-
-#header #head1 {
-  width: 250px; }
-
-/* the same as td1 */
-#header #head2 {
-  width: 140px; }
-
-/* the same as td2 */
-#header #head3 {
-  float: none;
-  border-right-width: 0; }
-
 md-dialog h2 {
   color: #2a2a2d;
   margin: 10px 0px 20px 0px; }
-
-.routeLogDialog {
-  width: 58.82353%;
-  height: 100%; }
 
 .routeSelectSearch {
   width: 40.98361%;
@@ -113,7 +54,12 @@ span.closeRouteWindow {
   width: 100%;
   border-collapse: collapse; }
 
-.routeDetailstable td, th {
+.routeDetailstable td {
+  border: 1px solid #2a2a2d;
+  padding: 8px 8px 8px 8px;
+  text-align: left; }
+
+.routeDetailstable th {
   border: 1px solid #2a2a2d;
   padding: 8px 8px 8px 8px;
   text-align: left; }
@@ -127,14 +73,26 @@ span.closeRouteWindow {
   height: 28px;
   min-height: 28px; }
 
-.routeLogDialog h1{
-    margin-bottom: 5px;
-  }
+.routeLogDialog {
+  width: 855px;
+  height: 100%; }
+  .routeLogDialog h1 {
+    margin-bottom: 5px; }
+  .routeLogDialog md-input-container {
+    margin-right: 12px; }
+  .routeLogDialog md-input-container.md-block.md-input-has-placeholder {
+    margin-right: 0px; }
 
-.routeLogDialog md-input-container {
-    margin-right: 12px;
-}
+#routLogTable {
+  width: 100%;
+  height: 350px; }
 
-.routeLogDialog md-input-container.md-block.md-input-has-placeholder {
-    margin-right: 0px;
-}
+#routLogTable th {
+  color: #2a2a2d;
+  font-family: Chevin;
+  font-size: 18px; }
+
+#routLogTable td {
+  color: #2a2a2d;
+  font-family: PF_DIN;
+  font-size: 16px; }

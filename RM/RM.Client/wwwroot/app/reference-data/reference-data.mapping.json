@@ -62,6 +62,26 @@
       "ReferenceDataNames": []
     },
     {
+      "AppCategoryName": "PostalAddressAliasType",
+      "DBCategoryName": "PostalAddressAliasType",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "UI_Delete_DP_ReasonCode",
+      "DBCategoryName": "UI_Delete_DP_ReasonCode",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "UI_Range_Options",
+      "DBCategoryName": "UI_Range_Options",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "SubBuildingType",
+      "DBCategoryName": "Sub Building Type",
+      "ReferenceDataNames": []
+    },
+    {
       "AppCategoryName": "DeliveryPointColor",
       "DBCategoryName": "Delivery Point Color",
       "ReferenceDataNames": [
