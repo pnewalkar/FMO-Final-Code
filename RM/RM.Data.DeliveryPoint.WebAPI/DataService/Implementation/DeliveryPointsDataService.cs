@@ -225,7 +225,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                                                                      || x.PostalAddress.BuildingName.Contains(searchText)
                                                                      || x.PostalAddress.SubBuildingName.Contains(searchText)
                                                                      || SqlFunctions.StringConvert((double)x.PostalAddress
-                                                                         .BuildingNumber).StartsWith(searchText)
+                                                                         .BuildingNumber).Trim().StartsWith(searchText)
                                                                      || x.PostalAddress.Thoroughfare.Contains(searchText)
                                                                      || x.PostalAddress.DependentLocality.Contains(
                                                                          searchText)))
@@ -316,7 +316,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                                                                      || x.PostalAddress.BuildingName.Contains(searchText)
                                                                      || x.PostalAddress.SubBuildingName.Contains(searchText)
                                                                      || SqlFunctions.StringConvert((double)x.PostalAddress
-                                                                         .BuildingNumber).StartsWith(searchText)
+                                                                         .BuildingNumber).Trim().StartsWith(searchText)
                                                                      || x.PostalAddress.Thoroughfare.Contains(searchText)
                                                                      || x.PostalAddress.DependentLocality.Contains(
                                                                          searchText)))
@@ -412,7 +412,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                    .Where(x => x.NetworkNode.Location.Shape.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
                                    || x.PostalAddress.BuildingName.Contains(searchText)
                                    || x.PostalAddress.SubBuildingName.Contains(searchText)
-                                   || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
+                                   || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).Trim().StartsWith(searchText)
                                    || x.PostalAddress.Thoroughfare.Contains(searchText)
                                    || x.PostalAddress.DependentLocality.Contains(searchText)))
                    .CountAsync();
