@@ -838,6 +838,46 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
         }
 
+        /// <summary>
+        /// This method is called during third party file process.
+        /// It deletes the Access link pointing to old location of the Delivery Point,
+        /// And to create a New access link for Deliver Point based on the new location.
+        /// </summary>
+        /// <param name="deliveryPointGuid">Delivery Point unique identifier</param>
+        /// <returns>returns the status of update operation</returns>
+        public bool UpdateAccessLinkForMovedDeliveryPoint(Guid deliveryPointGuid)
+        {
+            bool isAccessLinkCreateSuccessful = false;
+
+            List<string> categoryNamesNameValuePairs = new List<string>
+            {
+                ReferenceDataCategoryNames.AccessLinkParameters,
+            };
+
+            List<string> categoryNamesSimpleLists = new List<string>
+            {
+               ReferenceDataCategoryNames.OperationalObjectType
+            };
+
+            var referenceDataCategoryList =
+                accessLinkIntegrationService.GetReferenceDataNameValuePairs(categoryNamesNameValuePairs).Result;
+
+            referenceDataCategoryList.AddRange(
+               accessLinkIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
+
+            Guid operationalObjectTypeID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP, true);
+
+            if (deliveryPointGuid != null)
+            {
+                // Delete existing Access link pointing to Old location
+                DeleteAccessLink(deliveryPointGuid);
+
+                // Create new access link based on new location   
+                isAccessLinkCreateSuccessful = CreateAccessLink(deliveryPointGuid, operationalObjectTypeID);
+            }
+
+            return isAccessLinkCreateSuccessful;
+        }
         #endregion Methods
     }
 }
