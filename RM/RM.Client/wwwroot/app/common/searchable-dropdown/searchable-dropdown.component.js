@@ -1,6 +1,6 @@
 ﻿angular
-    .module('reusableComponent')
-    .component('customSearchableDropdown', {
+    .module('searchableDropdown')
+    .component('searchableDropdown', {
      bindings: {
          headerText: "@",
          searchPlaceholder: "@",
@@ -11,6 +11,6 @@
          onSelectedItem:"&",
          searchInputIcon: "@"
      },
-     templateUrl: './common/searchable-dropdown.template.html',
-     controller: 'CustomSearchableDropdownController as vm'
+     templateUrl: './common/searchable-dropdown/searchable-dropdown.template.html',
+     controller: 'SearchableDropdownController as vm'
  });

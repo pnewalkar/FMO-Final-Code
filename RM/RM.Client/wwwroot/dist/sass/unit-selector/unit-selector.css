@@ -18,11 +18,5 @@
 .unitText .md-select-value > span:not(.md-select-icon) .md-text {
   color: #ffffff; }
 
-/*.unitText md-select.md-default-theme .md-select-value, md-select .md-select-value {
-    border-bottom-color: white;
-}*/
 .unitText md-select-value#select_value_label_1 {
   border-bottom-color: white; }
-
-.select-header input[class*="fa-filter"] {
-  text-indent: 5px; }
