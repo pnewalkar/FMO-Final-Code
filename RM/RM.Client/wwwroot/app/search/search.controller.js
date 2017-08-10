@@ -2,18 +2,21 @@
 angular
     .module('search')
     .controller('SearchController',['searchBusinessService',
-                                    '$timeout',
+                                    '$timeout','CommonConstants',
                                      SearchController]);
 
 function SearchController(
     searchBusinessService,
-    $timeout) {
+    $timeout,
+    CommonConstants) {
     var vm = this;
     vm.resultSet = resultSet;
     vm.onEnterKeypress = onEnterKeypress;
     vm.OnChangeItem = OnChangeItem;
     vm.advanceSearch = advanceSearch;
     vm.onBlur = onBlur;
+    vm.defaultResultCount = CommonConstants.DefaultResultCountForSearch;
+    vm.noResultCount = CommonConstants.NoResultCountForSearch;
 
 
     function resultSet(query) {
@@ -39,6 +42,7 @@ function SearchController(
         $timeout(function () {
             vm.searchText = "";
             vm.isResultDisplay = false;
+            vm.resultscount[0].count = 0;
         }, 1000);
     }
 

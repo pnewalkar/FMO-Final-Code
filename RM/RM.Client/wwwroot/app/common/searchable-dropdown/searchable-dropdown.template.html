@@ -7,6 +7,7 @@
                ng-change="vm.onChange()"
                data-md-container-class="searchableDropdown">
         <md-select-header class="select-header">
+            <i class="fa {{ vm.searchInputIcon }} " aria-hidden="true"></i>
             <input type="search"
                    ng-model="vm.searchTerm"
                    placeholder="{{vm.items.length!==0?vm.searchPlaceholder:''| translate}}"
@@ -19,5 +20,4 @@
         </md-option>
         <md-option ng-value ng-if="filteredItems.length === 0"> {{ 'VALIDATION.NO_RESULT_FOUND' | translate }} </md-option>
     </md-select>
-     <!-- <div ng-if="vm.items.length===0" class="noResult">{{ 'VALIDATION.NO_RESULT_FOUND' | translate }}</div> -->
 </md-input-container>

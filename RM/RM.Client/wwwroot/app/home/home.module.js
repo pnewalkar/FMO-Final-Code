@@ -3,9 +3,9 @@ angular.module('home', [      'sideNav',
                               'unitSelector',
                               'task',
                               'mapView',
-                              'reusableComponent',
+                              'searchableDropdown',
                               'error',
-                             'printMap',
-                             'licensingInfo',
-                             'backButton'
+                              'printMap',
+                              'licensingInfo',
+                              'backButton'
                              ]);

@@ -309,15 +309,12 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDataDTO, List<SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public List<Tuple<NetworkLinkDataDTO, SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNearestSegment"))
             {
                 string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetNearestSegment);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
-                List<SqlGeometry> listNetworkIntersectionPoints = new List<SqlGeometry>();
-                SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
 
                 Guid networkPathLinkType = referenceDataCategoryList.Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.NetworkLinkType)
                                                                          .SelectMany(x => x.ReferenceDatas)
@@ -345,9 +342,12 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                         TOID = l.TOID
                     });
 
-                NetworkLinkDataDTO networkLinkRoad = null;
+                List<Tuple<NetworkLinkDataDTO, SqlGeometry>> result = new List<Tuple<NetworkLinkDataDTO, SqlGeometry>>();
+
+                SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
 
                 // check for nearest segment which does not cross any existing access link
+
                 foreach (var item in networkLinkRoads)
                 {
                     var accessLinkLine =
@@ -356,16 +356,12 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                     if (!accessLinkLine.IsNull)
                     {
                         DbGeometry accessLinkDbGeometry = accessLinkLine.ToDbGeometry();
-
-                        networkLinkRoad = item;
-                        networkIntersectionPoint = accessLinkLine.STEndPoint();
-                        listNetworkIntersectionPoints.Add(networkIntersectionPoint);
-                        break;
+                        result.Add(new Tuple<NetworkLinkDataDTO, SqlGeometry>(item, accessLinkLine.STEndPoint()));
                     }
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return new Tuple<NetworkLinkDataDTO, List<SqlGeometry>>(networkLinkRoad, listNetworkIntersectionPoints);
+                return result;
             }
         }
 
