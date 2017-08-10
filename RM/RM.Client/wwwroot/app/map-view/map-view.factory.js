@@ -83,11 +83,11 @@ function MapFactory($http,
     function LicenceInfo(layerName, layerSource) {
         var map = getMap();
         var layer = map.getLayers();
-        var licenseInfo = licensingInformationAccessorService.getLicensingInformation();
+       var licenseInfo = licensingInformationAccessorService.getLicensingInformation();
         var licenseText = ''; 
         if (licenseInfo != null) {
-            licenseText = licensingInformationAccessorService.getLicensingInformation()[0].value;
-        } 
+            licenseText = licenseInfo[0].value;
+        }
 
         if (layerName !== undefined && layerName !== GlobalSettings.baseLayerName) {
             layer.forEach(function (layer) {
