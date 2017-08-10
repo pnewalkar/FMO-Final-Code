@@ -306,6 +306,8 @@
                                               .SingleOrDefault();
 
                             deliveryPointStatusDataDTO.DeliveryPointStatusGUID = liveWithLocationStatusId;
+
+                            deliveryPointdataDTO.DeliveryPointStatus.Add(deliveryPointStatusDataDTO);
                         }
                         else
                         {
