@@ -308,6 +308,18 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             thirdPartyAddressLocationIntegrationServiceMock.Verify(x => x.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Once);
         }
 
+        [Test]
+        public async Task DeleteUSRDetails_When_UDPRNMatches()
+        {
+            
+        }
+
+        [Test]
+        public async Task DeleteUSRDetails_When_UDPRNNotMatches()
+        {
+
+        }
+
         protected override void OnSetup()
         {
             // OnSetup to be configured
