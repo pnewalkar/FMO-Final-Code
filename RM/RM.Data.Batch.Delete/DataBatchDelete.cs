@@ -39,12 +39,7 @@ namespace RM.DataManagement.Batch.Delete
                     string methodName = typeof(DataBatchDelete) + "." + nameof(BatchDelete);
                     loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId);
                     string pafDeleteHousekeepingUrl = configurationHelper.ReadAppSettingsConfigurationValues(DELETEPAFHOUSEKEEPING);
-                    while (true)
-                    {
-                        Console.WriteLine("Press <ENTER> to start process");
-                        Console.ReadLine();
-                        httpHandler.DeleteAsync(pafDeleteHousekeepingUrl);
-                    }
+                    httpHandler.DeleteAsync(pafDeleteHousekeepingUrl, true);
                     loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId);
                 }
                 catch (Exception ex)
