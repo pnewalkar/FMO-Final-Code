@@ -339,7 +339,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         }
                     })
                     .Take(recordTakeCount)
-                    .OrderBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName)
+                    .OrderBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.BuildingNumber)
                     .ToListAsync();
             }
             else
@@ -371,7 +371,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         }
                     })
                     .Take(recordTakeCount)
-                    .OrderBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName)
+                    .OrderBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.BuildingNumber)
                     .ToListAsync();
             }
 

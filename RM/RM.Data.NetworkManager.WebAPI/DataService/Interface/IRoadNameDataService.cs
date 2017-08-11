@@ -15,7 +15,8 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">Current user unit type.</param>
         /// <returns>Network Link Dto</returns>
-        List<NetworkLinkDataDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
+        List<NetworkLinkDataDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList, string currentUserUnitType);
     }
 }

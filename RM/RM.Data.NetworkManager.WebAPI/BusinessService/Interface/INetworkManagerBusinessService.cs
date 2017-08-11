@@ -48,8 +48,9 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="boundarybox">The boundarybox.</param>
         /// <param name="uniGuid">The uni unique identifier.</param>
+        /// <param name="currentUserUnitType">Current user unit type.</param>
         /// <returns></returns>
-        string GetRoadRoutes(string boundarybox, Guid uniGuid);
+        string GetRoadRoutes(string boundarybox, Guid uniGuid, string currentUserUnitType);
 
         /// <summary>
         /// Fetches the street names for basic search.
