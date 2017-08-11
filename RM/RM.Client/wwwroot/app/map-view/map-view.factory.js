@@ -83,6 +83,12 @@ function MapFactory($http,
     function LicenceInfo(layerName, layerSource) {
         var map = getMap();
         var layer = map.getLayers();
+       var licenseInfo = licensingInformationAccessorService.getLicensingInformation();
+        var licenseText = ''; 
+        if (licenseInfo != null) {
+            licenseText = licenseInfo[0].value;
+        }
+
         if (layerName !== undefined && layerName !== GlobalSettings.baseLayerName) {
             layer.forEach(function (layer) {
                 var attribution = new ol.Attribution({
@@ -95,7 +101,7 @@ function MapFactory($http,
             }
             else {
                 layerSource.setAttributions(new ol.Attribution({
-                    html: licensingInformationAccessorService.getLicensingInformation()[0].value
+                    html: licenseText
                 }));
             }
         }
@@ -108,7 +114,7 @@ function MapFactory($http,
                     layer.getSource().setAttributions(attribution);
                 });
                 var attribution = new ol.Attribution({
-                    html: licensingInformationAccessorService.getLicensingInformation()[0].value
+                    html: licenseText
                 })
                 map.getLayers().getArray()[0].getSource().setAttributions(attribution);
             }
@@ -381,10 +387,10 @@ function MapFactory($http,
             var scale = Math.round(getScaleFromResolution(resolution));
             var index = definedScales.indexOf(scale);
             var maxScaleIndex = definedScales.indexOf(maxScale);
-            if (index > -1) {
-                var zoomInButtons = $document[0].getElementsByClassName("ol-zoom-in");
-                var zoomOutButtons = $document[0].getElementsByClassName("ol-zoom-out");
+            var zoomInButtons = $document[0].getElementsByClassName("ol-zoom-in");
+            var zoomOutButtons = $document[0].getElementsByClassName("ol-zoom-out");
 
+            if (index > -1) {
                 if (index === definedScales.length - 1) {
                     setZoomButtonStatus(zoomInButtons, true);
 
@@ -406,6 +412,15 @@ function MapFactory($http,
                     $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
                 });
             }
+            else
+            {
+                if (scale > definedScales[definedScales.length - 1]) {                   
+                    setZoomButtonStatus(zoomInButtons, false);
+                }
+                if (scale < definedScales[maxScaleIndex]) {
+                    setZoomButtonStatus(zoomOutButtons, false);
+                }
+            }            
         };
 
         ol.inherits(customScaleLine, ol.control.ScaleLine);

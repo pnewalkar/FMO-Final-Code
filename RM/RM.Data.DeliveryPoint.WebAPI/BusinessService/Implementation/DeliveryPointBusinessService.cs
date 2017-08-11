@@ -9,6 +9,7 @@
     using System.Reflection;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
+    using AutoMapper;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json.Linq;
     using RM.CommonLibrary.ConfigurationMiddleware;
@@ -20,7 +21,6 @@
     using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
     using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
     using Utils;
-    using AutoMapper;
 
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
@@ -306,6 +306,8 @@
                                               .SingleOrDefault();
 
                             deliveryPointStatusDataDTO.DeliveryPointStatusGUID = liveWithLocationStatusId;
+
+                            deliveryPointdataDTO.DeliveryPointStatus.Add(deliveryPointStatusDataDTO);
                         }
                         else
                         {
@@ -346,7 +348,7 @@
                             Guid deliveryOperationObjectTypeId = deliveryPointIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
                             var isAccessLinkCreated =
                                 deliveryPointIntegrationService.CreateAccessLink(
-                                    createDeliveryPointModelDTO.ID,
+                                    newDeliveryPointId,
                                     deliveryOperationObjectTypeId);
                             message = isAccessLinkCreated
                                 ? DeliveryPointConstants.DELIVERYPOINTCREATED

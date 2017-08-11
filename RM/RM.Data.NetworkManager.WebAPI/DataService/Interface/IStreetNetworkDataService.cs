@@ -55,7 +55,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and intersection point.</returns>
-        Tuple<NetworkLinkDataDTO, List<SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
+        List<Tuple<NetworkLinkDataDTO, SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
 
         /// <summary>
         /// Get the street DTO for operational object.

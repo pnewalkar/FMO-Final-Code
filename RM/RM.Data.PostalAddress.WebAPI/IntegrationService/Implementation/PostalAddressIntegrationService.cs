@@ -513,7 +513,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
-
         public async Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.GetAddressLocationsByUDPRN"))
@@ -529,7 +528,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 }
 
                 List<AddressLocationDTO> addressLocationDTOs = JsonConvert.DeserializeObject<List<AddressLocationDTO>>(result.Content.ReadAsStringAsync().Result);
-                
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return addressLocationDTOs;
             }

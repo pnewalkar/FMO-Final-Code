@@ -433,7 +433,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(DeleteAccesslink);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.DeleteAsync(accessLinkWebAPIName + deliveryPointId);
+                HttpResponseMessage result = await httpHandler.DeleteAsync(accessLinkWebAPIName + "AccessLink/delete/id:" + deliveryPointId);
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode

@@ -178,7 +178,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 var straightLineDistance = GetDeliveryPointDistance(deliveryPointDTO, spatialLocationXY);
 
                                 // Check if the new point is within the tolerance limit
-                                if (straightLineDistance < ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
+                                if (straightLineDistance <= ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
                                 {
                                     deliveryPointDTO.LocationXY = spatialLocationXY;
                                     deliveryPointDTO.LocationProvider_GUID = locationProviderId;

@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.PostalAddress.WebAPI.DTO.Model;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
-using RM.Data.PostalAddress.WebAPI.DTO.Model;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -396,6 +396,38 @@ namespace Fmo.API.Services.Controllers
                     var postalAddress = await businessService.GetPAFAddress(udprn);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return postalAddress;
+                }
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var exception in ex.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ex.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        /// <summary>
+        /// Delete Postal Addresses as part of Housekeeping
+        /// </summary>
+        /// <returns>Void</returns>
+        [HttpGet]
+        [Route("postaladdress/housekeeping/clear")]
+        public async Task DeletePostalAddressesForHouseKeeping()
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.DeletePostalAddressesForHouseKeeping"))
+                {
+                    string methodName = typeof(PostalAddressController) + "." + nameof(DeletePostalAddressesForHouseKeeping);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    await businessService.DeletePostalAddressesForHouseKeeping();
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 }
             }
             catch (AggregateException ex)
