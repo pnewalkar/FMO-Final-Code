@@ -67,6 +67,10 @@ function SideNavController(
                 vm.contextTitle = CommonConstants.DeliveryPointGroup;
                 $state.go("deliveryPointGroup");
                 break;
+            case CommonConstants.GroupActionName:
+                vm.contextTitle = CommonConstants.DeliveryPointGroupDetails;
+                $state.go("deliveryPointGroupDetails");
+                break;
             default:
                 break;
         }

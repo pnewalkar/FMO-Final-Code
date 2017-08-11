@@ -25,6 +25,7 @@ var CommonConstants = {
     DefaultResultCountForSearch: "5",
     NoResultCountForSearch: "0",
     DeliveryPointGroup: "Group Management",
+    deliveryPointGroupDetails : "Group Details",
     GroupActionName: "Delivery Group"
 
 };
