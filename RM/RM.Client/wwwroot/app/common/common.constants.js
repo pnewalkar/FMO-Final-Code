@@ -23,7 +23,8 @@ var CommonConstants = {
     UserType: { DeliveryUser: "Delivery User", CollectionUser: "Collection User", ManagerUser: "Manager User" },
     DpUseType: { Residential: "Residential", Organisation: "Organisation" },
     DefaultResultCountForSearch: "5",
-    NoResultCountForSearch:"0"
+    NoResultCountForSearch: "0",
+    DeliveryPointGroup: "Delivery Group"
 
 };
 

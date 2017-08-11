@@ -63,6 +63,10 @@ function SideNavController(
             case CommonConstants.PrintMapActionName:
                 $mdDialog.show(popUpSettingService.printMap());
                 break;
+            case CommonConstants.DeliveryPointGroup:
+                vm.contextTitle = CommonConstants.DeliveryPointGroup;
+                $state.go("deliveryPoint");
+                break;
             default:
                 break;
         }
