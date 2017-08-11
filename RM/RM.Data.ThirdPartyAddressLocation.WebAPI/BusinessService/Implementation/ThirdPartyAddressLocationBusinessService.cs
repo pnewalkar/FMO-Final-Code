@@ -236,10 +236,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                         if (await addressLocationDataService.AddressLocationExists(fileUdprn))
                         {
                             // Update the  Address location.
-                            UpdateAddressLocationByUDPRN(addressLocationUSRPOSTDTO);
+                            await UpdateAddressLocationByUDPRN(addressLocationUSRPOSTDTO);
 
                             // Update the DP location. Story: RFMO-276
-                            UpdateDPLocation(addressLocationUSRPOSTDTO);
+                            await UpdateDPLocation(addressLocationUSRPOSTDTO);
                         }
 
                         // No Match to Location on UDPRN - Log Error
@@ -446,7 +446,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// Method to update the Address location based on UDPRN.
         /// </summary>
         /// <param name="addressLocationUSRPOSTDTO"></param>
-        private async void UpdateAddressLocationByUDPRN(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
+        private async Task UpdateAddressLocationByUDPRN(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
         {
             DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
 
@@ -459,14 +459,14 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
             };
 
             // Update the address location data record to the database.
-            await addressLocationDataService.UpdateExistingAddressLocationByUDPRN(updateAddressLocationDTO);     
+            await addressLocationDataService.UpdateExistingAddressLocationByUDPRN(updateAddressLocationDTO);            
         }
 
         /// <summary>
         /// Method to update the DP location based on UDPRN.
         /// </summary>
         /// <param name="addressLocationUSRPOSTDTO"></param>
-        private async void UpdateDPLocation(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
+        private async Task UpdateDPLocation(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
         {
             DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
 
@@ -479,7 +479,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                 deliveryPointDTO.LocationXY = spatialLocationXY;
 
                 // Update the location details for the delivery point
-                await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
+                await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);                
             }
         }
     }
