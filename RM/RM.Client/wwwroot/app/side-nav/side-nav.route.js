@@ -55,9 +55,8 @@ angular.module('RMApp')
           })
           .state("deliveryPointGroup", {
               url: "/group",
-              templateUrl: "./access-link/acccess-link.template.html",
-              controller: 'AccessLinkController as vm',
-              params: { accessLinkFeature: null }
+              templateUrl: "./group/group.template.html",
+              controller: 'GroupController as vm'
           });
 
 });

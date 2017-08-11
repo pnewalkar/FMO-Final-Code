@@ -11,7 +11,7 @@ var CommonConstants = {
     GetSessionStorageItemType: "roleAccessData",
     EntityType: { DeliveryPoint: "DeliveryPoint", StreetNetwork: "StreetNetwork", Route: "Route", Postcode: "Postcode" },
     ButtonShapeType: { point: "point", line: "line", accesslink: "accesslink", select: "select", area: "area", del: "delete" },
-    GeometryType: { Point: "Point", LineString: "LineString" , Polygon : "Polygon"},
+    GeometryType: { Point: "Point", LineString: "LineString", Polygon: "Polygon" },
     pointTypes: { DeliveryPoint: { text: "Delivery Point", value: 'deliverypoint', style: "deliverypoint" }, AcessLink: { text: "Access Link", value: 'accesslink', style: "accesslink" }, Road: { text: "Road", value: 'roadlink', style: "roadlink" }, Selected: { text: "Selected", value: '', style: "deliverypoint" } },
     RouteLogSelectionType: { Single: "Single", Multiple: "Multiple" },
     SearchLessThanThreeCharactersErrorMessage: "At least three characters must be input for a Search",
@@ -24,7 +24,8 @@ var CommonConstants = {
     DpUseType: { Residential: "Residential", Organisation: "Organisation" },
     DefaultResultCountForSearch: "5",
     NoResultCountForSearch: "0",
-    DeliveryPointGroup: "Delivery Group"
+    DeliveryPointGroup: "Group Management",
+    GroupActionName: "Delivery Group"
 
 };
 
