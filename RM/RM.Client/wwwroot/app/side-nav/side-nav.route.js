@@ -57,6 +57,11 @@ angular.module('RMApp')
               url: "/group",
               templateUrl: "./group/group.template.html",
               controller: 'GroupController as vm'
-          });
+          })    
+            .state("deliveryPointGroupDetails", {
+                url: "/groupdetails",
+                templateUrl: "./group/group.details.template.html",
+                controller: 'GroupDetailsController as vm'
+    });
 
 });
