@@ -1,0 +1,52 @@
+﻿<md-dialog aria-label="Delete delivery point" class="printMapDialog">
+    <form name="">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{ 'DELETE_DELIVERY_POINT'| translate }}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="vm.closeWindow()" aria-label="Close Window" title="Close">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content layout-padding class="contentHeight">
+            <div layout="row">
+                <div layout="column" flex>
+                    <h2>Please provide a reason for deleting this delivery point</h2>
+                    <h2>Please provide a reason for deleting this delivery point</h2>
+                </div>
+            </div>
+            <div layout="row">
+                <div layout="column" flex>
+                    <md-input-container>
+                        <label>{{ 'Reason Code'| translate }}</label>
+                        <md-select ng-model="vm.xyz" class="printMapOption">
+                            <md-option ng-repeat="type in vm.types" ng-value="type.Value">
+                                {{type.x}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </div>
+            <div layout="row">
+                <div layout="column" flex>
+                    <md-input-container>
+                        <textarea rows="8" cols="70" placeholder="Reason*" style=" resize: none;" required></textarea>
+                    </md-input-container>
+                </div>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button class="md-raised md-primary" flex="35" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+                {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
+            </md-button>
+            <span flex></span>
+            <md-button class="md-raised md-primary rightAligned" flex="35" title="{{ 'GENERAL.BUTTONS.DELETE' | translate }}">
+                <i class="fa " aria-hidden="true"></i>
+                {{ 'GENERAL.BUTTONS.DELETE' | translate }}
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
