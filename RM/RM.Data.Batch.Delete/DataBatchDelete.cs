@@ -22,7 +22,12 @@ namespace RM.DataManagement.Batch.Delete
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private const string DELETEPAFHOUSEKEEPING = "DeletePAFHousekeeping";
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataBatchDelete"/> class.
+        /// </summary>
+        /// <param name="httpHandler">The Http Handler to handle REST calls.</param>
+        /// <param name="configurationHelper">To handle config values fetch</param>
+        /// <param name="loggingHelper">The logging helper.</param>
         public DataBatchDelete(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.httpHandler = httpHandler;
@@ -30,6 +35,9 @@ namespace RM.DataManagement.Batch.Delete
             this.loggingHelper = loggingHelper;
         }        
 
+        /// <summary>
+        /// Delete the Postal Addresses with Pending Delete status and having no reference.
+        /// </summary>
         public void BatchDelete()
         {
             using (loggingHelper.RMTraceManager.StartTrace("EXE.BatchDelete"))
