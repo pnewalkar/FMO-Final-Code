@@ -244,7 +244,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             DependentLocality = l.PostalAddress.DependentLocality,
                             UDPRN = l.PostalAddress.UDPRN
                         }
-                    }).OrderBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName)
+                    }).OrderBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.BuildingNumber)
                     .ToListAsync();
             }
             else
@@ -274,7 +274,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             DependentLocality = l.PostalAddress.DependentLocality,
                             UDPRN = l.PostalAddress.UDPRN
                         }
-                    }).OrderBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName)
+                    }).OrderBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.BuildingNumber)
                     .ToListAsync();
             }
 
