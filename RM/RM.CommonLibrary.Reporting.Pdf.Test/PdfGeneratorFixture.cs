@@ -53,5 +53,9 @@ namespace RM.CommonLibrary.Reporting.Test
         // * External dependencies - requires an output folder and application configuration
         // * Limited value - the tests would only be able to determine whether or not a file was created as 
         //     verifying the content of the PDF requires human interaction
+        //
+        // Note that the general PDF generation functionality, including the functionality implemented in
+        //   RM.CommonLibrary.Reporting.Pdf.PdfGenerator is unit tested in the test cases implemented in
+        //   RM.Operational.PDFGenerator.WebAPI.PDFGeneratorBusinessServiceFixture
     }
 }

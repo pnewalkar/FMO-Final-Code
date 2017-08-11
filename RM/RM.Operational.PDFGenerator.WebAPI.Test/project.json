@@ -23,6 +23,6 @@
     }
   },
   "buildOptions": {
-    "additionalArguments": [ "/ruleset:../RM.ruleset" ]
+    "additionalArguments": [ "/ruleset:RM.Operational.PDFGenerator.WebAPI.Test.ruleset" ]
   }
 }

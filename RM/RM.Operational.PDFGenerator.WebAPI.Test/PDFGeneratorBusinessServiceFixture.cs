@@ -7,10 +7,12 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.PDFGenerator.WebAPI.BusinessService;
+using RM.CommonLibrary.EntityFramework.DTO;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace RM.Operational.PDFGenerator.WebAPI.Test
 {
-    // TODO clean up
     [TestFixture]
     public class PDFGeneratorBusinessServiceFixture : TestFixtureBase
     {
@@ -45,7 +47,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
         /// <summary>
         /// Default report XML - for use with the default XSLT template
         /// </summary>
-        private const string defaultReportXml = "<report outputTo=\"A4Landscape\"><!-- xmlns=\"http://tempuri.org/FMO_PDFReport_Generic.xsd\" -->" +
+        private const string DefaultReportXml = "<report outputTo=\"A4Landscape\"><!-- xmlns=\"http://tempuri.org/FMO_PDFReport_Generic.xsd\" -->" +
                                                 "<pageHeader caption=\"Unit Test Report\" /><pageFooter caption=\"Source: PDFGenerator\" pageNumbers=\"true\" />" +
                                                 "<content><section><sectionColumn width=\"1\"><heading1>Unit Test Report</heading1></sectionColumn>" +
                                                 "</section></content></report>";
@@ -55,14 +57,14 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
         /// <summary>
         /// Custom report XML
         /// </summary>
-        private const string customReportXml = "<report><content><section></section></content></report>";
+        private const string CustomReportXml = "<report><content><section></section></content></report>";
 
 
 
         /// <summary>
         /// Custom XSLT
         /// </summary>
-        private const string customXslt = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?><xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:fo=\"http://www.w3.org/1999/XSL/Format\">" +
+        private const string CustomXslt = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?><xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:fo=\"http://www.w3.org/1999/XSL/Format\">" +
                                           "<xsl:output method=\"xml\" indent=\"yes\"/><xsl:template match=\"/report\"><fo:root><fo:layout-master-set>" +
                                           "<fo:simple-page-master master-name=\"A4Landscape\" page-width=\"297mm\" page-height=\"210mm\" margin-top=\"1cm\" margin-bottom=\"1cm\" margin-left=\"1cm\"  margin-right=\"1cm\">" +
                                           "<fo:region-body margin-top=\"1cm\" margin-bottom=\"1cm\" margin-left=\"0cm\" margin-right=\"0cm\" column-count=\"1\"/>" +
@@ -83,7 +85,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
         {
             // Set up the configuration helper
             this.mockConfigurationHelper = CreateMock<IConfigurationHelper>();
-            const string PdfReportFolderPath = @"C:\FMOData\UnitTest\PDFReports";
+            const string PdfReportFolderPath = @"C:\RMData\UnitTest\PDFReports";
             this.mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(PdfReportFolderPathConfigurationKey)).Returns(PdfReportFolderPath);
 
             // Set up the logging helper
@@ -120,9 +122,8 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
             if (Directory.Exists(pdfReportFolderPath))
             {
                 // Verify that the folder path is not obviously malicious
-                // TODO enhance this and move it to the validation library
                 DirectoryInfo folder = new DirectoryInfo(pdfReportFolderPath);
-                if (folder.FullName.Length >= 20 && !folder.FullName.StartsWith(@"C:\Windows") && folder.FullName == pdfReportFolderPath)
+                if (folder.FullName.StartsWith(@"C:\RMData") && folder.FullName == pdfReportFolderPath)
                 {
                     // Step through the files in the folder
                     var files = folder.EnumerateFiles();
@@ -131,21 +132,23 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
                         // Only delete if the file is actually in the PDF report folder path - this ensures that only direct paths
                         //   are processed and prevents attacks where navigation back up the folder hierarchy might allow a path
                         //   that contains system files
-                        if (file.Directory.FullName == pdfReportFolderPath)
+                        // Also check that the folder path doesn't point to the Windows folder or is unexpectedly short
+                        if (file.Directory.FullName == pdfReportFolderPath && file.Directory.FullName != @"C:\Windows" && file.Directory.FullName.Length > 10)
                         {
                             // Only delete PDF and XSLT files - these are the only file types that the unit test creates - anything
                             //   else should be left alone
                             string extension = file.Extension.ToLower();
-                            if (extension == "pdf" || extension == "xslt")
+                            if (extension == ".pdf" || extension == ".xslt")
                             {
                                 try
                                 {
                                     // Delete the file
-                                    // TODO test that the protective code works then enable this line
-                                    //file.Delete();
+                                    file.Delete();
                                 }
                                 catch (IOException)
                                 {
+                                    // Do nothing
+                                    //
                                     // Since this just clearing up resources that are uniquely identified there is no problem if
                                     //   any files fail to delete
                                 }
@@ -173,111 +176,320 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
 
 
 
-        ///// <summary>
-        ///// Create PDF Report unit tests
-        ///// </summary>
-        //[Test]
-        //public void CreatePdfReport_WhereValidReportXmlAndDefaultXslt_ExpectPdfFileExists()
-        //{
-        //    //testCandidate.CreatePdfReport(reportXml)
-        //    Assert.Fail(); // TODO
-        //}
+        /// <summary>
+        /// Create PDF Report unit tests
+        /// The 'happy' case unit tests are covered by:
+        ///   PdfGenerationLifecycle_WhereValidReportXmlAndDefaultXslt_ExpectPdfFileDeletedAndPass
+        ///   PdfGenerationLifecycle_WhereValidReportXmlAndCustomXslt_ExpectPdfFileDeletedAndPass
+        /// </summary>
+        [Test]
+        public void CreatePdfReport_WhereEmptyReportXmlAndDefaultXslt_ExpectArgumentException()
+        {
+            foreach (string reportXml in GetEmptyArgumentValues())
+            {
+                Assert.Throws<ArgumentException>(() => testCandidate.CreatePdfReport(reportXml));
+            }
+        }
 
-        //[Test]
-        //public void CreatePdfReport_WhereValidReportXmlAndCustomXslt_ExpectPdfFileExists()
-        //{
-        //    //testCandidate.CreatePdfReport(reportXml, xsltFilePath)
-        //    Assert.Fail(); // TODO
-        //}
+        [Test]
+        public void CreatePdfReport_WhereInvalidReportXmlAndDefaultXslt_ExpectXmlException()
+        {
+            // Test all the invalid xml for the report XML
+            foreach (string reportXml in GetInvalidXml())
+            {
+                Assert.Throws<XmlException>(() => testCandidate.CreatePdfReport(reportXml));
+            }
+        }
+
+        [Test]
+        public void CreatePdfReport_WhereEmptyReportXmlAndCustomXslt_ExpectArgumentException()
+        {
+            // Create the custom XSLT file
+            string customXsltFilePath = this.CreateCustomXsltFile();
+            Assert.True(File.Exists(customXsltFilePath));
+
+            // Test all the empty argument values for the report XML
+            foreach (string reportXml in GetEmptyArgumentValues())
+            {
+                Assert.Throws<ArgumentException>(() => testCandidate.CreatePdfReport(reportXml, customXsltFilePath));
+            }
+
+            // Delete the custom XSLT file
+            this.DeleteCustomXsltFile(customXsltFilePath);
+            Assert.True(!File.Exists(customXsltFilePath));
+        }
+
+        [Test]
+        public void CreatePdfReport_WhereInvalidReportXmlAndCustomXslt_ExpectXmlException()
+        {
+            // Create the custom XSLT file
+            string customXsltFilePath = this.CreateCustomXsltFile();
+            Assert.True(File.Exists(customXsltFilePath));
+
+            // Test all the invalid xml for the report XML
+            foreach (string reportXml in GetInvalidXml())
+            {
+                Assert.Throws<XmlException>(() => testCandidate.CreatePdfReport(reportXml, customXsltFilePath));
+            }
+
+            // Delete the custom XSLT file
+            this.DeleteCustomXsltFile(customXsltFilePath);
+            Assert.True(!File.Exists(customXsltFilePath));
+        }
+
+        [Test]
+        public void CreatePdfReport_WhereValidReportXmlAndEmptyCustomXslt_ExpectArgumentException()
+        {
+            string reportXml = CustomReportXml;
+            foreach (string xsltFilePath in GetEmptyArgumentValues())
+            {
+                Assert.Throws<ArgumentException>(() => testCandidate.CreatePdfReport(reportXml, xsltFilePath));
+            }
+        }
+
+        [Test]
+        public void CreatePdfReport_WhereValidReportXmlAndMissingCustomXslt_ExpectArgumentException()
+        {
+            // Create the custom XSLT file
+            string customXsltFilePath = this.CreateCustomXsltFile();
+            Assert.True(File.Exists(customXsltFilePath));
+
+            // Delete the custom XSLT file
+            this.DeleteCustomXsltFile(customXsltFilePath);
+            Assert.True(!File.Exists(customXsltFilePath));
+
+            string reportXml = CustomReportXml;
+            Assert.Throws<ArgumentException>(() => testCandidate.CreatePdfReport(reportXml, customXsltFilePath));
+        }
 
 
 
-        ///// <summary>
-        ///// Delete PDF Report unit tests
-        ///// </summary>
-        //[Test]
-        //public void DeletePdfReport_WherePdfFileExists_ExpectPdfFileDeleted()
-        //{
-        //    //testCandidate.DeletePdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
+        /// <summary>
+        /// Delete PDF Report unit tests
+        /// The 'happy' case unit tests are covered by:
+        ///   PdfGenerationLifecycle_WhereValidReportXmlAndDefaultXslt_ExpectPdfFileDeletedAndPass
+        ///   PdfGenerationLifecycle_WhereValidReportXmlAndCustomXslt_ExpectPdfFileDeletedAndPass
+        /// The 'sad' case where the PDF file does not exist does not have a meaningful test as 
+        ///   the outcome is that nothing happens
+        /// </summary>
+        [Test]
+        public void DeletePdfReport_WherePdfFileNameIsNullEmptyOrWhiteSpace_ExpectArgumentException()
+        {
+            foreach (string pdfFileName in GetEmptyArgumentValues())
+            {
+                Assert.Throws<ArgumentException>(() => testCandidate.DeletePdfReport(pdfFileName));
+            }
+        }
 
-        //[Test]
-        //public void DeletePdfReport_WherePdfFileNotExists_ExpectTODO()
-        //{
-        //    //testCandidate.DeletePdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
-
-        //[Test]
-        //public void DeletePdfReport_WherePdfFileNameIsNull_ExpectArgumentNullException()
-        //{
-        //    //testCandidate.DeletePdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
-
-        //[Test]
-        //public void DeletePdfReport_WherePdfFileNameIsNotValid_ExpectArgumentException()
-        //{
-        //    //testCandidate.DeletePdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
+        [Test]
+        public void DeletePdfReport_WherePdfFileNameIsNotValid_ExpectArgumentException()
+        {
+            foreach (string pdfFileName in GetInvalidFileNames(".pdf"))
+            {
+                Assert.Throws<ArgumentException>(() => testCandidate.DeletePdfReport(pdfFileName));
+            }
+        }
 
 
 
-        ///// <summary>
-        ///// Get PDF Report unit tests
-        ///// </summary>
-        //[Test]
-        //public void GetPdfReport_WherePdfFileExists_ExpectPdfFileDtoWithByteArrayData()
-        //{
-        //    //testCandidate.GetPdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
 
-        //[Test]
-        //public void GetPdfReport_WherePdfFileNotExists_ExpectNull()
-        //{
-        //    //testCandidate.GetPdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
+        /// <summary>
+        /// Get PDF Report unit tests
+        /// The 'happy' case unit tests are covered by:
+        ///   PdfGenerationLifecycle_WhereValidReportXmlAndDefaultXslt_ExpectPdfFileDeletedAndPass
+        ///   PdfGenerationLifecycle_WhereValidReportXmlAndCustomXslt_ExpectPdfFileDeletedAndPass
+        /// </summary>
+        [Test]
+        public void GetPdfReport_WherePdfFileNotExists_ExpectNull()
+        {
+            string pdfFileName = Guid.NewGuid().ToString() + ".pdf";
+            PdfFileDTO result = testCandidate.GetPdfReport(pdfFileName);
+            Assert.True(result == null);
+        }
 
-        //[Test]
-        //public void GetPdfReport_WherePdfFileNameIsNull_ExpectArgumentNullException()
-        //{
-        //    //testCandidate.GetPdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
+        [Test]
+        public void GetPdfReport_WherePdfFileNameIsNullEmptyOrWhiteSpace_ExpectArgumentException()
+        {
+            foreach (string pdfFileName in GetEmptyArgumentValues())
+            {
+                Assert.Throws<ArgumentException>(() => testCandidate.GetPdfReport(pdfFileName));
+            }
+        }
 
-        //[Test]
-        //public void GetPdfReport_WherePdfFileNameIsNotValid_ExpectArgumentException()
-        //{
-        //    //testCandidate.GetPdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
+        [Test]
+        public void GetPdfReport_WherePdfFileNameIsNotValid_ExpectArgumentException()
+        {
+            foreach (string pdfFileName in GetInvalidFileNames(".pdf"))
+            {
+                Assert.Throws<ArgumentException>(() => testCandidate.GetPdfReport(pdfFileName));
+            }
+        }
 
 
 
-        ///// <summary>
-        ///// Lifecycle unit tests - to verify overall lifecycle of a PDF file
-        ///// </summary>
-        //[Test]
-        //public void Lifecycle_WhereValidReportXmlAndDefaultXslt_ExpectPdfFileDeletedAndPass()
-        //{
-        //    //testCandidate.CreatePdfReport(reportXml)
-        //    //testCandidate.GetPdfReport(pdfFileName)
-        //    //testCandidate.DeletePdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
+        /// <summary>
+        /// Lifecycle unit tests - to verify overall lifecycle of a PDF file
+        /// </summary>
+        [Test]
+        public void PdfGenerationLifecycle_WhereValidReportXmlAndDefaultXslt_ExpectPdfFileDeletedAndPass()
+        {
+            // Create a PDF report from the default report XML
+            string pdfFileName = testCandidate.CreatePdfReport(DefaultReportXml);
+            Assert.True(!string.IsNullOrWhiteSpace(pdfFileName));
 
-        //[Test]
-        //public void Lifecycle_WhereValidReportXmlAndCustomXslt_ExpectPdfFileDeletedAndPass()
-        //{
-        //    //testCandidate.CreatePdfReport(reportXml, xsltFilePath)
-        //    //testCandidate.GetPdfReport(pdfFileName)
-        //    //testCandidate.DeletePdfReport(pdfFileName)
-        //    Assert.Fail(); // TODO
-        //}
+            // Verify that the PDF report file has been created
+            string pdfReportFolderPath = mockConfigurationHelper.Object.ReadAppSettingsConfigurationValues(PdfReportFolderPathConfigurationKey);
+            string pdfFilePath = Path.Combine(pdfReportFolderPath, pdfFileName);
+            Assert.True(File.Exists(pdfFilePath));
+
+            // Retrieve the PDF report file
+            PdfFileDTO response = testCandidate.GetPdfReport(pdfFileName);
+            Assert.True(response != null);
+            Assert.True(response.Data != null);
+            Assert.True(response.Data.Length > 0);
+
+            // Delete the PDF report file
+            testCandidate.DeletePdfReport(pdfFileName);
+            Assert.True(!File.Exists(pdfFilePath));
+        }
+
+        [Test]
+        public void PdfGenerationLifecycle_WhereValidReportXmlAndCustomXslt_ExpectPdfFileDeletedAndPass()
+        {
+            // Create the custom XSLT file
+            string customXsltFilePath = this.CreateCustomXsltFile();
+            Assert.True(File.Exists(customXsltFilePath));
+
+            // Create a PDF report from the custom report XML using a custom XSLT file
+            string pdfFileName = testCandidate.CreatePdfReport(CustomReportXml, customXsltFilePath);
+            Assert.True(!string.IsNullOrWhiteSpace(pdfFileName));
+
+            // Verify that the PDF report file has been created
+            string pdfReportFolderPath = mockConfigurationHelper.Object.ReadAppSettingsConfigurationValues(PdfReportFolderPathConfigurationKey);
+            string pdfFilePath = Path.Combine(pdfReportFolderPath, pdfFileName);
+            Assert.True(File.Exists(pdfFilePath));
+
+            // Retrieve the PDF report file
+            PdfFileDTO response = testCandidate.GetPdfReport(pdfFileName);
+            Assert.True(response != null);
+            Assert.True(response.Data != null);
+            Assert.True(response.Data.Length > 0);
+
+            // Delete the PDF report file
+            testCandidate.DeletePdfReport(pdfFileName);
+            Assert.True(!File.Exists(pdfFilePath));
+
+            // Delete the custom XSLT file
+            this.DeleteCustomXsltFile(customXsltFilePath);
+            Assert.True(!File.Exists(customXsltFilePath));
+        }
+
+
+
+
+
+        /// <summary>
+        /// Creates an XSLT file containing the custom XSLT
+        /// </summary>
+        /// <returns>The path to the custom XSLT file</returns>
+        private string CreateCustomXsltFile()
+        {
+            // Get the PDF report folder path
+            string pdfReportFolderPath = mockConfigurationHelper.Object.ReadAppSettingsConfigurationValues(PdfReportFolderPathConfigurationKey);
+
+            // Create the custom XSLT file in the PDF report folder path
+            string customXsltFilePath = Path.Combine(pdfReportFolderPath, (Guid.NewGuid()).ToString() + ".xslt");
+            using (StreamWriter sw = File.CreateText(customXsltFilePath))
+            {
+                sw.Write(CustomXslt);
+                sw.Flush();
+                sw.Close();
+            }
+
+            // Return the path to the custom XSLT file
+            return customXsltFilePath;
+        }
+
+
+
+        /// <summary>
+        /// Deletes a custom XSLT file
+        /// Note: this is not a general purpose delete file method - it includes checks to ensure that the 
+        ///   path points to an xslt file under the PDF report folder path
+        /// </summary>
+        /// <param name="path">The path to the custom XSLT file</param>
+        private void DeleteCustomXsltFile(string path)
+        {
+            // Get the PDF report folder path
+            string pdfReportFolderPath = mockConfigurationHelper.Object.ReadAppSettingsConfigurationValues(PdfReportFolderPathConfigurationKey);
+
+            // If the path is in the expected location and has the expected extension
+            FileInfo target = new FileInfo(path);
+            if (target.FullName.StartsWith(pdfReportFolderPath) && target.Extension.ToLower() == ".xslt")
+            {
+                try
+                {
+                    // Delete the file
+                    target.Delete();
+                }
+                catch (IOException)
+                {
+                    // Do nothing
+                    //
+                    // The failure to delete will be flagged by a failed test
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Returns a list of empty (null, empty or whitespace) file names for validation testing
+        /// </summary>
+        /// <returns>List of empty file names</returns>
+        private List<string> GetEmptyArgumentValues()
+        {
+            List<string> fileNames = new List<string>();
+            fileNames.Add(null);
+            fileNames.Add(string.Empty);
+            fileNames.Add("   ");
+            fileNames.Add(" ");
+            return fileNames;
+        }
+
+
+
+        /// <summary>
+        /// Returns a list of invalid file names for validation testing
+        /// </summary>
+        /// <param name="extension">The file extension to apply</param>
+        /// <returns>List of invalid file names</returns>
+        private List<string> GetInvalidFileNames(string extension)
+        {
+            List<string> fileNames = new List<string>();
+            fileNames.Add(Guid.NewGuid().ToString() + @"*" + extension);
+            fileNames.Add(Guid.NewGuid().ToString() + @"?" + extension);
+            fileNames.Add(Guid.NewGuid().ToString() + @"/" + extension);
+            fileNames.Add(Guid.NewGuid().ToString() + @"\" + extension);
+            fileNames.Add(Guid.NewGuid().ToString() + @".." + extension);
+            return fileNames;
+        }
+
+
+
+        /// <summary>
+        /// Returns a list of invalid XML document strings for validation testing
+        /// </summary>
+        /// <returns>List of invalid XML document strings</returns>
+        private List<string> GetInvalidXml()
+        {
+            List<string> xmlStrings = new List<string>();
+            xmlStrings.Add("<xml>");
+            xmlStrings.Add("xml>");
+            xmlStrings.Add("This is not valid XML");
+            xmlStrings.Add("</xml><xml>");
+            return xmlStrings;
+        }
 
 
 
