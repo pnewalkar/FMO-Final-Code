@@ -23,6 +23,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string Comma = ", ";
         internal const string TASKPAFACTION = "Position new DP Location";
         internal const string USRNOTIFICATIONBODYPREFIX = "Please check the proposed new Location of the DP ";
+        internal const string USRDeleteNOTIFICATIONBODYPREFIX = "Please check the Location of the DP ";
+        internal const string USRDeleteNOTIFICATIONBODYSUFFIX = " as the 3rd Party has deleted this Location";
 
         internal const string DeliveryPointExists = "DeliveryPointExists";
         internal const string GetDeliveryPointByUDPRNForThirdParty = "GetDeliveryPointByUDPRNForThirdParty";
@@ -51,5 +53,6 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string REALLOCATION = "Live";
 
         internal const string USRERRORLOGMESSAGE = "Load Thirdparty Address location Error Message : {0}, UDPRN : {1}, Ammendment Type : {2}, File Name : {3}, File Name : {4}, Log Time : {5}";
+        internal const string ErrorMessageForAddressTypeUSRNotFound = "Address location data is not present for selected UDPRN";
     }
 }
