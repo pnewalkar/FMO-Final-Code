@@ -88,7 +88,7 @@ GlobalSettings.range = "Range";
 GlobalSettings.subBuilding = "Sub building";
 GlobalSettings.numberInName = "Number in Name";
 GlobalSettings.defaultRangeOption = "Odds";
-
+GlobalSettings.groupLayerName = "Group";
 
 angular.module('RMApp')
 .constant("GlobalSettings", GlobalSettings);

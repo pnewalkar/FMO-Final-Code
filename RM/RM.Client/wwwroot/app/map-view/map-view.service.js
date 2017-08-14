@@ -335,6 +335,18 @@ function mapService($http,
         unitBoundaryLayerSelector.keys = ["unitBoundary"];
         mapFactory.addLayer(unitBoundaryLayerSelector);
 
+        var groupLayerSelector = new MapFactory.LayerSelector();
+        groupLayerSelector.layerName = GlobalSettings.groupLayerName;
+        groupLayerSelector.layer = mockGroupsLayer;
+        groupLayerSelector.group = "";
+        groupLayerSelector.zIndex = 1;
+        groupLayerSelector.selected = false;
+        groupLayerSelector.onMiniMap = false;
+        groupLayerSelector.selectorVisible = true;
+        groupLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
+        groupLayerSelector.keys = ["group"];
+        mapFactory.addLayer(groupLayerSelector);
+
         roadsLayer.selected = true;
         vm.map.on('pointermove', vm.pointerMoveHandler);
         refreshLayers();
