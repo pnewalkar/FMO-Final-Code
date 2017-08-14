@@ -452,8 +452,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 }
 
                 // DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
-                DBGeometryObj locationObject = JsonConvert.DeserializeObject<DBGeometryObj>(result.Content.ReadAsStringAsync().Result);
-                DbGeometry approxLocation = locationObject.dbGeometry;
+                DBGeometryDTO locationObject = JsonConvert.DeserializeObject<DBGeometryDTO>(result.Content.ReadAsStringAsync().Result);
+                DbGeometry approxLocation = locationObject.Geometry;
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return approxLocation;
