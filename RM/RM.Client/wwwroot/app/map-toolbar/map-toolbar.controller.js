@@ -36,6 +36,11 @@ function MapToolbarController(
         selectedButton(objectStatus.name)
     });
 
+    $rootScope.$on('resetMapToolbar', function (event, objectStatus) {
+        vm.isObjectSelected = objectStatus.isObjectSelected;
+        vm.mapButtons = mapToolbarService.getMapButtons(vm.isObjectSelected);
+    });
+
     function initialize() {
         vm.showButton();
         vm.getMapButtons();

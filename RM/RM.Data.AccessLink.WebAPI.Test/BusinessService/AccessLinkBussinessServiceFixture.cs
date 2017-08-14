@@ -110,9 +110,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
         {
             var expectedResult = await testCandidate.DeleteAccessLink(operationalObjectId);
             Assert.IsNotNull(expectedResult);
-            Assert.IsTrue(expectedResult);
         }
-
 
         /// <summary>
         /// Setup for Nunit Tests.
@@ -178,7 +176,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             }
 
             Tuple<NetworkLinkDTO, SqlGeometry> tuple = new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
-            Tuple<NetworkLinkDTO, List<SqlGeometry>> tuple1 = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, lstnetworkIntersectionPoint);
+            List<Tuple<NetworkLinkDTO, SqlGeometry>> tuple1 = new List<Tuple<NetworkLinkDTO, SqlGeometry>> { new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, networkIntersectionPoint) };
 
             List<ReferenceDataCategoryDTO> refDataCategotyDTO = new List<ReferenceDataCategoryDTO>()
             {
@@ -320,6 +318,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             mockAccessLinkIntegrationService = CreateMock<IAccessLinkIntegrationService>();
             mockaccessLinkDataService.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDataDTO>>);
             mockaccessLinkDataService.Setup(x => x.GetAccessLinksCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(default(bool));
+            mockaccessLinkDataService.Setup(x => x.DeleteAccessLink(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(new List<ReferenceDataCategoryDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(refDataCategotyDTO);
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(deliveryPointDTO);

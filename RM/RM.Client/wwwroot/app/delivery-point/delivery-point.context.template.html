@@ -15,12 +15,12 @@
 
     <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">
         <h1>Points not positioned by 3rd party</h1>
-        <ul layout="row">
+        <ul>
             <li ng-show="vm.deliveryPointList == null || vm.deliveryPointList == undefined || vm.deliveryPointList == [] || vm.deliveryPointList.length == 0" class="initialCursor">
                 None left to position
             </li>
-            <li ng-repeat="item in vm.deliveryPointList" flex="85">
-                {{item.locality}}
+            <li ng-repeat="item in vm.deliveryPointList" layout="row">
+                <span flex="85">{{item.locality}}</span>
                 <span ng-click="vm.toggle(item)" flex="15" class="centerAlign">
                     <md-checkbox class="dpCheckBox"></md-checkbox>
                 </span>

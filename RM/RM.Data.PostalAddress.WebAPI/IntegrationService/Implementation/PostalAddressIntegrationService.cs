@@ -452,8 +452,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 }
 
                 // DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
-                DBGeometryObj locationObject = JsonConvert.DeserializeObject<DBGeometryObj>(result.Content.ReadAsStringAsync().Result);
-                DbGeometry approxLocation = locationObject.dbGeometry;
+                DBGeometryDTO locationObject = JsonConvert.DeserializeObject<DBGeometryDTO>(result.Content.ReadAsStringAsync().Result);
+                DbGeometry approxLocation = locationObject.Geometry;
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return approxLocation;
@@ -513,7 +513,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
-
         public async Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.GetAddressLocationsByUDPRN"))
@@ -529,7 +528,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 }
 
                 List<AddressLocationDTO> addressLocationDTOs = JsonConvert.DeserializeObject<List<AddressLocationDTO>>(result.Content.ReadAsStringAsync().Result);
-                
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return addressLocationDTOs;
             }

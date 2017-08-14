@@ -120,7 +120,6 @@ namespace RM.DataServices.Tests.DataService
         {
             var actualResult = await testCandidate.DeleteAccessLink(unit1Guid, unit2Guid, unit3Guid);
             Assert.IsNotNull(actualResult);
-            Assert.IsTrue(actualResult);
         }
 
         /// <summary>

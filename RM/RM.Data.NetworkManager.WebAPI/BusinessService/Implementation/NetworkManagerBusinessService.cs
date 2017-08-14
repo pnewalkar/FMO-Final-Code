@@ -107,7 +107,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, List<SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint)
+        public List<Tuple<NetworkLinkDTO, SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetNearestSegment"))
             {
@@ -130,22 +130,27 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 referenceDataCategoryList.AddRange(
                    networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
 
-                Tuple<NetworkLinkDataDTO, List<SqlGeometry>> getNearestSegment = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
+                List<Tuple<NetworkLinkDataDTO, SqlGeometry>> nearestSegmentList = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
 
-                NetworkLinkDTO networkLink = null;
+                NetworkLinkDTO networkLinkDTO = null;
 
-                if (getNearestSegment != null && getNearestSegment.Item1 != null)
+                List<Tuple<NetworkLinkDTO, SqlGeometry>> nearestSegment = new List<Tuple<NetworkLinkDTO, SqlGeometry>>();
+                if (nearestSegmentList != null)
                 {
-                    networkLink = new NetworkLinkDTO()
+                    foreach (var item in nearestSegmentList)
                     {
-                        Id = getNearestSegment.Item1.ID,
-                        LinkGeometry = getNearestSegment.Item1.LinkGeometry,
-                        NetworkLinkType_GUID = getNearestSegment.Item1.NetworkLinkTypeGUID,
-                        TOID = getNearestSegment.Item1.TOID
-                    };
+                        networkLinkDTO = new NetworkLinkDTO()
+                        {
+                            Id = item.Item1.ID,
+                            LinkGeometry = item.Item1.LinkGeometry,
+                            NetworkLinkType_GUID = item.Item1.NetworkLinkTypeGUID,
+                            TOID = item.Item1.TOID
+                        };
+
+                        nearestSegment.Add(new Tuple<NetworkLinkDTO, SqlGeometry>(networkLinkDTO, item.Item2));
+                    }
                 }
 
-                Tuple<NetworkLinkDTO, List<SqlGeometry>> nearestSegment = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, getNearestSegment.Item2);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return nearestSegment;

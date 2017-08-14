@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Linq;
 using Microsoft.SqlServer.Types;
 using Moq;
 using NUnit.Framework;
@@ -52,9 +53,8 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         {
             var result = testCandidate.GetNearestSegment(dbGeometry);
             Assert.IsNotNull(result);
-            Assert.AreEqual(result.Item1.LinkGeometry, lineGeometry);
-            Assert.That(result.Item1.Id, Is.AssignableFrom(typeof(Guid)));
-            Assert.IsTrue(result.Item2.Count == 0);
+            Assert.AreEqual(result.First().Item1.LinkGeometry, lineGeometry);
+            Assert.That(result.First().Item1.Id, Is.AssignableFrom(typeof(Guid)));
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
             lineGeometry = DbGeometry.LineFromText("LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)", 27700);
 
             NetworkLinkDataDTO networkLink = new NetworkLinkDataDTO() { ID = Guid.NewGuid(), LinkGeometry = lineGeometry };
-            Tuple<NetworkLinkDataDTO, List<SqlGeometry>> listOfTuple = new Tuple<NetworkLinkDataDTO, List<SqlGeometry>>(networkLink, listOfnetworkIntersectionPoint);
+            List<Tuple<NetworkLinkDataDTO, SqlGeometry>> listOfTuple = new List<Tuple<NetworkLinkDataDTO, SqlGeometry>> { new Tuple<NetworkLinkDataDTO, SqlGeometry>(networkLink, networkIntersectionPoint) };
             Tuple<NetworkLinkDataDTO, SqlGeometry> tuple = new Tuple<NetworkLinkDataDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
 
             referenceDataCategoryDTOList = new List<ReferenceDataCategoryDTO>()
