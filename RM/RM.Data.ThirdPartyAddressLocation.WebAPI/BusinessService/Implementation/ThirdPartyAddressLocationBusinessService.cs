@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Data.SqlTypes;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DataService;
@@ -16,6 +8,13 @@ using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Data.SqlTypes;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 {
@@ -126,59 +125,36 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                 {
                     // Get the udprn id for each USR record.
                     fileUdprn = (int)addressLocationUSRPOSTDTO.UDPRN;
-                    addressLocationChangeType = addressLocationUSRPOSTDTO.ChangeType;                                
+                    addressLocationChangeType = addressLocationUSRPOSTDTO.ChangeType;
 
-                    // To save new location                              
-                    if (addressLocationChangeType.Equals("I") && !await addressLocationDataService.AddressLocationExists(fileUdprn))
+                    // To save new location
+                    if (addressLocationChangeType.Equals(ThirdPartyAddressLocationConstants.INSERT))
                     {
-                        DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
-
-                        AddressLocationDataDTO newAddressLocationDTO = new AddressLocationDataDTO()
+                        if (!await addressLocationDataService.AddressLocationExists(fileUdprn))
                         {
-                            ID = Guid.NewGuid(),
-                            UDPRN = (int)addressLocationUSRPOSTDTO.UDPRN,
-                            LocationXY = spatialLocationXY,
-                            Lattitude = (decimal)addressLocationUSRPOSTDTO.Latitude,
-                            Longitude = (decimal)addressLocationUSRPOSTDTO.Longitude
-                        };
+                            DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
 
-                        // Save the address location data record to the database.
-                        await addressLocationDataService.SaveNewAddressLocation(newAddressLocationDTO);
-
-                        PostalAddressDataDTO postalAddressDataDTO = await addressLocationDataService.GetPostalAddressData((int)fileUdprn);
-
-                        // Check if the delivery point exists
-                        if (postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0)
-                        {
-                            DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress(postalAddressDataDTO.ID);
-
-                            // Check if the existing delivery point has an approx location.
-                            if (deliveryPointDTO.OperationalStatus_GUID == approxLocation)
+                            AddressLocationDataDTO newAddressLocationDTO = new AddressLocationDataDTO()
                             {
-                                deliveryPointDTO.LocationXY = spatialLocationXY;
-                                deliveryPointDTO.LocationProvider_GUID = locationProviderId;
-                                deliveryPointDTO.UDPRN = fileUdprn;
-                                deliveryPointDTO.OperationalStatus_GUID = operationalStatusGUIDLive;
-                                deliveryPointDTO.NetworkNodeType_GUID = networkNodeTypeRMGServiceNode;
+                                ID = Guid.NewGuid(),
+                                UDPRN = (int)addressLocationUSRPOSTDTO.UDPRN,
+                                LocationXY = spatialLocationXY,
+                                Lattitude = (decimal)addressLocationUSRPOSTDTO.Latitude,
+                                Longitude = (decimal)addressLocationUSRPOSTDTO.Longitude
+                            };
 
-                                // Update the location details for the delivery point
-                                await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
+                            // Save the address location data record to the database.
+                            await addressLocationDataService.SaveNewAddressLocation(newAddressLocationDTO);
 
-                                // Check if a notification exists for the UDPRN.
-                                if (await addressLocationDataService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
-                                {
-                                    // update the notification if it exists.
-                                    await thirdPartyAddressLocationIntegrationService.UpdateNotificationByUDPRN(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION, ThirdPartyAddressLocationConstants.NOTIFICATIONCLOSED);
-                                }
-                            }
-                            else
+                            PostalAddressDataDTO postalAddressDataDTO = await addressLocationDataService.GetPostalAddressData((int)fileUdprn);
+
+                            // Check if the delivery point exists
+                            if (postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0)
                             {
-                                // Calculates the straight line distance between the existing delivery
-                                // point and the new delivery point.
-                                var straightLineDistance = GetDeliveryPointDistance(deliveryPointDTO, spatialLocationXY);
+                                DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress(postalAddressDataDTO.ID);
 
-                                // Check if the new point is within the tolerance limit
-                                if (straightLineDistance <= ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
+                                // Check if the existing delivery point has an approx location.
+                                if (deliveryPointDTO.OperationalStatus_GUID == approxLocation)
                                 {
                                     deliveryPointDTO.LocationXY = spatialLocationXY;
                                     deliveryPointDTO.LocationProvider_GUID = locationProviderId;
@@ -186,11 +162,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                     deliveryPointDTO.OperationalStatus_GUID = operationalStatusGUIDLive;
                                     deliveryPointDTO.NetworkNodeType_GUID = networkNodeTypeRMGServiceNode;
 
-                                    // Update the delivery point location directly in case it is within
-                                    // the tolerance limits.
+                                    // Update the location details for the delivery point
                                     await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
 
-                                    // Check if the notification exists for the given UDPRN.
+                                    // Check if a notification exists for the UDPRN.
                                     if (await addressLocationDataService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
                                     {
                                         // update the notification if it exists.
@@ -199,38 +174,64 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 }
                                 else
                                 {
-                                    // Get the Postcode Sector by UDPRN
-                                    PostCodeSectorDTO postCodeSectorDTO =
-                                        await thirdPartyAddressLocationIntegrationService.GetPostCodeSectorByUDPRN(fileUdprn);
+                                    // Calculates the straight line distance between the existing delivery
+                                    // point and the new delivery point.
+                                    var straightLineDistance = GetDeliveryPointDistance(deliveryPointDTO, spatialLocationXY);
 
-                                    PostalAddressDataDTO postalAddressDTO = await addressLocationDataService.GetPostalAddressData(fileUdprn);
-
-                                    NotificationDTO notificationDO = new NotificationDTO
+                                    // Check if the new point is within the tolerance limit
+                                    if (straightLineDistance <= ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
                                     {
-                                        ID = Guid.NewGuid(),
-                                        NotificationType_GUID = notificationTypeId_GUID,
-                                        NotificationDueDate = DateTime.UtcNow.AddHours(ThirdPartyAddressLocationConstants.NOTIFICATIONDUE),
-                                        NotificationSource = ThirdPartyAddressLocationConstants.USRNOTIFICATIONSOURCE,
-                                        Notification_Heading = ThirdPartyAddressLocationConstants.USRACTION,
-                                        Notification_Message = AddressFields(postalAddressDTO),
-                                        PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null)
-                                            ? string.Empty
-                                            : postCodeSectorDTO.District,
-                                        PostcodeSector = (postCodeSectorDTO == null || postCodeSectorDTO.Sector == null)
-                                            ? string.Empty
-                                            : postCodeSectorDTO.Sector,
-                                        NotificationActionLink = string.Format(ThirdPartyAddressLocationConstants.USRNOTIFICATIONLINK, fileUdprn)
-                                    };
+                                        deliveryPointDTO.LocationXY = spatialLocationXY;
+                                        deliveryPointDTO.LocationProvider_GUID = locationProviderId;
+                                        deliveryPointDTO.UDPRN = fileUdprn;
+                                        deliveryPointDTO.OperationalStatus_GUID = operationalStatusGUIDLive;
+                                        deliveryPointDTO.NetworkNodeType_GUID = networkNodeTypeRMGServiceNode;
 
-                                    // Insert the new notification.
-                                    await thirdPartyAddressLocationIntegrationService.AddNewNotification(notificationDO);
+                                        // Update the delivery point location directly in case it is within
+                                        // the tolerance limits.
+                                        await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
+
+                                        // Check if the notification exists for the given UDPRN.
+                                        if (await addressLocationDataService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
+                                        {
+                                            // update the notification if it exists.
+                                            await thirdPartyAddressLocationIntegrationService.UpdateNotificationByUDPRN(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION, ThirdPartyAddressLocationConstants.NOTIFICATIONCLOSED);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Get the Postcode Sector by UDPRN
+                                        PostCodeSectorDTO postCodeSectorDTO =
+                                            await thirdPartyAddressLocationIntegrationService.GetPostCodeSectorByUDPRN(fileUdprn);
+
+                                        PostalAddressDataDTO postalAddressDTO = await addressLocationDataService.GetPostalAddressData(fileUdprn);
+
+                                        NotificationDTO notificationDO = new NotificationDTO
+                                        {
+                                            ID = Guid.NewGuid(),
+                                            NotificationType_GUID = notificationTypeId_GUID,
+                                            NotificationDueDate = DateTime.UtcNow.AddHours(ThirdPartyAddressLocationConstants.NOTIFICATIONDUE),
+                                            NotificationSource = ThirdPartyAddressLocationConstants.USRNOTIFICATIONSOURCE,
+                                            Notification_Heading = ThirdPartyAddressLocationConstants.USRACTION,
+                                            Notification_Message = AddressFields(postalAddressDTO),
+                                            PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null)
+                                                ? string.Empty
+                                                : postCodeSectorDTO.District,
+                                            PostcodeSector = (postCodeSectorDTO == null || postCodeSectorDTO.Sector == null)
+                                                ? string.Empty
+                                                : postCodeSectorDTO.Sector,
+                                            NotificationActionLink = string.Format(ThirdPartyAddressLocationConstants.USRNOTIFICATIONLINK, fileUdprn)
+                                        };
+
+                                        // Insert the new notification.
+                                        await thirdPartyAddressLocationIntegrationService.AddNewNotification(notificationDO);
+                                    }
                                 }
                             }
                         }
                     }
-
                     // To update existing location
-                    if (addressLocationChangeType.Equals("U"))
+                    else if (addressLocationChangeType.Equals(ThirdPartyAddressLocationConstants.UPDATE))
                     {
                         // Match to Location on UDPRN (update Location)
                         if (await addressLocationDataService.AddressLocationExists(fileUdprn))
@@ -248,11 +249,16 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                             loggingHelper.Log(string.Format(ThirdPartyAddressLocationConstants.NoMatchToAddressOnUDPRN, fileUdprn), TraceEventType.Error);
                         }
                     }
+                    // To delete existing location
+                    else if (addressLocationChangeType.Equals(ThirdPartyAddressLocationConstants.DELETE))
+                    {
+                        await DeleteUSRDetails(addressLocationUSRPOSTDTO);
+                    }
                 }
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
             }
-        }       
+        }
 
         #endregion Save USR Details to Database
 
@@ -320,6 +326,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                 return addressLocationGeoJson;
             }
         }
+
         #region Calculate Spatial Location
 
         /// <summary>
@@ -465,7 +472,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                         objPostalAddress.DependentLocality + ThirdPartyAddressLocationConstants.Comma +
                         objPostalAddress.DoubleDependentLocality + ThirdPartyAddressLocationConstants.Comma +
                         objPostalAddress.PostTown + ThirdPartyAddressLocationConstants.Comma +
-                        objPostalAddress.Postcode+ ThirdPartyAddressLocationConstants.USRDeleteNOTIFICATIONBODYSUFFIX;
+                        objPostalAddress.Postcode + ThirdPartyAddressLocationConstants.USRDeleteNOTIFICATIONBODYSUFFIX;
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return message;
@@ -477,7 +484,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// </summary>
         /// <param name="addressLocationUsrpostdtos">List of Address Locations</param>
         /// <returns>Task</returns>
-        public async Task DeleteUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
+        public async Task DeleteUSRDetails(AddressLocationUSRPOSTDTO addressLocationUsrpostdtos)
         {
             int fileUdprn;
             using (loggingHelper.RMTraceManager.StartTrace("Business.DeleteUSRDetails"))
@@ -497,66 +504,61 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 
                 // Get all the reference data Guids required for the below
                 Guid locationProviderInternalId = GetReferenceData(categoryNamesSimpleLists, ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER, ThirdPartyAddressLocationConstants.INTERNAL);
-                
+
                 Guid notificationTypeId_GUID = await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(ThirdPartyAddressLocationConstants.USRCATEGORY, ThirdPartyAddressLocationConstants.USRREFERENCEDATANAME);
 
-                foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
+                // Get the udprn id for each USR record.
+                fileUdprn = (int)addressLocationUsrpostdtos.UDPRN;
+                var addressLocation = addressLocationDataService.GetAddressLocationByUDPRN(fileUdprn).Result;
+
+                if (addressLocation != null)
                 {
-                    // Get the udprn id for each USR record.
-                    fileUdprn = (int)addressLocationUSRPOSTDTO.UDPRN;
-                    var addressLocation = addressLocationDataService.GetAddressLocationByUDPRN(fileUdprn).Result;
+                    // Delete the address location data record to the database.
+                    await addressLocationDataService.DeleteAddressLocation(addressLocation);
 
-                    if (addressLocation != null)
+                    PostalAddressDataDTO postalAddressDataDTO = await addressLocationDataService.GetPostalAddressData((int)fileUdprn);
+
+                    // Check if the delivery point exists
+                    if (postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0)
                     {
-                        // Delete the address location data record to the database.
-                        await addressLocationDataService.DeleteAddressLocation(addressLocation);
+                        DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress(postalAddressDataDTO.ID);
 
-                        PostalAddressDataDTO postalAddressDataDTO = await addressLocationDataService.GetPostalAddressData((int)fileUdprn);
+                        deliveryPointDTO.LocationProvider_GUID = locationProviderInternalId;
 
-                        // Check if the delivery point exists
-                        if (postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0)
+                        // Update the location provider for the delivery point
+                        await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
+
+                        // Get the Postcode Sector by UDPRN
+                        PostCodeSectorDTO postCodeSectorDTO =
+                            await thirdPartyAddressLocationIntegrationService.GetPostCodeSectorByUDPRN(fileUdprn);
+
+                        PostalAddressDataDTO postalAddressDTO = await addressLocationDataService.GetPostalAddressData(fileUdprn);
+
+                        NotificationDTO notificationDO = new NotificationDTO
                         {
-                            DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress(postalAddressDataDTO.ID);
+                            ID = Guid.NewGuid(),
+                            NotificationType_GUID = notificationTypeId_GUID,
+                            NotificationDueDate = DateTime.UtcNow.AddHours(ThirdPartyAddressLocationConstants.NOTIFICATIONDUE),
+                            NotificationSource = ThirdPartyAddressLocationConstants.USRNOTIFICATIONSOURCE,
+                            Notification_Heading = ThirdPartyAddressLocationConstants.USRDELETEACTION,
+                            Notification_Message = Notification_Body(postalAddressDTO),
+                            PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null)
+                                    ? string.Empty
+                                    : postCodeSectorDTO.District,
+                            NotificationActionLink = string.Format(ThirdPartyAddressLocationConstants.USRNOTIFICATIONLINK, fileUdprn)
+                        };
 
-                            deliveryPointDTO.LocationProvider_GUID = locationProviderInternalId;
-
-                            // Update the location provider for the delivery point
-                            await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
-
-                            // Get the Postcode Sector by UDPRN
-                            PostCodeSectorDTO postCodeSectorDTO =
-                                await thirdPartyAddressLocationIntegrationService.GetPostCodeSectorByUDPRN(fileUdprn);
-
-                            PostalAddressDataDTO postalAddressDTO = await addressLocationDataService.GetPostalAddressData(fileUdprn);
-
-                            NotificationDTO notificationDO = new NotificationDTO
-                            {
-                                ID = Guid.NewGuid(),
-                                NotificationType_GUID = notificationTypeId_GUID,
-                                NotificationDueDate = DateTime.UtcNow.AddHours(ThirdPartyAddressLocationConstants.NOTIFICATIONDUE),
-                                NotificationSource = ThirdPartyAddressLocationConstants.USRNOTIFICATIONSOURCE,
-                                Notification_Heading = ThirdPartyAddressLocationConstants.USRDELETEACTION,
-                                Notification_Message = Notification_Body(postalAddressDTO),
-                                PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null)
-                                        ? string.Empty
-                                        : postCodeSectorDTO.District,
-                                NotificationActionLink = string.Format(ThirdPartyAddressLocationConstants.USRNOTIFICATIONLINK, fileUdprn)
-                            };
-
-                            // Insert the new notification.
-                            await thirdPartyAddressLocationIntegrationService.AddNewNotification(notificationDO);
-
-                        }
-                    }
-                    else
-                    {
-                        // Log error
-                        loggingHelper.Log(string.Format(ThirdPartyAddressLocationConstants.USRERRORLOGMESSAGE, 
-                            ThirdPartyAddressLocationConstants.ErrorMessageForAddressTypeUSRNotFound, fileUdprn, 
-                            null, FileType.Usr, DateTime.UtcNow), TraceEventType.Error);
+                        // Insert the new notification.
+                        await thirdPartyAddressLocationIntegrationService.AddNewNotification(notificationDO);
                     }
                 }
-
+                else
+                {
+                    // Log error
+                    loggingHelper.Log(string.Format(ThirdPartyAddressLocationConstants.USRERRORLOGMESSAGE,
+                        ThirdPartyAddressLocationConstants.ErrorMessageForAddressTypeUSRNotFound, fileUdprn,
+                        null, FileType.Usr, DateTime.UtcNow), TraceEventType.Error);
+                }
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
             }
         }
@@ -578,7 +580,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
             };
 
             // Update the address location data record to the database.
-            await addressLocationDataService.UpdateExistingAddressLocationByUDPRN(updateAddressLocationDTO);            
+            await addressLocationDataService.UpdateExistingAddressLocationByUDPRN(updateAddressLocationDTO);
         }
 
         /// <summary>
@@ -598,7 +600,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                 deliveryPointDTO.LocationXY = spatialLocationXY;
 
                 // Update the location details for the delivery point
-                await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);                
+                await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
             }
         }
     }

@@ -55,5 +55,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
 
         internal const string USRERRORLOGMESSAGE = "Load Thirdparty Address location Error Message : {0}, UDPRN : {1}, Ammendment Type : {2}, File Name : {3}, File Name : {4}, Log Time : {5}";
         internal const string ErrorMessageForAddressTypeUSRNotFound = "Address location data is not present for selected UDPRN";
+        internal const string INSERT = "I";
+        internal const string DELETE = "D";
+        internal const string UPDATE = "U";
     }
 }
