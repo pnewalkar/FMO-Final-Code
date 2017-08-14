@@ -89,6 +89,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// </summary>
         /// <param name="deliveryPointDTO">Delivery Point DTO</param>
         /// <returns>whether DP has been updated successfully</returns>
-        Task<bool> UpdateDeliveryPointById(DeliveryPointDTO deliveryPointDTO);
+        Task<Guid> UpdateDeliveryPointById(DeliveryPointDTO deliveryPointDTO);
     }
 }
