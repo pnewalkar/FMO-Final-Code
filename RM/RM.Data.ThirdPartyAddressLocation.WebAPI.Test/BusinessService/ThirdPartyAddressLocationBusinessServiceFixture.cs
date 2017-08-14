@@ -22,6 +22,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         private const string NETWORKLINKDATAPROVIDER = "Data Provider";
         private const string EXTERNAL = "External";
         private const string NOTIFICATIONCLOSED = "Closed";
+        private Guid guid = Guid.Parse("B13D545D-2DE7-4E62-8DAD-00EC2B7FF8B8");
 
         private ThirdPartyAddressLocationBusinessService testCandidate;
         private Mock<IAddressLocationDataService> addressLocationDataServiceMock;
@@ -89,7 +90,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(Task.FromResult(deliveryPointDTO));
             addressLocationDataServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateNotificationByUDPRN(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(guid));
             addressLocationDataServiceMock.Setup(x => x.AddressLocationExists(It.IsAny<int>())).Returns(Task.FromResult(false));
             addressLocationDataServiceMock.Setup(x => x.GetPostalAddressData(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
             Exception mockException = It.IsAny<Exception>();
@@ -120,7 +121,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos = new List<AddressLocationUSRPOSTDTO>() { new AddressLocationUSRPOSTDTO { UDPRN = 1234, XCoordinate = 12, YCoordinate = 10 } };
             addressLocationDataServiceMock.Setup(x => x.AddressLocationExists(It.IsAny<int>())).Returns(Task.FromResult(false));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(Task.FromResult(false));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(guid));
 
             Exception mockException = It.IsAny<Exception>();
             var result = testCandidate.SaveUSRDetails(addressLocationUsrpostdtos);
@@ -163,7 +164,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateNotificationByUDPRN(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             addressLocationDataServiceMock.Setup(x => x.AddressLocationExists(It.IsAny<int>())).Returns(Task.FromResult(false));
             addressLocationDataServiceMock.Setup(x => x.GetPostalAddressData(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDataDTO));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(guid));
             Exception mockException = It.IsAny<Exception>();
 
             await testCandidate.SaveUSRDetails(addressLocationUsrpostdtos);
@@ -246,7 +247,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), USRACTION)).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).Returns(Task.FromResult(referenceDataCategoryList));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(Task.FromResult(deliveryPointDTO));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(guid));
             addressLocationDataServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateNotificationByUDPRN(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             addressLocationDataServiceMock.Setup(x => x.AddressLocationExists(It.IsAny<int>())).Returns(Task.FromResult(false));
@@ -289,8 +290,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), USRACTION)).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).Returns(Task.FromResult(referenceDataCategoryList));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(Task.FromResult(deliveryPointDTO));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(true));
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(Task.FromResult(deliveryPointDTO));            
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointById(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(guid));
             addressLocationDataServiceMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateNotificationByUDPRN(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetPostCodeSectorByUDPRN(It.IsAny<int>())).Returns(Task.FromResult(It.IsAny<PostCodeSectorDTO>()));
@@ -330,8 +331,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             addressLocationDataServiceMock.Setup(x => x.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(Task.FromResult(new AddressLocationDataDTO() { }));
             addressLocationDataServiceMock.Setup(x => x.AddressLocationExists(It.IsAny<int>())).Returns(Task.FromResult(true));
             addressLocationDataServiceMock.Setup(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDataDTO>())).Returns(Task.FromResult(1));
-            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetDeliveryPointByUDPRNForThirdParty(It.IsAny<int>())).Returns(Task.FromResult(new DeliveryPointDTO() { LocationProvider = "abcd" }));
-            var guid = System.Guid.Parse("B13D545D-2DE7-4E62-8DAD-00EC2B7FF8B8");
+            thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetDeliveryPointByUDPRNForThirdParty(It.IsAny<int>())).Returns(Task.FromResult(new DeliveryPointDTO() { LocationProvider = "abcd" }));            
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetReferenceDataId(NETWORKLINKDATAPROVIDER, EXTERNAL)).Returns(Task.FromResult(guid));
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(1));
 

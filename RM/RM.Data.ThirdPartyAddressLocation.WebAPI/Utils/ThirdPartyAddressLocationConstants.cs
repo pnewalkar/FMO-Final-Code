@@ -25,6 +25,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string USRNOTIFICATIONBODYPREFIX = "Please check the proposed new Location of the DP ";
         internal const string USRDeleteNOTIFICATIONBODYPREFIX = "Please check the Location of the DP ";
         internal const string USRDeleteNOTIFICATIONBODYSUFFIX = " as the 3rd Party has deleted this Location";
+        internal const string NoMatchToAddressOnUDPRN = "No Match to Address on UDPRN : {0}";
 
         internal const string DeliveryPointExists = "DeliveryPointExists";
         internal const string GetDeliveryPointByUDPRNForThirdParty = "GetDeliveryPointByUDPRNForThirdParty";

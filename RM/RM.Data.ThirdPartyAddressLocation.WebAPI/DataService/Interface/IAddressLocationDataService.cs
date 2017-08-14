@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
-using System.Collections.Generic;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 {
@@ -58,5 +58,12 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
         /// <param name="addressLocationDTO">AddressLocationDTO object</param>
         /// <returns>Task<int></returns>
         Task<int> DeleteAddressLocation(AddressLocationDataDTO addressLocationDTO);
+
+        /// <summary>
+        /// Update the address location to the database
+        /// </summary>
+        /// <param name="addressLocationDTO">AddressLocationDTO object</param>
+        /// <returns>Task<int></returns>
+        Task<int> UpdateExistingAddressLocationByUDPRN(AddressLocationDataDTO addressLocationDTO);
     }
 }
