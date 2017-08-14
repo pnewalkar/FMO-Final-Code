@@ -4,12 +4,14 @@
 
 GroupController.$inject = [
     'mapToolbarService',
-    '$rootScope'
+    '$rootScope',
+    '$state'
 ];
 
 function GroupController(
     mapToolbarService,
-    $rootScope
+    $rootScope,
+    $state
    ) {
 
     var vm = this;
@@ -17,6 +19,7 @@ function GroupController(
 
     function addGroup() {
         $rootScope.$emit('resetMapToolbar', { "isGroupAction": true });
+        $state.go("deliveryPointGroupDetails");
     }
 }
 
