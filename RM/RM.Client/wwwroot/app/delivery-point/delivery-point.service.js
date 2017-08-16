@@ -196,7 +196,7 @@ function deliveryPointService(
     function createDeliveryPointsRange(postalAddressDetails) {
         var deferred = $q.defer();
         deliveryPointAPIService.createDeliveryPointsRange(postalAddressDetails).then(function (result) {
-            deferred.resolve(response);
+            deferred.resolve(result);
         });
         return deferred.promise;
     }

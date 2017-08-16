@@ -702,7 +702,7 @@ function mapService($http,
         vm.interactions.draw.on('drawstart',
                          function (evt) {
                              removeInteraction("select");
-                             clearDrawingLayer(true);
+                             //clearDrawingLayer(true);
                              setSelections(null, []);
                          });
         vm.interactions.draw.on('drawend',

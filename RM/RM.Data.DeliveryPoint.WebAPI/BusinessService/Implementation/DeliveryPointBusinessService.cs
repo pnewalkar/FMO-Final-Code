@@ -810,6 +810,7 @@
                                               .SingleOrDefault();
 
                             deliveryPointStatusDataDTO.DeliveryPointStatusGUID = liveWithLocationStatusId;
+                            
                         }
                         else
                         {
@@ -868,6 +869,7 @@
                         createDeliveryPointModelDTO.RowVersion = rowVersion;
                         createDeliveryPointModelDTO.XCoordinate = returnXCoordinate;
                         createDeliveryPointModelDTO.YCoordinate = returnYCoordinate;
+                        createDeliveryPointModelDTO.PostalAddressDTO = postalAddressDTO;
 
                         returnCreateDeliveryPointModelDTOs.Add(createDeliveryPointModelDTO);
 
