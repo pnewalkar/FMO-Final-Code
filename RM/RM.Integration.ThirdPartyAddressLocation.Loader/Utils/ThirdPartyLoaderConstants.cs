@@ -10,6 +10,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
     {
         internal const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";
         internal const string INSERT = "I";
+        internal const string UPDATE = "U";
         internal const string QUEUEPATH = @".\Private$\";
         internal const string USRFILENAME = "OSABP_E[0-9]{3}$";
 
