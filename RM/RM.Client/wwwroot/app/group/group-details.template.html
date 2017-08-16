@@ -1,7 +1,18 @@
 ﻿<div layout="column">
-    <!--<div layout="row" layout-align="end start">
-       asdfasdfasdf
-    </div>-->
+    <!--Icons backbutton-edit-delete-help-->
+    <div layout="row" layout-align="end start">
+        <back-button></back-button>                
+        <md-button class="context-button" aria-label="Save" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+        </md-button>
+        <md-button class="context-button" aria-label="Delete" title="{{ 'GENERAL.BUTTONS.DELETE' | translate }}">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+        </md-button>
+        <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
+            <i class="fa fa-question-circle" aria-hidden="true"></i>
+        </md-button>
+    </div>
+
     <!--Available DP Template-->
     <!--Group Name-->
     <div layout="row">
@@ -26,8 +37,10 @@
             </md-input-container>
         </div>
         <div layout="column" flex="10">
-            <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
-                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+            <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">                 
+                <i class="fa fa-exclamation-circle" aria-hidden="true">
+                    <!--<md-tooltip>My Custome tooltips</md-tooltip>-->
+                </i>                
             </md-button>
         </div>
     </div>
@@ -52,7 +65,7 @@
     <!--Override & time-->
     <div layout="row">
         <div layout="column" flex="50">
-            <md-checkbox ng-model="ctrl.overridetime">Override time</md-checkbox>
+            <md-checkbox class="group_checkbox" ng-model="ctrl.overridetime">Override time</md-checkbox>
         </div>
         <span flex="5"></span>
         <div layout="column" flex="50">
@@ -85,19 +98,19 @@
 
     <!--Available points-->
     <div layout="row">
-        <div layout="column" flex="60">
+        <div layout="column" flex="80">
             <md-content class="md-padding"><p>Available Points</p></md-content>
         </div>
-        <div layout="column" flex="20">
+        <div layout="column" flex="10">
             <span class="fa-stack fa-lg">
-                <i class="fa fa-square-o fa-stack-2x"></i>
-                <i class="fa fa-check-square fa-stack-1x" aria-hidden="true"></i>
+                <i class="fa fa-clone fa-stack-1x"></i>
+                <i class="fa fa-check fa-stack-1x" aria-hidden="true"></i>
             </span>
         </div>
-        <div layout="column" flex="20">
+        <div layout="column" flex="10">
             <span class="fa-stack fa-lg">
-                <i class="fa fa-square-o fa-stack-2x"></i>
-                <i class="fa fa-check-square fa-stack-1x" aria-hidden="true"></i>
+                <i class="fa fa-clone fa-stack-1x"></i>
+                <i class="fa fa-close fa-stack-1x" aria-hidden="true"></i>
             </span>
         </div>
     </div>
