@@ -18,8 +18,10 @@
         <div layout="column" flex="90">
             <md-input-container>
                 <label>Type</label>
-                <md-select name="routeName" ng-model="vm.selectedDeliveryPoint.routeName">
-                    <md-option ng-repeat="" ng-value="route" ng-selected="">Conversion</md-option>
+                <md-select ng-model="vm.groupType">
+                    <md-option ng-repeat="groupType in vm.deliveryGroupTypes" ng-value="groupType">
+                        {{groupType.value}}
+                    </md-option>
                 </md-select>
             </md-input-container>
         </div>

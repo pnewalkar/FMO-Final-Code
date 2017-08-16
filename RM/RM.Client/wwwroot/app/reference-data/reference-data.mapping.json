@@ -82,6 +82,16 @@
       "ReferenceDataNames": []
     },
     {
+      "AppCategoryName": "DeliveryGroupType",
+      "DBCategoryName": "Delivery Group Type",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "ServicePointType",
+      "DBCategoryName": "Service Point Type",
+      "ReferenceDataNames": []
+    },
+    {
       "AppCategoryName": "DeliveryPointColor",
       "DBCategoryName": "Delivery Point Color",
       "ReferenceDataNames": [
