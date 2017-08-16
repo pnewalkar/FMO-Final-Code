@@ -3,14 +3,23 @@
     .controller("GroupDetailsController", GroupDetailsController);
 
 GroupDetailsController.$inject = [
-    'mapToolbarService'
+    'groupService'
 ];
 
 function GroupDetailsController(
-    mapToolbarService
+    groupService
    ) {
 
     var vm = this;
-   
+    vm.initialize = initialize;
+
+    vm.initialize();
+
+    function initialize() {
+        groupService.initialize().then(function (response) {
+            vm.deliveryGroupTypes = response.DeliveryGroupType;
+            vm.servicePointTypes = response.ServicePointType;
+        });
+    }
 }
 
