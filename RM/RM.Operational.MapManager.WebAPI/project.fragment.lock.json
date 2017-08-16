@@ -25,6 +25,36 @@
         }
       }
     },
+    "RM.CommonLibrary.Reporting.Pdf/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.5.2",
+      "compile": {
+        "bin/Debug/RM.CommonLibrary.Reporting.Pdf.dll": {}
+      },
+      "runtime": {
+        "../packages/Fonet.1.0/lib/net20/Fonet.dll": {},
+        "bin/Debug/RM.CommonLibrary.Reporting.Pdf.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/RM.CommonLibrary.Reporting.Pdf.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        },
+        "bin/Debug/xsd/fmo_pdfreport_generic.xsd": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "xsd/fmo_pdfreport_generic.xsd"
+        },
+        "bin/Debug/xslt/fmo_pdfreport_generic.xslt": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "xslt/fmo_pdfreport_generic.xslt"
+        }
+      }
+    },
     "RM.CommonLibrary/1.0.0": {
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",

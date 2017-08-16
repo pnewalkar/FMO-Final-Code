@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="FMO_PDFReport_Generic"
+    targetNamespace="http://tempuri.org/FMO_PDFReport_Generic.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/FMO_PDFReport_Generic.xsd"
+    xmlns:mstns="http://tempuri.org/FMO_PDFReport_Generic.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="report" type="Report" />
+
+  <xs:complexType name="Report">
+    <xs:sequence>
+      <xs:element name="pageHeader" type="PageHeader" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="pageFooter" type="PageFooter" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="content" type="Content" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="outputTo" type="OutputToAttribute" use="optional" default="A4Landscape" />
+  </xs:complexType>
+
+  <xs:simpleType name="OutputToAttribute">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A0Portrait" />
+      <xs:enumeration value="A0Landscape" />
+      <xs:enumeration value="A1Portrait" />
+      <xs:enumeration value="A1Landscape" />
+      <xs:enumeration value="A2Portrait" />
+      <xs:enumeration value="A2Landscape" />
+      <xs:enumeration value="A3Portrait" />
+      <xs:enumeration value="A3Landscape" />
+      <xs:enumeration value="A4Portrait" />
+      <xs:enumeration value="A4Landscape" />
+      <xs:enumeration value="A0PortraitNoHeaderOrFooter" />
+      <xs:enumeration value="A0LandscapeNoHeaderOrFooter" />
+      <xs:enumeration value="A1PortraitNoHeaderOrFooter" />
+      <xs:enumeration value="A1LandscapeNoHeaderOrFooter" />
+      <xs:enumeration value="A2PortraitNoHeaderOrFooter" />
+      <xs:enumeration value="A2LandscapeNoHeaderOrFooter" />
+      <xs:enumeration value="A3PortraitNoHeaderOrFooter" />
+      <xs:enumeration value="A3LandscapeNoHeaderOrFooter" />
+      <xs:enumeration value="A4PortraitNoHeaderOrFooter" />
+      <xs:enumeration value="A4LandscapeNoHeaderOrFooter" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="PageHeader">
+    <xs:attribute name="caption" type="xs:string" use="optional" />
+    <xs:attribute name="pageNumbers" type="xs:boolean" default="false" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="PageFooter">
+    <xs:attribute name="caption" type="xs:string" use="optional" />
+    <xs:attribute name="pageNumbers" type="xs:boolean" default="false" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="Content">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="section" type="Section"/>
+      <xs:element name="pageBreak" type="PageBreak"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="PageBreak">
+  </xs:complexType>
+
+  <xs:complexType name="Section">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="sectionColumn" type="SectionColumn" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SectionColumn">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="heading1" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="heading2" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="paragraph" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="caption" type="Caption" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="legalNotices" type="LegalNotices" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="table" type="Table" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="image" type="Image" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="map" type="Map" minOccurs="0" maxOccurs="unbounded" />
+    </xs:choice>
+    <!-- Section column width expressed as a proportion of the total assigned section column widths, default 1 -->
+    <xs:attribute name="width" type="xs:positiveInteger" default="1" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="Caption">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <!-- Determine the alignment of the text within the caption, default 'left' -->
+        <xs:attribute name="align" default="left" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="left" />
+              <xs:enumeration value="center" />
+              <xs:enumeration value="right" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="LegalNotices">
+    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="legalNotice" type="LegalNotice" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LegalNotice">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <!-- Determine the alignment of the text within the legal notice, default 'left' -->
+        <xs:attribute name="align" default="left" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="left" />
+              <xs:enumeration value="center" />
+              <xs:enumeration value="right" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Image">
+    <xs:attribute name="source" type="xs:anyURI" use="required" />
+    <!-- The source is a URI that references the image file -->
+  </xs:complexType>
+
+  <xs:complexType name="Map">
+    <xs:sequence minOccurs="0" maxOccurs="1">
+      <xs:element name="mapFooter" type="MapFooter" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="source" type="xs:anyURI" use="required" />
+    <!-- The source is a URI that references the map image file -->
+  </xs:complexType>
+
+  <xs:complexType name="MapFooter">
+    <xs:attribute name="timestamp" type="xs:string" use="optional" />
+    <xs:attribute name="scale" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="Table">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="columns" type="Columns" minOccurs="1" maxOccurs="1" />
+      <xs:element name="header" type="Header" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="row" type="Row" minOccurs="1" maxOccurs="unbounded" />
+      <xs:element name="footer" type="Footer" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <!-- Table width expressed as a percentage of the sectionColumn width, default '100%' -->
+    <xs:attribute name="width" type="xs:string" default="100%" use="optional"/>
+    <!-- Determine whether row borders are displayed (true) or not (false), default false -->
+    <xs:attribute name="borders" type="xs:boolean" default="false" use="optional"/>
+    <!-- Determine whether shading is used for the header, footer and rows (where shade='true' see Row definition), default false -->
+    <xs:attribute name="useShading" type="xs:boolean" default="false" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="Columns">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="column" type="Column" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Column">
+    <!-- Column width expressed as a proportion of the total assigned column widths, default 1 -->
+    <xs:attribute name="width" type="xs:positiveInteger" default="1" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="Header">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="cell" type="Cell" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Footer">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="cell" type="Cell" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Row">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="cell" type="Cell" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <!-- Determine whether the row should be shaded (only applies if the Table useShading attribute is true), default false -->
+    <xs:attribute name="shade" type="xs:boolean" default="false" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="Cell">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <!-- Determine the alignment of the text within the cell, default 'left' -->
+        <xs:attribute name="align" default="left" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="left" />
+              <xs:enumeration value="center" />
+              <xs:enumeration value="right" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>
