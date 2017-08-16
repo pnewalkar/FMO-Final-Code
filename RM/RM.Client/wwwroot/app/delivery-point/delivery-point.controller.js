@@ -40,7 +40,7 @@ function DeliveryPointController(
     CommonConstants,
     $rootScope,
     $translate,
-    CommonConstants,
+  
 
     GlobalSettings
 ) {

@@ -13,37 +13,38 @@
             <div layout="row">
                 <div layout="column" flex>
                     <h2>Please provide a reason for deleting this delivery point</h2>
-                    <h2>Please provide a reason for deleting this delivery point</h2>
+                    
                 </div>
             </div>
             <div layout="row">
                 <div layout="column" flex>
                     <md-input-container>
                         <label>{{ 'Reason Code'| translate }}</label>
-                        <md-select ng-model="vm.xyz" class="printMapOption">
-                            <md-option ng-repeat="type in vm.types" ng-value="type.Value">
-                                {{type.x}}
+                        <md-select ng-model="vm.reasonCode" class="printMapOption">
+                            <md-option ng-repeat="type in vm.reasonCodes" ng-value="type.value">
+                                {{type.displayText}}
                             </md-option>
                         </md-select>
                     </md-input-container>
+                   
                 </div>
             </div>
             <div layout="row">
                 <div layout="column" flex>
                     <md-input-container>
-                        <textarea rows="8" cols="70" placeholder="Reason*" style=" resize: none;" required></textarea>
+                        <textarea rows="8" cols="70" ng-model="vm.reasonText" placeholder="Reason*" style=" resize: none;" required></textarea>
                     </md-input-container>
                 </div>
             </div>
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <md-button class="md-raised md-primary" flex="35" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}">
+            <md-button class="md-raised md-primary" flex="35" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}" ng-click="vm.closeWindow()">
                 <i class="fa fa-times" aria-hidden="true"></i>
                 {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
             </md-button>
             <span flex></span>
-            <md-button class="md-raised md-primary rightAligned" flex="35" title="{{ 'GENERAL.BUTTONS.DELETE' | translate }}">
+            <md-button class="md-raised md-primary rightAligned" flex="35"  ng-click="vm.userDeleteDeliveryPoint()" title="{{ 'GENERAL.BUTTONS.DELETE' | translate }}">
                 <i class="fa " aria-hidden="true"></i>
                 {{ 'GENERAL.BUTTONS.DELETE' | translate }}
             </md-button>
