@@ -1,4 +1,10 @@
-﻿using Moq;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Spatial;
+using System.Linq;
+using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
@@ -6,12 +12,6 @@ using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DataService;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Entities;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Spatial;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
 {
@@ -68,7 +68,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
                 Longitude = 45
             };
 
-            //Setup for AddressLocation
+            // Setup for AddressLocation
             var mockAsynEnumerable1 = new DbAsyncEnumerable<AddressLocation>(new List<AddressLocation>() { addressLocation });
             var mockAddressLocation = MockDbSet(new List<AddressLocation>() { addressLocation });
             mockAddressLocation.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable1.AsQueryable().Provider);
@@ -83,7 +83,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             mockDatabaseFactory = CreateMock<IDatabaseFactory<AddressLocationDBContext>>();
             mockLoggingHelper = CreateMock<ILoggingHelper>();
 
-            //Setup for Logging
+            // Setup for Logging
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
