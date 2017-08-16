@@ -21,6 +21,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string Comma = ", ";
         internal const string TASKPAFACTION = "Position new DP Location";
         internal const string USRNOTIFICATIONBODYPREFIX = "Please check the proposed new Location of the DP ";
+        internal const string NoMatchToAddressOnUDPRN = "No Match to Address on UDPRN : {0}";
 
         internal const string DeliveryPointExists = "DeliveryPointExists";
         internal const string GetDeliveryPointByUDPRNForThirdParty = "GetDeliveryPointByUDPRNForThirdParty";
