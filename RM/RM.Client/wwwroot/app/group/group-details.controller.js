@@ -6,7 +6,7 @@ GroupDetailsController.$inject = [
     'mapToolbarService'
 ];
 
-function GroupController(
+function GroupDetailsController(
     mapToolbarService
    ) {
 
