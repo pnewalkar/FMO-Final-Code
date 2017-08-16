@@ -58,9 +58,9 @@ angular.module('RMApp')
               templateUrl: "./group/group.template.html",
               controller: 'GroupController as vm'
           })    
-            .state("deliveryPointGroupDetails", {
+          .state("deliveryPointGroupDetails", {
                 url: "/groupdetails",
-                templateUrl: "./group/group.details.template.html",
+                templateUrl: "./group/group-details.template.html",
                 controller: 'GroupDetailsController as vm'
     });
 

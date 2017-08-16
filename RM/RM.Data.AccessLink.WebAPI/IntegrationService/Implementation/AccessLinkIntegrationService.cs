@@ -12,6 +12,7 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 using RM.Data.AccessLink.WebAPI.Utils.ReferenceData;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
 
@@ -79,10 +80,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                Tuple<NetworkLinkDTO, DbGeometry> nearestNamedRoad = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, DbGeometry>>(result.Content.ReadAsStringAsync().Result);
+                Tuple<NetworkLinkDTO, DBGeometryDTO> nearestNamedRoad = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, DBGeometryDTO>>(result.Content.ReadAsStringAsync().Result);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return new Tuple<NetworkLinkDTO, SqlGeometry>(nearestNamedRoad.Item1, nearestNamedRoad.Item2?.ToSqlGeometry());
+                return new Tuple<NetworkLinkDTO, SqlGeometry>(nearestNamedRoad.Item1, nearestNamedRoad.Item2?.Geometry?.ToSqlGeometry());
             }
         }
 

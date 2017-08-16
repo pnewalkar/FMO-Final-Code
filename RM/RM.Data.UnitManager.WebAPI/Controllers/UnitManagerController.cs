@@ -398,7 +398,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
                 var location = await unitLocationBusinessService.GetApproxLocation(postcode, CurrentUserUnit);
 
-                DBGeometryObj geometryData = new DBGeometryObj { dbGeometry = location };
+                DBGeometryDTO geometryData = new DBGeometryDTO { Geometry = location };
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
                 return Ok(geometryData);
