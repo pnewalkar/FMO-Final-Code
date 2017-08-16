@@ -18,7 +18,6 @@
   </CategoryName>
   <CategoryName>
     <AppCategoryName>LocationRelationshipType</AppCategoryName>
-
     <DBCategoryName>Location Relationship Type</DBCategoryName>
   </CategoryName>
   <CategoryName>
@@ -68,6 +67,14 @@
   <CategoryName>
     <AppCategoryName>SubBuildingType</AppCategoryName>
     <DBCategoryName>Sub Building Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DeliveryGroupType</AppCategoryName>
+    <DBCategoryName>Delivery Group Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>ServicePointType</AppCategoryName>
+    <DBCategoryName>Service Point Type</DBCategoryName>
   </CategoryName>
   <CategoryName>
     <AppCategoryName>DeliveryPointColor</AppCategoryName>
