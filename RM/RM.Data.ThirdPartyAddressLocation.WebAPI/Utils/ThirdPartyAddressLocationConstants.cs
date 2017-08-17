@@ -26,6 +26,10 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string USRDeleteNOTIFICATIONBODYPREFIX = "Please check the Location of the DP ";
         internal const string USRDeleteNOTIFICATIONBODYSUFFIX = " as the 3rd Party has deleted this Location";
         internal const string NoMatchToAddressOnUDPRN = "No Match to Address on UDPRN : {0}";
+        internal const string USRACTIONRMGDP = "Check updated DP Location and check RMG DP";
+        internal const string USRMESSAGE = "Please check the new Location of the DP {0} as the 3rd Part Location has moved by Xm";
+        internal const string USRMESSAGEFORRMGDP = "Please check the new Location of the DP {0} as the 3rd Part Location has moved by Xm.Note that this DP has a corresponding RMG DP";
+        internal const int LOACTIONTOLERANCEDISTANCEINMETERS = 50;
 
         internal const string DeliveryPointExists = "DeliveryPointExists";
         internal const string GetDeliveryPointByUDPRNForThirdParty = "GetDeliveryPointByUDPRNForThirdParty";
