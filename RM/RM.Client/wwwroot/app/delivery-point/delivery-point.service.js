@@ -213,7 +213,7 @@ function deliveryPointService(
     function deleteDeliveryPoint(id, reasonCode, reasonText) {
         var deferred = $q.defer();
         deliveryPointAPIService.deleteDeliveryPoint(id, reasonCode, reasonText).then(function (result) {
-            deferred.resolve(response);
+            deferred.resolve(result);
         });
         return deferred.promise;
     }

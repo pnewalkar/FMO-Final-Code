@@ -10,7 +10,9 @@ DeliveryPointContextController.$inject = [
     'CommonConstants',
     'popUpSettingService',
     '$mdDialog',
-    'deliveryPointService']
+    'deliveryPointService',
+    'mapService',
+    '$state']
 
 function DeliveryPointContextController(
     GlobalSettings,
@@ -19,14 +21,17 @@ function DeliveryPointContextController(
     CommonConstants,
     popUpSettingService,
     $mdDialog,
-    deliveryPointService)
+    deliveryPointService,
+    mapService,
+    $state)
 {
     var vm = this;
     vm.deleteDeliveryPoint = deleteDeliveryPoint;
     vm.closeWindow = closeWindow;
     vm.fetchReasonCodesForDelete = fetchReasonCodesForDelete();
     vm.userDeleteDeliveryPoint = userDeleteDeliveryPoint;
-    vm.reasonText="";
+    vm.reasonText = "";
+    vm.reasonCode = "";
 
         vm.selectedDeliveryPoint = selectedDeliveryPointService.getSelectedDeliveryPoint();
         if (vm.selectedDeliveryPoint != null) {
@@ -67,7 +72,12 @@ function DeliveryPointContextController(
             function userDeleteDeliveryPoint() {
                 var reasonCode = vm.reasonCode.replace("/", "&frasl;");
                 deliveryPointService.deleteDeliveryPoint(vm.selectedDeliveryPointId, reasonCode, vm.reasonText)
-                .then(function (response) { });
-                vm.closeWindow();
+                .then(function (response) {
+                    mapService.deleteDeliveryPoint(vm.selectedDeliveryPointId);
+                    mapService.refreshLayers();
+                    vm.closeWindow();
+                    $state.go("deliveryPoint", { selectedUnit: null }, { inherit: false });
+                });
+               
             }
     }
