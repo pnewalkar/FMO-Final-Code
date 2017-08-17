@@ -1,4 +1,11 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Data.SqlTypes;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
 using RM.CommonLibrary.HelperMiddleware;
@@ -8,13 +15,6 @@ using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Data.SqlTypes;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 {
@@ -230,6 +230,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                             }
                         }
                     }
+
                     // To update existing location
                     else if (addressLocationChangeType.Equals(ThirdPartyAddressLocationConstants.UPDATE))
                     {
@@ -249,6 +250,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                             loggingHelper.Log(string.Format(ThirdPartyAddressLocationConstants.NoMatchToAddressOnUDPRN, fileUdprn), TraceEventType.Error);
                         }
                     }
+
                     // To delete existing location
                     else if (addressLocationChangeType.Equals(ThirdPartyAddressLocationConstants.DELETE))
                     {
@@ -280,6 +282,89 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return addressLocationDtos;
+            }
+        }
+
+        /// <summary>
+        /// Method to delete the list of Third Party Address Location data into the database.
+        /// </summary>
+        /// <param name="addressLocationUsrpostdtos">List of Address Locations</param>
+        /// <returns>Task</returns>
+        public async Task DeleteUSRDetails(AddressLocationUSRPOSTDTO addressLocationUsrpostdtos)
+        {
+            int fileUdprn;
+            using (loggingHelper.RMTraceManager.StartTrace("Business.DeleteUSRDetails"))
+            {
+                string methodName = typeof(ThirdPartyAddressLocationBusinessService) + "." + nameof(DeleteUSRDetails);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
+
+                List<string> categoryNamesSimpleLists = new List<string>
+                            {
+                                ThirdPartyAddressLocationConstants.TASKNOTIFICATION,
+                                ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER,
+                                ThirdPartyAddressLocationConstants.DeliveryPointUseIndicator,
+                                ThirdPartyAddressLocationConstants.APPROXLOCATION,
+                                ReferenceDataCategoryNames.DeliveryPointOperationalStatus,
+                                ReferenceDataCategoryNames.NetworkNodeType
+                            };
+
+                // Get all the reference data Guids required for the below
+                Guid locationProviderInternalId = GetReferenceData(categoryNamesSimpleLists, ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER, ThirdPartyAddressLocationConstants.INTERNAL);
+
+                Guid notificationTypeId_GUID = await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(ThirdPartyAddressLocationConstants.USRCATEGORY, ThirdPartyAddressLocationConstants.USRREFERENCEDATANAME);
+
+                // Get the udprn id for each USR record.
+                fileUdprn = (int)addressLocationUsrpostdtos.UDPRN;
+                var addressLocation = addressLocationDataService.GetAddressLocationByUDPRN(fileUdprn).Result;
+
+                if (addressLocation != null)
+                {
+                    // Delete the address location data record to the database.
+                    await addressLocationDataService.DeleteAddressLocation(addressLocation);
+
+                    PostalAddressDataDTO postalAddressDataDTO = await addressLocationDataService.GetPostalAddressData((int)fileUdprn);
+
+                    // Check if the delivery point exists
+                    if (postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0)
+                    {
+                        DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress(postalAddressDataDTO.ID);
+
+                        deliveryPointDTO.LocationProvider_GUID = locationProviderInternalId;
+
+                        // Update the location provider for the delivery point
+                        await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
+
+                        // Get the Postcode Sector by UDPRN
+                        PostCodeSectorDTO postCodeSectorDTO =
+                            await thirdPartyAddressLocationIntegrationService.GetPostCodeSectorByUDPRN(fileUdprn);
+
+                        PostalAddressDataDTO postalAddressDTO = await addressLocationDataService.GetPostalAddressData(fileUdprn);
+
+                        NotificationDTO notificationDO = new NotificationDTO
+                        {
+                            ID = Guid.NewGuid(),
+                            NotificationType_GUID = notificationTypeId_GUID,
+                            NotificationDueDate = DateTime.UtcNow.AddHours(ThirdPartyAddressLocationConstants.NOTIFICATIONDUE),
+                            NotificationSource = ThirdPartyAddressLocationConstants.USRNOTIFICATIONSOURCE,
+                            Notification_Heading = ThirdPartyAddressLocationConstants.USRDELETEACTION,
+                            Notification_Message = Notification_Body(postalAddressDTO),
+                            PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null)
+                                    ? string.Empty
+                                    : postCodeSectorDTO.District,
+                            NotificationActionLink = string.Format(ThirdPartyAddressLocationConstants.USRNOTIFICATIONLINK, fileUdprn)
+                        };
+
+                        // Insert the new notification.
+                        await thirdPartyAddressLocationIntegrationService.AddNewNotification(notificationDO);
+                    }
+                }
+                else
+                {
+                    // Log error
+                    loggingHelper.Log(string.Format(ThirdPartyAddressLocationConstants.USRERRORLOGMESSAGE, ThirdPartyAddressLocationConstants.ErrorMessageForAddressTypeUSRNotFound, fileUdprn, null, FileType.Usr, DateTime.UtcNow), TraceEventType.Error);
+                }
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
             }
         }
 
@@ -460,8 +545,9 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
             {
                 string methodName = typeof(ThirdPartyAddressLocationBusinessService) + "." + nameof(Notification_Body);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
+                string message = default(string);
 
-                string message = ThirdPartyAddressLocationConstants.USRDeleteNOTIFICATIONBODYPREFIX +
+                message = ThirdPartyAddressLocationConstants.USRDeleteNOTIFICATIONBODYPREFIX +
                         objPostalAddress.OrganisationName + ThirdPartyAddressLocationConstants.Comma +
                         objPostalAddress.DepartmentName + ThirdPartyAddressLocationConstants.Comma +
                         objPostalAddress.BuildingName + ThirdPartyAddressLocationConstants.Comma +
@@ -476,90 +562,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return message;
-            }
-        }
-
-        /// <summary>
-        /// Method to delete the list of Third Party Address Location data into the database.
-        /// </summary>
-        /// <param name="addressLocationUsrpostdtos">List of Address Locations</param>
-        /// <returns>Task</returns>
-        public async Task DeleteUSRDetails(AddressLocationUSRPOSTDTO addressLocationUsrpostdtos)
-        {
-            int fileUdprn;
-            using (loggingHelper.RMTraceManager.StartTrace("Business.DeleteUSRDetails"))
-            {
-                string methodName = typeof(ThirdPartyAddressLocationBusinessService) + "." + nameof(DeleteUSRDetails);
-                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
-
-                List<string> categoryNamesSimpleLists = new List<string>
-                            {
-                                ThirdPartyAddressLocationConstants.TASKNOTIFICATION,
-                                ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER,
-                                ThirdPartyAddressLocationConstants.DeliveryPointUseIndicator,
-                                ThirdPartyAddressLocationConstants.APPROXLOCATION,
-                                ReferenceDataCategoryNames.DeliveryPointOperationalStatus,
-                                ReferenceDataCategoryNames.NetworkNodeType
-                            };
-
-                // Get all the reference data Guids required for the below
-                Guid locationProviderInternalId = GetReferenceData(categoryNamesSimpleLists, ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER, ThirdPartyAddressLocationConstants.INTERNAL);
-
-                Guid notificationTypeId_GUID = await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(ThirdPartyAddressLocationConstants.USRCATEGORY, ThirdPartyAddressLocationConstants.USRREFERENCEDATANAME);
-
-                // Get the udprn id for each USR record.
-                fileUdprn = (int)addressLocationUsrpostdtos.UDPRN;
-                var addressLocation = addressLocationDataService.GetAddressLocationByUDPRN(fileUdprn).Result;
-
-                if (addressLocation != null)
-                {
-                    // Delete the address location data record to the database.
-                    await addressLocationDataService.DeleteAddressLocation(addressLocation);
-
-                    PostalAddressDataDTO postalAddressDataDTO = await addressLocationDataService.GetPostalAddressData((int)fileUdprn);
-
-                    // Check if the delivery point exists
-                    if (postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0)
-                    {
-                        DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress(postalAddressDataDTO.ID);
-
-                        deliveryPointDTO.LocationProvider_GUID = locationProviderInternalId;
-
-                        // Update the location provider for the delivery point
-                        await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
-
-                        // Get the Postcode Sector by UDPRN
-                        PostCodeSectorDTO postCodeSectorDTO =
-                            await thirdPartyAddressLocationIntegrationService.GetPostCodeSectorByUDPRN(fileUdprn);
-
-                        PostalAddressDataDTO postalAddressDTO = await addressLocationDataService.GetPostalAddressData(fileUdprn);
-
-                        NotificationDTO notificationDO = new NotificationDTO
-                        {
-                            ID = Guid.NewGuid(),
-                            NotificationType_GUID = notificationTypeId_GUID,
-                            NotificationDueDate = DateTime.UtcNow.AddHours(ThirdPartyAddressLocationConstants.NOTIFICATIONDUE),
-                            NotificationSource = ThirdPartyAddressLocationConstants.USRNOTIFICATIONSOURCE,
-                            Notification_Heading = ThirdPartyAddressLocationConstants.USRDELETEACTION,
-                            Notification_Message = Notification_Body(postalAddressDTO),
-                            PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null)
-                                    ? string.Empty
-                                    : postCodeSectorDTO.District,
-                            NotificationActionLink = string.Format(ThirdPartyAddressLocationConstants.USRNOTIFICATIONLINK, fileUdprn)
-                        };
-
-                        // Insert the new notification.
-                        await thirdPartyAddressLocationIntegrationService.AddNewNotification(notificationDO);
-                    }
-                }
-                else
-                {
-                    // Log error
-                    loggingHelper.Log(string.Format(ThirdPartyAddressLocationConstants.USRERRORLOGMESSAGE,
-                        ThirdPartyAddressLocationConstants.ErrorMessageForAddressTypeUSRNotFound, fileUdprn,
-                        null, FileType.Usr, DateTime.UtcNow), TraceEventType.Error);
-                }
-                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
             }
         }
 

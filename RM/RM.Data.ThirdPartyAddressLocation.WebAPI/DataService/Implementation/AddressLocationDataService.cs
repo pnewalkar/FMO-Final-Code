@@ -147,13 +147,13 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 
                     var addressLocationEntity = DataContext.AddressLocations.Where(n => n.UDPRN == addressLocationDTO.UDPRN).SingleOrDefault();
                     if (addressLocationEntity != null)
-                    {                       
+                    {
                         addressLocationEntity.UDPRN = addressLocationDTO.UDPRN;
                         addressLocationEntity.LocationXY = addressLocationDTO.LocationXY;
                         addressLocationEntity.Lattitude = addressLocationDTO.Lattitude;
                         addressLocationEntity.Longitude = addressLocationDTO.Longitude;
                     }
-                                        
+
                     var updateNewAddressLocation = await DataContext.SaveChangesAsync();
                     loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                     return updateNewAddressLocation;
