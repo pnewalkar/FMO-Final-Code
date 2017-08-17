@@ -27,7 +27,6 @@
     "System.Net.Http": "4.0.0",
     "Microsoft.SqlServer.Types": "14.0.314.76",
     "StyleCop.Analyzers": "1.0.0",
-    "Fonet": "1.0.0",
     "EnterpriseLibrary.Logging": "6.0.1304",
     "RM.CommonLibrary.ExceptionManagement": "1.0.0-*",
     "RM.CommonLibrary.Authentication": "1.0.0-*"
@@ -45,6 +44,9 @@
         },
         "RM.CommonLibrary.EntityFramework": {
           "target": "project"
+        },
+        "RM.CommonLibrary.Reporting.Pdf": {
+          "target": "project"
         }
       },
       "frameworkAssemblies": {
@@ -56,7 +58,8 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true,
-    "additionalArguments": [ "/ruleset:../RM.ruleset" ]
+    "additionalArguments": [ "/ruleset:RM.Operational.RouteLog.WebAPI.ruleset" ],
+    "xmlDoc": false
   },
 
   "runtimeOptions": {

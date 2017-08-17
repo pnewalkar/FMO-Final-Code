@@ -11,15 +11,15 @@ function GroupDetailsController(
    ) {
 
     var vm = this;
-    vm.initialize = initialize;
+    //vm.initialize = initialize;
 
-    vm.initialize();
+    //vm.initialize();
 
-    function initialize() {
-        groupService.initialize().then(function (response) {
-            vm.deliveryGroupTypes = response.DeliveryGroupType;
-            vm.servicePointTypes = response.ServicePointType;
-        });
-    }
+    //function initialize() {
+    //    groupService.initialize().then(function (response) {
+    //        vm.deliveryGroupTypes = response.DeliveryGroupType;
+    //        vm.servicePointTypes = response.ServicePointType;
+    //    });
+    //}
 }
 

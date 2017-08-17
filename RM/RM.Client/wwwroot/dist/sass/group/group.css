@@ -1,2 +1,7 @@
 .group_checkbox {
   margin-top: 20px; }
+
+.groupRadioBtn {
+  float: left;
+  margin-right: 5px;
+  margin-top: 27px; }
