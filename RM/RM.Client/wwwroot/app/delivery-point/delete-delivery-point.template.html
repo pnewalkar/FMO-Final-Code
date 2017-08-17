@@ -2,7 +2,7 @@
     <form name="">
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>{{ 'DELETE_DELIVERY_POINT'| translate }}</h2>
+                <h2>{{ 'DELIVERY_POINTS.DELETE_DELIVERY_POINT'| translate }}</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="vm.closeWindow()" aria-label="Close Window" title="Close">
                     <i class="fa fa-times" aria-hidden="true"></i>
@@ -11,11 +11,11 @@
         </md-toolbar>
         <md-dialog-content layout-padding class="contentHeight">
             <div layout="row">
-                <div layout="column" flex>
-                    <h2>Please provide a reason for deleting this delivery point</h2>
-                    
+                <div layout="column" class="del_delivery_point">
+                    <h4>Please provide a reason for deleting this delivery point</h4>                    
                 </div>
             </div>
+            <span flex="5"></span>
             <div layout="row">
                 <div layout="column" flex>
                     <md-input-container>
@@ -32,15 +32,14 @@
             <div layout="row">
                 <div layout="column" flex>
                     <md-input-container>
-                        <textarea rows="8" cols="70" ng-model="vm.reasonText" placeholder="Reason*" style=" resize: none;" required></textarea>
+                        <textarea rows="2" cols="4" ng-model="vm.reasonText" placeholder="Reason" style="resize: none;" required></textarea>
                     </md-input-container>
                 </div>
             </div>
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <md-button class="md-raised md-primary" flex="35" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}" ng-click="vm.closeWindow()">
-                <i class="fa fa-times" aria-hidden="true"></i>
+            <md-button class="md-raised md-primary" flex="35" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}" ng-click="vm.closeWindow()">                
                 {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
             </md-button>
             <span flex></span>
