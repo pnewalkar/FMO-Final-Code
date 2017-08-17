@@ -147,13 +147,13 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 
                     var addressLocationEntity = DataContext.AddressLocations.Where(n => n.UDPRN == addressLocationDTO.UDPRN).SingleOrDefault();
                     if (addressLocationEntity != null)
-                    {                       
+                    {
                         addressLocationEntity.UDPRN = addressLocationDTO.UDPRN;
                         addressLocationEntity.LocationXY = addressLocationDTO.LocationXY;
                         addressLocationEntity.Lattitude = addressLocationDTO.Lattitude;
                         addressLocationEntity.Longitude = addressLocationDTO.Longitude;
                     }
-                                        
+
                     var updateNewAddressLocation = await DataContext.SaveChangesAsync();
                     loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                     return updateNewAddressLocation;
@@ -219,6 +219,45 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
                                   notific.Notification_Heading.Trim().Equals(action));
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return notificationExists;
+            }
+        }
+
+        /// <summary>
+        /// Delete Third Party address location to database.
+        /// </summary>
+        /// <param name="addressLocationDTO">AddressLocationDTO object</param>
+        /// <returns>Task<int></returns>
+        public async Task<int> DeleteAddressLocation(AddressLocationDataDTO addressLocationDTO)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteAddressLocation"))
+                {
+                    string methodName = typeof(AddressLocationDataService) + "." + nameof(DeleteAddressLocation);
+                    loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
+
+                    var addressLocationEntity = await DataContext.AddressLocations.Where(n => n.UDPRN == addressLocationDTO.UDPRN).SingleOrDefaultAsync();
+
+                    DataContext.AddressLocations.Remove(addressLocationEntity);
+                    var deleteAddressLocation = await DataContext.SaveChangesAsync();
+
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
+                    return deleteAddressLocation;
+                }
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
+            }
+            catch (NotSupportedException notSupportedException)
+            {
+                notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
+            }
+            catch (ObjectDisposedException disposedException)
+            {
+                disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
 
