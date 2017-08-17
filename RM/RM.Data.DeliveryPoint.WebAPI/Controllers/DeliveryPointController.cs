@@ -675,6 +675,45 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+
+        /// <summary>
+        /// User Delete delivery point.
+        /// </summary>
+        /// <param name="deliveryPointid">Delivery point unique identifier.</param>
+        /// <returns>Boolean flag indicating success of operation.</returns>
+        [HttpDelete("deliverypoint/delete/{deliveryPointId}/{reasonCode}/{reasonText}")]
+        public async Task<IActionResult> UserDeleteDeliveryPoint(Guid deliveryPointId, string reasonCode, string reasonText)
+        {
+            if (deliveryPointId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(deliveryPointId));
+            }
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.UserDeleteDeliveryPoint"))
+            {
+                try
+                {
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(UserDeleteDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    var isDeliveryPointDeleted = await businessService.UserDeleteDeliveryPoint(deliveryPointId, reasonCode, reasonText,this.UserName);
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return Ok(isDeliveryPointDeleted);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
+            }
+        }
+
         /// <summary>
         /// Update DPUse in delivery point for matching UDPRN
         /// </summary>

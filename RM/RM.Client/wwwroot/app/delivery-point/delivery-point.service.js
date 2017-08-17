@@ -39,7 +39,9 @@ function deliveryPointService(
         isUndefinedOrNull: isUndefinedOrNull,
         UpdateDeliverypoint: UpdateDeliverypoint,
         getSubBuildingTypes: getSubBuildingTypes,
-        createDeliveryPointsRange: createDeliveryPointsRange
+        createDeliveryPointsRange: createDeliveryPointsRange,
+        reasonCodeValues: reasonCodeValues,
+        deleteDeliveryPoint: deleteDeliveryPoint
     };
 
     function initialize() {
@@ -196,6 +198,21 @@ function deliveryPointService(
     function createDeliveryPointsRange(postalAddressDetails) {
         var deferred = $q.defer();
         deliveryPointAPIService.createDeliveryPointsRange(postalAddressDetails).then(function (result) {
+            deferred.resolve(response);
+        });
+        return deferred.promise;
+    }
+
+    function reasonCodeValues() {
+        var deferred = $q.defer();
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.UI_Delete_DP_ReasonCode.AppCategoryName).then(function (response) { 
+            deferred.resolve(response);   
+        });
+        return deferred.promise;
+        }
+    function deleteDeliveryPoint(id, reasonCode, reasonText) {
+        var deferred = $q.defer();
+        deliveryPointAPIService.deleteDeliveryPoint(id, reasonCode, reasonText).then(function (result) {
             deferred.resolve(response);
         });
         return deferred.promise;

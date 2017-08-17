@@ -17,6 +17,8 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
 
         public virtual DbSet<LocationOffering> LocationOfferings { get; set; }
 
+        public virtual DbSet<Offering> Offerings { get; set; }
+
         public virtual DbSet<LocationRelationship> LocationRelationships { get; set; }
 
         public virtual DbSet<NetworkNode> NetworkNodes { get; set; }
@@ -144,6 +146,15 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
             modelBuilder.Entity<SupportingDeliveryPoint>()
                 .Property(e => e.TimeOverrideReason)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<Offering>()
+                .Property(e => e.OfferingDescription)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Offering>()
+                .HasMany(e => e.LocationOfferings)
+                .WithRequired(e => e.Offering)
+                .WillCascadeOnDelete(false);
         }
     }
 }
