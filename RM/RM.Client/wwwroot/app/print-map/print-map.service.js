@@ -148,11 +148,11 @@ function printMapService(
     }
 
     function getMapWidth(imageWidthmm, printMapDPI) {
-        return Math.round((imageWidthmm * parseInt(printMapDPI)) / parseInt(CommonConstants.PrintMapmmPerInch));
+        return Math.round((imageWidthmm * parseInt(printMapDPI)) / parseFloat(CommonConstants.PrintMapmmPerInch));
     }
 
     function getMapHeight(imageHeightmm, printMapDPI) {
-        return Math.round((imageHeightmm * parseInt(printMapDPI)) / parseInt(CommonConstants.PrintMapmmPerInch));
+        return Math.round((imageHeightmm * parseInt(printMapDPI)) / parseFloat(CommonConstants.PrintMapmmPerInch));
     }
 
     function generateMapPDF(printMapDPI, size, imageWidth, imageHeight, resolution, printOptions) {
@@ -181,7 +181,6 @@ function printMapService(
                 }, 1000);
             }
         });
-
         map.setSize(mapSize);
 
         if (counter === 0) {
@@ -206,12 +205,12 @@ function printMapService(
         var mapAspectRatio = parseFloat(mapCanvas.width / mapCanvas.height).toFixed(2);
 
         if (pageSizeAspectRatio > mapAspectRatio) {
-            mapSize.push(Math.round(mapCanvas.height * pageSizeAspectRatio));
-            mapSize.push(mapCanvas.height);
+            mapSize.push(Math.round(mapHeight * pageSizeAspectRatio));
+            mapSize.push(mapHeight);
         }
         else {
-            mapSize.push(mapCanvas.width);
-            mapSize.push(Math.round(mapCanvas.width / pageSizeAspectRatio));
+            mapSize.push(mapWidth);
+            mapSize.push(Math.round(mapWidth / pageSizeAspectRatio));
         }
         return mapSize;
     }
