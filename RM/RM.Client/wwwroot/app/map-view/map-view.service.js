@@ -61,6 +61,7 @@ function mapService($http,
     vm.selectedLayer = null;
     vm.isObjectSelected = false;
     vm.layerName = undefined;
+    vm.placedDP = null;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -118,7 +119,9 @@ function mapService($http,
         setPolygonTransparency: setPolygonTransparency,
         getLayerSummary: getLayerSummary,
         deselectDP: deselectDP,
-        setDeliveryPoint: setDeliveryPoint
+        setDeliveryPoint: setDeliveryPoint,
+        removePlacedDP: removePlacedDP,
+        clearPlacedDP: clearPlacedDP
     }
 
     function deselectDP() {
@@ -704,6 +707,8 @@ function mapService($http,
                              removeInteraction("select");
                              //clearDrawingLayer(true);
                              setSelections(null, []);
+                             evt.feature.setId(createGuid());
+                             setPlacedDP(evt.feature);
                          });
         vm.interactions.draw.on('drawend',
 			function (evt) {
@@ -1030,5 +1035,19 @@ function showDeliveryPointDetails(deliveryPointDetails) {
                 }, []);
             }
         });
+    }
+
+    function setPlacedDP(selectedFeature) {
+        vm.placedDP = selectedFeature;
+    }
+    function removePlacedDP() {
+        if (vm.placedDP !== null) {
+            var feature = vm.drawingLayer.layer.getSource().getFeatureById(vm.placedDP.getId());
+            vm.drawingLayer.layer.getSource().removeFeature(feature);
+        }
+    }
+    function clearPlacedDP() {
+        if (vm.placedDP !== null)
+            vm.placedDP = null;
     }
 }

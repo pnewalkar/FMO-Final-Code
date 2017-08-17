@@ -25,7 +25,7 @@ angular.module('RMApp')
             url: "/deliveryPoint",
             templateUrl: "./delivery-point/delivery-point.context.template.html",
             controller: 'DeliveryPointController as vm',
-            params: { selectedUnit: null, deliveryPointList: null, positionedDeliveryPointList: null, positionedThirdPartyDeliveryPointList: null, hide: null }
+            params: { selectedUnit: null, deliveryPointList: null, positionedDeliveryPointList: null, positionedThirdPartyDeliveryPointList: null, hide: null, isMultiple: false }
         })
          .state('manageaccess', {
              url: '/',
