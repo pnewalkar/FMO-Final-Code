@@ -35,5 +35,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         Task<AddressLocationDTO> GetAddressLocationByUDPRN(int udprn);
 
         Task<List<AddressLocationDTO>> GetAddressLocationsByUDPRN(List<int> udprns);
+
+        Task DeleteUSRDetails(AddressLocationUSRPOSTDTO addressLocationUsrpostdtos);
     }
 }

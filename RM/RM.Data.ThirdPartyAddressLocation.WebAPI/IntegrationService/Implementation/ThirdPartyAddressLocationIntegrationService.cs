@@ -371,6 +371,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
                 return deliveryPointID;
             }
-        }        
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const int TOLERANCEDISTANCEINMETERS = 10;
         internal const string USRNOTIFICATIONSOURCE = "SYSTEM";
         internal const string USRACTION = "Check updated DP Location";
+        internal const string USRDELETEACTION = "Check deleted 3rd Party Location";
         internal const string USRGEOMETRYPOINT = "POINT({0} {1})";
         internal const string USRCATEGORY = "Notification Type";
         internal const string USRREFERENCEDATANAME = "Action required";
@@ -17,10 +18,13 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string PAFTaskBodyPreText = "Please position the DP ";
         internal const string NETWORKLINKDATAPROVIDER = "Data Provider";
         internal const string EXTERNAL = "External";
+        internal const string INTERNAL = "Internal";
         internal const int BNGCOORDINATESYSTEM = 27700;
         internal const string Comma = ", ";
         internal const string TASKPAFACTION = "Position new DP Location";
         internal const string USRNOTIFICATIONBODYPREFIX = "Please check the proposed new Location of the DP ";
+        internal const string USRDeleteNOTIFICATIONBODYPREFIX = "Please check the Location of the DP ";
+        internal const string USRDeleteNOTIFICATIONBODYSUFFIX = " as the 3rd Party has deleted this Location";
         internal const string NoMatchToAddressOnUDPRN = "No Match to Address on UDPRN : {0}";
 
         internal const string DeliveryPointExists = "DeliveryPointExists";
@@ -47,5 +51,12 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string DeliveryPointUseIndicatorPAF = "Organisation";
         internal const string NOTIFICATIONCLOSED = "Closed";
         internal const string APPROXLOCATION = "Live pending location";
+        internal const string REALLOCATION = "Live";
+
+        internal const string USRERRORLOGMESSAGE = "Load Thirdparty Address location Error Message : {0}, UDPRN : {1}, Ammendment Type : {2}, File Name : {3}, File Name : {4}, Log Time : {5}";
+        internal const string ErrorMessageForAddressTypeUSRNotFound = "Address location data is not present for selected UDPRN";
+        internal const string INSERT = "I";
+        internal const string DELETE = "D";
+        internal const string UPDATE = "U";
     }
 }
