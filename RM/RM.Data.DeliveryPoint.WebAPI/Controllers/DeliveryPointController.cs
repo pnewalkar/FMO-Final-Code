@@ -680,7 +680,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// User Delete delivery point.
         /// </summary>
         /// <param name="deliveryPointid">Delivery point unique identifier.</param>
-        /// <returns>Boolean flag indicating success of operation.</returns>
+        /// <returns>Boolean flag indicates delete of success operation.</returns>
         [HttpDelete("deliverypoint/delete/{deliveryPointId}/{reasonCode}/{reasonText}")]
         public async Task<IActionResult> UserDeleteDeliveryPoint(Guid deliveryPointId, string reasonCode, string reasonText)
         {

@@ -941,7 +941,7 @@
         ///User Delete delivery point.
         /// </summary>
         /// <param name="deliveryPointid">Delivery point unique identifier.</param>
-        /// <returns>Boolean flag indicating success of operation.</returns>
+        /// <returns>Boolean flag indicates success of delete operation.</returns>
         public async Task<bool> UserDeleteDeliveryPoint(Guid deliveryPointid, string reasonCode, string reasonText,string userName)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.UserDeleteDeliveryPoint"))
