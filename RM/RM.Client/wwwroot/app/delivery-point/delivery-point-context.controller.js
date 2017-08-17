@@ -3,25 +3,30 @@
     .controller('DeliveryPointContextController',
     DeliveryPointContextController);
 
-DeliveryPointContextController.$inject = ['GlobalSettings',
+DeliveryPointContextController.$inject = [
+    'GlobalSettings',
     '$rootScope',
- 'selectedDeliveryPointService', 'CommonConstants', 'popUpSettingService', '$mdDialog','deliveryPointService']
+    'selectedDeliveryPointService',
+    'CommonConstants',
+    'popUpSettingService',
+    '$mdDialog',
+    'deliveryPointService']
 
-function DeliveryPointContextController(GlobalSettings,
+function DeliveryPointContextController(
+    GlobalSettings,
     $rootScope,
-selectedDeliveryPointService, CommonConstants, popUpSettingService, $mdDialog, deliveryPointService)
+    selectedDeliveryPointService,
+    CommonConstants,
+    popUpSettingService,
+    $mdDialog,
+    deliveryPointService)
 {
     var vm = this;
     vm.deleteDeliveryPoint = deleteDeliveryPoint;
     vm.closeWindow = closeWindow;
-    vm.fetchReasonCodesForDelete = fetchReasonCodesForDelete;
-    vm.initialize = initialize();
+    vm.fetchReasonCodesForDelete = fetchReasonCodesForDelete();
     vm.userDeleteDeliveryPoint = userDeleteDeliveryPoint;
     vm.reasonText="";
-
-    function initialize() {
-        vm.fetchReasonCodesForDelete();
-    }
 
         vm.selectedDeliveryPoint = selectedDeliveryPointService.getSelectedDeliveryPoint();
         if (vm.selectedDeliveryPoint != null) {
@@ -36,11 +41,9 @@ selectedDeliveryPointService, CommonConstants, popUpSettingService, $mdDialog, d
                 featureType: vm.selectedDeliveryPointType
             });
 
-            function deleteDeliveryPoint() {
-                
+            function deleteDeliveryPoint() {   
                 var deleteDeliveryPointTemplate = popUpSettingService.deleteDeliveryPoint();
-                openModalPopup(deleteDeliveryPointTemplate);
-                
+                openModalPopup(deleteDeliveryPointTemplate);         
             }
 
             function openModalPopup(modalSetting) {
@@ -51,12 +54,10 @@ selectedDeliveryPointService, CommonConstants, popUpSettingService, $mdDialog, d
 
             function closeWindow() {
                 vm.hide = false;         
-                deliveryPointService.closeModalPopup();
-                
+                deliveryPointService.closeModalPopup();            
             }
 
-            function fetchReasonCodesForDelete() {
-              
+            function fetchReasonCodesForDelete() { 
                 deliveryPointService.reasonCodeValues()
                     .then(function (response) {
                         vm.reasonCodes = response.listItems;
@@ -64,12 +65,9 @@ selectedDeliveryPointService, CommonConstants, popUpSettingService, $mdDialog, d
             }
 
             function userDeleteDeliveryPoint() {
-               
                 var reasonCode = vm.reasonCode.replace("/", "&frasl;");
                 deliveryPointService.deleteDeliveryPoint(vm.selectedDeliveryPointId, reasonCode, vm.reasonText)
-                    .then(function (response) {
-                        
-                    });
+                .then(function (response) { });
                 vm.closeWindow();
             }
     }

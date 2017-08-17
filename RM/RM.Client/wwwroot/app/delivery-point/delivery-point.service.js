@@ -205,12 +205,8 @@ function deliveryPointService(
 
     function reasonCodeValues() {
         var deferred = $q.defer();
-        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.UI_Delete_DP_ReasonCode.AppCategoryName).then(function (response) {
-            var dpColors = [];
-          
-            deferred.resolve(response);
-
-           
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.UI_Delete_DP_ReasonCode.AppCategoryName).then(function (response) { 
+            deferred.resolve(response);   
         });
         return deferred.promise;
         }

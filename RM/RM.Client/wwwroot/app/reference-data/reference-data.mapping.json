@@ -513,11 +513,6 @@
           "DBReferenceDataName": "Object Transparency"
         }
       ]
-    },
-    {
-      "AppCategoryName": "UIDeleteDPReasonCode",
-      "DBCategoryName": "UI_Delete_DP_ReasonCode",
-      "ReferenceDataNames": []
     }
   ]
 }
