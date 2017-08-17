@@ -525,4 +525,5 @@ function DeliveryPointController(
                    });
         vm.closeWindow();
     }
+
 };
