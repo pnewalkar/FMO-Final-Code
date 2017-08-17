@@ -16,7 +16,7 @@ function GroupDetailsController(
     vm.initialize = initialize;
     vm.onSingleAccept = onSingleAccept;
 
-    //vm.initialize();
+    vm.initialize();
 
     function initialize() {
         groupService.initialize().then(function (response) {
@@ -26,7 +26,6 @@ function GroupDetailsController(
     }
 
     function onSingleAccept(deliveyPoint) {
-        vm.availablePoints
         vm.addedPoints.push(deliveyPoint);
     }
 }
