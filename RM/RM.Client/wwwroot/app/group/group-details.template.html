@@ -36,7 +36,6 @@
         <div layout="column" flex="90">
             <md-input-container>
                 <label>Type</label>
-                {{vm.groupType}}
                 <md-select ng-model="vm.groupType">
                     <md-option ng-repeat="groupType in vm.deliveryGroupTypes" ng-value="groupType" required>
                         {{groupType.value}}
@@ -66,7 +65,7 @@
         </div>
         <span flex="5"></span>
         <div layout="column" flex="50">
-            <md-input-container  ng-if="(vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' )">
+            <md-input-container  ng-if="(vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType === 'Inside')">
                 <label>Internal Distance</label>
                 <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
             </md-input-container>
@@ -76,11 +75,11 @@
     <!--Override & time-->
     <div layout="row">
         <div layout="column" flex="50">
-            <md-checkbox class="group_checkbox" ng-model="ctrl.overridetime">Override time</md-checkbox>
+            <md-checkbox class="group_checkbox" ng-model="vm.overrideTime">Override Time</md-checkbox>
         </div>
         <span flex="5"></span>
         <div layout="column" flex="50">
-            <md-input-container>
+            <md-input-container ng-if="vm.groupType.value === 'Complex' && vm.overrideTime">
                 <label>Time</label>
                 <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
             </md-input-container>
@@ -89,19 +88,29 @@
 
     <!--Location & Internal Distance-->
     <div layout="row">
-        <div layout="column" flex="50">
-            <md-radio-group ng-model="data.group1">
-                <md-radio-button class="groupRadioBtn" value="Apple">Inside</md-radio-button>
-                <md-radio-button class="groupRadioBtn" value="Banana"> OUtside </md-radio-button>
+        <div layout="column" flex="50" ng-if="vm.groupType.value === 'Service Point'">
+            <md-radio-group ng-model="vm.ServicePointType">
+                <md-radio-button class="groupRadioBtn" value="Inside">Inside</md-radio-button>
+                <md-radio-button class="groupRadioBtn" value="Outside"> Outside </md-radio-button>
             </md-radio-group>
         </div>        
     </div>
 
-    <!--Delivery Points & Delivery to reception-->
+    <!--Reason-->
+    <div layout="row">
+        <div layout="column" flex="100">
+            <md-input-container ng-if="vm.groupType.value === 'Complex' && vm.overrideTime">
+                <label>Reason</label>
+                <input type="text" ng-model="vm.timeReason">
+            </md-input-container>
+        </div>
+    </div>
+
+  <!--Delivery Points & Delivery to reception-->
     <div layout="row">
         <div layout="column" flex="40">
             <md-input-container>
-                <label>Time</label>
+                <label>Delivery Point</label>
                 <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
             </md-input-container>
         </div>

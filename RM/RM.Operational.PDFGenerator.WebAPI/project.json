@@ -57,7 +57,7 @@
     "embed": [
       "XSLFOTemplates/FMO_PDFReport_Generic.xslt"
     ],
-    "additionalArguments": [ "/ruleset:RM.Operational.PDFGenerator.WebAPI.ruleset" ]
+    "additionalArguments": [ "/ruleset:../RM.ruleset" ]
   },
 
   "runtimeOptions": {

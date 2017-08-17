@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace RM.Data.DeliveryPointGroupManager.WebAPI.DTO
+namespace RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO
 {
-    public class DeliveryPointGroupDTO
+    public class SupportingDeliveryPointDataDTO
     {
-        public DeliveryPointGroupDTO()
-        {
-            this.AddedDeliveryPoints = new HashSet<DeliveryPointDTO>();
-        }
-         
         public Guid ID { get; set; }
 
         public string GroupName { get; set; }
 
         public byte? NumberOfFloors { get; set; }
+
 
         public double? InternalDistanceMeters { get; set; }
 
@@ -32,7 +27,6 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI.DTO
 
         public bool? DeliverToReception { get; set; }
 
-        public ICollection<DeliveryPointDTO> AddedDeliveryPoints { get; set; }
-
+        public DeliveryPointDataDTO DeliveryPoint { get; set; }
     }
 }
