@@ -591,17 +591,18 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         {
             DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
 
-            PostalAddressDataDTO postalAddressDataDTO = await addressLocationDataService.GetPostalAddressData((int)addressLocationUSRPOSTDTO.UDPRN);
+            PostalAddressDataDTO postalAddressDataDTO = await addressLocationDataService.GetPostalAddressData(addressLocationUSRPOSTDTO.UDPRN.Value);
 
             // If Delivery Point Exists for the given Postal Address
-            if (postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0)
-            {
+            if (postalAddressDataDTO != null && postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0 && spatialLocationXY != null)
+            {             
                 DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress(postalAddressDataDTO.ID);
+
                 deliveryPointDTO.LocationXY = spatialLocationXY;
 
                 // Update the location details for the delivery point
                 await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
             }
-        }
+        }       
     }
 }
