@@ -9,6 +9,9 @@
         <md-button class="context-button" aria-label="Save" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
         </md-button>
+        <md-button class="context-button" aria-label="Edit" title="{{ 'GENERAL.BUTTONS.EDIT' | translate }}">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+        </md-button>
         <md-button class="context-button" aria-label="Delete" title="{{ 'GENERAL.BUTTONS.DELETE' | translate }}">
             <i class="fa fa-trash" aria-hidden="true"></i>
         </md-button>
@@ -84,6 +87,16 @@
         </div>
     </div>
 
+    <!--Location & Internal Distance-->
+    <div layout="row">
+        <div layout="column" flex="50">
+            <md-radio-group ng-model="data.group1">
+                <md-radio-button class="groupRadioBtn" value="Apple">Inside</md-radio-button>
+                <md-radio-button class="groupRadioBtn" value="Banana"> OUtside </md-radio-button>
+            </md-radio-group>
+        </div>        
+    </div>
+
     <!--Delivery Points & Delivery to reception-->
     <div layout="row">
         <div layout="column" flex="40">
@@ -107,17 +120,17 @@
     <!--Available points-->
     <div layout="row">
         <div layout="column" flex="80">
-            <md-content class="md-padding"><p>Available Points</p></md-content>
+            <md-content><p>Available Points</p></md-content>
         </div>
         <div layout="column" flex="10">
             <span class="fa-stack fa-lg">
-                <i class="fa fa-clone fa-stack-1x"></i>
+                <i class="fa fa-clone fa-stack-1x" aria-hidden="true"></i>
                 <i class="fa fa-check fa-stack-1x" aria-hidden="true"></i>
             </span>
         </div>
         <div layout="column" flex="10">
             <span class="fa-stack fa-lg">
-                <i class="fa fa-clone fa-stack-1x"></i>
+                <i class="fa fa-clone fa-stack-1x" aria-hidden="true"></i>
                 <i class="fa fa-close fa-stack-1x" aria-hidden="true"></i>
             </span>
         </div>
@@ -155,5 +168,22 @@
                 <i class="fa fa-chain-broken" aria-hidden="true"></i>
             </md-button>
         </div>
+    </div>
+
+    <!--Added Points-->
+    <div layout="row">
+        <div layout="column" flex="80">
+            <md-content><p>Added Points</p></md-content>
+        </div>       
+    </div>
+    <div layout="row">
+        <div layout="column" flex="90">
+            <p>3 Mars Crescent B91E 1HE</p>
+        </div>
+        <div layout="column" flex="10">
+            <md-button class="context-button" aria-label="Help" title="">
+                <i class="fa fa-chain-broken" aria-hidden="true"></i>
+            </md-button>
+        </div>        
     </div>
 </div>
