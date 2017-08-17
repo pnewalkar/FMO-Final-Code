@@ -345,7 +345,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// </summary>
         /// <param name="deliveryPointDTO">Delivery Point DTO</param>
         /// <returns>whether DP has been updated successfully</returns>
-        public async Task<bool> UpdateDeliveryPointById(DeliveryPointDTO deliveryPointDTO)
+        public async Task<Guid> UpdateDeliveryPointById(DeliveryPointDTO deliveryPointDTO)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointById"))
             {
@@ -366,10 +366,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                     throw new ServiceException(responseContent);
                 }
 
-                bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+                Guid deliveryPointID = JsonConvert.DeserializeObject<Guid>(result.Content.ReadAsStringAsync().Result);
 
                 loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
-                return isUpdated;
+                return deliveryPointID;
             }
         }
     }

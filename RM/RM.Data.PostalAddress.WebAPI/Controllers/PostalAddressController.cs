@@ -414,7 +414,7 @@ namespace Fmo.API.Services.Controllers
         /// Delete Postal Addresses as part of Housekeeping
         /// </summary>
         /// <returns>Void</returns>
-        [HttpGet]
+        [HttpDelete]
         [Route("postaladdress/housekeeping/clear")]
         public async Task DeletePostalAddressesForHouseKeeping()
         {
