@@ -53,6 +53,13 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
         Task<List<AddressLocationDataDTO>> GetAddressLocationsByUDPRN(List<int> udprns);
 
         /// <summary>
+        /// Delete Third Party address location to database.
+        /// </summary>
+        /// <param name="addressLocationDTO">AddressLocationDTO object</param>
+        /// <returns>Task<int></returns>
+        Task<int> DeleteAddressLocation(AddressLocationDataDTO addressLocationDTO);
+
+        /// <summary>
         /// Update the address location to the database
         /// </summary>
         /// <param name="addressLocationDTO">AddressLocationDTO object</param>
