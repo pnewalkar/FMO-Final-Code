@@ -44,6 +44,9 @@
         },
         "RM.CommonLibrary.EntityFramework": {
           "target": "project"
+        },
+        "RM.CommonLibrary.Reporting.Pdf": {
+          "target": "project"
         }
       }
     }

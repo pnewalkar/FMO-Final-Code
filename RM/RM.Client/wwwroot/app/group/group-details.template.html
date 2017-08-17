@@ -1,9 +1,16 @@
-﻿<div layout="column">
+﻿<form name="">
+
+
+</form>
+<div layout="column">
     <!--Icons backbutton-edit-delete-help-->
     <div layout="row" layout-align="end start">
         <back-button></back-button>                
         <md-button class="context-button" aria-label="Save" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
+        </md-button>
+        <md-button class="context-button" aria-label="Edit" title="{{ 'GENERAL.BUTTONS.EDIT' | translate }}">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
         </md-button>
         <md-button class="context-button" aria-label="Delete" title="{{ 'GENERAL.BUTTONS.DELETE' | translate }}">
             <i class="fa fa-trash" aria-hidden="true"></i>
@@ -29,11 +36,15 @@
         <div layout="column" flex="90">
             <md-input-container>
                 <label>Type</label>
+                {{vm.groupType}}
                 <md-select ng-model="vm.groupType">
-                    <md-option ng-repeat="groupType in vm.deliveryGroupTypes" ng-value="groupType">
+                    <md-option ng-repeat="groupType in vm.deliveryGroupTypes" ng-value="groupType" required>
                         {{groupType.value}}
                     </md-option>
                 </md-select>
+                <div ng-messages="editGroupsForm.type.$error">
+                    <div ng-message="required">Please select a type</div>
+                </div>
             </md-input-container>
         </div>
         <div layout="column" flex="10">
@@ -48,14 +59,14 @@
     <!--Floors & Internal Distance-->
     <div layout="row">
         <div layout="column" flex="50">
-            <md-input-container>
+            <md-input-container ng-if="vm.groupType.value === 'Complex' ||vm.groupType.value === 'Skyscraper'||vm.groupType.value === 'Tenement Block'">
                 <label>Floors</label>
                 <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
             </md-input-container>
         </div>
         <span flex="5"></span>
         <div layout="column" flex="50">
-            <md-input-container>
+            <md-input-container  ng-if="(vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' )">
                 <label>Internal Distance</label>
                 <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
             </md-input-container>
@@ -74,6 +85,16 @@
                 <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
             </md-input-container>
         </div>
+    </div>
+
+    <!--Location & Internal Distance-->
+    <div layout="row">
+        <div layout="column" flex="50">
+            <md-radio-group ng-model="data.group1">
+                <md-radio-button class="groupRadioBtn" value="Apple">Inside</md-radio-button>
+                <md-radio-button class="groupRadioBtn" value="Banana"> OUtside </md-radio-button>
+            </md-radio-group>
+        </div>        
     </div>
 
     <!--Delivery Points & Delivery to reception-->
@@ -99,35 +120,70 @@
     <!--Available points-->
     <div layout="row">
         <div layout="column" flex="80">
-            <md-content class="md-padding"><p>Available Points</p></md-content>
+            <md-content><p>Available Points</p></md-content>
         </div>
         <div layout="column" flex="10">
             <span class="fa-stack fa-lg">
-                <i class="fa fa-clone fa-stack-1x"></i>
+                <i class="fa fa-clone fa-stack-1x" aria-hidden="true"></i>
                 <i class="fa fa-check fa-stack-1x" aria-hidden="true"></i>
             </span>
         </div>
         <div layout="column" flex="10">
             <span class="fa-stack fa-lg">
-                <i class="fa fa-clone fa-stack-1x"></i>
+                <i class="fa fa-clone fa-stack-1x" aria-hidden="true"></i>
                 <i class="fa fa-close fa-stack-1x" aria-hidden="true"></i>
             </span>
         </div>
     </div>
 
+    <div layout="row" ng-repeat="point in vm.availablePoints">
+        <div layout="column" flex="80">
+            <p>{{point.displaytext}}</p>
+        </div>
+        <div layout="column" flex="10">
+            <md-button class="context-button" aria-label="Accept" ng-click="vm.onSingleAccept(point)" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
+                <i class="fa fa-check" aria-hidden="true"></i>
+            </md-button>
+        </div>
+        <div layout="column" flex="10">
+            <md-button class="context-button" aria-label="Reject" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
+                <i class="fa fa-close" aria-hidden="true"></i>
+            </md-button>
+        </div>
+    </div>
+
+    <!--Added points-->
+    <div layout="row" ng-if="vm.addedPoints.length > 0">
+        <div layout="column" flex="80">
+            <md-content class="md-padding"><p>Added Points</p></md-content>
+        </div>
+    </div>
+
+    <div layout="row" ng-repeat="point in vm.addedPoints" ng-if="vm.addedPoints.length > 0">
+        <div layout="column" flex="80">
+            <p>{{point.displaytext}}</p>
+        </div>
+        <div layout="column" flex="10">
+            <md-button class="context-button" aria-label="Unlink" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
+                <i class="fa fa-chain-broken" aria-hidden="true"></i>
+            </md-button>
+        </div>
+    </div>
+
+    <!--Added Points-->
     <div layout="row">
         <div layout="column" flex="80">
-            <p>9 Mars Crescent B91E 1HE</p>
+            <md-content><p>Added Points</p></md-content>
+        </div>       
+    </div>
+    <div layout="row">
+        <div layout="column" flex="90">
+            <p>3 Mars Crescent B91E 1HE</p>
         </div>
         <div layout="column" flex="10">
-            <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
-                <i class="fa fa-check aria-hidden="true"></i>
+            <md-button class="context-button" aria-label="Help" title="">
+                <i class="fa fa-chain-broken" aria-hidden="true"></i>
             </md-button>
-        </div>
-        <div layout="column" flex="10">
-            <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
-                <i class="fa fa-close aria-hidden="true"></i>
-            </md-button>
-        </div>
+        </div>        
     </div>
 </div>

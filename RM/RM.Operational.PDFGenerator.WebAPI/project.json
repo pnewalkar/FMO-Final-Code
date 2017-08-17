@@ -40,6 +40,9 @@
         },
         "RM.CommonLibrary.EntityFramework": {
           "target": "project"
+        },
+        "RM.CommonLibrary.Reporting.Pdf": {
+          "target": "project"
         }
       },
       "frameworkAssemblies": {
@@ -54,7 +57,7 @@
     "embed": [
       "XSLFOTemplates/FMO_PDFReport_Generic.xslt"
     ],
-    "additionalArguments": [ "/ruleset:../RM.ruleset" ]
+    "additionalArguments": [ "/ruleset:RM.Operational.PDFGenerator.WebAPI.ruleset" ]
   },
 
   "runtimeOptions": {
