@@ -1,12 +1,10 @@
 <div layout="column">
-    <div layout="row" flex="20" style="opacity: 0">for alignment</div>
-    <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()" layout-align="space-around start">
+    <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()" layout-align="space-around start" class="simulationSelect">
         <md-radio-button ng-repeat="status in vm.RouteStatusObj" ng-value="status.id">
             <label ng-bind="status.value"></label>   <br>
         </md-radio-button>
     </md-radio-group>
-
-    <md-input-container class="md-block" class="simulationSelect">
+    <md-input-container class="md-block">
         <label>{{filterScenario.length!==0?'ROUTE_SIMULATION.SCENARIO':'VALIDATION.NO_RESULT_FOUND'| translate}}</label>
         <md-select ng-model="vm.selectedRouteScenario" ng-disabled="!filterScenario.length" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
             <md-option ng-repeat="scenario in filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>

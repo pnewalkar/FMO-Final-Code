@@ -69,7 +69,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                     {
                         lstUSRFiles = GetValidRecords(strPath);
 
-                        lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == ThirdPartyLoaderConstants.INSERT).ToList();
+                        lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == ThirdPartyLoaderConstants.INSERT || insertFiles.ChangeType == ThirdPartyLoaderConstants.DELETE).ToList();
 
                         lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == ThirdPartyLoaderConstants.UPDATE).ToList();
                         //lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
