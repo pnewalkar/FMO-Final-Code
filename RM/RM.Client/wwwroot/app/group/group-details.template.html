@@ -1,4 +1,8 @@
-﻿<div layout="column">
+﻿<form name="">
+
+
+</form>
+<div layout="column">
     <!--Icons backbutton-edit-delete-help-->
     <div layout="row" layout-align="end start">
         <back-button></back-button>                
@@ -32,11 +36,15 @@
         <div layout="column" flex="90">
             <md-input-container>
                 <label>Type</label>
+                {{vm.groupType}}
                 <md-select ng-model="vm.groupType">
-                    <md-option ng-repeat="groupType in vm.deliveryGroupTypes" ng-value="groupType">
+                    <md-option ng-repeat="groupType in vm.deliveryGroupTypes" ng-value="groupType" required>
                         {{groupType.value}}
                     </md-option>
                 </md-select>
+                <div ng-messages="editGroupsForm.type.$error">
+                    <div ng-message="required">Please select a type</div>
+                </div>
             </md-input-container>
         </div>
         <div layout="column" flex="10">
@@ -51,14 +59,14 @@
     <!--Floors & Internal Distance-->
     <div layout="row">
         <div layout="column" flex="50">
-            <md-input-container>
+            <md-input-container ng-if="vm.groupType.value === 'Complex' ||vm.groupType.value === 'Skyscraper'||vm.groupType.value === 'Tenement Block'">
                 <label>Floors</label>
                 <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
             </md-input-container>
         </div>
         <span flex="5"></span>
         <div layout="column" flex="50">
-            <md-input-container>
+            <md-input-container  ng-if="(vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' )">
                 <label>Internal Distance</label>
                 <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
             </md-input-container>
@@ -128,18 +136,36 @@
         </div>
     </div>
 
-    <div layout="row">
+    <div layout="row" ng-repeat="point in vm.availablePoints">
         <div layout="column" flex="80">
-            <p>9 Mars Crescent B91E 1HE</p>
+            <p>{{point.displaytext}}</p>
         </div>
         <div layout="column" flex="10">
-            <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
-                <i class="fa fa-check aria-hidden="true"></i>
+            <md-button class="context-button" aria-label="Accept" ng-click="vm.onSingleAccept(point)" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
+                <i class="fa fa-check" aria-hidden="true"></i>
             </md-button>
         </div>
         <div layout="column" flex="10">
-            <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
-                <i class="fa fa-close aria-hidden="true"></i>
+            <md-button class="context-button" aria-label="Reject" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
+                <i class="fa fa-close" aria-hidden="true"></i>
+            </md-button>
+        </div>
+    </div>
+
+    <!--Added points-->
+    <div layout="row" ng-if="vm.addedPoints.length > 0">
+        <div layout="column" flex="80">
+            <md-content class="md-padding"><p>Added Points</p></md-content>
+        </div>
+    </div>
+
+    <div layout="row" ng-repeat="point in vm.addedPoints" ng-if="vm.addedPoints.length > 0">
+        <div layout="column" flex="80">
+            <p>{{point.displaytext}}</p>
+        </div>
+        <div layout="column" flex="10">
+            <md-button class="context-button" aria-label="Unlink" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
+                <i class="fa fa-chain-broken" aria-hidden="true"></i>
             </md-button>
         </div>
     </div>
