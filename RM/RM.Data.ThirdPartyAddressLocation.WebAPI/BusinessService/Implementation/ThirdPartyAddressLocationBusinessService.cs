@@ -99,6 +99,9 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         {
             int fileUdprn;
             string addressLocationChangeType = string.Empty;
+
+            if (addressLocationUsrpostdtos == null) { throw new ArgumentNullException(nameof(addressLocationUsrpostdtos)); }
+
             using (loggingHelper.RMTraceManager.StartTrace("Business.SaveUSRDetails"))
             {
                 string methodName = typeof(ThirdPartyAddressLocationBusinessService) + "." + nameof(SaveUSRDetails);
@@ -629,13 +632,15 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         {
             if (toleranceDistance > ThirdPartyAddressLocationConstants.LOACTIONTOLERANCEDISTANCEINMETERS)
             {
+                var nearestToleranceDistance = Math.Round(toleranceDistance.Value);
+
                 if (!rmgDPExists)
                 {
-                    CreateNotificationAfterToleranceCheck(notificationType, udprn, ThirdPartyAddressLocationConstants.USRMESSAGE, $"{toleranceDistance}m", ThirdPartyAddressLocationConstants.USRACTION, postalAddressDTO);
+                    CreateNotificationAfterToleranceCheck(notificationType, udprn, ThirdPartyAddressLocationConstants.USRMESSAGE, $"{nearestToleranceDistance}m", ThirdPartyAddressLocationConstants.USRACTION, postalAddressDTO);
                 }
                 else
                 {
-                    CreateNotificationAfterToleranceCheck(notificationType, udprn, ThirdPartyAddressLocationConstants.USRMESSAGEFORRMGDP, $"{toleranceDistance}m", ThirdPartyAddressLocationConstants.USRACTIONRMGDP, postalAddressDTO);
+                    CreateNotificationAfterToleranceCheck(notificationType, udprn, ThirdPartyAddressLocationConstants.USRMESSAGEFORRMGDP, $"{nearestToleranceDistance}m", ThirdPartyAddressLocationConstants.USRACTIONRMGDP, postalAddressDTO);
                 }
             }
         }
