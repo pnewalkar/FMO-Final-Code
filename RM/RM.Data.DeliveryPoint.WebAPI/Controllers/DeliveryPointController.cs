@@ -677,25 +677,25 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 
 
         /// <summary>
-        /// User Delete delivery point.
+        /// Deletes a delivery point with all associated location offerings and locations.
         /// </summary>
         /// <param name="deliveryPointid">Delivery point unique identifier.</param>
         /// <returns>Boolean flag indicates delete of success operation.</returns>
         [HttpDelete("deliverypoint/delete/{deliveryPointId}/{reasonCode}/{reasonText}")]
-        public async Task<IActionResult> UserDeleteDeliveryPoint(Guid deliveryPointId, string reasonCode, string reasonText)
+        public async Task<IActionResult> DeleteDeliveryPointWithAssociatedLocations(Guid deliveryPointId, string reasonCode, string reasonText)
         {
             if (deliveryPointId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(deliveryPointId));
             }
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.UserDeleteDeliveryPoint"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteDeliveryPointWithAssociatedLocations"))
             {
                 try
                 {
-                    string methodName = typeof(DeliveryPointController) + "." + nameof(UserDeleteDeliveryPoint);
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(DeleteDeliveryPointWithAssociatedLocations);
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    var isDeliveryPointDeleted = await businessService.UserDeleteDeliveryPoint(deliveryPointId, reasonCode, reasonText,this.UserName);
+                    var isDeliveryPointDeleted = await businessService.DeleteDeliveryPointWithAssociatedLocations(deliveryPointId, reasonCode, reasonText,this.UserName);
 
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
