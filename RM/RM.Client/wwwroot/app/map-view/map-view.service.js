@@ -212,6 +212,21 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox
         });
 
+        var groupLinkVector = new ol.source.Vector({
+            format: new ol.format.GeoJSON({
+                defaultDataProjection: 'EPSG:27700'
+            }),
+            strategy: ol.loadingstrategy.bbox,
+            loader: function (extent) {
+                var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
+                layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
+                    var layerName = GlobalSettings.groupLayerName;
+                   // mapFactory.LicenceInfo(layerName, accessLinkVector);
+                    loadFeatures(accessLinkVector, response);
+                });
+            }
+        });
+
         var accessLinkVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
