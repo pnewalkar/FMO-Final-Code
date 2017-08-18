@@ -17,41 +17,38 @@ angular.module('RMApp')
     /*FMO Primary Palette*/
 
     $mdThemingProvider.definePalette('royalMailPrimary', {
-        '50': 'f4f4f3',
-        '100': 'f5f5f5',
-        '200': 'eeeeee',
-        '300': 'e0e0e0',
-        '400': 'bdbdbd',
+        '50': 'fbe4e5',
+        '100': 'f4bcbf',
+        '200': 'ed9095',
+        '300': 'e5636a',
+        '400': 'e0414a',
         '500': 'da202a',
-        '600': '757575',
-        '700': '616161',
-        '800': 'c62828',
-        '900': '212121',
-        'A100': '#ffffff',
-        'A200': '#000000',
-        'A400': '#303030',
-        'A700': '#616161',
+        '600': 'd61c25',
+        '700': 'd0181f',
+        '800': 'cb1319',
+        '900': 'c20b0f',
+        'A100': 'ffeeee',
+        'A200': 'ffbbbc',
+        'A400': 'ff8889',
+        'A700': 'ff6e70',
         'contrastDefaultColor': 'light',
-
-
         'contrastDarkColors': [
-                                '50',
-                                '100',
-                                '200',
-                                '300',
-                                '400'
+            '50',
+            '100',
+            '200',
+            '300',
+            'A100',
+            'A200',
+            'A400',
+            'A700'
         ],
-
         'contrastLightColors': [
-                                 '500',
-                                 '600',
-                                 '700',
-                                 '800',
-                                 '900',
-                                 'A100',
-                                 'A200',
-                                 'A400',
-                                 'A700'
+            '400',
+            '500',
+            '600',
+            '700',
+            '800',
+            '900'
         ]
     });
 
@@ -59,27 +56,45 @@ angular.module('RMApp')
     /*FMO Accent Palette*/
 
     $mdThemingProvider.definePalette('royalMailAccent', {
-        '50': '000000',
-        '100': '000000',
-        '200': '0892cb',
-        '300': '000000',
-        '400': '000000',
-        '500': '000000',
-        '600': '000000',
-        '700': '000000',
-        '800': '000000',
-        '900': '000000',
-        'A100': '#000000',
-        'A200': '#000000',
-        'A400': '#000000',
-        'A700': '#FFFFFF',
-        'contrastDefaultColor': 'light'
+        '50': 'ececec',
+        '100': 'd0d0d0',
+        '200': '84c9e5',
+        '300': '909090',
+        '400': '797979',
+        '500': '616161',
+        '600': '595959',
+        '700': '4f4f4f',
+        '800': '454545',
+        '900': '333333',
+        'A100': 'd5ebff',
+        'A200': 'a2d2ff',
+        'A400': '6fb9ff',
+        'A700': '56adff',
+        'contrastDefaultColor': 'light',
+        'contrastDarkColors': [
+            '50',
+            '100',
+            '200',
+            '300',
+            'A100',
+            'A200'
+        ],
+        'contrastLightColors': [
+            '400',
+            '500',
+            '600',
+            '700',
+            '800',
+            '900',
+            'A400',
+            'A700'
+        ]
     });
 
 
     $mdThemingProvider.theme('default')
             .primaryPalette('royalMailPrimary')
-            .accentPalette('royalMailAccent', {'default': '200'});
+            .accentPalette('royalMailAccent');
 })
 
 .run(['localization', '$translate', '$window', 'referencedataApiService', function (localization, $translate, $window, referencedataApiService) {

@@ -1,104 +1,258 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Xml;
-using System.Xml.Xsl;
-using Fonet;
-using Microsoft.Extensions.FileProviders;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.Operational.PDFGenerator.WebAPI.Utils;
+using RM.CommonLibrary.Reporting.Pdf;
 
 namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
 {
+    /// <summary>
+    /// PDF Generator Business Service
+    /// </summary>
     public class PDFGeneratorBusinessService : IPDFGeneratorBusinessService
     {
-        private string xsltFilepath = string.Empty;
-        private string pdfFilepath = string.Empty;
-        private IFileProvider fileProvider = default(IFileProvider);
+        /// <summary>
+        /// PDF report folder path
+        /// </summary>
+        private string pdfReportFolderPath = string.Empty;
+
+
+
+        /// <summary>
+        /// Reference to the logging helper
+        /// </summary>
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+
+
+
+
         /// <summary>
+        /// Initializes a new instance of the <see cref="PDFGeneratorBusinessService" /> class
         /// </summary>
-        /// <param name="deliveryRouteDataService">IDeliveryRouteRepository reference</param>
-        /// <param name="scenarioDataService">IScenarioRepository reference</param>
-        /// <param name="referenceDataBusinessService">The reference data business service.</param>
-        public PDFGeneratorBusinessService(IFileProvider fileProvider, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
+        /// <param name="pdfGeneratorBusinessService">PDF generator business service</param>
+        /// <param name="configurationHelper">Configuration helper</param>
+        /// <param name="loggingHelper">Logging helper</param>
+        public PDFGeneratorBusinessService(IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
-            this.fileProvider = fileProvider;
-            this.pdfFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PDFGeneratorConstants.PDFFileLoaction).ToString() : string.Empty;
-            this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PDFGeneratorConstants.XSLTFilePath).ToString() : string.Empty;
+            // Validate the arguments
+            if (configurationHelper == null) { throw new ArgumentNullException(nameof(configurationHelper)); }
+            if (loggingHelper == null) { throw new ArgumentNullException(nameof(loggingHelper)); }
+
+
+            // Store the injected dependencies
             this.loggingHelper = loggingHelper;
+
+
+            // Retrieve the configuration settings
+            //
+            // PDF report folder path
+            const string PdfReportFolderPathConfigurationKey = "PdfReportFolderPath";
+            this.pdfReportFolderPath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PdfReportFolderPathConfigurationKey).ToString() : string.Empty;
+            if (string.IsNullOrWhiteSpace(this.pdfReportFolderPath)) { throw new System.Exception($"Configuration setting {PdfReportFolderPathConfigurationKey} must not be null or empty."); } // TODO update exception type
+            if (!Directory.Exists(this.pdfReportFolderPath)) { throw new System.Exception($"Configuration setting {PdfReportFolderPathConfigurationKey} must point to a valid directory."); } // TODO update exception type
         }
 
-        /// <summary>
-        /// Create pdf file and store the pdf file in the File server
-        /// </summary>
-        /// <param name="xml">xsl fo as string</param>
-        /// <param name="fileName">XSLT filename</param>
-        /// <returns>Pdf file name</returns>
-        public string CreateReport(string xml, string fileName)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.CreateReport"))
-            {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                IDirectoryContents contents = fileProvider.GetDirectoryContents(string.Empty);
-                IFileInfo fileInfo = fileProvider.GetFileInfo(xsltFilepath + fileName);
-                using (StreamReader reader = new StreamReader(fileInfo.CreateReadStream()))
+
+
+
+        /// <summary>
+        /// Generates a PDF report from the specified report XML document using the default XSLT file and returns 
+        ///   the file name of the generated PDF document
+        /// The default XSLT file is FMO_PDFReport_Generic.xslt in RM.CommonLibrary.Reporting.Pdf
+        /// The report XML document must be compliant with the schema defined in FMO_PDFReport_Generic.xsd in
+        ///   RM.CommonLibrary.Reporting.Pdf. The RM.CommonLibrary.Reporting.Pdf.ReportFactoryHelper class
+        ///   provides methods that create compliant elements and attributes, but the onus is on the developer
+        ///   to verify that the report XML document is compliant
+        /// </summary>
+        /// <param name="reportXml">The XML report containing the report definition</param>
+        /// <returns>The PDF document file name</returns>
+        public string CreatePdfReport(string reportXml)
+        {
+            // Validate the arguments
+            if (string.IsNullOrWhiteSpace(reportXml)) { throw new ArgumentException($"{nameof(reportXml)} must not be null or empty."); }
+
+
+            using (this.loggingHelper.RMTraceManager.StartTrace($"Business.{nameof(CreatePdfReport)}"))
+            {
+                string methodName = typeof(PDFGeneratorBusinessService) + "." + nameof(CreatePdfReport);
+                this.loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodEntryEventId);
+
+
+                // Create the PDF report with a new file name
+                string pdfFileName = CreatePdfReportFileName();
+                string pdfFilePath = Path.Combine(this.pdfReportFolderPath, pdfFileName);
+                bool created = PdfGenerator.CreatePDF(reportXml, pdfFilePath);
+                if (!created)
                 {
-                    string xsltFilePath = reader.ReadToEnd();
-                    var xslTransformer = new XslCompiledTransform();
-                    XmlReader xsltReader = XmlReader.Create(new StringReader(xsltFilePath));
-                    XmlReader xmlReader = XmlReader.Create(new StringReader(xml));
-                    StringWriter strWriter = new StringWriter();
-                    xslTransformer.Load(xsltReader);
-                    xslTransformer.Transform(xmlReader, null, strWriter);
-                    var generateRouteLogSummaryPdf = GenerateRouteLogSummaryPdf(strWriter.ToString());
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                    return generateRouteLogSummaryPdf;
+                    pdfFileName = string.Empty;
+                    pdfFilePath = string.Empty;
                 }
+
+                this.loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodExitEventId);
+                return pdfFileName;
             }
         }
 
+
+
         /// <summary>
-        /// Reads pdf file from the file server
+        /// Generates a PDF report from the specified report XML document using the specified XSLT file and returns
+        ///   the file name of the generated PDF document
+        /// The specified XSLT file must generate valid XSLFO output when applied to the report XML document
         /// </summary>
-        /// <param name="pdfFileName">pdf name </param>
-        /// <returns>pdf as byte array</returns>
-        public PdfFileDTO GeneratePdfReport(string pdfFilename)
+        /// <param name="reportXml">The XML report containing the report definition</param>
+        /// <param name="xsltFilePath">The full path to the XSLT file</param>
+        /// <returns>The PDF document file name</returns>
+        public string CreatePdfReport(string reportXml, string xsltFilePath)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GeneratePdfReport"))
+            // Validate the arguments
+            if (string.IsNullOrWhiteSpace(reportXml)) { throw new ArgumentException($"{nameof(reportXml)} must not be null or empty."); }
+            if (string.IsNullOrWhiteSpace(xsltFilePath)) { throw new ArgumentException($"{nameof(xsltFilePath)} must not be null or empty."); }
+            if (!File.Exists(xsltFilePath)) { throw new ArgumentException($"{nameof(xsltFilePath)} must point to a valid XSLT file."); }
+
+
+            using (this.loggingHelper.RMTraceManager.StartTrace($"Business.{nameof(CreatePdfReport)}"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PDFGeneratorBusinessService) + "." + nameof(CreatePdfReport);
+                this.loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodEntryEventId);
 
-                byte[] pdfBytes = File.ReadAllBytes(pdfFilepath + pdfFilename);
-                PdfFileDTO pdfFileDTO = new PdfFileDTO { Data = pdfBytes, FileName = pdfFilename };
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return pdfFileDTO;
+
+                // Create the PDF report with a new file name
+                string pdfFileName = CreatePdfReportFileName();
+                string pdfFilePath = Path.Combine(this.pdfReportFolderPath, pdfFileName);
+                bool created = PdfGenerator.CreatePDF(reportXml, pdfFilePath, xsltFilePath);
+                if (!created)
+                {
+                    pdfFileName = string.Empty;
+                    pdfFilePath = string.Empty;
+                }
+
+                this.loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodExitEventId);
+                return pdfFileName;
             }
         }
 
+
+
         /// <summary>
-        /// Create pdf usinf XSL Fo and FONET assembly
+        /// Creates a new file name for a PDF report
         /// </summary>
-        /// <param name="xml">xsl fo</param>
-        /// <returns>pdf file name</returns>
-        private string GenerateRouteLogSummaryPdf(string xml)
+        /// <returns>The PDF report file name</returns>
+        private string CreatePdfReportFileName()
         {
+            // Create a new PDF report file name
             string pdfFileName = Guid.NewGuid() + ".pdf";
-            MemoryStream stream = new MemoryStream();
-            XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(xml);
-            FonetDriver driver = FonetDriver.Make();
-            driver.Render(xmlDocument, stream);
-            File.WriteAllBytes(pdfFilepath + pdfFileName, stream.ToArray());
             return pdfFileName;
+        }
+
+
+
+        /// <summary>
+        /// Deletes the PDF report with the specified PDF document file name
+        /// </summary>
+        /// <param name="pdfFileName">The PDF document file name</param>
+        public void DeletePdfReport(string pdfFileName)
+        {
+            // Validate the arguments
+            if (string.IsNullOrWhiteSpace(pdfFileName)) { throw new ArgumentException($"{nameof(pdfFileName)} must not be null or empty."); }
+            if (pdfFileName.Contains("*")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain wildcards."); }
+            if (pdfFileName.Contains("?")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain wildcards."); }
+            if (pdfFileName.Contains("/")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain folder delimiters (/, \\ or ..)."); }
+            if (pdfFileName.Contains("\\")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain folder delimiters (/, \\ or ..)."); }
+            if (pdfFileName.Contains("..")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain folder delimiters (/, \\ or ..)."); }
+
+
+            using (this.loggingHelper.RMTraceManager.StartTrace($"Business.{nameof(DeletePdfReport)}"))
+            {
+                string methodName = typeof(PDFGeneratorBusinessService) + "." + nameof(DeletePdfReport);
+                this.loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodEntryEventId);
+
+                // If the PDF document file exists
+                string pdfFilePath = Path.Combine(this.pdfReportFolderPath, pdfFileName);
+                FileInfo pdfFile = new FileInfo(pdfFilePath);
+                if (pdfFile.Exists)
+                {
+                    // If the PDF document file exists in the expected folder and has the expected name
+                    //   This check helps to prevent attacks where the file name contains sequences of characters
+                    //   that attempt to change folder
+                    if (pdfFile.Directory.FullName == this.pdfReportFolderPath && pdfFile.Name == pdfFileName)
+                    {
+                        try
+                        {
+                            // Delete the file
+                            pdfFile.Delete();
+                        }
+                        catch (IOException ex)
+                        {
+                            // Log the error but do not rethrow it because any undeleted PDF document files will be
+                            //   deleted by an automated process
+                            this.loggingHelper.Log(ex, System.Diagnostics.TraceEventType.Error);
+                        }
+                    }
+                }
+
+                this.loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodExitEventId);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Gets the PDF report for the specified PDF document file name
+        /// </summary>
+        /// <param name="pdfFileName">The PDF document file name</param>
+        /// <returns>The PDF report encoded as a byte array in a DTO</returns>
+        public PdfFileDTO GetPdfReport(string pdfFileName)
+        {
+            // Validate the arguments
+            if (string.IsNullOrWhiteSpace(pdfFileName)) { throw new ArgumentException($"{nameof(pdfFileName)} must not be null or empty."); }
+            if (pdfFileName.Contains("*")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain wildcards."); }
+            if (pdfFileName.Contains("?")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain wildcards."); }
+            if (pdfFileName.Contains("/")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain folder delimiters (/, \\ or ..)."); }
+            if (pdfFileName.Contains("\\")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain folder delimiters (/, \\ or ..)."); }
+            if (pdfFileName.Contains("..")) { throw new ArgumentException($"{nameof(pdfFileName)} must not contain folder delimiters (/, \\ or ..)."); }
+
+
+            using (this.loggingHelper.RMTraceManager.StartTrace($"Business.{nameof(GetPdfReport)}"))
+            {
+                string methodName = typeof(PDFGeneratorBusinessService) + "." + nameof(GetPdfReport);
+                this.loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodEntryEventId);
+
+                // Initialize the PDF report
+                PdfFileDTO pdfReport = null;
+
+                // If the PDF document file exists
+                string pdfFilePath = Path.Combine(this.pdfReportFolderPath, pdfFileName);
+                FileInfo pdfFile = new FileInfo(pdfFilePath);
+                if (pdfFile.Exists)
+                {
+                    // If the PDF document file exists in the expected folder and has the expected name
+                    //   This check helps to prevent attacks where the file name contains sequences of characters
+                    //   that attempt to change folder
+                    if (pdfFile.Directory.FullName == this.pdfReportFolderPath && pdfFile.Name == pdfFileName)
+                    {
+                        try
+                        {
+                            // Retrieve the PDF report document
+                            byte[] pdfBytes = File.ReadAllBytes(pdfFile.FullName);
+                            pdfReport = new PdfFileDTO { Data = pdfBytes, FileName = pdfFileName };
+                        }
+                        catch (IOException ex)
+                        {
+                            // Log the error but do not rethrow it because any undeleted PDF document files will be
+                            //   deleted by an automated process
+                            this.loggingHelper.Log(ex, System.Diagnostics.TraceEventType.Error);
+                        }
+                    }
+                }
+
+                this.loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorBusinessServiceMethodExitEventId);
+                return pdfReport;
+            }
         }
     }
 }

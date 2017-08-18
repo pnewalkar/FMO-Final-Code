@@ -3,18 +3,16 @@ using RM.Operational.RouteLog.WebAPI.DTO;
 
 namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
-    public class RouteSummaryGroup
+    /// <summary>
+    /// Helper class used in conjunction with RouteLogSummaryFactory to hold groups of sequenced points
+    /// </summary>
+    internal class RouteLogSummaryGroup
     {
         /// <summary>
-        /// The list of addresses in the group
-        /// </summary>
-        private List<RouteLogSequencedPointsDTO> addressList = new List<RouteLogSequencedPointsDTO>();
-
-        /// <summary>
-        /// Constructs route summary group with an initial address
+        /// Constructs route log summary group with an initial address
         /// </summary>
         /// <param name="address">The address</param>
-        public RouteSummaryGroup(RouteLogSequencedPointsDTO address)
+        public RouteLogSummaryGroup(RouteLogSequencedPointsDTO address)
         {
             // Default the group type
             this.CurrentGroupType = GroupType.Unknown;
@@ -37,10 +35,17 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             this.BuildingName = address.BuildingName;
         }
 
+
+
+
+
+        /// <summary>
+        /// Group type enumeration
+        /// </summary>
         public enum GroupType
         {
-            SequentialAscending,
-            SequentialDescending,
+            ConsecutiveAscending,
+            ConsecutiveDescending,
             EvensAscending,
             EvensDescending,
             OddsAscending,
@@ -48,23 +53,23 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             Unknown
         }
 
+
+
+
+
         /// <summary>
         /// Gets or sets the current group type
         /// </summary>
         public GroupType CurrentGroupType { get; set; }
+
+
 
         /// <summary>
         /// Gets or sets the last address in the group
         /// </summary>
         public RouteLogSequencedPointsDTO LastAddress { get; set; }
 
-        /// <summary>
-        /// Gets the address list
-        /// </summary>
-        public List<RouteLogSequencedPointsDTO> AddressList
-        {
-            get { return addressList; }
-        }
+
 
         /// <summary>
         /// Gets the description for the group
@@ -97,31 +102,53 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             }
         }
 
-        /// <summary>
-        /// Gets or sets the delivery point count
-        /// </summary>
-        public int DeliveryPointCount { get; set; }
+
 
         /// <summary>
-        /// Gets or sets the multiple occupancy count
+        /// Gets the group type description for a specified group type
         /// </summary>
-        public int? MultipleOccupancy { get; set; }
+        /// <param name="groupType"></param>
+        /// <returns>The group type description</returns>
+        private string GetGroupTypeDescription(GroupType groupType)
+        {
+            // Get the description for the group type
+            string description = string.Empty;
+            switch (groupType)
+            {
+                case GroupType.EvensAscending:
+                    description = "Evens";
+                    break;
 
-        /// <summary>
-        /// Gets or sets the first building number
-        /// </summary>
-        public short? FirstBuildingNumber { get; set; }
+                case GroupType.EvensDescending:
+                    description = "Evens";
+                    break;
 
-        /// <summary>
-        /// Gets or sets the last building number
-        /// </summary>
-        public short? LastBuildingNumber { get; set; }
+                case GroupType.OddsAscending:
+                    description = "Odds";
+                    break;
 
-        public string StreetName { get; set; }
+                case GroupType.OddsDescending:
+                    description = "Odds";
+                    break;
 
-        public string SubBuildingName { get; set; }
+                case GroupType.ConsecutiveAscending:
+                    description = "Cons";
+                    break;
 
-        public string BuildingName { get; set; }
+                case GroupType.ConsecutiveDescending:
+                    description = "Cons";
+                    break;
+
+                case GroupType.Unknown:
+                    description = string.Empty;
+                    break;
+            }
+
+            // Return the description
+            return description;
+        }
+
+
 
         /// <summary>
         /// Gets the building description from the sub name, name, number and thoroughfare
@@ -167,48 +194,70 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             return description;
         }
 
+
+
         /// <summary>
-        /// Gets the group type description for a specified group type
+        /// The list of addresses in the group
         /// </summary>
-        /// <param name="groupType"></param>
-        /// <returns>The group type description</returns>
-        private string GetGroupTypeDescription(GroupType groupType)
+        private List<RouteLogSequencedPointsDTO> addressList = new List<RouteLogSequencedPointsDTO>();
+
+
+
+        /// <summary>
+        /// Gets the address list
+        /// </summary>
+        public List<RouteLogSequencedPointsDTO> AddressList
         {
-            // Get the description for the group type
-            string description = string.Empty;
-            switch (groupType)
-            {
-                case GroupType.EvensAscending:
-                    description = "Evens";
-                    break;
-
-                case GroupType.EvensDescending:
-                    description = "Evens";
-                    break;
-
-                case GroupType.OddsAscending:
-                    description = "Odds";
-                    break;
-
-                case GroupType.OddsDescending:
-                    description = "Odds";
-                    break;
-
-                case GroupType.SequentialAscending:
-                    description = "cons";
-                    break;
-
-                case GroupType.SequentialDescending:
-                    description = "cons";
-                    break;
-
-                case GroupType.Unknown:
-                    description = string.Empty;
-                    break;
-            }
-
-            // Return the description
-            return description;
+            get { return addressList; }
         }
+
+
+
+        /// <summary>
+        /// Gets or sets the delivery point count
+        /// </summary>
+        public int DeliveryPointCount { get; set; }
+
+
+
+        /// <summary>
+        /// Gets or sets the multiple occupancy count
+        /// </summary>
+        public int? MultipleOccupancy { get; set; }
+
+
+
+        /// <summary>
+        /// Gets or sets the first building number
+        /// </summary>
+        public short? FirstBuildingNumber { get; set; }
+
+
+
+        /// <summary>
+        /// Gets or sets the last building number
+        /// </summary>
+        public short? LastBuildingNumber { get; set; }
+
+
+
+        /// <summary>
+        /// Gets or sets the street name
+        /// </summary>
+        public string StreetName { get; set; }
+
+
+
+        /// <summary>
+        /// Gets or sets the sub-building name
+        /// </summary>
+        public string SubBuildingName { get; set; }
+
+
+
+        /// <summary>
+        /// Gets or sets the building name
+        /// </summary>
+        public string BuildingName { get; set; }
     }
 }
