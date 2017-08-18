@@ -18,11 +18,14 @@
         },
         "RM.CommonLibrary.EntityFramework": {
           "target": "project"
+        },
+        "RM.CommonLibrary.Reporting.Pdf": {
+          "target": "project"
         }
       }
     }
   },
   "buildOptions": {
-    "additionalArguments": [ "/ruleset:../RM.ruleset" ]
+    "additionalArguments": [ "/ruleset:RM.Operational.PDFGenerator.WebAPI.Test.ruleset" ]
   }
 }

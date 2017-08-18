@@ -12,6 +12,7 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 using RM.Data.AccessLink.WebAPI.Utils.ReferenceData;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
 
@@ -79,10 +80,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                Tuple<NetworkLinkDTO, DbGeometry> nearestNamedRoad = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, DbGeometry>>(result.Content.ReadAsStringAsync().Result);
+                Tuple<NetworkLinkDTO, DBGeometryDTO> nearestNamedRoad = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, DBGeometryDTO>>(result.Content.ReadAsStringAsync().Result);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return new Tuple<NetworkLinkDTO, SqlGeometry>(nearestNamedRoad.Item1, nearestNamedRoad.Item2?.ToSqlGeometry());
+                return new Tuple<NetworkLinkDTO, SqlGeometry>(nearestNamedRoad.Item1, nearestNamedRoad.Item2?.Geometry?.ToSqlGeometry());
             }
         }
 
@@ -91,7 +92,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public async Task<Tuple<NetworkLinkDTO, List<SqlGeometry>>> GetNearestSegment(DbGeometry operationalObjectPoint)
+        public async Task<List<Tuple<NetworkLinkDTO, SqlGeometry>>> GetNearestSegment(DbGeometry operationalObjectPoint)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetNearestSegment"))
             {
@@ -112,10 +113,15 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                Tuple<NetworkLinkDTO, List<DbGeometry>> nearestSegment = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, List<DbGeometry>>>(result.Content.ReadAsStringAsync().Result, new DbGeometryConverter());
+                List<Tuple<NetworkLinkDTO, DbGeometry>> nearestSegmentAPIResult = JsonConvert.DeserializeObject<List<Tuple<NetworkLinkDTO, DbGeometry>>>(result.Content.ReadAsStringAsync().Result, new DbGeometryConverter());
+                List<Tuple<NetworkLinkDTO, SqlGeometry>> nearestSegment = new List<Tuple<DTOs.NetworkLinkDTO, SqlGeometry>>();
+                foreach (var item in nearestSegmentAPIResult)
+                {
+                    nearestSegment.Add(new Tuple<NetworkLinkDTO, SqlGeometry>(item.Item1, item.Item2.ToSqlGeometry()));
+                }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return new Tuple<NetworkLinkDTO, List<SqlGeometry>>(nearestSegment.Item1, nearestSegment.Item2.ToSqlGeometry());
+                return nearestSegment;
             }
         }
 

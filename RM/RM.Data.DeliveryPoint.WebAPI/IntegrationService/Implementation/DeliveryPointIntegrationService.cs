@@ -386,8 +386,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 }
 
                 // DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
-                DBGeometryObj locationObject = JsonConvert.DeserializeObject<DBGeometryObj>(result.Content.ReadAsStringAsync().Result);
-                DbGeometry approxLocation = locationObject.dbGeometry;
+                DBGeometryDTO locationObject = JsonConvert.DeserializeObject<DBGeometryDTO>(result.Content.ReadAsStringAsync().Result);
+                DbGeometry approxLocation = locationObject.Geometry;
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return approxLocation;
@@ -433,7 +433,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(DeleteAccesslink);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.DeleteAsync(accessLinkWebAPIName + deliveryPointId);
+                HttpResponseMessage result = await httpHandler.DeleteAsync(accessLinkWebAPIName + "AccessLink/delete/id:" + deliveryPointId);
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode

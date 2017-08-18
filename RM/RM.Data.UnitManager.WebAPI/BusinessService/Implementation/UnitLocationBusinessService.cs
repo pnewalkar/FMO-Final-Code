@@ -133,11 +133,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                var postcodeTypCategory = unitManagerIntegrationService.GetReferenceDataSimpleLists(PostCodeType).Result;
-                var sectorGuid = postcodeTypCategory.ReferenceDatas.Where(x => x.ReferenceDataValue == PostCodeTypeCategory.PostcodeSector.GetDescription()).SingleOrDefault().ID;
-                var districtGuid = postcodeTypCategory.ReferenceDatas.Where(x => x.ReferenceDataValue == PostCodeTypeCategory.PostcodeDistrict.GetDescription()).SingleOrDefault().ID;
-
-                var postCodeSector = await postcodeSectorDataService.GetPostcodeSectorByUdprn(udprn, sectorGuid, districtGuid);
+                var postCodeSector = await postcodeSectorDataService.GetPostcodeSectorByUdprn(udprn);
                 PostcodeSectorDTO postCodeSectorDto = GenericMapper.Map<PostcodeSectorDataDTO, PostcodeSectorDTO>(postCodeSector);
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);

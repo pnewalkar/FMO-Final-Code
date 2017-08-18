@@ -118,7 +118,8 @@ function mapService($http,
         setPolygonTransparency: setPolygonTransparency,
         getLayerSummary: getLayerSummary,
         deselectDP: deselectDP,
-        setDeliveryPoint: setDeliveryPoint
+        setDeliveryPoint: setDeliveryPoint,
+        deleteDeliveryPoint: deleteDeliveryPoint
     }
 
     function deselectDP() {
@@ -767,9 +768,12 @@ function mapService($http,
     }
     function mapToolChange(button) {
         if (getActiveFeature() != null) {
-            vm.layerName = "";
-            setSelections(null, []);
+            if (button.name === "point" || button.name === "line" || button.name === "area") {
+                setSelections(null, []);
+                $rootScope.$emit('resetMapToolbar', { "isObjectSelected": false });
+            }
         }
+
         vm.activeTool = button.name;
         removeCurrentInteractions();
         if (button.enabled) {
@@ -1027,5 +1031,11 @@ function showDeliveryPointDetails(deliveryPointDetails) {
                 }, []);
             }
         });
+    }
+
+    function deleteDeliveryPoint(featureId) {
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        vm.interactions.select.getFeatures().clear();
+        deliveryPointsLayer.layer.getSource().removeFeature(deliveryPointsLayer.layer.getSource().getFeatureById(featureId))
     }
 }

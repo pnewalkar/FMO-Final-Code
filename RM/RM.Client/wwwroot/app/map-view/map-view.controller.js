@@ -83,7 +83,7 @@ function MapController($scope,
     });
 
     function onEnterKeypress(currentScale) {
-        if (currentScale != '' && (currentScale % 100 === 0 && vm.maximumScale >= currentScale)) {
+        if (currentScale != '' && currentScale >= 100 && vm.maximumScale >= currentScale) {
             mapFactory.setMapScale(currentScale)
         }
     }

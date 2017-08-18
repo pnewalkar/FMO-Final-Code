@@ -114,8 +114,8 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         {
             var actualResult = testCandidate.GetNearestSegment(point, referenceDataCategoryList);
             Assert.IsNotNull(actualResult);
-            Assert.IsNotNull(actualResult.Item1);
-            Assert.IsNotNull(actualResult.Item2);
+            Assert.IsNotNull(actualResult.First().Item1);
+            Assert.IsNotNull(actualResult.First().Item2);
         }
 
         /// <summary>

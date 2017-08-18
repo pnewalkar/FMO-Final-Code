@@ -22,7 +22,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        Task<Tuple<NetworkLinkDTO, List<SqlGeometry>>> GetNearestSegment(DbGeometry operationalObjectPoint);
+        Task<List<Tuple<NetworkLinkDTO, SqlGeometry>>> GetNearestSegment(DbGeometry operationalObjectPoint);
 
         /// <summary>
         /// Get the street DTO for operational object.

@@ -35,6 +35,6 @@ md-list-item{
     min-height:48px;
 }
 
-.disableText .md-list-item {
-    color : grey;
+md-list-item.disableText {
+    color: $grey;
 }

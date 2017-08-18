@@ -46,7 +46,7 @@ namespace RM.Operational.MapManager.WebAPI.IntegrationService
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(pdfGeneratorWebAPIName + "PDFReports/" + fileName, xml);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(pdfGeneratorWebAPIName + "PDFReports", xml);
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode

@@ -95,7 +95,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI
 
             // Register DataServices
             services.AddScoped<IPostalAddressDataService, PostalAddressDataService>();
-            services.AddScoped<IFileProcessingLogDataService, FileProcessingLogDataService>();
 
             // Register Integration Services
             services.AddScoped<IPostalAddressIntegrationService, PostalAddressIntegrationService>();

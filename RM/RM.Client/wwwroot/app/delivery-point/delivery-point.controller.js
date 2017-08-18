@@ -16,10 +16,9 @@ DeliveryPointController.$inject = [
         '$state',
         '$stateParams',
         'deliveryPointService',
-         'CommonConstants',
+        'CommonConstants',
         '$rootScope',
         '$translate',
-         'CommonConstants',
         'GlobalSettings'];
 
 function DeliveryPointController(
@@ -36,12 +35,9 @@ function DeliveryPointController(
     $state,
     $stateParams,
     deliveryPointService,
-
     CommonConstants,
     $rootScope,
     $translate,
-    CommonConstants,
-
     GlobalSettings
 ) {
     var vm = this;
@@ -89,6 +85,8 @@ function DeliveryPointController(
     vm.numberInName = GlobalSettings.numberInName;
     vm.displayRangeFromMessage = false;
     vm.displayRangeToMessage = false;
+    vm.maintainState = false;
+    vm.defaultDeliveryType = GlobalSettings.single;
 
     $scope.$watchCollection(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
@@ -129,6 +127,7 @@ function DeliveryPointController(
         vm.results = {};       
         vm.postalAddressAliases = [];
         vm.alias = "";
+        vm.maintainState = false;
     }
 
     function resultSet(query) {
@@ -155,30 +154,39 @@ function DeliveryPointController(
     }
 
     function bindAddressDetails() {
-        if (vm.notyetBuilt !== vm.defaultNYBValue) {
-            deliveryPointService.bindAddressDetails(vm.notyetBuilt)
-                   .then(function (response) {
-                       vm.addressDetails = response;
-                       setOrganisation();
-                   });
+
+        if (!vm.maintainState) {
+            if (vm.notyetBuilt !== vm.defaultNYBValue) {
+                deliveryPointService.bindAddressDetails(vm.notyetBuilt)
+                       .then(function (response) {
+                           vm.addressDetails = response;
+                           setOrganisation();
+                       });
+            }
+            else {
+                vm.addressDetails.id = vm.defaultNYBValue;
+                vm.addressDetails.udprn = "";
+                vm.addressDetails.buildingNumber = "";
+                vm.addressDetails.buildingName = "";
+                vm.addressDetails.subBuildingName = "";
+                vm.addressDetails.organisationName = "";
+                vm.addressDetails.departmentName = "";
+                vm.dpUse = "";
+            }
+            vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
+            vm.selectedType = vm.single;
+            vm.rangeFrom = "";
+            vm.rangeTo = "";
+            vm.mailvol = "";
+            vm.multiocc = "";
+            vm.subBuildingType = "";
         }
         else {
-            vm.addressDetails.id = vm.defaultNYBValue;
-            vm.addressDetails.udprn = "";
-            vm.addressDetails.buildingNumber = "";
-            vm.addressDetails.buildingName = "";
-            vm.addressDetails.subBuildingName = "";
-            vm.addressDetails.organisationName = "";
-            vm.addressDetails.departmentName = "";
-            vm.dpUse = "";
+            vm.notyetBuilt = vm.selectedNYBDetail;
+            vm.selectedType = vm.selectedDeliveryPointType
+            vm.defaultDeliveryType = vm.selectedDeliveryPointType;
+            vm.maintainState = false;
         }
-        vm.rangeOptionsSelected = GlobalSettings.defaultRangeOption;
-        vm.selectedType = vm.single;
-        vm.rangeFrom = "";
-        vm.rangeTo = "";
-        vm.mailvol = "";
-        vm.multiocc = "";
-        vm.subBuildingType = "";
     }
 
     function setOrganisation() {
@@ -279,6 +287,9 @@ function DeliveryPointController(
 
                 if (response.hasAllDuplicates) {
                     $rootScope.$broadcast("InfoPopup", response.message, title, css);
+                    vm.maintainState = true;   
+                    vm.selectedNYBDetail = vm.notyetBuilt;
+                    vm.selectedDeliveryPointType = vm.selectedType;
                 }
                 else if (response.hasDuplicates) {
                     saveDeliveryPointsPartially(response.message, response.postalAddressDTOs, title, css);
@@ -510,8 +521,12 @@ function DeliveryPointController(
     }
 
     function createDeliveryPointsRange(postalAddressDetails) {
+      
         deliveryPointService.createDeliveryPointsRange(postalAddressDetails)
                    .then(function (response) {
+                      
                    });
+        vm.closeWindow();
     }
+
 };
