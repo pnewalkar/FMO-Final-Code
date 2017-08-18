@@ -348,6 +348,23 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsFalse(result);
         }
 
+        [Test]
+        public async Task Test_UserDeleteDeliveryPointPositiveScenario()
+        {
+            Guid id = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13");
+            var actualResult = await testCandidate.UserDeleteDeliveryPoint(id,true);
+            Assert.IsNotNull(actualResult);
+           
+        }
+
+        [Test]
+        public async Task Test_UserDeleteDeliveryPointNegativeScenario()
+        {
+            Guid id = new Guid("915DE34F-59E7-49AD-985E-541A76A634FF");
+            var actualResult = await testCandidate.UserDeleteDeliveryPoint(id, true);
+            Assert.IsNotNull(actualResult);
+            Assert.IsFalse(actualResult);
+        }
         protected override void OnSetup()
         {
             currentUserUnitType = "Delivery Office";
@@ -473,6 +490,10 @@ namespace RM.DataServices.Tests.DataService
                 new LocationOffering
                 {
                     ID= new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                    Offering = new Offering()
+                    {
+                        ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13")
+                    }
                 }
             };
 

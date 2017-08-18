@@ -62,5 +62,12 @@
 
         internal const string DUPLICATEDELIVERYPOINTRANGE = "One or more addresses in the given range already exist.";
         internal const string DUPLICATEDELIVERYPOINTRANGEALLDUPLICATES = "All the addresses in the given range already exist, please modify the range.";
+        internal const string DeliveryPointID = "Delivery Point ID:";
+
+        internal const string DeletionReasonCode = "Deletion Reason Code:";
+        internal const string DeletionReasonText = "Deletion Reason Text:";
+        internal const string DeletionDate = "Deletion Date/Time:";
+        internal const string UserName = "UserName:";
+
     }
 }

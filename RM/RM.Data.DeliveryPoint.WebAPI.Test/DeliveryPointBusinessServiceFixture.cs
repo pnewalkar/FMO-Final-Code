@@ -39,6 +39,12 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         private DeliveryPointDataDTO actualDeliveryPointDTO = null;
         private RouteDTO routeDTO = null;
         private string currentUserUnit = null;
+        private string reasonCode = null;
+        private string reasonText = null;
+        private string userName = null;
+       
+
+
         private string currentUserUnitType = "Delivery Office";
 
         [Test]
@@ -330,6 +336,18 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             {
                 Assert.AreEqual("Value cannot be null.Parameter name: postalAddressDetails", ae.Message.Replace("\r\n", string.Empty));
             }
+        }
+
+        [Test]
+        public async Task Test_UserDeleteDeliveryPoint_PositiveScenario()
+        {
+            reasonCode = "Demolished";
+            reasonText ="No reason";
+            userName = "Shobharam";
+            mockDeliveryPointsDataService.Setup(x => x.UserDeleteDeliveryPoint(It.IsAny<Guid>(),true)).ReturnsAsync(true);
+            bool expectedresult = await testCandidate.UserDeleteDeliveryPoint(id, reasonCode, reasonText, userName);
+            Assert.IsNotNull(expectedresult);
+            Assert.IsTrue(expectedresult);
         }
 
         /// <summary>
