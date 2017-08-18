@@ -2,6 +2,7 @@
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO;
+using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.Entities;
 using System;
 using System.Collections.Generic;
@@ -51,5 +52,16 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         #endregion PublicMethods
 
       
+
+        public DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace($"DataService.{nameof(UpdateDeliveryGroup)}"))
+            {
+                //fetch all delivery point locations
+                var existingDeliveryLocation = DataContext.LocationRelationships.Where(x => x.RelatedLocationID == deliveryPointGroupDto.ID);
+            }
+
+            return deliveryPointGroupDto;
+        }
     }
 }

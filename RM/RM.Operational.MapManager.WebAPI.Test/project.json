@@ -5,8 +5,8 @@
     "Moq": "4.7.1",
     "NUnit": "3.6.1",
     "NUnit3TestAdapter": "3.7.0",
-    "StyleCop.Analyzers": "1.0.0",
-    "RM.Operational.MapManager.WebAPI": "1.0.0-*"
+    "RM.Operational.MapManager.WebAPI": "1.0.0-*",
+    "StyleCop.Analyzers": "1.0.0"
   },
 
   "frameworks": {
@@ -16,6 +16,9 @@
           "target": "project"
         },
         "RM.CommonLibrary.EntityFramework": {
+          "target": "project"
+        },
+        "RM.CommonLibrary.Reporting.Pdf": {
           "target": "project"
         }
       }

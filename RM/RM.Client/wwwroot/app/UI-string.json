@@ -90,7 +90,8 @@
     "REMOVE_DP_ALIAS": "Remove DP Alias",
     "RANGE_FROM": "Range From",
     "RANGE_TO": "To",
-    "SUB_BUILDING_TYPE": "Sub Building Type"
+    "SUB_BUILDING_TYPE": "Sub Building Type",
+    "DELETE_DELIVERY_POINT": "Reason for deletion"
 
   },
   "ROUTE_LOG": {
