@@ -116,6 +116,7 @@ GlobalSettings.createDeliveryPoint = "/DeliveryPointManager/deliverypoint/newdel
 GlobalSettings.updateDeliverypoint = "/DeliveryPointManager/deliverypoint/";
 GlobalSettings.validateDeliveryPoints = "/DeliveryPointManager/deliverypoint/newdeliverypoint/range/check";
 GlobalSettings.createDeliveryPointsRange = "/DeliveryPointManager/deliverypoint/newdeliverypoint/range";
+GlobalSettings.deleteDeliveryPoint = "/DeliveryPointManager/deliverypoint/delete/{0}/{1}/{2}";
 
 //-----Layers Factory---------------//
 GlobalSettings.fetchDeliveryPointsByBoundingBox = "/deliverypointmanager/deliverypoints?bbox=";
