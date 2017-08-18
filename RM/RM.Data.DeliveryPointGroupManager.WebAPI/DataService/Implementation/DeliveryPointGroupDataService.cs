@@ -1,7 +1,9 @@
 ﻿using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.Entities;
+using System.Linq;
 
 namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
 {
@@ -22,6 +24,17 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
+        }
+
+        public DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace($"DataService.{nameof(UpdateDeliveryGroup)}"))
+            {
+                //fetch all delivery point locations
+                var existingDeliveryLocation = DataContext.LocationRelationships.Where(x => x.RelatedLocationID == deliveryPointGroupDto.ID);
+            }
+
+            return deliveryPointGroupDto;
         }
     }
 }

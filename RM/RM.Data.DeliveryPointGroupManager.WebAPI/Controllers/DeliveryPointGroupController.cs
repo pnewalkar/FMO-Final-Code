@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService;
 
 namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.Controllers
@@ -24,6 +28,10 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.Controllers
 
         public DeliveryPointGroupController(IDeliveryPointGroupBusinessService deliveryPointGroupBusinessService, ILoggingHelper loggingHelper)
         {
+            // Validate the arguments
+            if (deliveryPointGroupBusinessService == null) { throw new ArgumentNullException(nameof(deliveryPointGroupBusinessService)); }
+            if (loggingHelper == null) { throw new ArgumentNullException(nameof(loggingHelper)); }
+
             this.deliveryPointGroupBusinessService = deliveryPointGroupBusinessService;
             this.loggingHelper = loggingHelper;
         }
@@ -41,7 +49,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.Controllers
         [HttpGet("DeliveryPointGroups")]
         public IActionResult GetDeliveryPointGroups(string bbox)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointGroups"))
+            using (loggingHelper.RMTraceManager.StartTrace($"WebService.{nameof(GetDeliveryPointGroups)}"))
             {
                 string methodName = typeof(DeliveryPointGroupController) + "." + nameof(GetDeliveryPointGroups);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
@@ -53,6 +61,50 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.Controllers
             }
         }
 
-        #endregion
+        /// <summary>
+        /// This method updates delivery point group details.
+        /// </summary>
+        /// <param name="deliveryPointGroupDto">The object containing delivery point group details.</param>
+        /// <returns>updateDeliveryPointModelDTO</returns>
+        [Route("deliverypointgroup")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateDeliveryGroup([FromBody] DeliveryPointGroupDTO deliveryPointGroupDto)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace($"WebService.{nameof(UpdateDeliveryGroup)}"))
+                {
+                    string methodName = typeof(DeliveryPointGroupController) + "." + nameof(UpdateDeliveryGroup);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    // validate the method argument.
+                    if (deliveryPointGroupDto == null) { throw new ArgumentNullException(nameof(deliveryPointGroupDto)); }
+
+                    // validate the model state.
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    deliveryPointGroupDto = deliveryPointGroupBusinessService.UpdateDeliveryGroup(deliveryPointGroupDto);
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return Ok(deliveryPointGroupDto);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        #endregion Methods
     }
 }

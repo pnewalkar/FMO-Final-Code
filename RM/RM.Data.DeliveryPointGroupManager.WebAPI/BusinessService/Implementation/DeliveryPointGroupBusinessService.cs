@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
@@ -45,7 +46,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
 
         public string GetDeliveryPointGroups(string boundaryBox, Guid unitGuid)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPointGroups"))
+            using (loggingHelper.RMTraceManager.StartTrace($"Business.{nameof(GetDeliveryPointGroups)}"))
             {
                 string methodName = typeof(DeliveryPointGroupBusinessService) + "." + nameof(GetDeliveryPointGroups);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
@@ -57,12 +58,21 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                     var deliveryGroupCoordinates = GetGroupCoordinatesDataByBoundingBox(boundaryBox.Split(Comma[0]));
                     //var accessLinkDataDto = deliveryPointGroupDataService.GetDeliveryPointGroups(deliveryGroupCoordinates, unitGuid);
                     //var accessLink = GenericMapper.MapList<DeliveryPointGroupDataDTO, DeliveryPointGroupDTO>(accessLinkDataDto);
-                   // deliveryPointGroupJsonData = GetAccessLinkJsonData(accessLinkDataDto);
+                    // deliveryPointGroupJsonData = GetAccessLinkJsonData(accessLinkDataDto);
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return deliveryPointGroupJsonData;
             }
+        }
+
+        public DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace($"Business.{nameof(UpdateDeliveryGroup)}"))
+            {
+            }
+
+            return deliveryPointGroupDto;
         }
 
         private static string GetGroupCoordinatesDataByBoundingBox(params object[] deliveryGroupParameters)
