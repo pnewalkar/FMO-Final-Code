@@ -34,7 +34,6 @@ function GroupDetailsController(
 
     function createGroup() {
         vm.isReadOnly = true;
-        vm.isEditMode = true;
     }
 }
 
