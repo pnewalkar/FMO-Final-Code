@@ -1,6 +1,11 @@
-﻿using RM.CommonLibrary.DataMiddleware;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Threading.Tasks;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.Entities;
 
 namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
@@ -22,6 +27,31 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
+        }
+
+        /// <summary>
+        /// This method is used to insert delivery point group.
+        /// </summary>
+        /// <param name="objDeliveryPoint">Delivery point dto as object</param>
+        /// <returns>Unique identifier of delivery point.</returns>
+        public async Task CreateDeliveryGroup()
+        {
+            Location groupCentroid = new Location();
+            Location groupBoundary = new Location();
+            DeliveryPoint deliveryPoint = new DeliveryPoint();
+            DeliveryPointStatus deliveryPointStatus = new DeliveryPointStatus();
+            NetworkNode networkNode = new NetworkNode();
+
+            using (loggingHelper.RMTraceManager.StartTrace("Data.CreateDeliveryGroup"))
+            {
+                string methodName = typeof(DeliveryPointGroupDataService) + "." + nameof(CreateDeliveryGroup);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+            }
         }
     }
 }

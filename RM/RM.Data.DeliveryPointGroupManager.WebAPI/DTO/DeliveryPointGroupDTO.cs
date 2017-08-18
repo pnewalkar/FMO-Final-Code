@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 
 namespace RM.Data.DeliveryPointGroupManager.WebAPI.DTO
 {
@@ -31,6 +32,10 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI.DTO
         public DateTime RowCreateDateTime { get; set; }
 
         public bool? DeliverToReception { get; set; }
+
+        public DbGeometry GroupCentroid { get; set; }
+
+        public DbGeometry GroupBoundary { get; set; }
 
         public ICollection<DeliveryPointDTO> AddedDeliveryPoints { get; set; }
 

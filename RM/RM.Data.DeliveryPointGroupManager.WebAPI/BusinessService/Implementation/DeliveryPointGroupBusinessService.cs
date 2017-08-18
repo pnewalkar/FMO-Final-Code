@@ -1,5 +1,8 @@
-﻿using RM.CommonLibrary.HelperMiddleware;
+﻿using System;
+using System.Threading.Tasks;
+using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.Integration;
 
@@ -35,5 +38,31 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
         }
 
         #endregion Constructors
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deliveryPointGroupDto">UI Dto to create Delivery group</param>
+        /// <returns></returns>
+        public Task<DeliveryPointGroupDTO> CreateDeliveryPointGroup(DeliveryPointGroupDTO deliveryPointGroupDto)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.CreateDeliveryPointGroup"))
+            {
+                string methodName = typeof(DeliveryPointGroupBusinessService) + "." + nameof(CreateDeliveryPointGroup);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                if (deliveryPointGroupDto == null)
+                {
+                    throw new ArgumentNullException(nameof(deliveryPointGroupDto), string.Format(ErrorConstants.Err_ArgumentmentNullException, deliveryPointGroupDto));
+                }
+
+                deliveryPointGroupDataService.CreateDeliveryGroup();
+                throw new NotImplementedException();
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return null;
+            }            
+        }
     }
 }
