@@ -492,4 +492,8 @@
       <DBReferenceDataName>Object Transparency</DBReferenceDataName>
     </ReferenceDataName>
   </CategoryName>
+ <CategoryName>
+    <AppCategoryName>UIDeleteDPReasonCode</AppCategoryName>
+    <DBCategoryName>UI_Delete_DP_ReasonCode</DBCategoryName>
+  </CategoryName>
 </ReferenceDataMapping>

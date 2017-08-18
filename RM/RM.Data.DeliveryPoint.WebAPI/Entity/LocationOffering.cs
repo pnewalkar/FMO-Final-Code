@@ -22,5 +22,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
         public DateTime RowCreateDateTime { get; set; }
 
         public virtual Location Location { get; set; }
+
+        public virtual Offering Offering { get; set; }
     }
 }

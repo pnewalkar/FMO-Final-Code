@@ -89,6 +89,18 @@ function deliveryPointAPIService($http, GlobalSettings, $q, stringFormatService)
 
         return deferred.promise;
     };
+    deliveryPointAPIService.deleteDeliveryPoint = function (deliveryPointId, reasonCode, reasonText) {
+        var deferred = $q.defer();
+        var deleteDeliveryPointParams = stringFormatService.Stringformat(GlobalSettings.deleteDeliveryPoint, deliveryPointId, reasonCode, reasonText);
+        $http.delete(GlobalSettings.deliveryPointApiUrl + deleteDeliveryPointParams).success(function (response) {
+        deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
 
+        return deferred.promise;
+    };
+
+    
     return deliveryPointAPIService;
 }
