@@ -14,7 +14,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>string</returns>
-        Task<DeliveryPointGroupDTO> CreateDeliveryPointGroup(DeliveryPointGroupDTO deliveryPointGroupDto);
+        DeliveryPointGroupDTO CreateDeliveryPointGroup(DeliveryPointGroupDTO deliveryPointGroupDto);
         string GetDeliveryPointGroups(string boundaryBox, Guid unitGuid);
 
         DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto);

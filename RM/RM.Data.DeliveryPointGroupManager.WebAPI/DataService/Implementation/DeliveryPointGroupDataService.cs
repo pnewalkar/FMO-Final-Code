@@ -50,14 +50,11 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
                 string methodName = typeof(DeliveryPointGroupDataService) + "." + nameof(CreateDeliveryGroup);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                if (deliveryPointGroup != null && 
-                    deliveryPointGroup.groupCentroidLocation.LocationRelationships != null && 
-                    deliveryPointGroup.groupCentroidLocation.LocationRelationships1 != null)
+                if (deliveryPointGroup != null && deliveryPointGroup.AddedDeliveryPoints!= null)
                 {
                     ConfigureMapper();
 
-                    DataContext.Locations.Add(Mapper.Map<LocationDataDTO, Location>(deliveryPointGroup.groupBoundaryLocation));
-                    DataContext.Locations.Add(Mapper.Map<LocationDataDTO, Location>(deliveryPointGroup.groupCentroidLocation));
+                    DataContext.Locations.AddRange(Mapper.Map<List<LocationDataDTO>, List<Location>>(deliveryPointGroup.AddedDeliveryPoints));
                     DataContext.DeliveryPoints.Add(Mapper.Map<DeliveryPointDataDTO, DeliveryPoint>(deliveryPointGroup.groupCentroidDeliveryPoint));
                     DataContext.NetworkNodes.Add(Mapper.Map<NetworkNodeDataDTO, NetworkNode>(deliveryPointGroup.groupCentroidNetworkNode));
                     DataContext.SupportingDeliveryPoint.Add(Mapper.Map<SupportingDeliveryPointDataDTO, SupportingDeliveryPoint>(deliveryPointGroup.groupDetails));
@@ -105,7 +102,6 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
             return deliveryPointGroupDto;
         }
 
-        #endregion PublicMethods
 
         private static void ConfigureMapper()
         {
@@ -165,21 +161,21 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         /// <summary>
         /// Automapper to convert DataDto to Entity
         /// </summary>
-        private static void ConfigureMapper()
-        {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<Location, LocationDataDTO>().ReverseMap();
-                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().ReverseMap();
-                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().ReverseMap();
-                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().ReverseMap();
-                cfg.CreateMap<LocationRelationship, LocationRelationshipDataDTO>().ReverseMap();
-                cfg.CreateMap<LocationOffering, LocationOfferingDataDTO>().ReverseMap();
-                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().ReverseMap();                
-            });
+        //private static void ConfigureMapper()
+        //{
+        //    Mapper.Initialize(cfg =>
+        //    {
+        //        cfg.CreateMap<Location, LocationDataDTO>().ReverseMap();
+        //        cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().ReverseMap();
+        //        cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().ReverseMap();
+        //        cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().ReverseMap();
+        //        cfg.CreateMap<LocationRelationship, LocationRelationshipDataDTO>().ReverseMap();
+        //        cfg.CreateMap<LocationOffering, LocationOfferingDataDTO>().ReverseMap();
+        //        cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().ReverseMap();                
+        //    });
 
-            Mapper.Configuration.CreateMapper();
-        }
+        //    Mapper.Configuration.CreateMapper();
+        //}
 
         #endregion PrivateMethods
     }

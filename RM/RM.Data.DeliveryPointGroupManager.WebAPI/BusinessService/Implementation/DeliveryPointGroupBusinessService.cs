@@ -107,7 +107,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="deliveryPointGroupDto">UI Dto to create Delivery group</param>
         /// <returns></returns>
-        public Task<DeliveryPointGroupDTO> CreateDeliveryPointGroup(DeliveryPointGroupDTO deliveryPointGroupDto)
+        public DeliveryPointGroupDTO CreateDeliveryPointGroup(DeliveryPointGroupDTO deliveryPointGroupDto)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.CreateDeliveryPointGroup"))
             {
@@ -310,22 +310,9 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
 
 
                 // Get centroid Location
-                if (deliveryPointGroupDataDTO.groupCentroidLocation != null)
+                if (deliveryPointGroupDataDTO.AddedDeliveryPoints != null)
                 {
-                    deliveryPointGroupDataDTO.groupCentroidLocation.ID = deliveryPointGroupDTO.ID;
-                    deliveryPointGroupDataDTO.groupCentroidLocation.Shape = deliveryPointGroupDTO.GroupCentroid;
-
-                    // Get centroid LocationRelationShip for relationship between boundary and centroid
-                    if (deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships != null && deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships.Count > 0)
-                    {
-
-                    }
-
-                    // Get centroid LocationRelationShip for relationship between centroid and deliveryPoints
-                    if (deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships1 != null && deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships1.Count > 0)
-                    {
-
-                    }
+                    deliveryPointGroupDataDTO.AddedDeliveryPoints.ID = deliveryPointGroupDTO.ID;
                 }
                 // Get centroid Network Node
 
