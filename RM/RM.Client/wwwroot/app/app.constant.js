@@ -122,7 +122,7 @@ GlobalSettings.deleteDeliveryPoint = "/DeliveryPointManager/deliverypoint/delete
 GlobalSettings.fetchDeliveryPointsByBoundingBox = "/deliverypointmanager/deliverypoints?bbox=";
 GlobalSettings.fetchAccessLinksByBoundingBox = "/accesslinkmanager/accessLinks?bbox=";
 GlobalSettings.fetchRouteLinksByBoundingBox = "/networkmanager/routelinks?bbox=";
-
+GlobalSettings.fetchGroupLinksByBoundingBox = "/networkmanager/grouplinks?bbox=";
 //-----Manage Access Factory---------------//
 GlobalSettings.getToken = "/token";
 

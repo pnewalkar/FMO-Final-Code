@@ -2,6 +2,10 @@
 
 using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
 
+using RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO;
+using System;
+using System.Collections.Generic;
+
 namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
 {
     /// <summary>
@@ -15,6 +19,15 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         /// </summary>
         /// <returns></returns>
         Task CreateDeliveryGroup();
+
+        /// <summary>
+        /// This method is used to fetch delivery  data.
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates.</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>List of Access Link dto</returns>
+        List<DeliveryPointGroupDataDTO> GetDeliveryGroups(string boundingBoxCoordinates, Guid unitGuid);
+
         DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto);
     }
 }
