@@ -54,9 +54,9 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
                     ConfigureMapper();
 
                     DataContext.Locations.AddRange(Mapper.Map<List<LocationDataDTO>, List<Location>>(deliveryPointGroup.AddedDeliveryPoints));
-                    DataContext.DeliveryPoints.Add(Mapper.Map<DeliveryPointDataDTO, DeliveryPoint>(deliveryPointGroup.groupCentroidDeliveryPoint));
-                    DataContext.NetworkNodes.Add(Mapper.Map<NetworkNodeDataDTO, NetworkNode>(deliveryPointGroup.groupCentroidNetworkNode));
-                    DataContext.SupportingDeliveryPoint.Add(Mapper.Map<SupportingDeliveryPointDataDTO, SupportingDeliveryPoint>(deliveryPointGroup.groupDetails));
+                    DataContext.DeliveryPoints.Add(Mapper.Map<DeliveryPointDataDTO, DeliveryPoint>(deliveryPointGroup.GroupCentroidDeliveryPoint));
+                    DataContext.NetworkNodes.Add(Mapper.Map<NetworkNodeDataDTO, NetworkNode>(deliveryPointGroup.GroupCentroidNetworkNode));
+                    DataContext.SupportingDeliveryPoint.Add(Mapper.Map<SupportingDeliveryPointDataDTO, SupportingDeliveryPoint>(deliveryPointGroup.DeliveryGroup));
 
                     DataContext.SaveChanges();
 
@@ -220,7 +220,6 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
             return deliveryGroups;
         }
 
-        #endregion PublicMethods
 
         #region PrivateMethods
 
