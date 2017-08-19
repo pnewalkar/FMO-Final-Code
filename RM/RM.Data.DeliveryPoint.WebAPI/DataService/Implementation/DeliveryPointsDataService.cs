@@ -244,7 +244,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             DependentLocality = l.PostalAddress.DependentLocality,
                             UDPRN = l.PostalAddress.UDPRN
                         }
-                    }).ToListAsync();
+                    }).OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
+                    .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
+                    .ToListAsync();
             }
             else
             {
@@ -273,7 +275,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             DependentLocality = l.PostalAddress.DependentLocality,
                             UDPRN = l.PostalAddress.UDPRN
                         }
-                    }).ToListAsync();
+                    }).OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
+                    .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
+                    .ToListAsync();
             }
 
             return deliveryPointDataDto;
@@ -337,6 +341,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         }
                     })
                     .Take(recordTakeCount)
+                    .OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
+                    .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
                     .ToListAsync();
             }
             else
@@ -368,6 +374,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         }
                     })
                     .Take(recordTakeCount)
+                    .OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
+                    .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
                     .ToListAsync();
             }
 

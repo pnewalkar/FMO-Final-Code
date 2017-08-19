@@ -352,7 +352,7 @@ namespace RM.DataServices.Tests.DataService
         public async Task Test_UserDeleteDeliveryPointPositiveScenario()
         {
             Guid id = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13");
-            var actualResult = await testCandidate.UserDeleteDeliveryPoint(id,true);
+            var actualResult = await testCandidate.DeleteDeliveryPointWithAssociatedLocations(id);
             Assert.IsNotNull(actualResult);
            
         }
@@ -361,7 +361,7 @@ namespace RM.DataServices.Tests.DataService
         public async Task Test_UserDeleteDeliveryPointNegativeScenario()
         {
             Guid id = new Guid("915DE34F-59E7-49AD-985E-541A76A634FF");
-            var actualResult = await testCandidate.UserDeleteDeliveryPoint(id, true);
+            var actualResult = await testCandidate.DeleteDeliveryPointWithAssociatedLocations(id);
             Assert.IsNotNull(actualResult);
             Assert.IsFalse(actualResult);
         }
