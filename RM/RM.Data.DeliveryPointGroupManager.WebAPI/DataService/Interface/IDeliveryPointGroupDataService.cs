@@ -8,7 +8,6 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
 {
     public interface IDeliveryPointGroupDataService
     {
-
         /// <summary>
         /// This method is used to fetch delivery  data.
         /// </summary>
@@ -16,6 +15,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List of Access Link dto</returns>
         List<DeliveryPointGroupDataDTO> GetDeliveryGroups(string boundingBoxCoordinates, Guid unitGuid);
+
         DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto);
     }
 }
