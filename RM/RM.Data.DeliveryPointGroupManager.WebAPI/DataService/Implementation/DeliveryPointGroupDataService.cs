@@ -9,7 +9,6 @@ using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO;
-using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.Entities;
 
 namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
@@ -91,17 +90,84 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
             return deliveryPointGroupdata;
         }
 
-        public DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto)
+        public DeliveryPointGroupDataDTO UpdateDeliveryGroup(DeliveryPointGroupDataDTO deliveryPointGroupDto)
         {
             using (loggingHelper.RMTraceManager.StartTrace($"DataService.{nameof(UpdateDeliveryGroup)}"))
             {
                 //fetch all delivery point locations
-                var existingDeliveryLocation = DataContext.LocationRelationships.Where(x => x.RelatedLocationID == deliveryPointGroupDto.ID);
+                var existingDeliveryPointLocationRelationships = DataContext.LocationRelationships.Where(x => x.RelatedLocationID == deliveryPointGroupDto.DeliveryGroup.DeliveryPoint.ID);
+                var deliveryPointToCentroidRelationTypeId = existingDeliveryPointLocationRelationships.First().RelationshipTypeGUID;
+                DataContext.LocationRelationships.RemoveRange(existingDeliveryPointLocationRelationships);
+
+                foreach (var addedDeliveryPoint in deliveryPointGroupDto.AddedDeliveryPoints)
+                {
+                    LocationRelationship deliveryPointToCentroidRelation = new LocationRelationship();
+                    deliveryPointToCentroidRelation.ID = Guid.NewGuid();
+                    deliveryPointToCentroidRelation.LocationID = addedDeliveryPoint.ID;
+                    deliveryPointToCentroidRelation.RelatedLocationID = deliveryPointGroupDto.DeliveryGroup.DeliveryPoint.ID;
+                    deliveryPointToCentroidRelation.RelationshipTypeGUID = deliveryPointToCentroidRelationTypeId;
+                    deliveryPointToCentroidRelation.RowCreateDateTime = DateTime.UtcNow;
+                    DataContext.LocationRelationships.Add(deliveryPointToCentroidRelation);
+                }
+
+                // Update group boundary
+                var groupBoundary = DataContext.Locations.Single(x => x.ID == deliveryPointGroupDto.GroupBoundary.ID);
+
+                groupBoundary.Shape = deliveryPointGroupDto.GroupBoundary.Shape;
+
+                // Update group details
+                var existingGroupDetails = DataContext.SupportingDeliveryPoint.Single(x => x.ID == deliveryPointGroupDto.DeliveryGroup.ID);
+                existingGroupDetails.GroupName = deliveryPointGroupDto.DeliveryGroup.GroupName;
+                existingGroupDetails.DeliverToReception = deliveryPointGroupDto.DeliveryGroup.DeliverToReception;
+                existingGroupDetails.GroupTypeGUID = deliveryPointGroupDto.DeliveryGroup.GroupTypeGUID;
+                existingGroupDetails.NumberOfFloors = deliveryPointGroupDto.DeliveryGroup.NumberOfFloors;
+                existingGroupDetails.InternalDistanceMeters = deliveryPointGroupDto.DeliveryGroup.InternalDistanceMeters;
+
+                existingGroupDetails.WorkloadTimeOverrideMinutes = deliveryPointGroupDto.DeliveryGroup.WorkloadTimeOverrideMinutes;
+                existingGroupDetails.TimeOverrideApproved = deliveryPointGroupDto.DeliveryGroup.TimeOverrideApproved;
+                existingGroupDetails.TimeOverrideReason = deliveryPointGroupDto.DeliveryGroup.TimeOverrideReason;
+                existingGroupDetails.ServicePointTypeGUID = deliveryPointGroupDto.DeliveryGroup.ServicePointTypeGUID;
+                existingGroupDetails.RowCreateDateTime = DateTime.UtcNow;
+
+                //update group centroid
+                existingGroupDetails.DeliveryPoint.NetworkNode.Location.Shape = deliveryPointGroupDto.GroupBoundary.Shape.Centroid;
+
+                DataContext.SaveChanges();
             }
 
             return deliveryPointGroupDto;
         }
 
+        public DeliveryPointGroupDataDTO GetDeliveryGroup(Guid deliveryGroupId)
+        {
+            DeliveryPointGroupDataDTO deliveryGroups = new DeliveryPointGroupDataDTO();
+
+            var groupDetails = (from location in DataContext.Locations
+                                from groupDetail in DataContext.SupportingDeliveryPoint
+                                from locationRelation in DataContext.LocationRelationships
+                                where location.ID == locationRelation.RelatedLocationID
+                                && groupDetail.DeliveryPoint.ID == locationRelation.LocationID
+                                && groupDetail.ID == deliveryGroupId
+                                select new
+                                {
+                                    Location = location,
+                                    GroupDetail = groupDetail,
+                                    AddedDeliveryPoints = (from addedDeliveryPoints in DataContext.Locations
+                                                           from groupDPLocationRelationships in DataContext.LocationRelationships
+                                                           where addedDeliveryPoints.ID == groupDPLocationRelationships.LocationID
+                                                           && groupDPLocationRelationships.RelatedLocationID == groupDetail.DeliveryPoint.ID
+                                                           select addedDeliveryPoints).AsEnumerable()
+                                }
+                               ).Single();
+
+            ConfigureMapper();
+
+            deliveryGroups = Mapper.Map<DeliveryPointGroupDataDTO>(groupDetails);
+
+            return deliveryGroups;
+        }
+
+        #endregion PublicMethods
 
         private static void ConfigureMapper()
         {

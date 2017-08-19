@@ -69,10 +69,39 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
             }
         }
 
+        public DeliveryPointGroupDTO GetDeliveryGroup(Guid deliveryGroupId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace($"Business.{nameof(GetDeliveryGroup)}"))
+            {
+                string methodName = typeof(DeliveryPointGroupBusinessService) + "." + nameof(GetDeliveryGroup);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                var deliveryGroup = ConvertToDTO(deliveryPointGroupDataService.GetDeliveryGroup(deliveryGroupId));
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return deliveryGroup;
+            }
+        }
+
         public DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto)
         {
             using (loggingHelper.RMTraceManager.StartTrace($"Business.{nameof(UpdateDeliveryGroup)}"))
             {
+                //    List<string> categoryNamesSimpleLists = new List<string>
+                //{
+                //        ReferenceDataCategoryNames.DataProvider,
+                //    ReferenceDataCategoryNames.OperationalObjectType,
+                //    ReferenceDataCategoryNames.AccessLinkDirection,
+                //    ReferenceDataCategoryNames.AccessLinkStatus,
+                //    ReferenceDataCategoryNames.AccessLinkType, // access link type (NLNodetype)
+                //    ReferenceDataCategoryNames.NetworkLinkType,
+                //    ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+                //    ReferenceDataCategoryNames.NetworkNodeType
+                //};
+
+                //    var referenceDataCategoryList =
+                //       deliveryPointGroupIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
+                deliveryPointGroupDataService.UpdateDeliveryGroup(ConvertToDataDTO(deliveryPointGroupDto));
             }
 
             return deliveryPointGroupDto;

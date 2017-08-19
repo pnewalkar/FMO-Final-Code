@@ -1,10 +1,6 @@
-﻿using System.Threading.Tasks;
-
-using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
-
-using RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO;
 
 namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
 {
@@ -27,6 +23,8 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         /// <returns>List of Access Link dto</returns>
         List<DeliveryPointGroupDataDTO> GetDeliveryGroups(string boundingBoxCoordinates, Guid unitGuid);
 
-        DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto);
+        DeliveryPointGroupDataDTO UpdateDeliveryGroup(DeliveryPointGroupDataDTO deliveryPointGroupDto);
+
+        DeliveryPointGroupDataDTO GetDeliveryGroup(Guid deliveryGroupId);
     }
 }
