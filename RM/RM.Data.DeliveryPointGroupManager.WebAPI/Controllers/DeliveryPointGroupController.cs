@@ -62,7 +62,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.Controllers
                         return BadRequest(ModelState);
                     }
 
-                    createDeliveryPointGroupModelDTO = await deliveryPointGroupBusinessService.CreateDeliveryPointGroup(deliveryPointGroupDto);
+                    createDeliveryPointGroupModelDTO = deliveryPointGroupBusinessService.CreateDeliveryPointGroup(deliveryPointGroupDto);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                     return Ok(createDeliveryPointGroupModelDTO);
