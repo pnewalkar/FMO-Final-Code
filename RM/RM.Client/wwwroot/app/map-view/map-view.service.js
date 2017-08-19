@@ -118,7 +118,8 @@ function mapService($http,
         setPolygonTransparency: setPolygonTransparency,
         getLayerSummary: getLayerSummary,
         deselectDP: deselectDP,
-        setDeliveryPoint: setDeliveryPoint
+        setDeliveryPoint: setDeliveryPoint,
+        deleteDeliveryPoint: deleteDeliveryPoint
     }
 
     function deselectDP() {
@@ -210,6 +211,21 @@ function mapService($http,
                 return 'http://localhost:47467/home/getgroupsdata?bbox=' + extent.join(',');
             },
             strategy: ol.loadingstrategy.bbox
+        });
+
+        var groupLinkVector = new ol.source.Vector({
+            format: new ol.format.GeoJSON({
+                defaultDataProjection: 'EPSG:27700'
+            }),
+            strategy: ol.loadingstrategy.bbox,
+            loader: function (extent) {
+                var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
+                layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
+                    var layerName = GlobalSettings.groupLayerName;
+                   // mapFactory.LicenceInfo(layerName, accessLinkVector);
+                    loadFeatures(accessLinkVector, response);
+                });
+            }
         });
 
         var accessLinkVector = new ol.source.Vector({
@@ -1042,5 +1058,11 @@ function showDeliveryPointDetails(deliveryPointDetails) {
                 }, []);
             }
         });
+    }
+
+    function deleteDeliveryPoint(featureId) {
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        vm.interactions.select.getFeatures().clear();
+        deliveryPointsLayer.layer.getSource().removeFeature(deliveryPointsLayer.layer.getSource().getFeatureById(featureId))
     }
 }

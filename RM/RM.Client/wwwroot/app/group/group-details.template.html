@@ -3,10 +3,10 @@
         <!--Icons backbutton-edit-delete-help-->
         <div layout="row" layout-align="end start">
             <back-button></back-button>
-            <md-button class="context-button" aria-label="Save" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+            <md-button class="context-button" aria-label="Save" ng-if="!(vm.isReadOnly)" ng-disabled="(!vm.groupForm.$valid)" ng-click="vm.createGroup()" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
             </md-button>
-            <md-button class="context-button" aria-label="Edit" title="{{ 'GENERAL.BUTTONS.EDIT' | translate }}">
+            <md-button class="context-button" aria-label="Edit" ng-if="vm.isReadOnly" title="{{ 'GENERAL.BUTTONS.EDIT' | translate }}">
                 <i class="fa fa-pencil" aria-hidden="true"></i>
             </md-button>
             <md-button class="context-button" aria-label="Delete" title="{{ 'GENERAL.BUTTONS.DELETE' | translate }}">
@@ -23,7 +23,7 @@
             <div layout="column" flex="100">
                 <md-input-container>
                     <label>Group Name</label>
-                    <input name="groupName" type="text" ng-model="vm.groupName" ng-maxlength="90" required>
+                    <input name="groupName" type="text" ng-model="vm.groupName" ng-maxlength="90" ng-disabled="vm.isReadOnly" required>
                     <div ng-messages="vm.groupForm.groupName.$error" ng-show="vm.groupForm.groupName.$touched" role="alert">
                         <div ng-message="required">This field is required*</div>
                         <div ng-message="maxlength">Value entered is longer than 90</div>
@@ -37,7 +37,7 @@
             <div layout="column" flex="90">
                 <md-input-container>
                     <label>Type</label>
-                    <md-select name="groupType" ng-model="vm.groupType" required>
+                    <md-select name="groupType" ng-model="vm.groupType" ng-disabled="vm.isReadOnly" required>
                         <md-option ng-repeat="groupType in vm.deliveryGroupTypes | orderBy : 'value'" ng-value="groupType">
                             {{groupType.value}}
                         </md-option>
@@ -61,7 +61,7 @@
             <div layout="column" flex="50">
                 <md-input-container ng-if="vm.groupType.value === 'Complex' ||vm.groupType.value === 'Skyscraper'||vm.groupType.value === 'Tenement Block'">
                     <label>Floors</label>
-                    <input name="floors" type="text" ng-model="vm.floors" ng-maxlength="3" ng-pattern="/^[0-9]*$/"
+                    <input name="floors" type="text" ng-model="vm.floors" ng-maxlength="3" ng-pattern="/^[0-9]*$/" ng-disabled="vm.isReadOnly"
                            ng-required="(vm.groupType.value === 'Complex' || vm.groupType.value === 'Skyscraper'|| vm.groupType.value === 'Tenement Block')">
                     <div ng-messages="vm.groupForm.floors.$error">
                         <div ng-message="required">This field is required*</div>
@@ -72,31 +72,33 @@
             </div>
             <span flex="5"></span>
             <div layout="column" flex="50">
-                <md-input-container ng-if="(vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType === 'Inside')">
-                    <label>Internal Distance</label>
-                    <!--Decimal upto 2 characters restrict pending-->
-                    <input name="internalDistance" type="text" ng-model="vm.internalDistance" ng-maxlength="7" ng-pattern="/^[0-9]*$/"
-                           ng-required="((vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType === 'Inside'))">
-                    <div ng-messages="vm.groupForm.internalDistance.$error">
-                        <div ng-message="required">This field is required*</div>
-                        <div ng-message="maxlength">Value entered is longer than 7</div>
-                        <div ng-message="pattern">Value entered is not valid</div>
-                    </div>
-                 </md-input-container>
+                <!--<div ng-if="!(vm.isReadOnly)">-->
+                    <md-input-container ng-if="((vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType.value === 'Inside')) && !vm.isReadOnly">
+                        <label>Internal Distance</label>
+                        <!--Decimal upto 2 characters restrict pending-->
+                        <input name="internalDistance" type="text" ng-model="vm.internalDistance" ng-maxlength="7" ng-pattern="/^[0-9]*$/"
+                               ng-required="((vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType.value === 'Inside'))">
+                        <div ng-messages="vm.groupForm.internalDistance.$error">
+                            <div ng-message="required">This field is required*</div>
+                            <div ng-message="maxlength">Value entered is longer than 7</div>
+                            <div ng-message="pattern">Value entered is not valid</div>
+                        </div>
+                    </md-input-container>
+                <!--</div>-->
             </div>
         </div>
 
         <!--Override & time-->
         <div layout="row">
             <div layout="column" flex="50">
-                <md-checkbox class="group_checkbox" ng-model="vm.isOverrideTime">Override Time</md-checkbox>
+                <md-checkbox class="group_checkbox" ng-model="vm.isOverrideTime" ng-disabled="vm.isReadOnly">Override Time</md-checkbox>
             </div>
             <span flex="5"></span>
             <div layout="column" flex="50">
                 <!--Time to be displayed in HH:MM pending-->
                 <md-input-container ng-if="vm.groupType.value === 'Complex' && vm.isOverrideTime">
                     <label>Time</label>
-                    <input name="overrideTime" type="text" ng-model="vm.overrideTime" ng-pattern="/^[0-9]*$/">
+                    <input name="overrideTime" type="text" ng-model="vm.overrideTime" ng-pattern="/^[0-9]*$/" ng-disabled="vm.isReadOnly">
                     <div ng-messages="vm.groupForm.overrideTime.$error">
                         <div ng-message="pattern">Value entered is not valid</div>
                     </div>
@@ -107,7 +109,7 @@
         <!--Location & Internal Distance-->
         <div layout="row">
             <div layout="column" flex="50" ng-if="vm.groupType.value === 'Service Point'">
-                <md-radio-group ng-model="vm.ServicePointType">
+                <md-radio-group ng-model="vm.ServicePointType" ng-disabled="vm.isReadOnly">
                     <md-radio-button class="groupRadioBtn" ng-repeat="servicePoint in vm.servicePointTypes" ng-value="servicePoint">
                         {{servicePoint.value}}
                     </md-radio-button>
@@ -120,7 +122,7 @@
             <div layout="column" flex="100">
                 <md-input-container ng-if="vm.groupType.value === 'Complex' && vm.isOverrideTime">
                     <label>Reason</label>
-                    <input name="reason" type="text" ng-model="vm.timeReason" ng-maxlength="300">
+                    <input name="reason" type="text" ng-model="vm.timeReason" ng-maxlength="300" ng-disabled="vm.isReadOnly">
                     <div ng-messages="vm.groupForm.reason.$error">
                         <div ng-message="maxlength">Value entered is longer than 300</div>
                     </div>
@@ -133,7 +135,7 @@
             <div layout="column" flex="40">
                 <md-input-container>
                     <label>Delivery Point</label>
-                    <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
+                    <input type="text" ng-model="vm.addedPoints.length" ng-disabled="true">
                 </md-input-container>
             </div>
             <span flex="5"></span>
@@ -144,7 +146,7 @@
             </div>
             <span flex="5"></span>
             <div layout="column" flex="40" ng-if="vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block'">
-                <md-checkbox ng-model="ctrl.simulateQuery">Delivery to reception</md-checkbox>
+                <md-checkbox ng-model="vm.isDeliveryToReception" ng-disabled="vm.isReadOnly">Delivery to reception</md-checkbox>
             </div>
         </div>
 
@@ -183,33 +185,15 @@
             </div>
         </div>
 
-        <!--Added points-->
-        <div layout="row" ng-if="vm.addedPoints.length > 0">
-            <div layout="column" flex="80">
-                <md-content class="md-padding"><p>Added Points</p></md-content>
-            </div>
-        </div>
-
-        <div layout="row" ng-repeat="point in vm.addedPoints" ng-if="vm.addedPoints.length > 0">
-            <div layout="column" flex="80">
-                <p>{{point.displaytext}}</p>
-            </div>
-            <div layout="column" flex="10">
-                <md-button class="context-button" aria-label="Unlink" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
-                    <i class="fa fa-chain-broken" aria-hidden="true"></i>
-                </md-button>
-            </div>
-        </div>
-
         <!--Added Points-->
-        <div layout="row">
+        <div layout="row" ng-if="vm.addedPoints.length > 0">
             <div layout="column" flex="80">
                 <md-content><p>Added Points</p></md-content>
             </div>
         </div>
-        <div layout="row">
+        <div layout="row" ng-repeat="point in vm.addedPoints" ng-if="vm.addedPoints.length > 0">
             <div layout="column" flex="90">
-                <p>3 Mars Crescent B91E 1HE</p>
+                <p>{{point.displaytext}}</p>
             </div>
             <div layout="column" flex="10">
                 <md-button class="context-button" aria-label="Help" title="">
