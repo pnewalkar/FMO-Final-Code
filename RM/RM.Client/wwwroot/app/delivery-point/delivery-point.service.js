@@ -38,6 +38,7 @@ function deliveryPointService(
         setOrganisation: setOrganisation,
         isUndefinedOrNull: isUndefinedOrNull,
         UpdateDeliverypoint: UpdateDeliverypoint,
+        UpdateDeliverypointForRange: UpdateDeliverypointForRange,
         getSubBuildingTypes: getSubBuildingTypes,
         createDeliveryPointsRange: createDeliveryPointsRange
     };
@@ -167,8 +168,32 @@ function deliveryPointService(
                 disable: false
             });
             mapFactory.setAccessLink();
-            mapFactory.setDeliveryPointOnLoad(result.xCoordinate, result.yCoordinate);
+            mapFactory.setDeliveryPointOnLoad(result.xCoordinate, result.yCoordinate, true);
             guidService.setGuid(result.id);
+            $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
+        });
+        return deferred.promise;
+    }
+
+    function UpdateDeliverypointForRange(positionedDeliveryPointList) {
+        var deferred = $q.defer();
+        var isSingle = false;
+        var xCoordinate = null;
+        var yCoordinate = null;
+        vm.positionedDeliveryPointList = positionedDeliveryPointList;
+        deliveryPointAPIService.UpdateDeliverypointForRange(positionedDeliveryPointList).then(function (result) {
+            $rootScope.$broadcast('disablePrintMap', {
+                disable: false
+            });
+            mapFactory.setAccessLink();
+            if(result && result.length == 1){
+                isSingle = true;
+                xCoordinate = result[0].xCoordinate;
+                yCoordinate = result[0].yCoordinate;
+            }
+            mapFactory.setDeliveryPointOnLoad(xCoordinate, yCoordinate, isSingle);
+            mapFactory.setAccessLink();
+            //guidService.setGuid(result.id);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
         });
         return deferred.promise;

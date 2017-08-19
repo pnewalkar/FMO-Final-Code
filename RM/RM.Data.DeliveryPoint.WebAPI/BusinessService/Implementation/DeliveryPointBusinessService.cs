@@ -457,6 +457,104 @@
         }
 
         /// <summary>
+        /// This Method is used to Update Delivery Points Co-ordinates.
+        /// </summary>
+        /// <param name="deliveryPointModelDTOs">List of DeliveryPointModelDTO</param>
+        /// <returns>List of UpdateDeliveryPointModelDTO</returns>
+        public async Task<List<UpdateDeliveryPointModelDTO>> UpdateDeliveryPointLocationForRange(List<DeliveryPointModelDTO> deliveryPointModelDTOs)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.UpdateDeliveryPointLocationForRange"))
+            {
+                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(UpdateDeliveryPointLocationForRange);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                if (deliveryPointModelDTOs == null)
+                {
+                    throw new ArgumentNullException(nameof(deliveryPointModelDTOs), string.Format(ErrorConstants.Err_ArgumentmentNullException, deliveryPointModelDTOs));
+                }
+
+                List<UpdateDeliveryPointModelDTO> updateDeliveryPointModelDTOs = new List<UpdateDeliveryPointModelDTO>();
+
+                List<string> categoryNamesSimpleLists = new List<string>
+                    {
+                        DeliveryPointConstants.TASKNOTIFICATION,
+                        DeliveryPointConstants.NETWORKLINKDATAPROVIDER,
+                        DeliveryPointConstants.DeliveryPointUseIndicator,
+                        ReferenceDataCategoryNames.DeliveryPointOperationalStatus,
+                        ReferenceDataCategoryNames.NetworkNodeType
+                    };
+                var referenceDataCategoryList = deliveryPointIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
+
+                Guid operationalStatusGUIDLive = referenceDataCategoryList
+                                .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointOperationalStatus)
+                                .SelectMany(list => list.ReferenceDatas)
+                                .Where(item => item.ReferenceDataValue.Equals(DeliveryPointConstants.OperationalStatusGUIDLive, StringComparison.OrdinalIgnoreCase))
+                                .Select(s => s.ID).SingleOrDefault();
+
+                Guid networkNodeTypeRMGServiceNode = referenceDataCategoryList
+                                .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.NetworkNodeType)
+                                .SelectMany(list => list.ReferenceDatas)
+                                .Where(item => item.ReferenceDataValue.Equals(DeliveryPointConstants.NetworkNodeTypeRMGServiceNode, StringComparison.OrdinalIgnoreCase))
+                                .Select(s => s.ID).SingleOrDefault();
+
+                Guid locationProviderId = referenceDataCategoryList
+                                        .Where(list => list.CategoryName.Equals(DeliveryPointConstants.NETWORKLINKDATAPROVIDER, StringComparison.OrdinalIgnoreCase))
+                                        .SelectMany(list => list.ReferenceDatas)
+                                        .Where(item => item.ReferenceDataValue.Equals(DeliveryPointConstants.EXTERNAL, StringComparison.OrdinalIgnoreCase))
+                                        .Select(s => s.ID).SingleOrDefault();
+
+                foreach (DeliveryPointModelDTO deliveryPointModelDTO in deliveryPointModelDTOs)
+                {
+
+                    string sbLocationXY = string.Format(
+                                                            DeliveryPointConstants.USRGEOMETRYPOINT,
+                                                            Convert.ToString(deliveryPointModelDTO.XCoordinate),
+                                                            Convert.ToString(deliveryPointModelDTO.YCoordinate));
+
+                    DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), DeliveryPointConstants.BNGCOORDINATESYSTEM);
+
+                    DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO
+                    {
+                        ID = deliveryPointModelDTO.ID,
+                        Address_GUID = deliveryPointModelDTO.ID,
+                        OperationalStatus_GUID = operationalStatusGUIDLive,
+                        LocationProvider_GUID = locationProviderId,
+                        NetworkNodeType_GUID = networkNodeTypeRMGServiceNode,
+                        RowVersion = deliveryPointModelDTO.RowVersion,
+                        LocationXY = spatialLocationXY
+                    };
+
+                    Guid returnGuid = Guid.Empty;
+
+                    await deliveryPointsDataService.UpdateDeliveryPointLocationOnID(ConvertToDataDTO(deliveryPointDTO)).ContinueWith(t =>
+                    {
+                        if (t.IsFaulted && t.Exception != null)
+                        {
+                            throw t.Exception;
+                        }
+
+                        if (t.Result != Guid.Empty)
+                        {
+                            returnGuid = t.Result;
+
+                        // Call reference data integration api
+                        Guid deliveryOperationObjectTypeId = deliveryPointIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
+
+                        // Call access link integration api
+                        deliveryPointIntegrationService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+                        }
+                    });
+
+                    updateDeliveryPointModelDTOs.Add(new UpdateDeliveryPointModelDTO { XCoordinate = deliveryPointModelDTO.XCoordinate, YCoordinate = deliveryPointModelDTO.YCoordinate, ID = deliveryPointDTO.ID });
+                    
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return updateDeliveryPointModelDTOs;
+            }
+        }
+
+        /// <summary>
         /// This Method fetches Route and DPUse for a single DeliveryPoint
         /// </summary>
         /// <param name="deliveryPointId">deliveryPointId as GUID</param>
@@ -878,10 +976,11 @@
                             deliveryRouteId = postalAddressDTO.DeliveryRoute_Guid;
                         }
                     }
-
-                    // Call Route log integration API
-                    await deliveryPointIntegrationService.MapRouteForDeliveryPointForRange(deliveryRouteId, deliveryPointIds);
                 }
+
+                // Call Route log integration API
+                await deliveryPointIntegrationService.MapRouteForDeliveryPointForRange(deliveryRouteId, deliveryPointIds);
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return new CreateDeliveryPointForRangeModelDTO { CreateDeliveryPointModelDTOs = returnCreateDeliveryPointModelDTOs };
@@ -1266,6 +1365,7 @@
                     postalAddressDTO.SubBuildingName = null;
                     postalAddressDTO.OrganisationName = null;
                     postalAddressDTO.DepartmentName = null;
+                    postalAddressDTO.UDPRN = null;
                     postalAddressDTOs.Add(postalAddressDTO);
                 }
             }
@@ -1281,6 +1381,7 @@
                     postalAddressDTO.DeliveryRoute_Guid = addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid;
                     postalAddressDTO.OrganisationName = null;
                     postalAddressDTO.DepartmentName = null;
+                    postalAddressDTO.UDPRN = null;
                     postalAddressDTOs.Add(postalAddressDTO);
                 }
             }
@@ -1297,6 +1398,7 @@
                     postalAddressDTO.SubBuildingName = null;
                     postalAddressDTO.OrganisationName = null;
                     postalAddressDTO.DepartmentName = null;
+                    postalAddressDTO.UDPRN = null;
                     postalAddressDTOs.Add(postalAddressDTO);
                 }
             }

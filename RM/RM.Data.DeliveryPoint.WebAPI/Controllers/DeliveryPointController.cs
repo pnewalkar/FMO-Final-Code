@@ -187,6 +187,40 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+        [Route("deliverypoint/range")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateDeliveryPointForRange([FromBody] List<DeliveryPointModelDTO> deliveryPointModelDtos)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDeliveryPointForRange"))
+                {
+                    List<UpdateDeliveryPointModelDTO> updateDeliveryPointModelDTOs = null;
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(UpdateDeliveryPointForRange);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    updateDeliveryPointModelDTOs = await businessService.UpdateDeliveryPointLocationForRange(deliveryPointModelDtos);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return Ok(updateDeliveryPointModelDTOs);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
         /// <summary>
         /// this method fetches route details for selected delivery point
         /// </summary>

@@ -79,6 +79,18 @@ function deliveryPointAPIService($http, GlobalSettings, $q, stringFormatService)
         return deferred.promise;
     };
 
+    deliveryPointAPIService.UpdateDeliverypointForRange = function (deliveryPointModelDTOs) {
+        var deferred = $q.defer();
+
+        $http.put(GlobalSettings.deliveryPointApiUrl + GlobalSettings.updateDeliverypointForRange, deliveryPointModelDTOs).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
+
     deliveryPointAPIService.createDeliveryPointsRange = function (postalAddressDetails) {
         var deferred = $q.defer();
         $http.post(GlobalSettings.deliveryPointApiUrl + GlobalSettings.createDeliveryPointsRange, postalAddressDetails).success(function (response) {

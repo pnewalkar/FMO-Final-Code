@@ -92,10 +92,11 @@ function DeliveryPointController(
     vm.defaultDeliveryType = GlobalSettings.single;
     var selectedDPCount = 0;
     vm.selectedItems = [];
+    vm.isReadyForPositioning = false;
 
     $scope.$watchCollection(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
-            if (vm.deliveryPointList !== null || vm.positionedDeliveryPointList !== null) {
+            if (vm.isReadyForPositioning) {
                 openAlert();
             }
     }, true);
@@ -265,8 +266,8 @@ function DeliveryPointController(
         $mdDialog.show(confirm).then(function () {
             selectedDPCount = 0;
             angular.forEach(vm.selectedItems, function (selectedItem, count) {
-                var idx = $filter('filter')(vm.deliveryPointList, { id: selectedItem.id });
-                if (idx.length > 0) {
+                var idx = getPositionedDPIndex(selectedItem);
+                if (selectedItem) {
                     vm.deliveryPointList.splice(idx, 1);
 
                     if (!vm.positionedDeliveryPointList)
@@ -274,7 +275,7 @@ function DeliveryPointController(
                     vm.positionedCoOrdinates.push(coordinatesService.getCordinates());
                     var latlong = ol.proj.transform(vm.positionedCoOrdinates[0], 'EPSG:27700', 'EPSG:4326');
                     var positionedDeliveryPointListObj = {
-                        udprn: selectedItem.udprn, locality: selectedItem.locality, addressGuid: selectedItem.addressGuid, id: selectedItem.id, xCoordinate: vm.positionedCoOrdinates[0][0], yCoordinate: vm.positionedCoOrdinates[0][1], latitude: latlong[1], longitude: latlong[0], rowversion: selectedItem.rowversion, isChecked : true
+                        udprn: selectedItem.udprn, locality: selectedItem.locality, addressGuid: selectedItem.addressGuid, id: selectedItem.id, xCoordinate: vm.positionedCoOrdinates[0][0], yCoordinate: vm.positionedCoOrdinates[0][1], latitude: latlong[1], longitude: latlong[0], rowversion: selectedItem.rowversion, isChecked: true
                     };
 
                     vm.positionedDeliveryPointList.push(positionedDeliveryPointListObj);
@@ -287,6 +288,7 @@ function DeliveryPointController(
             })
 
             resetDP();
+
             mapService.clearPlacedDP();
             vm.selectedItems = [];
 
@@ -302,26 +304,42 @@ function DeliveryPointController(
         );
     };
 
+    function getPositionedDPIndex(item) {
+
+        for (var itemIndex = 0; itemIndex < vm.deliveryPointList.length; itemIndex++) {
+            if (item.id === vm.deliveryPointList[itemIndex].id) {
+                return itemIndex;
+            }
+        }
+    }
+
+    //return $filter('filter')(vm.deliveryPointList, { id: id });
+
+
     function setDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
         $scope.$emit('setSelectedButton', { "name": 'point' });
+        vm.isReadyForPositioning = true;
     }
 
     function resetDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'select', "shape": shape, "enabled": true });
         $scope.$emit('setSelectedButton', { "name": 'select' });
+        vm.isReadyForPositioning = false;
     }
 
     function savePositionedDeliveryPoint() {
         vm.isMultiple = $stateParams.isMultiple;
 
         if (vm.isMultiple) {
+            vm.isOnceClicked = true;
             vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList
-            deliveryPointService.UpdateDeliverypoint(vm.positionedDeliveryPointList)
+            deliveryPointService.UpdateDeliverypointForRange(vm.positionedDeliveryPointList)
             .finally(function () {
                 vm.isOnceClicked = false;
+                mapService.clearDrawingLayer(true);
             });
             vm.positionedDeliveryPointList = null;
         }
@@ -331,6 +349,7 @@ function DeliveryPointController(
             deliveryPointService.UpdateDeliverypoint(vm.positionedDeliveryPointList)
             .finally(function () {
                 vm.isOnceClicked = false;
+                mapService.clearDrawingLayer(true);
             });
             vm.positionedDeliveryPointList = null;
         }
