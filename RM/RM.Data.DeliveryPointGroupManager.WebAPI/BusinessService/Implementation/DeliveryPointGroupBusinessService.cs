@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
+using System.Collections.Generic;
+using System.Data.SqlTypes;
+using Microsoft.SqlServer.Types;
+using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO;
 using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.Integration;
-using Microsoft.SqlServer.Types;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
 using RM.DataManagement.DeliveryPointGroupManager.WebAPI.Utils;
 
 namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
@@ -61,9 +59,9 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
                     var deliveryGroupCoordinates = GetGroupCoordinatesDataByBoundingBox(boundaryBox.Split(Comma[0]));
-                    //var accessLinkDataDto = deliveryPointGroupDataService.GetDeliveryPointGroups(deliveryGroupCoordinates, unitGuid);
-                    //var accessLink = GenericMapper.MapList<DeliveryPointGroupDataDTO, DeliveryPointGroupDTO>(accessLinkDataDto);
-                    // deliveryPointGroupJsonData = GetAccessLinkJsonData(accessLinkDataDto);
+                    var deliveryGroups = deliveryPointGroupDataService.GetDeliveryGroups(deliveryGroupCoordinates, unitGuid);
+
+                    deliveryPointGroupJsonData = GetDeliveryGroupsJsonData(deliveryGroups);
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -104,6 +102,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
         }
 
         /// <summary>
+        /// /// <summary>
         /// 
         /// </summary>
         /// <param name="deliveryPointGroupDto">UI Dto to create Delivery group</param>
@@ -128,63 +127,86 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                 return null;
             }
         }
+        /// This method fetches geojson data for groups.
+        /// /// </summary>
+        /// <param name="deliveryGroups"List of delivery groups.</param>
+        /// <returns>Geojson string for groups.</returns>
+        private static string GetDeliveryGroupsJsonData(List<DeliveryPointGroupDataDTO> deliveryGroups)
+        {
+            var geoJson = new GeoJson
+            {
+                features = new List<Feature>()
+            };
 
-        /// <summary>
-        /// This method fetches geojson data for groups link
-        /// </summary>
-        /// <param name="lstAccessLinkDTO">accesslink as list of AccessLinkDTO</param>
-        /// <returns>AccsessLink object</returns>
-        //private static string GetDeliveryGroupsJsonData(List<DeliveryPointGroupDataDTO> lstGroupLinkDTO)
-        //{
-        //    var geoJson = new GeoJson
-        //    {
-        //        features = new List<Feature>()
-        //    };
-        //    if (lstGroupLinkDTO != null && lstGroupLinkDTO.Count > 0)
-        //    {
-        //        foreach (var res in lstGroupLinkDTO)
-        //        {
-        //            Geometry geometry = new Geometry();
+            if (deliveryGroups != null && deliveryGroups.Count > 0)
+            {
+                foreach (var group in deliveryGroups)
+                {
+                    Geometry groupGeometry = new Geometry();
 
-        //            geometry.type = res.loc.LinkGeometry.SpatialTypeName;
+                    groupGeometry.type = group.GroupBoundary.Shape.SpatialTypeName;
 
-        //            var resultCoordinates = res.NetworkLink.LinkGeometry;
+                    SqlGeometry groupSqlGeometry = null;
+                    if (groupGeometry.type == Convert.ToString(OpenGisGeometryType.Polygon.ToString()))
+                    {
+                        groupSqlGeometry = SqlGeometry.STPolyFromWKB(new SqlBytes(group.GroupBoundary.Shape.AsBinary()), 27700).MakeValid();
+                        List<List<double[]>> listCords = new List<List<double[]>>();
+                        List<double[]> cords = new List<double[]>();
 
-        //            SqlGeometry groupLinksqlGeometry = null;
-        //            if (geometry.type == Convert.ToString(GeometryType.LineString))
-        //            {
-        //                groupLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), DeliveryPointGroupConstants.BNGCOORDINATESYSTEM).MakeValid();
+                        for (int pt = 1; pt <= groupSqlGeometry.STNumPoints().Value; pt++)
+                        {
+                            double[] coordinates = new double[] { groupSqlGeometry.STPointN(pt).STX.Value, groupSqlGeometry.STPointN(pt).STY.Value };
+                            cords.Add(coordinates);
+                        }
 
-        //                List<List<double>> cords = new List<List<double>>();
+                        listCords.Add(cords);
+                        groupGeometry.coordinates = listCords;
+                    }
 
-        //                for (int pt = 1; pt <= groupLinksqlGeometry.STNumPoints().Value; pt++)
-        //                {
-        //                    List<double> accessLinkCoordinates = new List<double> { groupLinksqlGeometry.STPointN(pt).STX.Value, groupLinksqlGeometry.STPointN(pt).STY.Value };
-        //                    cords.Add(accessLinkCoordinates);
-        //                }
+                    Feature groupFeature = new Feature();
+                    groupFeature.geometry = groupGeometry;
+                    groupFeature.type = DeliveryPointGroupConstants.FeatureType;
+                    groupFeature.id = group.DeliveryGroup.ID.ToString();
+                    groupFeature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken>
+                    {
+                        { DeliveryPointGroupConstants.LayerType, Convert.ToString(OtherLayersType.GroupLink.GetDescription()) },
+                        { "type", "group" },
+                        { "groupType", group.DeliveryGroup.GroupTypeGUID },
+                        { "groupName", group.DeliveryGroup.GroupName }
+                    };
 
-        //                geometry.coordinates = cords;
-        //            }
-        //            else
-        //            {
-        //                groupLinksqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), DeliveryPointGroupConstants.BNGCOORDINATESYSTEM).MakeValid();
-        //                geometry.coordinates = new double[] { groupLinksqlGeometry.STX.Value, groupLinksqlGeometry.STY.Value };
-        //            }
+                    geoJson.features.Add(groupFeature);
 
-        //            Feature feature = new Feature();
-        //            feature.geometry = geometry;
+                    foreach (var addedDeliveryPoint in group.AddedDeliveryPoints)
+                    {
+                        Geometry groupDPGeometry = new Geometry();
 
-        //            feature.type = DeliveryPointGroupConstants.FeatureType;
-        //            feature.id = res.ID.ToString();
-        //            feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { DeliveryPointGroupConstants.LayerType, Convert.ToString(OtherLayersType.GroupLink.GetDescription()) } };
+                        groupDPGeometry.type = addedDeliveryPoint.Shape.SpatialTypeName;
 
-        //            geoJson.features.Add(feature);
-        //        }
-        //    }
+                        SqlGeometry groupDPSqlGeometry = null;
+                        if (groupDPGeometry.type == Convert.ToString(OpenGisGeometryType.Point.ToString()))
+                        {
+                            groupDPSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(addedDeliveryPoint.Shape.AsBinary()), DeliveryPointGroupConstants.BNGCOORDINATESYSTEM).MakeValid();
+                            groupDPGeometry.coordinates = new double[] { groupDPSqlGeometry.STX.Value, groupDPSqlGeometry.STY.Value };
+                        }
 
-        //    return JsonConvert.SerializeObject(geoJson);
-        //}
+                        Feature groupDPFeature = new Feature();
+                        groupDPFeature.geometry = groupDPGeometry;
+                        groupDPFeature.type = DeliveryPointGroupConstants.FeatureType;
+                        groupDPFeature.id = addedDeliveryPoint.ID.ToString();
+                        groupDPFeature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken>
+                    {
+                        { DeliveryPointGroupConstants.LayerType, Convert.ToString(OtherLayersType.GroupLink.GetDescription()) },
+                        { "type", "deliverypoint" }
+                    };
 
+                        geoJson.features.Add(groupDPFeature);
+                    }
+                }
+            }
+
+            return JsonConvert.SerializeObject(geoJson);
+        }
 
         /// <summary>
         /// Covert delivery point group public DTO to data DTO.

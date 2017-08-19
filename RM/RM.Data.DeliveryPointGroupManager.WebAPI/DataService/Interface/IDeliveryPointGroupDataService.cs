@@ -13,7 +13,6 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
     /// </summary>
     public interface IDeliveryPointGroupDataService
     {
-
         /// <summary>
         /// Add delivery point group
         /// </summary>
