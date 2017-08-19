@@ -120,13 +120,13 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                     throw new ArgumentNullException(nameof(deliveryPointGroupDto), string.Format(ErrorConstants.Err_ArgumentmentNullException, deliveryPointGroupDto));
                 }
 
-                deliveryPointGroupDataService.CreateDeliveryGroup();
+                deliveryPointGroupDataService.CreateDeliveryGroup(ConvertToDataDTO(deliveryPointGroupDto));
                 throw new NotImplementedException();
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return null;
-            }            
+            }
         }
 
         /// <summary>
@@ -184,5 +184,166 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
 
         //    return JsonConvert.SerializeObject(geoJson);
         //}
+
+
+        /// <summary>
+        /// Covert delivery point group public DTO to data DTO.
+        /// </summary>
+        /// <param name="deliveryPointGroupDTO">Delivery Point Group DTO.</param>
+        /// <returns>Delivery point public DTO.</returns>
+        private DeliveryPointGroupDataDTO ConvertToDataDTO(DeliveryPointGroupDTO deliveryPointGroupDTO)
+        {
+            DeliveryPointGroupDataDTO deliveryPointGroupDataDTO = new DeliveryPointGroupDataDTO();
+            if (deliveryPointGroupDTO != null)
+            {
+                // Construct boundary Location
+                deliveryPointGroupDataDTO.groupBoundaryLocation.ID = deliveryPointGroupDTO.GroupBoundaryGUID; // TODO : change to New Guid
+                deliveryPointGroupDataDTO.groupBoundaryLocation.Shape = deliveryPointGroupDTO.GroupBoundary;
+                deliveryPointGroupDataDTO.groupBoundaryLocation.RowCreateDateTime = DateTime.UtcNow;
+
+                // Construct centroid Location
+                deliveryPointGroupDataDTO.groupCentroidLocation.ID = deliveryPointGroupDTO.ID;
+                deliveryPointGroupDataDTO.groupCentroidLocation.Shape = deliveryPointGroupDTO.GroupCentroid;
+                deliveryPointGroupDataDTO.groupCentroidLocation.RowCreateDateTime = DateTime.UtcNow;
+
+                // Construct centroid Network Node
+                deliveryPointGroupDataDTO.groupCentroidNetworkNode.ID = deliveryPointGroupDTO.ID;
+                deliveryPointGroupDataDTO.groupCentroidNetworkNode.NetworkNodeType_GUID = deliveryPointGroupDTO.NetworkNodeType; // TODO :
+                deliveryPointGroupDataDTO.groupCentroidNetworkNode.RowCreateDateTime = DateTime.UtcNow;
+
+                // Construct centroid Delivery Point
+                deliveryPointGroupDataDTO.groupCentroidDeliveryPoint.ID = deliveryPointGroupDTO.ID;
+                deliveryPointGroupDataDTO.groupCentroidDeliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointGroupDTO.DeliveryPointUseIndicatorGUID;
+                deliveryPointGroupDataDTO.groupCentroidDeliveryPoint.RowCreateDateTime = DateTime.UtcNow;
+
+                // Construct centroid LocationRelationShip for relationship between boundary and centroid
+                LocationRelationshipDataDTO groupShapeToCentroidRelationship = new LocationRelationshipDataDTO();
+                groupShapeToCentroidRelationship.ID = deliveryPointGroupDTO.LocationRelationshipForCentroidToBoundaryGuid; // TODO : 
+                groupShapeToCentroidRelationship.LocationID = deliveryPointGroupDTO.ID;
+                groupShapeToCentroidRelationship.RelatedLocationID = deliveryPointGroupDTO.GroupBoundaryGUID;
+                groupShapeToCentroidRelationship.RelationshipTypeGUID = deliveryPointGroupDTO.RelationshipTypeForCentroidToBoundaryGUID;
+                groupShapeToCentroidRelationship.RowCreateDateTime = DateTime.UtcNow;
+                deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships.Add(groupShapeToCentroidRelationship);
+
+                // Construct centroid LocationRelationShip for relationship between centroid and deliveryPoints
+                if (deliveryPointGroupDTO.AddedDeliveryPoints != null && deliveryPointGroupDTO.AddedDeliveryPoints.Count > 1)
+                {
+                    foreach (var deliveryPoint in deliveryPointGroupDTO.AddedDeliveryPoints)
+                    {
+                        LocationRelationshipDataDTO deliveryPointToCentroidRelation = new LocationRelationshipDataDTO();
+                        deliveryPointToCentroidRelation.ID = Guid.NewGuid(); // TODOD : 
+                        deliveryPointToCentroidRelation.LocationID = deliveryPoint.ID;
+                        deliveryPointToCentroidRelation.RelatedLocationID = deliveryPointGroupDTO.ID;
+                        deliveryPointToCentroidRelation.RelationshipTypeGUID = deliveryPointGroupDTO.RelationshipTypeForCentroidToDeliveryPointGUID;
+                        deliveryPointToCentroidRelation.RowCreateDateTime = DateTime.UtcNow;
+                        deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships1.Add(deliveryPointToCentroidRelation);
+                    }
+                }
+
+                // Construct Delivery Point Group Details
+                deliveryPointGroupDataDTO.groupDetails.ID = deliveryPointGroupDTO.ID;
+                deliveryPointGroupDataDTO.groupDetails.GroupName = deliveryPointGroupDTO.GroupName;
+                deliveryPointGroupDataDTO.groupDetails.DeliverToReception = deliveryPointGroupDTO.DeliverToReception;
+                deliveryPointGroupDataDTO.groupDetails.GroupTypeGUID = deliveryPointGroupDTO.GroupTypeGUID;
+                deliveryPointGroupDataDTO.groupDetails.NumberOfFloors = deliveryPointGroupDTO.NumberOfFloors;
+                deliveryPointGroupDataDTO.groupDetails.InternalDistanceMeters = deliveryPointGroupDTO.InternalDistanceMeters;
+                deliveryPointGroupDataDTO.groupDetails.WorkloadTimeOverrideMinutes = deliveryPointGroupDTO.WorkloadTimeOverrideMinutes;
+                deliveryPointGroupDataDTO.groupDetails.RowCreateDateTime = DateTime.UtcNow;
+            }
+
+            return deliveryPointGroupDataDTO;
+        }
+
+        /// <summary>
+        /// Covert list of delivery point group data DTO to public DTO.
+        /// </summary>
+        /// <param name="deliveryPointGroupDTOList">Collection of deliveryPoint group public DTO.</param>
+        /// <returns>Collection of delivery point data DTO.</returns>
+        private List<DeliveryPointGroupDataDTO> ConvertToDataDTO(List<DeliveryPointGroupDTO> deliveryPointGroupDTOList)
+        {
+            List<DeliveryPointGroupDataDTO> deliveryPointGroupDataDTO = new List<DeliveryPointGroupDataDTO>();
+
+            foreach (var deliveryPointGroupDTO in deliveryPointGroupDTOList)
+            {
+                deliveryPointGroupDataDTO.Add(ConvertToDataDTO(deliveryPointGroupDTO));
+            }
+
+            return deliveryPointGroupDataDTO;
+        }
+
+        /// <summary>
+        /// Covert data dto to public dto.
+        /// </summary>
+        /// <param name="deliveryPointGroupDataDTO">Delivery point Group data DTO.</param>
+        /// <returns>Delivery point Group public DTO.</returns>
+        private DeliveryPointGroupDTO ConvertToDTO(DeliveryPointGroupDataDTO deliveryPointGroupDataDTO)
+        {
+            DeliveryPointGroupDTO deliveryPointGroupDTO = null;
+
+            if (deliveryPointGroupDataDTO != null)
+            {
+                deliveryPointGroupDTO = new DeliveryPointGroupDTO();
+                // Not need these details as of now
+                // Get boundary Location
+
+
+                // Get centroid Location
+                if (deliveryPointGroupDataDTO.groupCentroidLocation != null)
+                {
+                    deliveryPointGroupDataDTO.groupCentroidLocation.ID = deliveryPointGroupDTO.ID;
+                    deliveryPointGroupDataDTO.groupCentroidLocation.Shape = deliveryPointGroupDTO.GroupCentroid;
+
+                    // Get centroid LocationRelationShip for relationship between boundary and centroid
+                    if (deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships != null && deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships.Count > 0)
+                    {
+
+                    }
+
+                    // Get centroid LocationRelationShip for relationship between centroid and deliveryPoints
+                    if (deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships1 != null && deliveryPointGroupDataDTO.groupCentroidLocation.LocationRelationships1.Count > 0)
+                    {
+
+                    }
+                }
+                // Get centroid Network Node
+
+
+                // Get centroid Delivery Point
+
+
+
+
+                // Get Delivery Point Group Details
+                if (deliveryPointGroupDataDTO.groupDetails != null)
+                {
+                    deliveryPointGroupDTO.ID = deliveryPointGroupDataDTO.groupDetails.ID;
+                    deliveryPointGroupDTO.GroupName = deliveryPointGroupDataDTO.groupDetails.GroupName;
+                    deliveryPointGroupDTO.DeliverToReception = deliveryPointGroupDataDTO.groupDetails.DeliverToReception;
+                    deliveryPointGroupDTO.GroupTypeGUID = deliveryPointGroupDataDTO.groupDetails.GroupTypeGUID;
+                    deliveryPointGroupDTO.NumberOfFloors = deliveryPointGroupDataDTO.groupDetails.NumberOfFloors;
+                    deliveryPointGroupDTO.InternalDistanceMeters = deliveryPointGroupDataDTO.groupDetails.InternalDistanceMeters;
+                    deliveryPointGroupDTO.WorkloadTimeOverrideMinutes = deliveryPointGroupDataDTO.groupDetails.WorkloadTimeOverrideMinutes;
+                }
+            }
+
+            return deliveryPointGroupDTO;
+        }
+
+        /// <summary>
+        /// Covert collection of delivery point group data DTO to public DTO.
+        /// </summary>
+        /// <param name="deliveryPointDataDTOList">Collection of delivery point data DTO.</param>
+        /// <returns>Collection of delivery point public dtDTOo.</returns>
+        private List<DeliveryPointGroupDTO> ConvertToDTO(List<DeliveryPointGroupDataDTO> deliveryPointGroupDataDTOList)
+        {
+            List<DeliveryPointGroupDTO> deliveryPointGroupDTO = new List<DeliveryPointGroupDTO>();
+
+            foreach (var deliveryPointGroupDataDTO in deliveryPointGroupDataDTOList)
+            {
+                deliveryPointGroupDTO.Add(ConvertToDTO(deliveryPointGroupDataDTO));
+            }
+
+            return deliveryPointGroupDTO;
+        }
     }
 }

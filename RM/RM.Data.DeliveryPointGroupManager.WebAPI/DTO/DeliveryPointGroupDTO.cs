@@ -33,9 +33,21 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI.DTO
 
         public bool? DeliverToReception { get; set; }
 
+        public Guid NetworkNodeType { get; set; }
+
+        public Guid DeliveryPointUseIndicatorGUID { get; set; }
+
         public DbGeometry GroupCentroid { get; set; }
 
         public DbGeometry GroupBoundary { get; set; }
+
+        public Guid LocationRelationshipForCentroidToBoundaryGuid { get; set; }
+
+        public Guid RelationshipTypeForCentroidToBoundaryGUID { get; set; }
+
+        public Guid RelationshipTypeForCentroidToDeliveryPointGUID { get; set; }
+
+        public Guid GroupBoundaryGUID { get; set; }
 
         public ICollection<DeliveryPointDTO> AddedDeliveryPoints { get; set; }
 

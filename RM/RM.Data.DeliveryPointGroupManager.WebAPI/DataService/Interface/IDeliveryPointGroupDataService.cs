@@ -18,7 +18,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         /// Add delivery point group
         /// </summary>
         /// <returns></returns>
-        Task CreateDeliveryGroup();
+        bool CreateDeliveryGroup(DeliveryPointGroupDataDTO deliveryPointGroup);
 
         /// <summary>
         /// This method is used to fetch delivery  data.
