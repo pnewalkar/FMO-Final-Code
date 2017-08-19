@@ -154,5 +154,15 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         Task<CreateDeliveryPointForRangeModelDTO> CreateDeliveryPointForRange(List<PostalAddressDTO> postalAddressDTOs);
 
         Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails);
+
+        /// <summary>
+        /// User Delete delivery point.
+        /// </summary>
+        /// <param name="deliveryPointid">Delivery point unique identifier.</param>
+        /// <param name="reasonCode">reason code</param>
+        /// <param name="reasonText">reasonText</param>
+        /// <param name="userName">userName</param>
+        /// <returns>bool</returns>
+        Task<bool> UserDeleteDeliveryPoint(Guid deliveryPointid, string reasonCode, string reasonText, string userName);
     }
 }

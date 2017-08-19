@@ -823,6 +823,58 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             }
         }
 
+        /// <summary>
+        ///  User Deletes a delivery point.
+        /// </summary>
+        /// <param name="id">Delivery point unique identifier.</param>
+        /// <returns>Success of delete operation.</returns>
+        public async Task<bool> UserDeleteDeliveryPoint(Guid id, bool isUserDelete = false)
+        {
+            try
+            {
+                Location location = null;
+                var OfferingId = fetchLocationOfferingId();
+
+                if (isUserDelete)
+                {
+                    location = await DataContext.Locations.Include(l => l.NetworkNode)
+                                                                               .Include(l => l.NetworkNode.DeliveryPoint)
+                                                                               .Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus)
+                                                                               .Include(l => l.LocationOfferings)
+                                                                               .Where(l => l.ID == id && l.LocationOfferings.FirstOrDefault().OfferingID == OfferingId).SingleOrDefaultAsync();
+                }
+                else
+                {
+
+
+                     location = await DataContext.Locations.Include(l => l.NetworkNode)
+                                                            .Include(l => l.NetworkNode.DeliveryPoint)
+                                                            .Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus)
+                                                            .Include(l => l.LocationOfferings)
+                                                            .Where(l => l.ID == id).SingleOrDefaultAsync();
+            }
+                if (location != null)
+                {
+                    DataContext.LocationOfferings.RemoveRange(location.LocationOfferings);
+                    DataContext.DeliveryPointStatus.RemoveRange(location.NetworkNode.DeliveryPoint.DeliveryPointStatus);
+                    DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
+                    //DataContext.NetworkNodes.Remove(location.NetworkNode);
+                    //DataContext.Locations.Remove(location);
+                    await DataContext.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                loggingHelper.Log(ex, TraceEventType.Error);
+                return false;
+            }
+        }
+
         #endregion Public Methods
 
         #region Private Methods
@@ -880,6 +932,26 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                 return deliveryPointDTOs;
             }
+        }
+
+        private Guid fetchLocationOfferingId()
+        {
+            Guid Id = new Guid();
+           
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.fetchLocationOfferingId"))
+            {
+
+                string methodName = typeof(DeliveryPointsDataService) + "." + nameof(fetchLocationOfferingId);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
+
+                Id = DataContext.Offerings.Where(x => x.OfferingDescription == "Delivery Offering").Select(y=>y.ID).FirstOrDefault();
+
+             //  Id = Convert.To
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+            }
+
+            return Id;
         }
 
         #endregion Private Methods

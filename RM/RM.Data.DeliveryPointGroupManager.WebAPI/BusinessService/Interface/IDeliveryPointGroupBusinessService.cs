@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
 
 namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
@@ -14,5 +15,8 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>string</returns>
         Task<DeliveryPointGroupDTO> CreateDeliveryPointGroup(DeliveryPointGroupDTO deliveryPointGroupDto);
+        string GetDeliveryPointGroups(string boundaryBox, Guid unitGuid);
+
+        DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto);
     }
 }

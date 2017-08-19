@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 
+using RM.Data.DeliveryPointGroupManager.WebAPI.DTO;
+
 namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
 {
     /// <summary>
@@ -13,5 +15,6 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         /// </summary>
         /// <returns></returns>
         Task CreateDeliveryGroup();
+        DeliveryPointGroupDTO UpdateDeliveryGroup(DeliveryPointGroupDTO deliveryPointGroupDto);
     }
 }
