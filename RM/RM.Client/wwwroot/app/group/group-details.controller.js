@@ -3,11 +3,13 @@
     .controller("GroupDetailsController", GroupDetailsController);
 
 GroupDetailsController.$inject = [
-    'groupService'
+    'groupService',
+    'mapService'
 ];
 
 function GroupDetailsController(
-    groupService
+    groupService,
+    mapService
    ) {
 
     var vm = this;

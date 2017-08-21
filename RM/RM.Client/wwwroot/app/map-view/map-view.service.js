@@ -66,7 +66,7 @@ function mapService($http,
     vm.layerName = undefined;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
-    vm.onDrawEnd = function (buttonName, feature) { };
+    vm.onDrawEnd = onDrawEnd();
     vm.pointerMoveHandler = function (evt) {
         if (evt.dragging || vm.activeTool != 'measure') {
             return;
@@ -517,6 +517,9 @@ function mapService($http,
                 var roadLinklayer = mapFactory.getLayer('Roads');
                 snapOnFeature(roadLinklayer);
                 setupAccessLink();
+            case "group":
+                setupGroup();
+                break;
             default:
                 break;
         }
@@ -554,6 +557,26 @@ function mapService($http,
         }
     }
 
+    function setupGroup() {
+        vm.interactions.draw.on('drawstart',
+            function (evt) {
+                removeInteraction("select");
+                clearDrawingLayer(true);
+                setSelections(null, []);
+            });
+        vm.interactions.draw.on('drawend',
+            function (evt) {
+                evt.feature.setId(0);
+                $timeout(function () {
+                    setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
+                    vm.onDrawEnd("group", evt.feature)
+                });
+            });
+    }
+
+    function onDrawEnd(buttonName, feature) {
+        console.log(buttonName, feature);
+    }
     function setDrawInteraction(button, style) {
         var draw = null;
 
