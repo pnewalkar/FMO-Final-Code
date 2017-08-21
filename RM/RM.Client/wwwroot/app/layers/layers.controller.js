@@ -2,12 +2,14 @@
 angular.module('layers')
     .controller('LayerSelectorController', [
           '$scope',
-          'layersService',
+          'layersService','$rootScope','$state',
           LayerSelectorController]);
 
 function LayerSelectorController(
     $scope,
-    layersService
+    layersService,
+    $rootScope,
+    $state
     )
 {
     var vm = this;
@@ -29,8 +31,15 @@ function LayerSelectorController(
     }
     function onChange(changedLayer) {
         layersService.onChange(changedLayer);
+        //if (changedLayer === "Group")
+        //{
+            addGroup();
+      //  }
     }
-
+    function addGroup() {
+        $rootScope.$emit('resetMapToolbar', { "isGroupAction": true });
+        $state.go("deliveryPointGroupDetails");
+    }
     function showUngrouped() {
         return layersService.showUngrouped();
     }

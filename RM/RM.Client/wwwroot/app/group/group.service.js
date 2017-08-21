@@ -10,7 +10,8 @@ function groupService(
     $q
     ) {
 	return {
-		initialize: initialize
+	    initialize: initialize,
+	    DeliveryGroupTypes: DeliveryGroupTypes
 	}
 
 	function initialize() {
