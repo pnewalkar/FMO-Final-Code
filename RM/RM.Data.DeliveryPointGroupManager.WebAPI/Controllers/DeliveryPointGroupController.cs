@@ -57,6 +57,10 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.Controllers
                     string methodName = typeof(DeliveryPointGroupController) + "." + nameof(CreateDeliveryGroup);
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
+                    // validate the method argument.
+                    if (deliveryPointGroupDto == null) { throw new ArgumentNullException(nameof(deliveryPointGroupDto)); }
+
+                    // validate the model state.
                     if (!ModelState.IsValid)
                     {
                         return BadRequest(ModelState);
@@ -79,11 +83,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.Controllers
                 throw realExceptions;
             }
         }
-
-        #endregion Methods
-
-        #region Methods
-
+        
         /// <summary>
         /// This method is used to fetch Delivery Point Groups.
         /// </summary>

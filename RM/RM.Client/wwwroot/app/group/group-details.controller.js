@@ -30,8 +30,12 @@ function GroupDetailsController(
     vm.onRejectAll = onRejectAll;
     vm.createGroup = createGroup;
     vm.isReadOnly = false;
+    vm.checkDeliveryGroupType = checkDeliveryGroupType;
+    vm.groupType = "";
+    vm.groupType.value = "Complex";
+
+   // vm.ServicePointType = "Inside";
     vm.getPostcode = getPostcode;
-    //vm.ServicePointType.value = "Inside";
 
     //vm.initialize();
     mapService.addSelectionListener(onFeatureSelect);
@@ -174,6 +178,13 @@ function GroupDetailsController(
         }
         return groupDto;
     }
+
+    function checkDeliveryGroupType() {
+        if (vm.groupType === "Complex") {
+            vm.groupType.value = "Complex";
+            vm.floors = "Floor1";
+            vm.internalDistance = "InternalDist";
+        }
 
     function getPostcode(point) {
         var subBuildingName = point.values_.subBuildingName ? point.values_.subBuildingName : '';
