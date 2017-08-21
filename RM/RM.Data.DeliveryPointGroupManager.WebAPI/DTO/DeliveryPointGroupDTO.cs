@@ -53,8 +53,6 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI.DTO
 
         public ICollection<DeliveryPointDTO> AddedDeliveryPoints { get; set; }
 
-        public Guid CentroidLocationId { get; set; }
-
         public Guid PolygonLocationId { get; set; }
 
         [JsonConverter(typeof(DbGeometryConverter))]
