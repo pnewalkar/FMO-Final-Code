@@ -873,11 +873,12 @@
                         {
                             deliveryRouteId = postalAddressDTO.DeliveryRoute_Guid;
                         }
-                    }
-
-                    // Call Route log integration API
-                    await deliveryPointIntegrationService.MapRouteForDeliveryPointForRange(deliveryRouteId, deliveryPointIds);
+                    }                    
                 }
+
+                // Call Route log integration API
+                await deliveryPointIntegrationService.MapRouteForDeliveryPointForRange(deliveryRouteId, deliveryPointIds);
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return new CreateDeliveryPointForRangeModelDTO { CreateDeliveryPointModelDTOs = returnCreateDeliveryPointModelDTOs };
