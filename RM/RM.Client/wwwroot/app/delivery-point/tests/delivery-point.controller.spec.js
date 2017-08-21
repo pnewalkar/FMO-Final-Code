@@ -19,25 +19,25 @@ describe('Delivery Point: Controller', function () {
     var deliveryPointService           
     var $rootScope;    
     var CommonConstants;
+    var $translate;
     var GlobalSettings;
     
-    var MockGlobalSettings = {};
-    stateMockData = {"selectedUnit":{"displayText":"BN    Worthing  Office","ID":"b51aa229-c984-4ca6-9c12-510187b81050","icon":"fa-map-marker delivery","$$mdSelectId":1,"$$hashKey":"object:114"}};
+    var MockGlobalSettings = {single:'Single',numberInName:'Number in Name',subBuilding:'Sub building',range:'Range',defaultRangeOption:"Odds"};
     stateParamsMockingData = {
       hide:true,
-      positionedThirdPartyDeliveryPointList: 'thirdparty',
+      positionedThirdPartyDeliveryPointList: {},
       positionedDeliveryPointList: 'firstPointList',
-      deliveryPointList: '2ndpointlist'
+      deliveryPointList: {udprn: "484575", locality: "232 232 adf adf adf Abbey Road BN11 3RW", addressGuid: "00000000-0000-0000-0000-000000000000", id: "09c2b40c-684a-405d-86db-6aa054c29453", xCoordinate: null}
     };
    
     beforeEach(function () {
         module('deliveryPoint'); 
         module(function ($provide) {
+            $provide.value('$translate',{});
             $provide.value('GlobalSettings',MockGlobalSettings);
-            $provide.value('CommonConstants',{});
-            $provide.value('$state', stateMockData);
+            $provide.value('CommonConstants',{DpUseType:{Residential:'Residential',Organisation:'Organisation'}});            
+            $provide.value('$state', { go: function(state, args){}});
             $provide.value('$stateParams', stateParamsMockingData);  
-            $provide.value('GlobalSettings', {});
             $provide.value('stringFormatService', {});          
             $provide.factory('$mdDialog', function() {
                 return {hide:jasmine.createSpy()};
@@ -59,9 +59,17 @@ describe('Delivery Point: Controller', function () {
 
             $provide.factory('deliveryPointService', function($q){
                 function initialize() {
-                    var deferred = $q.defer();                    
+                    var deferred = $q.defer();                         
                     return deferred.promise;
-                }                
+                }     
+                function getSubBuildingTypes(){
+                    var deferred = $q.defer();                         
+                    return deferred.promise;
+                }
+                function getRangeOptions(){
+                    var deferred = $q.defer();                         
+                    return deferred.promise;
+                }
                 function resultSet() {}                    
                 function openModalPopup() {}              
                 function closeModalPopup() {}
@@ -95,6 +103,11 @@ describe('Delivery Point: Controller', function () {
                     var deferred = $q.defer(); 
                     return deferred.promise;
                 }
+
+                function createDeliveryPointsRange(postalAddressDetails){
+                    var deferred = $q.defer();
+                    return deferred.promise;   
+                }
                 
                 return {
                     initialize: initialize,
@@ -106,8 +119,18 @@ describe('Delivery Point: Controller', function () {
                     setOrganisation: setOrganisation,  
                     deliveryPointTypes: deliveryPointTypes, 
                     deliveryPointUseType: deliveryPointUseType,
-                    UpdateDeliverypoint: UpdateDeliverypoint           
+                    UpdateDeliverypoint: UpdateDeliverypoint,
+                    getSubBuildingTypes: getSubBuildingTypes,
+                    getRangeOptions: getRangeOptions,
+                    createDeliveryPointsRange: createDeliveryPointsRange
                 };
+            });
+
+            $provide.factory('deliveryPointAPIService', function(){
+                function GetAddressLocation(){}
+                return {
+                    GetAddressLocation: GetAddressLocation
+                }
             });
 
             $provide.factory('popUpSettingService', function(){
@@ -129,18 +152,19 @@ describe('Delivery Point: Controller', function () {
 
             function initialiseMap() {}               
             function getMap() { return map; }           
-            function setAccessLink() { }              
+            function setAccessLink() { }   
+            function locateDeliveryPoint(){}
             return {
               initialiseMap: initialiseMap,
                 getMap: getMap,             
-                setAccessLink : setAccessLink             
+                setAccessLink : setAccessLink,
+                locateDeliveryPoint: locateDeliveryPoint          
               }
             });            
         });        
 
         inject(function (
-            _$controller_,
-            _$rootScope_,
+            _$controller_,            
             _mapToolbarService_,
             _$mdDialog_,
             _popUpSettingService_,
@@ -151,37 +175,58 @@ describe('Delivery Point: Controller', function () {
             _deliveryPointService_,
             _$q_,
             _mapService_,
-            _CommonConstants_) {
+            _CommonConstants_,
+            _$rootScope_,
+            _$translate_,
+            _GlobalSettings_) {
             
             $rootScope = _$rootScope_;
             $scope = $rootScope.$new();
             mapToolbarService = _mapToolbarService_;
             $mdDialog = _$mdDialog_;
             popUpSettingService = _popUpSettingService_;
+            deliveryPointAPIService = _deliveryPointAPIService_;
             mapFactory = _mapFactory_;
             $state = _$state_;
             $stateParams = _$stateParams_;
             deliveryPointService = _deliveryPointService_;
             $q = _$q_;
             CommonConstants = _CommonConstants_;
+            $translate = _$translate_
+            GlobalSettings = _GlobalSettings_;
 
             vm = _$controller_('DeliveryPointController', {
                 $scope : $scope,
                 mapToolbarService : mapToolbarService,
                 $mdDialog : $mdDialog,
                 popUpSettingService : popUpSettingService,
+                deliveryPointAPIService: deliveryPointAPIService,
                 mapFactory : mapFactory,
                 $state : $state,
                 $stateParams : $stateParams,
                 deliveryPointService : deliveryPointService,
                 mapService: _mapService_,
-                CommonConstants: CommonConstants
+                CommonConstants: CommonConstants,
+                $translate: $translate,
+                GlobalSettings: GlobalSettings
             });
 
             spyOn($scope, '$emit').and.callThrough();
             spyOn($scope, '$on').and.callThrough();
             $scope.$emit.and.stub();
         });
+    });
+
+    it('should set positionedThirdPartyDeliveryPointList value as `{}`', function() {
+        expect(vm.positionedThirdPartyDeliveryPointList).toEqual({});
+    });
+
+    it('should set positionedDeliveryPointList value as `{}`', function() {
+        expect(vm.positionedDeliveryPointList).toEqual('firstPointList');
+    });
+
+    it('should set deliveryPointList value as `object`', function() {
+        expect(vm.deliveryPointList).toEqual({udprn: "484575", locality: "232 232 adf adf adf Abbey Road BN11 3RW", addressGuid: "00000000-0000-0000-0000-000000000000", id: "09c2b40c-684a-405d-86db-6aa054c29453", xCoordinate: null});
     });
     
     it('should set positionedThirdPartyDeliveryPoint value as `array`', function() {
@@ -201,7 +246,6 @@ describe('Delivery Point: Controller', function () {
     });
 
     it('should set defaultNYBValue', function() {
-        expect(vm.defaultNYBValue).toBeDefined();
         expect(vm.defaultNYBValue).toBe("00000000-0000-0000-0000-000000000000");
     });
 
@@ -228,24 +272,68 @@ describe('Delivery Point: Controller', function () {
     it('should set disable value as `true`', function() {
         expect(vm.disable).toBe(true);
     });   
+    
+    it('should set `postalAddressAliases` value as `Odds`', function() {
+        expect(vm.rangeOptionsSelected).toEqual('Odds');
+    });
+
+    it('should set `rangeOptionsSelected` value as `Odds`', function() {
+        expect(vm.rangeOptionsSelected).toEqual('Odds');
+    });
 
     it('should set `dpIsChecked` value as `false`', function() {
         expect(vm.dpIsChecked).toBe(false);
-    });    
+    }); 
+
+    it('should set `selectedType` value as `null`', function() {
+        expect(vm.selectedType).toBe(null);
+    }); 
+
+    it('should set `single` value as `Single`', function() {
+        expect(vm.single).toEqual('Single');
+    });
+
+    it('should set `range` value as `Range`', function() {
+        expect(vm.range).toEqual('Range');
+    });
+
+    it('should set `subBuilding` value as `Sub building`', function() {
+        expect(vm.subBuilding).toEqual('Sub building');
+    });
+
+    it('should set `numberInName` value as `Number in Name`', function() {
+        expect(vm.numberInName).toEqual('Number in Name');
+    }); 
+
+    it('should set `displayRangeFromMessage` value as `false`', function() {
+        expect(vm.displayRangeFromMessage).toBe(false);
+    });   
+
+    it('should set `displayRangeToMessage` value as `false`', function() {
+        expect(vm.displayRangeToMessage).toBe(false);
+    });
+
+    it('should set `maintainState` value as `false`', function() {
+        expect(vm.maintainState).toBe(false);
+    });
+
+    it('should set `defaultDeliveryType` value as `single`', function() {
+        expect(vm.defaultDeliveryType).toEqual('Single');
+    });
 
     it('should promise to return a success response once initialize method is called', function() {            
-        var deferred = $q.defer();
-        var response = {deliveryPointTypes:'single',dpUseType:'circle',SubBuildingTypes:'GigaPlex',RangeOptions:'548759'};
+        var deferred = $q.defer();             
+        var response = {DeliveryPointTypes:'single',DpUseType:'circle',SubBuildingTypes:'GigaPlex',RangeOptions:'548759'};
 
         spyOn(deliveryPointService, 'initialize').and.returnValue(deferred.promise);        
-        spyOn(deliveryPointService, 'deliveryPointUseType').and.returnValue(deferred.promise);
 
         vm.initialize();    
 
-        deferred.resolve(response);    
-        $scope.$digest();
+        deferred.resolve(response);         
 
-        expect(deliveryPointService.initialize).toHaveBeenCalled();
+        $rootScope.$apply();
+
+        expect(deliveryPointService.initialize).toHaveBeenCalled();        
         expect(vm.deliveryPointTypes).toEqual('single');
         expect(vm.dpUseType).toEqual('circle');
         expect(vm.subBuildingTypes).toEqual('GigaPlex');
@@ -284,7 +372,7 @@ describe('Delivery Point: Controller', function () {
         vm.resultSet(query);
 
         deferred.resolve(response);
-        $scope.$digest();
+        $rootScope.$apply();
         
         expect(deliveryPointService.resultSet).toHaveBeenCalledWith({});
         expect(response).toEqual({deliveryPointTypes:'single',dpUseType:'circle'});        
@@ -305,7 +393,7 @@ describe('Delivery Point: Controller', function () {
         expect(vm.results).toEqual({});
 
         deferred.resolve(response);
-        $scope.$digest();
+        $rootScope.$apply();
 
         expect(deliveryPointService.getPostalAddress).toHaveBeenCalledWith('mapSearch');
         expect(vm.addressDetails).toEqual(response.postalAddressData);
@@ -324,7 +412,7 @@ describe('Delivery Point: Controller', function () {
         vm.bindAddressDetails();
 
         deferred.resolve(response);
-        $scope.$digest();
+        $rootScope.$apply();
        
         expect(deliveryPointService.bindAddressDetails).toHaveBeenCalled();
         expect(vm.addressDetails).toBe(response);
@@ -347,6 +435,10 @@ describe('Delivery Point: Controller', function () {
     });
 
     it('should promise to return a success response once setOrganisation method is called', function() {
+        vm.selectedType = 'point';
+        vm.single = 'point';
+        vm.addressDetails = true;
+
         var deferred = $q.defer(); 
         var response = {dpUse:true,selectedDPUse:true};
         spyOn(deliveryPointService, 'setOrganisation').and.returnValue(deferred.promise);
@@ -354,16 +446,27 @@ describe('Delivery Point: Controller', function () {
         vm.setOrganisation();
         
         deferred.resolve(response);
-        $scope.$digest();
+        $rootScope.$apply();
 
         expect(deliveryPointService.setOrganisation).toHaveBeenCalled();
         expect(vm.dpUse).toBe(response.dpUse);
         expect(vm.selectedDPUse).toBe(response.selectedDPUse);
     });
 
+    it('should return dpUse and selectedDPUse object response once setOrganisation method is called', function() {        
+        vm.dpUseType = 'selectedDPUse';
+
+        vm.setOrganisation();
+        
+        expect(vm.dpUse).toEqual('selectedDPUse');
+        expect(vm.selectedDPUse).toBe("");
+    });
+
     it('should be set toggle', function() {
         vm.toggle(true);
-        expect(vm.selectedItem).toBe(true);       
+        expect(vm.selectedItem).toBe(true); 
+        expect(vm.dpIsChecked).toBe(false);
+        
     });    
 
     it('should be call update UpdateDeliverypoint once savePositionedDeliveryPoint method called ', function() {
@@ -375,13 +478,40 @@ describe('Delivery Point: Controller', function () {
         expect(vm.positionedDeliveryPointList).toBe(null);
         expect(deliveryPointService.UpdateDeliverypoint).toHaveBeenCalled();
         expect(deliveryPointService.UpdateDeliverypoint).toHaveBeenCalledWith('firstPointList');
+    });       
+
+    it('should promise to return a success response once getAddressLocation method is called', function() {
+        var deferred = $q.defer();
+        var udprn = '369859';
+        var response = {data:{addressDetails:{id:'1234',udprn:'testudprn',buildingNumber:1,buildingName:'SEZ',subBuildingName:'GigaPlex',organisationName:'CG',departmentName:'DCX'}}};
+
+        spyOn(deliveryPointAPIService, 'GetAddressLocation').and.returnValue(deferred.promise);
+
+        vm.getAddressLocation(udprn);
+
+        deferred.resolve(response);
+        $rootScope.$apply();
+       
+        expect(deliveryPointAPIService.GetAddressLocation).toHaveBeenCalledWith(udprn);
+        expect(vm.addressLocationData).toEqual({addressDetails: { id: '1234', udprn: 'testudprn', buildingNumber: 1, buildingName: 'SEZ', subBuildingName: 'GigaPlex', organisationName: 'CG', departmentName: 'DCX'}});
     });
 
-    it('should be return isError and isDisable `false` when called Ok method', function() {
-        vm.Ok();
-        expect(vm.isError).toBe(false);
-        expect(vm.isDisable).toBe(false);
+    it('should add an item when `addAlias` method called ', function() {
+        vm.alias = true;
+
+        vm.addAlias();
+        expect(vm.postalAddressAliases).toEqual([{ PreferenceOrderIndex: 0, AliasName: true }]);
+        expect(vm.alias).toEqual("");
+        expect(vm.isAliasDisabled).toBe(true);
     });
+
+    it('should remove an item when removeAlias method called', function() {
+        vm.items = [1,2,3,4,5];
+        vm.removeAlias();
+        var lastItem = vm.items.length - 1;
+        vm.items.splice(lastItem);
+        expect(lastItem).toBe(4);
+    });   
 
     it('should be return comma separated value', function() {
         expect(vm.getCommaSeparatedVale('value1', 'value2')).toBeDefined();
@@ -398,19 +528,57 @@ describe('Delivery Point: Controller', function () {
         expect(vm.getCommaSeparatedVale('', 'value2')).toEqual('value2');
     });
 
-    it('should add an item when `addAlias` method called ', function() {
-        vm.addAlias();
-        expect(vm.items).toEqual([{ Preferred: false, DPAlias: null }]);
-        expect(vm.alias).toBeDefined();
-        expect(vm.alias).toBe('');
+    it('should be return isError and isDisable `false` when called Ok method', function() {
+        vm.Ok();
+        expect(vm.isError).toBe(false);
+        expect(vm.isDisable).toBe(false);
     });
 
-    it('should remove an item when removeAlias method called', function() {
-        vm.items = [1,2,3,4,5];
-        vm.removeAlias();
-        var lastItem = vm.items.length - 1;
-        vm.items.splice(lastItem);
-        expect(lastItem).toBe(3);
+    it('should set range validation when `rangeFrom` greaterthen is `rangeTo` and `rangetype` equal to `RangeFrom`', function() {        
+        vm.setRangeValidation(32, 30, 'RangeFrom');
+
+        expect(vm.displayRangeFromMessage).toBe(true);
+        expect(vm.displayRangeToMessage).toBe(false);
+    });
+
+    it('should set range validation when `rangeFrom` greaterthen is `rangeTo` and `rangetype` not equal to `RangeFrom`', function() {        
+        vm.setRangeValidation(32, 30, 'RangeTo');
+
+        expect(vm.displayRangeFromMessage).toBe(false);
+        expect(vm.displayRangeToMessage).toBe(true);
+    });
+
+    it('should set range validation when `rangeFrom` lessthen is `rangeTo` and `rangetype` is equal to `RangeFrom`', function() {        
+        vm.setRangeValidation(30, 32, 'RangeFrom');
+
+        expect(vm.displayRangeFromMessage).toBe(false);
+        expect(vm.displayRangeToMessage).toBe(false);
+    });
+
+    it('should promise to return a success response once createDeliveryPointsRange method is called', function() {
+        var postalAddressDetails = {addressDetails:{id:'1234',udprn:'testudprn',buildingNumber:1,buildingName:'SEZ',subBuildingName:'GigaPlex',organisationName:'CG',departmentName:'DCX'}};
+        var deferred = $q.defer();
+
+        spyOn(deliveryPointService,'createDeliveryPointsRange').and.returnValue(deferred.promise);
+        spyOn(vm,'closeWindow').and.callThrough();
+        spyOn(deliveryPointService,'closeModalPopup');
+
+        vm.createDeliveryPointsRange(postalAddressDetails);
+        deferred.resolve();
+        $rootScope.$apply();
+        
+        expect(vm.closeWindow).toHaveBeenCalled();
+        expect(vm.hide).toEqual(false);
+        expect(vm.display).toEqual(false);
+        expect(vm.searchText).toEqual("");
+        expect(vm.mailvol).toEqual("");
+        expect(vm.multiocc).toEqual("");
+        expect(vm.rangeOptionsSelected).toEqual(GlobalSettings.defaultRangeOption);
+        expect(deliveryPointService.closeModalPopup).toHaveBeenCalled();
+        expect(vm.results).toEqual({});       
+        expect(vm.postalAddressAliases).toEqual([]);
+        expect(vm.alias).toEqual("");
+        expect(vm.maintainState).toEqual(false);        
     });
 });
 
