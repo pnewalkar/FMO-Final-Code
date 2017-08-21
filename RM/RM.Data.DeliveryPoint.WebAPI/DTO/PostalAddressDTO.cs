@@ -67,5 +67,9 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
         public Guid DeliveryPointUseIndicator_GUID { get; set; }
 
         public Guid DeliveryRoute_Guid { get; set; }
+
+        public short? MultipleOccupancyCount { get; set; }
+
+        public int? MailVolume { get; set; }
     }
 }

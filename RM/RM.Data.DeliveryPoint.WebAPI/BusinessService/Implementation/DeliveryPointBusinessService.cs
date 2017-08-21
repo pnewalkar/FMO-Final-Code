@@ -933,6 +933,8 @@
                         }
 
                         deliveryPointdataDTO.DeliveryPointUseIndicatorGUID = postalAddressDTO.DeliveryPointUseIndicator_GUID;
+                        deliveryPointdataDTO.MailVolume = postalAddressDTO.MailVolume;
+                        deliveryPointdataDTO.MultipleOccupancyCount = postalAddressDTO.MultipleOccupancyCount;
 
                         // create delivery point with real/approx location
                         var newDeliveryPointId = await deliveryPointsDataService.InsertDeliveryPoint(deliveryPointdataDTO);
@@ -1395,6 +1397,8 @@
                     postalAddressDTO.OrganisationName = null;
                     postalAddressDTO.DepartmentName = null;
                     postalAddressDTO.UDPRN = null;
+                    postalAddressDTO.MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount;
+                    postalAddressDTO.MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume;
                     postalAddressDTOs.Add(postalAddressDTO);
                 }
             }
@@ -1411,6 +1415,8 @@
                     postalAddressDTO.OrganisationName = null;
                     postalAddressDTO.DepartmentName = null;
                     postalAddressDTO.UDPRN = null;
+                    postalAddressDTO.MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount;
+                    postalAddressDTO.MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume;
                     postalAddressDTOs.Add(postalAddressDTO);
                 }
             }
@@ -1428,6 +1434,8 @@
                     postalAddressDTO.OrganisationName = null;
                     postalAddressDTO.DepartmentName = null;
                     postalAddressDTO.UDPRN = null;
+                    postalAddressDTO.MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount;
+                    postalAddressDTO.MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume;
                     postalAddressDTOs.Add(postalAddressDTO);
                 }
             }
