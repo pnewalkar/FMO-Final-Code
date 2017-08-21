@@ -939,6 +939,35 @@
             }
         }
 
+        /// <summary>
+        /// Deletes a delivery point with all associated location offerings and locations.
+        /// </summary>
+        /// <param name="deliveryPointid">Delivery point unique identifier.</param>
+        /// <returns>Boolean flag indicates success of delete operation.</returns>
+        public async Task<bool> DeleteDeliveryPointWithAssociatedLocations(Guid deliveryPointid, string reasonCode, string reasonText,string userName)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.UserDeleteDeliveryPoint"))
+            {
+                string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(DeleteDeliveryPointWithAssociatedLocations);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                //await deliveryPointIntegrationService.DeleteDeliveryPointRouteMapping(deliveryPointid);
+
+                //await deliveryPointIntegrationService.DeleteAccesslink(deliveryPointid);
+
+                bool deliveryPointDeleted = await deliveryPointsDataService.DeleteDeliveryPointWithAssociatedLocations(deliveryPointid);
+
+                string logMessage = $"{DeliveryPointConstants.DeliveryPointId} {deliveryPointid}{Environment.NewLine}{DeliveryPointConstants.DeletionReasonCode}{reasonCode}{Environment.NewLine}{DeliveryPointConstants.DeletionReasonText} {reasonText}{Environment.NewLine}{DeliveryPointConstants.DeletionDate} {DateTime.UtcNow.ToString()}{Environment.NewLine}{DeliveryPointConstants.UserName} {userName}";
+
+                this.loggingHelper.Log(logMessage, TraceEventType.Information);
+
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return deliveryPointDeleted;
+            }
+        }
+
         #endregion Public Methods
 
         #region Private Methods
