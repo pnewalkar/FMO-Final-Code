@@ -514,11 +514,29 @@ function mapService($http,
             })
         }
 
+        //function setupGroup() {
+        //    vm.interactions.draw.on('drawstart',
+        //        function (evt) {
+        //            removeInteraction("select");
+        //            clearDrawingLayer(true);
+        //            mapService.setSelections(null, []);
+        //        });
+        //    vm.interactions.draw.on('drawend',
+        //        function (evt) {
+        //            evt.feature.setId(0);
+        //            $timeout(function () {
+        //                mapService.setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
+        //                mapService.onDrawEnd("group", evt.feature)
+        //            });
+        //        });
+        //}
         else if (name === "area") {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.setId(createGuid());
                 evt.feature.set("type", "polygon");
+                setSelections({ featureID: evt.feature.getId(), layer: vm.selectedLayer }, [])
+                onDrawEnd("group", evt.feature)
             })
         }
         else {

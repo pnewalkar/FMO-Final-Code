@@ -3,11 +3,13 @@
     .controller("GroupDetailsController", GroupDetailsController);
 
 GroupDetailsController.$inject = [
-    'groupService'
+    'groupService',
+    'mapService'
 ];
 
 function GroupDetailsController(
-    groupService
+    groupService,
+    mapService
    ) {
 
     var vm = this;
@@ -17,7 +19,8 @@ function GroupDetailsController(
     vm.onSingleAccept = onSingleAccept;
     vm.createGroup = createGroup;
     vm.isReadOnly = false;
-   // vm.ServicePointType = "Inside";
+    mapService.onDrawEnd = onDrawEnd;
+    vm.ServicePointType.value = "Inside";
 
     vm.initialize();
 
@@ -34,6 +37,15 @@ function GroupDetailsController(
 
     function createGroup() {
         vm.isReadOnly = true;
+    }
+
+    function onDrawEnd(buttonName, feature) {
+        vm.addedPoints = feature;
+        //if (vm.adding && buttonName == "group") {
+        //    vm.setupToolbar();
+        //    vm.editGroup();
+        //    vm.selectedFeature = feature;
+        //}
     }
 }
 
