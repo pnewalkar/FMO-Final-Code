@@ -496,4 +496,8 @@
     <AppCategoryName>UIDeleteDPReasonCode</AppCategoryName>
     <DBCategoryName>UI_Delete_DP_ReasonCode</DBCategoryName>
   </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DeliveryGroupType</AppCategoryName>
+    <DBCategoryName>Delivery Group Type</DBCategoryName>
+  </CategoryName>
 </ReferenceDataMapping>
