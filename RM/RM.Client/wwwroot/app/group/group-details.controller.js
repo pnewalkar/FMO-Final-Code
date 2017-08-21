@@ -20,7 +20,7 @@ function GroupDetailsController(
     vm.createGroup = createGroup;
     vm.isReadOnly = false;
     mapService.onDrawEnd = onDrawEnd;
-    vm.ServicePointType.value = "Inside";
+    //vm.ServicePointType.value = "Inside";
 
     vm.initialize();
 
