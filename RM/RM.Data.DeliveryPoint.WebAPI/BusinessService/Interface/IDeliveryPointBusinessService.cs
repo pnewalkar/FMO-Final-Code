@@ -155,6 +155,16 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
 
         Task<bool> UpdateDPUse(PostalAddressDTO postalAddressDetails);
 
+        /// <summary>
+        /// Deletes a delivery point with all associated location offerings and locations.
+        /// </summary>
+        /// <param name="deliveryPointid">Delivery point unique identifier.</param>
+        /// <param name="reasonCode">reason code</param>
+        /// <param name="reasonText">reasonText</param>
+        /// <param name="userName">userName</param>
+        /// <returns>bool</returns>
+        Task<bool> DeleteDeliveryPointWithAssociatedLocations(Guid deliveryPointid, string reasonCode, string reasonText, string userName);
+
         Task<List<UpdateDeliveryPointModelDTO>> UpdateDeliveryPointLocationForRange(List<DeliveryPointModelDTO> deliveryPointModelDTOs);
     }
 }

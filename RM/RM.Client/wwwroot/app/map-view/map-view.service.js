@@ -120,6 +120,7 @@ function mapService($http,
         getLayerSummary: getLayerSummary,
         deselectDP: deselectDP,
         setDeliveryPoint: setDeliveryPoint,
+        deleteDeliveryPoint: deleteDeliveryPoint,
         removePlacedDP: removePlacedDP,
         clearPlacedDP: clearPlacedDP
     }
@@ -1035,6 +1036,12 @@ function showDeliveryPointDetails(deliveryPointDetails) {
                 }, []);
             }
         });
+    }
+
+    function deleteDeliveryPoint(featureId) {
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        vm.interactions.select.getFeatures().clear();
+        deliveryPointsLayer.layer.getSource().removeFeature(deliveryPointsLayer.layer.getSource().getFeatureById(featureId))
     }
 
     function setPlacedDP(selectedFeature) {
