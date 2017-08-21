@@ -156,8 +156,10 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                 var referenceDataCategoryList = deliveryPointGroupIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
                 deliveryPointGroupDto.NetworkNodeType = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, DeliveryPointGroupConstants.DeliveryPointGroupDataProviderGUID, true);
 
+                deliveryPointGroupDto.ID = Guid.NewGuid();
                 deliveryPointGroupDto.GroupBoundaryGUID = Guid.NewGuid();
                 deliveryPointGroupDto.RelationshipTypeForCentroidToBoundaryGUID = Guid.NewGuid();
+                deliveryPointGroupDto.GroupBoundary = CreateGroupBoundary(deliveryPointGroupDto.GroupCoordinates);
                 deliveryPointGroupDto.GroupCentroid = deliveryPointGroupDto.GroupBoundary.Centroid;
 
                 deliveryPointGroupDataService.CreateDeliveryGroup(ConvertToDataDTO(deliveryPointGroupDto));
@@ -166,6 +168,23 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
 
                 return null;
             }
+        }
+
+        private DbGeometry CreateGroupBoundary(List<List<double[]>> coordinates)
+        {
+            string coordinate = string.Empty;
+            foreach (var coord in coordinates)
+            {
+                foreach (var co in coord)
+                {
+                    if (string.IsNullOrEmpty(coordinate))
+                        coordinate += co[0].ToString() + " " + co[1].ToString();
+                    else
+                        coordinate += ", " + co[0].ToString() + " " + co[1].ToString();
+                }
+            }
+
+            return DbGeometry.PolygonFromText(string.Format(DeliveryPointGroupConstants.PolygonWellKnownText, coordinate), DeliveryPointGroupConstants.BNGCOORDINATESYSTEM);
         }
 
         /// This method fetches geojson data for groups.
