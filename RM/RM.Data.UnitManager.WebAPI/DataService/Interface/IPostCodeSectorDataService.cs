@@ -13,9 +13,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// Get the postcode sector by the UDPRN id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
-        /// <param name="postcodeSectorTypeGuid">Postcode Sector Type Guid</param>
-        /// <param name="postcodeDistrictTypeGuid">Postcode District Type Guid</param>
         /// <returns>PostcodeSectorDataDTO</returns>
-        Task<PostcodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid);
+        Task<PostcodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn);
     }
 }

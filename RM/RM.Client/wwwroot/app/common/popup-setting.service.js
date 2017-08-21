@@ -7,7 +7,8 @@ function PopUpSettingService() {
         routeLog: routeLog,
         deliveryPoint: deliveryPoint,
         openAlert: openAlert,
-        printMap: printMap
+        printMap: printMap,
+        deleteDeliveryPoint: deleteDeliveryPoint
     };
 
     function advanceSearch(query) {
@@ -62,5 +63,14 @@ function PopUpSettingService() {
             }
         };
     }
+
+    function deleteDeliveryPoint() {
+        return {
+            templateUrl: './delivery-point/delete-delivery-point.template.html',
+            clickOutsideToClose: false,
+            controller: 'DeliveryPointContextController as vm'
+        };
+    }
+
 };
 
