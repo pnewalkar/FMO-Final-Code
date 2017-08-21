@@ -63,7 +63,7 @@ function layersAPIService($http, GlobalSettings, $q) {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: GlobalSettings.networkManagerApiUrl + GlobalSettings.fetchGroupLinksByBoundingBox + extent.join(','),
+            url: GlobalSettings.deliveryPointGroupManagerApiUrl + GlobalSettings.fetchGroupLinksByBoundingBox + extent.join(','),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Bearer ' + authData.token
