@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO
 {
     public class DeliveryPointGroupDataDTO
     {
-
-        public NetworkNodeDataDTO GroupCentroidNetworkNode { get; set; }
-
-        public DeliveryPointDataDTO GroupCentroidDeliveryPoint { get; set; }
+        public DeliveryPointGroupDataDTO()
+        {
+            DeliveryGroup = new SupportingDeliveryPointDataDTO();
+            AddedDeliveryPoints = new List<LocationDataDTO>();
+            GroupBoundary = new DataDTO.LocationDataDTO();
+        }
 
         public SupportingDeliveryPointDataDTO DeliveryGroup { get; set; }
 
@@ -15,6 +18,14 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO
 
         public LocationDataDTO GroupBoundary { get; set; }
 
-        public LocationDataDTO GroupCentroid { get; set; }
+        public Guid RelationshipTypeForCentroidToBoundaryGUID { get; set; }
+
+        public Guid RelationshipTypeForCentroidToDeliveryPointGUID { get; set; }
+
+        public Guid DeliveryPointUseIndicatorGUID { get; set; }
+
+        public Guid DeliveryGroupStatusGUID { get; set; }
+
+        public Guid NetworkNodeType { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         {
             this.loggingHelper = loggingHelper;
         }
-        
+
         #region PublicMethods
 
         /// <summary>
@@ -44,20 +44,77 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         {
             bool isDeliveryPointGroupCreationSuccess = false;
 
-            using (loggingHelper.RMTraceManager.StartTrace("Data.CreateDeliveryGroup"))
+            using (loggingHelper.RMTraceManager.StartTrace($"DataService.{nameof(CreateDeliveryGroup)}"))
             {
                 string methodName = typeof(DeliveryPointGroupDataService) + "." + nameof(CreateDeliveryGroup);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                if (deliveryPointGroup != null && deliveryPointGroup.AddedDeliveryPoints!= null)
+                if (deliveryPointGroup != null && deliveryPointGroup.AddedDeliveryPoints != null)
                 {
-                    ConfigureMapper();
+                    Location groupShape = new Location();
+                    groupShape.Shape = deliveryPointGroup.GroupBoundary.Shape;
+                    groupShape.ID = deliveryPointGroup.GroupBoundary.ID;
+                    groupShape.RowCreateDateTime = DateTime.UtcNow;
+                    DataContext.Locations.Add(groupShape);
 
-                    DataContext.Locations.AddRange(Mapper.Map<List<LocationDataDTO>, List<Location>>(deliveryPointGroup.AddedDeliveryPoints));
-                    DataContext.DeliveryPoints.Add(Mapper.Map<DeliveryPointDataDTO, DeliveryPoint>(deliveryPointGroup.GroupCentroidDeliveryPoint));
-                    DataContext.NetworkNodes.Add(Mapper.Map<NetworkNodeDataDTO, NetworkNode>(deliveryPointGroup.GroupCentroidNetworkNode));
-                    // DataContext.LocationRelationships.AddRange(Mapper.Map<List<LocationRelationshipDataDTO>, List<LocationRelationship>>(deliveryPointGroup.l));
-                    DataContext.SupportingDeliveryPoint.Add(Mapper.Map<SupportingDeliveryPointDataDTO, SupportingDeliveryPoint>(deliveryPointGroup.DeliveryGroup));
+                    Location groupCentroidLocation = new Location();
+                    groupCentroidLocation.Shape = groupShape.Shape.Centroid;
+                    groupCentroidLocation.ID = deliveryPointGroup.DeliveryGroup.ID;
+                    groupCentroidLocation.RowCreateDateTime = DateTime.UtcNow;
+                    DataContext.Locations.Add(groupCentroidLocation);
+
+                    NetworkNode groupCentroidNetworkNode = new NetworkNode();
+                    groupCentroidNetworkNode.ID = deliveryPointGroup.DeliveryGroup.ID;
+                    groupCentroidNetworkNode.RowCreateDateTime = DateTime.UtcNow;
+                    groupCentroidNetworkNode.NetworkNodeType_GUID = deliveryPointGroup.NetworkNodeType;
+                    DataContext.NetworkNodes.Add(groupCentroidNetworkNode);
+
+                    DeliveryPoint groupCentroidDeliveryPoint = new DeliveryPoint();
+                    groupCentroidDeliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointGroup.DeliveryPointUseIndicatorGUID;
+                    groupCentroidDeliveryPoint.ID = deliveryPointGroup.DeliveryGroup.ID;
+                    groupCentroidDeliveryPoint.RowCreateDateTime = DateTime.UtcNow;
+                    DataContext.DeliveryPoints.Add(groupCentroidDeliveryPoint);
+
+                    DeliveryPointStatus groupCentroidDeliveryPointStatus = new DeliveryPointStatus();
+                    groupCentroidDeliveryPointStatus.ID = Guid.NewGuid();
+                    groupCentroidDeliveryPointStatus.LocationID = deliveryPointGroup.DeliveryGroup.ID;
+                    groupCentroidDeliveryPointStatus.DeliveryPointStatusGUID = deliveryPointGroup.DeliveryGroupStatusGUID;
+                    groupCentroidDeliveryPointStatus.StartDateTime = DateTime.UtcNow;
+                    groupCentroidDeliveryPointStatus.RowCreateDateTime = DateTime.UtcNow;
+                    DataContext.DeliveryPoints.Add(groupCentroidDeliveryPoint);
+
+                    LocationRelationship groupShapeToCentroidRelationship = new LocationRelationship();
+                    groupShapeToCentroidRelationship.ID = Guid.NewGuid();
+                    groupShapeToCentroidRelationship.LocationID = deliveryPointGroup.DeliveryGroup.ID;
+                    groupShapeToCentroidRelationship.RelatedLocationID = deliveryPointGroup.GroupBoundary.ID;
+                    groupShapeToCentroidRelationship.RelationshipTypeGUID = deliveryPointGroup.RelationshipTypeForCentroidToBoundaryGUID;
+                    groupShapeToCentroidRelationship.RowCreateDateTime = DateTime.UtcNow;
+                    DataContext.LocationRelationships.Add(groupShapeToCentroidRelationship);
+
+                    foreach (var deliveryPoint in deliveryPointGroup.AddedDeliveryPoints)
+                    {
+                        LocationRelationship deliveryPointToCentroidRelation = new LocationRelationship();
+                        deliveryPointToCentroidRelation.ID = Guid.NewGuid();
+                        deliveryPointToCentroidRelation.LocationID = deliveryPoint.ID;
+                        deliveryPointToCentroidRelation.RelatedLocationID = deliveryPointGroup.DeliveryGroup.ID;
+                        deliveryPointToCentroidRelation.RelationshipTypeGUID = deliveryPointGroup.RelationshipTypeForCentroidToDeliveryPointGUID;
+                        deliveryPointToCentroidRelation.RowCreateDateTime = DateTime.UtcNow;
+                        DataContext.LocationRelationships.Add(deliveryPointToCentroidRelation);
+                    }
+
+                    SupportingDeliveryPoint groupDetails = new SupportingDeliveryPoint();
+                    groupDetails.ID = deliveryPointGroup.DeliveryGroup.ID;
+                    groupDetails.GroupName = deliveryPointGroup.DeliveryGroup.GroupName;
+                    groupDetails.DeliverToReception = deliveryPointGroup.DeliveryGroup.DeliverToReception;
+                    groupDetails.GroupTypeGUID = deliveryPointGroup.DeliveryGroup.GroupTypeGUID;
+                    groupDetails.NumberOfFloors = deliveryPointGroup.DeliveryGroup.NumberOfFloors;
+                    groupDetails.InternalDistanceMeters = deliveryPointGroup.DeliveryGroup.InternalDistanceMeters;
+                    groupDetails.DeliverToReception = deliveryPointGroup.DeliveryGroup.DeliverToReception;
+                    groupDetails.WorkloadTimeOverrideMinutes = deliveryPointGroup.DeliveryGroup.WorkloadTimeOverrideMinutes;
+                    groupDetails.TimeOverrideApproved = deliveryPointGroup.DeliveryGroup.TimeOverrideApproved;
+                    groupDetails.TimeOverrideReason = deliveryPointGroup.DeliveryGroup.TimeOverrideReason;
+                    groupDetails.RowCreateDateTime = DateTime.UtcNow;
+                    DataContext.SupportingDeliveryPoint.Add(groupDetails);
 
                     DataContext.SaveChanges();
 
@@ -69,7 +126,6 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
             }
         }
 
-        
         /// <summary>
         /// This Method is used to Access Link data for defined coordinates.
         /// </summary>
@@ -221,7 +277,6 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
             return deliveryGroups;
         }
 
-
         #region PrivateMethods
 
         /// <summary>
@@ -237,7 +292,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         //        cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().ReverseMap();
         //        cfg.CreateMap<LocationRelationship, LocationRelationshipDataDTO>().ReverseMap();
         //        cfg.CreateMap<LocationOffering, LocationOfferingDataDTO>().ReverseMap();
-        //        cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().ReverseMap();                
+        //        cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().ReverseMap();
         //    });
 
         //    Mapper.Configuration.CreateMapper();

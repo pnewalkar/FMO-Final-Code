@@ -10,5 +10,9 @@
 
         internal const string DeliveryPointGroupDataProviderGUID = "RMGServiceNode";
         internal const string PolygonWellKnownText = "POLYGON(({0}))";
+        internal const string OperationalStatusGUIDLive = "Live";
+        internal const string Residential = "Residential";
+        internal const string RelationshipTypeForCentroidToBoundary = "Is Supporting DP For Group Polygon";
+        internal const string RelationshipTypeForCentroidToDeliveryPoint = "Is Delivery Point In Group";
     }
 }

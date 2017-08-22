@@ -152,14 +152,24 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                 }
 
                 // Get reference data related to Delivery group
-                List<string> categoryNamesSimpleLists = new List<string> { ReferenceDataCategoryNames.NetworkNodeType };
+                List<string> categoryNamesSimpleLists = new List<string>
+                {
+                    ReferenceDataCategoryNames.NetworkNodeType,
+                    ReferenceDataCategoryNames.DeliveryPointOperationalStatus,
+                    ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+                    ReferenceDataCategoryNames.LocationRelationshipType
+
+                };
                 var referenceDataCategoryList = deliveryPointGroupIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
-                deliveryPointGroupDto.NetworkNodeType = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, DeliveryPointGroupConstants.DeliveryPointGroupDataProviderGUID, true);
+                deliveryPointGroupDto.NetworkNodeType = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, DeliveryPointGroupConstants.DeliveryPointGroupDataProviderGUID);
+                deliveryPointGroupDto.DeliveryGroupStatus = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DeliveryPointOperationalStatus, DeliveryPointGroupConstants.OperationalStatusGUIDLive, true);
+                deliveryPointGroupDto.DeliveryPointUseIndicatorGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DeliveryPointUseIndicator, DeliveryPointGroupConstants.Residential, true);
+                deliveryPointGroupDto.RelationshipTypeForCentroidToBoundaryGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.LocationRelationshipType, DeliveryPointGroupConstants.RelationshipTypeForCentroidToBoundary, true);
+                deliveryPointGroupDto.RelationshipTypeForCentroidToDeliveryPointGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.LocationRelationshipType, DeliveryPointGroupConstants.RelationshipTypeForCentroidToDeliveryPoint, true);
 
                 deliveryPointGroupDto.ID = Guid.NewGuid();
                 deliveryPointGroupDto.GroupBoundaryGUID = Guid.NewGuid();
-                deliveryPointGroupDto.RelationshipTypeForCentroidToBoundaryGUID = Guid.NewGuid();
-                //deliveryPointGroupDto.GroupBoundary = CreateGroupBoundary(deliveryPointGroupDto.GroupCoordinates);
+                deliveryPointGroupDto.GroupBoundary = CreateGroupBoundary(deliveryPointGroupDto.GroupCoordinates);
                 deliveryPointGroupDto.GroupCentroid = deliveryPointGroupDto.GroupBoundary.Centroid;
 
                 deliveryPointGroupDataService.CreateDeliveryGroup(ConvertToDataDTO(deliveryPointGroupDto));
@@ -281,44 +291,16 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                 // Construct boundary Location
                 deliveryPointGroupDataDTO.GroupBoundary.ID = deliveryPointGroupDTO.GroupBoundaryGUID;
                 deliveryPointGroupDataDTO.GroupBoundary.Shape = deliveryPointGroupDTO.GroupBoundary;
-                deliveryPointGroupDataDTO.GroupBoundary.RowCreateDateTime = DateTime.UtcNow;
-
-                // Construct centroid Location
-                deliveryPointGroupDataDTO.GroupCentroid.ID = deliveryPointGroupDTO.ID;
-                deliveryPointGroupDataDTO.GroupCentroid.Shape = deliveryPointGroupDTO.GroupCentroid;
-                deliveryPointGroupDataDTO.GroupCentroid.RowCreateDateTime = DateTime.UtcNow;
-
-                // Construct centroid Network Node
-                deliveryPointGroupDataDTO.GroupCentroidNetworkNode.ID = deliveryPointGroupDTO.ID;
-                deliveryPointGroupDataDTO.GroupCentroidNetworkNode.NetworkNodeType_GUID = deliveryPointGroupDTO.NetworkNodeType;
-                deliveryPointGroupDataDTO.GroupCentroidNetworkNode.RowCreateDateTime = DateTime.UtcNow;
-
-                // Construct centroid Delivery Point
-                deliveryPointGroupDataDTO.GroupCentroidDeliveryPoint.ID = deliveryPointGroupDTO.ID;
-                deliveryPointGroupDataDTO.GroupCentroidDeliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointGroupDTO.DeliveryPointUseIndicatorGUID;
-                deliveryPointGroupDataDTO.GroupCentroidDeliveryPoint.RowCreateDateTime = DateTime.UtcNow;
-
-                // Construct centroid LocationRelationShip for relationship between boundary and centroid
-                LocationRelationshipDataDTO groupShapeToCentroidRelationship = new LocationRelationshipDataDTO();
-                groupShapeToCentroidRelationship.ID = deliveryPointGroupDTO.LocationRelationshipForCentroidToBoundaryGuid;
-                groupShapeToCentroidRelationship.LocationID = deliveryPointGroupDTO.ID;
-                groupShapeToCentroidRelationship.RelatedLocationID = deliveryPointGroupDTO.GroupBoundaryGUID;
-                groupShapeToCentroidRelationship.RelationshipTypeGUID = deliveryPointGroupDTO.RelationshipTypeForCentroidToBoundaryGUID;
-                groupShapeToCentroidRelationship.RowCreateDateTime = DateTime.UtcNow;
-                deliveryPointGroupDataDTO.GroupCentroid.LocationRelationships.Add(groupShapeToCentroidRelationship);
-
+                
                 // Construct centroid LocationRelationShip for relationship between centroid and deliveryPoints
-                if (deliveryPointGroupDTO.AddedDeliveryPoints != null && deliveryPointGroupDTO.AddedDeliveryPoints.Count > 1)
+                if (deliveryPointGroupDTO.AddedDeliveryPoints != null && deliveryPointGroupDTO.AddedDeliveryPoints.Count > 0)
                 {
                     foreach (var deliveryPoint in deliveryPointGroupDTO.AddedDeliveryPoints)
                     {
-                        LocationRelationshipDataDTO deliveryPointToCentroidRelation = new LocationRelationshipDataDTO();
-                        deliveryPointToCentroidRelation.ID = Guid.NewGuid();
-                        deliveryPointToCentroidRelation.LocationID = deliveryPoint.ID;
-                        deliveryPointToCentroidRelation.RelatedLocationID = deliveryPointGroupDTO.ID;
-                        deliveryPointToCentroidRelation.RelationshipTypeGUID = deliveryPointGroupDTO.RelationshipTypeForCentroidToDeliveryPointGUID;
-                        deliveryPointToCentroidRelation.RowCreateDateTime = DateTime.UtcNow;
-                        deliveryPointGroupDataDTO.GroupCentroid.LocationRelationships1.Add(deliveryPointToCentroidRelation);
+                        LocationDataDTO addedDeliveryPoint = new LocationDataDTO();
+                        addedDeliveryPoint.ID = deliveryPoint.ID;
+                        deliveryPointGroupDataDTO.AddedDeliveryPoints.Add(addedDeliveryPoint);
+
                     }
                 }
 
@@ -330,7 +312,14 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                 deliveryPointGroupDataDTO.DeliveryGroup.NumberOfFloors = deliveryPointGroupDTO.NumberOfFloors;
                 deliveryPointGroupDataDTO.DeliveryGroup.InternalDistanceMeters = deliveryPointGroupDTO.InternalDistanceMeters;
                 deliveryPointGroupDataDTO.DeliveryGroup.WorkloadTimeOverrideMinutes = deliveryPointGroupDTO.WorkloadTimeOverrideMinutes;
-                deliveryPointGroupDataDTO.DeliveryGroup.RowCreateDateTime = DateTime.UtcNow;
+                deliveryPointGroupDataDTO.DeliveryGroup.TimeOverrideApproved = deliveryPointGroupDTO.TimeOverrideApproved;
+                deliveryPointGroupDataDTO.DeliveryGroup.TimeOverrideReason = deliveryPointGroupDTO.TimeOverrideReason;               
+
+                deliveryPointGroupDataDTO.DeliveryPointUseIndicatorGUID = deliveryPointGroupDTO.DeliveryPointUseIndicatorGUID;
+                deliveryPointGroupDataDTO.NetworkNodeType = deliveryPointGroupDTO.NetworkNodeType;
+                deliveryPointGroupDataDTO.RelationshipTypeForCentroidToBoundaryGUID = deliveryPointGroupDTO.RelationshipTypeForCentroidToBoundaryGUID;
+                deliveryPointGroupDataDTO.RelationshipTypeForCentroidToDeliveryPointGUID = deliveryPointGroupDTO.RelationshipTypeForCentroidToDeliveryPointGUID;
+                deliveryPointGroupDataDTO.DeliveryGroupStatusGUID = deliveryPointGroupDTO.DeliveryGroupStatus;
             }
 
             return deliveryPointGroupDataDTO;

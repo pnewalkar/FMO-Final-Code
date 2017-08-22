@@ -38,7 +38,7 @@
                 <md-input-container>
                     <label>Type</label>
                     <md-select name="groupType" ng-model="vm.groupType" ng-change="vm.checkDeliveryGroupType()" ng-disabled="vm.isReadOnly"  required>
-                        <md-option ng-repeat="groupType in vm.deliveryGroupTypes | orderBy : 'value'" ng-value="groupType.value" >
+                        <md-option ng-repeat="groupType in vm.deliveryGroupTypes | orderBy : 'value'" ng-value="groupType" >
                             {{groupType.value}}
                         </md-option>
                     </md-select>
