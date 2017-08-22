@@ -1,8 +1,7 @@
-﻿using System.ServiceProcess;
-using Ninject;
-using RM.Integration.ThirdPartyAddressLocation.Loader.Utils.Interfaces;
-using RM.CommonLibrary.LoggingMiddleware;
+﻿using Ninject;
 using RM.CommonLibrary.ConfigurationMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.Integration.ThirdPartyAddressLocation.Loader.Utils.Interfaces;
 
 namespace RM.Integration.ThirdPartyAddressLocation.Loader
 {
@@ -21,12 +20,16 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader
             ILoggingHelper loggingHelper = kernel.Get<ILoggingHelper>();
             IConfigurationHelper configurationHelper = kernel.Get<IConfigurationHelper>();
 
-            ThirdPartyImport myService = new ThirdPartyImport(usrLoader, loggingHelper, configurationHelper);
-            myService.OnDebug();
-            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
-
-            //ServiceBase[] servicesToRun = new ServiceBase[] { new ThirdPartyImport(usrLoader, loggingHelper, configurationHelper) };
-            //ServiceBase.Run(servicesToRun);
+#if DEBUG
+            using (ThirdPartyImport myService = new ThirdPartyImport(usrLoader, loggingHelper, configurationHelper))
+            {
+                myService.OnDebug();
+                System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
+            }
+#else
+            ServiceBase[] servicesToRun = new ServiceBase[] { new ThirdPartyImport(usrLoader, loggingHelper, configurationHelper) };
+            ServiceBase.Run(servicesToRun);
+#endif
         }
     }
 }
