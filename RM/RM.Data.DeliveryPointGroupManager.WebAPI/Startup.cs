@@ -6,9 +6,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
+using RM.CommonLibrary.ConfigurationMiddleware;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.HttpHandler;
+using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService;
+using RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService;
+using RM.DataManagement.DeliveryPointGroupManager.WebAPI.Entities;
+using RM.DataManagement.DeliveryPointGroupManager.WebAPI.Integration;
 
 namespace RM.Data.DeliveryPointGroupManager.WebAPI
 {
@@ -82,8 +90,14 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI
                 return new ExceptionHelper(logWriter);
             });
 
-            //  services.AddScoped<IDatabaseFactory<RouteDBContext>, DatabaseFactory<RouteDBContext>>();
-            //   services.AddScoped<IHttpHandler, HttpHandler>();
+            services.AddScoped<IDatabaseFactory<DeliveryPointGroupDBContext>, DatabaseFactory<DeliveryPointGroupDBContext>>();
+
+            services.AddScoped<IDeliveryPointGroupDataService, DeliveryPointGroupDataService>();
+            services.AddScoped<IDeliveryPointGroupIntegrationService, DeliveryPointGroupIntegrationService>();
+            services.AddScoped<IDeliveryPointGroupBusinessService, DeliveryPointGroupBusinessService>();
+            services.AddScoped<IHttpHandler, HttpHandler>();
+
+            services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

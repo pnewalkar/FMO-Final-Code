@@ -56,6 +56,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
                     DataContext.Locations.AddRange(Mapper.Map<List<LocationDataDTO>, List<Location>>(deliveryPointGroup.AddedDeliveryPoints));
                     DataContext.DeliveryPoints.Add(Mapper.Map<DeliveryPointDataDTO, DeliveryPoint>(deliveryPointGroup.GroupCentroidDeliveryPoint));
                     DataContext.NetworkNodes.Add(Mapper.Map<NetworkNodeDataDTO, NetworkNode>(deliveryPointGroup.GroupCentroidNetworkNode));
+                    // DataContext.LocationRelationships.AddRange(Mapper.Map<List<LocationRelationshipDataDTO>, List<LocationRelationship>>(deliveryPointGroup.l));
                     DataContext.SupportingDeliveryPoint.Add(Mapper.Map<SupportingDeliveryPointDataDTO, SupportingDeliveryPoint>(deliveryPointGroup.DeliveryGroup));
 
                     DataContext.SaveChanges();

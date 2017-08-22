@@ -43,6 +43,8 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI.DTO
 
         public DbGeometry GroupBoundary { get; set; }
 
+        public object GroupCoordinates { get; set; }
+
         public Guid LocationRelationshipForCentroidToBoundaryGuid { get; set; }
 
         public Guid RelationshipTypeForCentroidToBoundaryGUID { get; set; }
@@ -52,8 +54,6 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI.DTO
         public Guid GroupBoundaryGUID { get; set; }
 
         public ICollection<DeliveryPointDTO> AddedDeliveryPoints { get; set; }
-
-        public Guid CentroidLocationId { get; set; }
 
         public Guid PolygonLocationId { get; set; }
 

@@ -52,12 +52,17 @@
    
    <!-- Angular translate-->  
     <script src="../bower_components/angular-translate/angular-translate.js"></script>
-    
+    <!--Turf foOpen Layer-->
+    <script src="../node_modules/turf/turf.min.js"></script>  
+
     <!--angular material data-table script-->
     <script src="../bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
     <!--Open Layer-->
+    <script src="../node_modules/openlayers/dist/ol-debug.js"></script>  
+    <!--Open Layer-->
     <script src="../node_modules/openlayers/dist/ol-debug.js"></script>    
     <script src="../bower_components/proj4/dist/proj4.js"></script>
+    <!--<script src="turf.min.js"></script>-->
     <!--custom scripts-->
     <script src="./app.module.js"></script>
     <script src="./app.config.js"></script>
@@ -79,9 +84,14 @@
 
 
     <!-- Reusable Component -->
+    <!-- searchable dropdown -->
     <script src="./common/searchable-dropdown/searchable-dropdown.module.js"></script>
     <script src="./common/searchable-dropdown/searchable-dropdown.controller.js"></script>
     <script src="./common/searchable-dropdown/searchable-dropdown.component.js"></script>
+    <!-- validate number -->
+    <script src="./common/validate-number/validate-number.module.js"></script>
+    <script src="./common/validate-number/validate-number.controller.js"></script>
+    <script src="./common/validate-number/validate-number.component.js"></script>
 
     <!--home-->
     <script src="./home/home.module.js"></script>
@@ -234,6 +244,7 @@
 
     <!--group-->
     <script src="./group/group.module.js"></script>
+    <script src="./group/group.factory.js"></script>
     <script src="./group/group.service.js"></script>
     <script src="./group/group.controller.js"></script>
     <script src="./group/group-details.controller.js"></script>
