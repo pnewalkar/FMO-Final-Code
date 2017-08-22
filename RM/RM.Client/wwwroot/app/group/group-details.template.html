@@ -76,7 +76,7 @@
                     <md-input-container ng-if="((vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType.value === 'Inside')) && !vm.isReadOnly">
                         <label>Internal Distance</label>
                         <!--Decimal upto 2 characters restrict pending-->
-                        <input name="internalDistance" type="text" ng-model="vm.internalDistance" ng-maxlength="7" ng-pattern="/^\d{0,3}(\d\.\d?|\.\d)?\d?$/"
+                        <input name="internalDistance" type="text" ng-model="vm.internalDistance" ng-maxlength="7" ng-pattern="/^[0-9]*$/"
                                ng-required="((vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType.value === 'Inside'))">
                         <div ng-messages="vm.groupForm.internalDistance.$error">
                             <div ng-message="required">This field is required*</div>
@@ -131,17 +131,26 @@
         </div>
 
         <!--Delivery Points & Delivery to reception-->
-        <div layout="row">
-            <div layout="column" flex="40">
+        <div layout="row" >
+            <div layout="column" flex="100">
+                <h4>Delivery Points</h4>
+
                 <div class="dropdownComponent" ng-class="{'dropdowntoggle' : vm.toggle }">
-                    <div class="dropdowntoggleHead" ng-click="vm.getSummarizedAddresses()"> {{vm.addedPoints.length}}
-                    <i class="fa fa-chevron-up" aria-hidden="true"></i> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
-                    <div class="container" id="dropdownToggleCont" ng-repeat="address in vm.summarizedCount | orderBy:'postcode'">
-                        {{ address.postcode }} - {{ address.deliveyPoints }} Points
+                    <div class="dropdowntoggleHead" ng-click="vm.getSummarizedAddresses()">
+                        {{vm.addedPoints.length}}
+                        <i class="fa fa-chevron-up" aria-hidden="true"></i> <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                    </div>
+                    <div class="container" id="dropdownToggleCont">
+                        <ul>
+                            <li ng-repeat="address in vm.summarizedCount | orderBy:'postcode'">
+                                {{ address.postcode }} - {{ address.deliveyPoints }} Points
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
           
+         
             <span flex="5"></span>
             <div layout="column" flex="40" ng-if="vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block'">
                 <md-checkbox ng-model="vm.isDeliveryToReception" ng-disabled="vm.isReadOnly">Delivery to reception</md-checkbox>
@@ -149,7 +158,7 @@
         </div>
 
         <!--Available points-->
-        <div layout="row"  ng-if="vm.availablePoints.length > 0">
+        <div layout="row" ng-if="vm.availablePoints.length > 0">
             <div layout="column" flex="80">
                 <md-content><p>Available Points</p></md-content>
             </div>
