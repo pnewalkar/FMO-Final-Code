@@ -56,8 +56,6 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
             {
                 List<AddressLocationUSRDTO> lstUSRFiles = null;
                 List<AddressLocationUSRDTO> lstUSRInsertFiles = null;
-                List<AddressLocationUSRDTO> lstUSRUpdateFiles = null;
-
 
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
@@ -69,22 +67,9 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                     {
                         lstUSRFiles = GetValidRecords(strPath);
 
-                        lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == ThirdPartyLoaderConstants.INSERT).ToList();
-
-                        lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == ThirdPartyLoaderConstants.UPDATE).ToList();
-                        //lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
+                        lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == ThirdPartyLoaderConstants.INSERT || insertFiles.ChangeType == ThirdPartyLoaderConstants.DELETE || insertFiles.ChangeType == ThirdPartyLoaderConstants.UPDATE).ToList();
 
                         lstUSRInsertFiles.ForEach(addressLocation =>
-                        {
-                            //Message is created and the Postal Address DTO is passed as the object to be queued along with the queue name and queue path where the object
-                            //needs to be queued.
-                            IMessage USRMsg = msgBroker.CreateMessage(addressLocation, ThirdPartyLoaderConstants.QUEUETHIRDPARTY, ThirdPartyLoaderConstants.QUEUEPATH);
-
-                            //The messge object created in the above code is then pushed onto the queue. This internally uses the MSMQ Send function to push the message
-                            //to the queue.
-                            msgBroker.SendMessage(USRMsg);
-                        });
-                        lstUSRUpdateFiles.ForEach(addressLocation =>
                         {
                             //Message is created and the Postal Address DTO is passed as the object to be queued along with the queue name and queue path where the object
                             //needs to be queued.

@@ -16,10 +16,9 @@ DeliveryPointController.$inject = [
         '$state',
         '$stateParams',
         'deliveryPointService',
-         'CommonConstants',
+        'CommonConstants',
         '$rootScope',
         '$translate',
-         'CommonConstants',
         'GlobalSettings'];
 
 function DeliveryPointController(
@@ -36,12 +35,9 @@ function DeliveryPointController(
     $state,
     $stateParams,
     deliveryPointService,
-
     CommonConstants,
     $rootScope,
     $translate,
-    CommonConstants,
-
     GlobalSettings
 ) {
     var vm = this;
@@ -63,6 +59,7 @@ function DeliveryPointController(
     vm.initialize = initialize;
     vm.setRangeValidation = setRangeValidation;
     vm.createDeliveryPointsRange = createDeliveryPointsRange;
+    vm.setDeliveryPointUseIndicator = setDeliveryPointUseIndicator;
 
     vm.positionedThirdPartyDeliveryPointList = $stateParams.positionedThirdPartyDeliveryPointList;
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
@@ -199,10 +196,12 @@ function DeliveryPointController(
                 vm.selectedDPUse = response.selectedDPUse;
             });
         }
-        else {
-            vm.dpUse = vm.dpUseType;
-            vm.selectedDPUse = "";
-        }
+    }
+
+    function setDeliveryPointUseIndicator()
+    {
+        vm.dpUse = vm.dpUseType;
+        vm.selectedDPUse = "";
     }
 
     function toggle(item) {
@@ -529,4 +528,5 @@ function DeliveryPointController(
                    });
         vm.closeWindow();
     }
+
 };

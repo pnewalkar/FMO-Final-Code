@@ -118,7 +118,8 @@ function mapService($http,
         setPolygonTransparency: setPolygonTransparency,
         getLayerSummary: getLayerSummary,
         deselectDP: deselectDP,
-        setDeliveryPoint: setDeliveryPoint
+        setDeliveryPoint: setDeliveryPoint,
+        deleteDeliveryPoint: deleteDeliveryPoint
     }
 
     function deselectDP() {
@@ -1030,5 +1031,11 @@ function showDeliveryPointDetails(deliveryPointDetails) {
                 }, []);
             }
         });
+    }
+
+    function deleteDeliveryPoint(featureId) {
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        vm.interactions.select.getFeatures().clear();
+        deliveryPointsLayer.layer.getSource().removeFeature(deliveryPointsLayer.layer.getSource().getFeatureById(featureId))
     }
 }
