@@ -344,8 +344,8 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             reasonCode = "Demolished";
             reasonText ="No reason";
             userName = "Shobharam";
-            mockDeliveryPointsDataService.Setup(x => x.UserDeleteDeliveryPoint(It.IsAny<Guid>(),true)).ReturnsAsync(true);
-            bool expectedresult = await testCandidate.UserDeleteDeliveryPoint(id, reasonCode, reasonText, userName);
+            mockDeliveryPointsDataService.Setup(x => x.DeleteDeliveryPointWithAssociatedLocations(It.IsAny<Guid>())).ReturnsAsync(true);
+            bool expectedresult = await testCandidate.DeleteDeliveryPointWithAssociatedLocations(id, reasonCode, reasonText, userName);
             Assert.IsNotNull(expectedresult);
             Assert.IsTrue(expectedresult);
         }

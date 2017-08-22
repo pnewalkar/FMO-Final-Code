@@ -244,7 +244,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             DependentLocality = l.PostalAddress.DependentLocality,
                             UDPRN = l.PostalAddress.UDPRN
                         }
-                    }).OrderBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.BuildingNumber)
+                    }).OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
+                    .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
                     .ToListAsync();
             }
             else
@@ -274,7 +275,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             DependentLocality = l.PostalAddress.DependentLocality,
                             UDPRN = l.PostalAddress.UDPRN
                         }
-                    }).OrderBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.BuildingNumber)
+                    }).OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
+                    .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
                     .ToListAsync();
             }
 
@@ -339,7 +341,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         }
                     })
                     .Take(recordTakeCount)
-                    .OrderBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.BuildingNumber)
+                    .OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
+                    .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
                     .ToListAsync();
             }
             else
@@ -371,7 +374,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         }
                     })
                     .Take(recordTakeCount)
-                    .OrderBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.BuildingNumber)
+                    .OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
+                    .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
                     .ToListAsync();
             }
 
@@ -739,26 +743,31 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         {
             try
             {
-                Location location = await DataContext.Locations.Include(l => l.NetworkNode)
+                using (loggingHelper.RMTraceManager.StartTrace("Data.DeleteDeliveryPoint"))
+                {
+                    string methodName = typeof(DeliveryPointsDataService) + "." + nameof(DeleteDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                    Location location = await DataContext.Locations.Include(l => l.NetworkNode)
                                                                .Include(l => l.NetworkNode.DeliveryPoint)
                                                                .Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus)
                                                                .Include(l => l.LocationOfferings)
                                                                .Where(l => l.ID == id).SingleOrDefaultAsync();
 
-                if (location != null)
-                {
-                    DataContext.LocationOfferings.RemoveRange(location.LocationOfferings);
-                    DataContext.DeliveryPointStatus.RemoveRange(location.NetworkNode.DeliveryPoint.DeliveryPointStatus);
-                    DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
-                    // TODO : Uncomment as a part of house keeping story
-                    // DataContext.NetworkNodes.Remove(location.NetworkNode);
-                    // DataContext.Locations.Remove(location);
-                    await DataContext.SaveChangesAsync();
-                    return true;
-                }
-                else
-                {
-                    return false;
+                    if (location != null)
+                    {
+                        DataContext.LocationOfferings.RemoveRange(location.LocationOfferings);
+                        DataContext.DeliveryPointStatus.RemoveRange(location.NetworkNode.DeliveryPoint.DeliveryPointStatus);
+                        DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
+                        // TODO : Uncomment as a part of house keeping story
+                        // DataContext.NetworkNodes.Remove(location.NetworkNode);
+                        // DataContext.Locations.Remove(location);
+                        await DataContext.SaveChangesAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
             catch (Exception ex)
@@ -829,48 +838,44 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         }
 
         /// <summary>
-        ///  User Deletes a delivery point.
+        /// Deletes a delivery point with all associated location offerings and locations.
         /// </summary>
         /// <param name="id">Delivery point unique identifier.</param>
-        /// <returns>Success of delete operation.</returns>
-        public async Task<bool> UserDeleteDeliveryPoint(Guid id, bool isUserDelete = false)
+        public async Task<bool> DeleteDeliveryPointWithAssociatedLocations(Guid id)
         {
             try
             {
-                Location location = null;
-                var OfferingId = fetchLocationOfferingId();
-
-                if (isUserDelete)
+                using (loggingHelper.RMTraceManager.StartTrace("Data.DeleteDeliveryPointWithAssociatedLocations"))
                 {
+                    string methodName = typeof(DeliveryPointsDataService) + "." + nameof(DeleteDeliveryPointWithAssociatedLocations);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                    Location location = null;
+
                     location = await DataContext.Locations.Include(l => l.NetworkNode)
-                                                                               .Include(l => l.NetworkNode.DeliveryPoint)
-                                                                               .Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus)
-                                                                               .Include(l => l.LocationOfferings)
-                                                                               .Where(l => l.ID == id && l.LocationOfferings.FirstOrDefault().OfferingID == OfferingId).SingleOrDefaultAsync();
-                }
-                else
-                {
+                                                                                .Include(l => l.NetworkNode.DeliveryPoint)
+                                                                                .Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus)
+                                                                                .Include(l => l.LocationOfferings)
+                                                                                .Where(l => l.ID == id).SingleOrDefaultAsync();
+                   
+                    if (location != null)
+                    {
+                        if (location.LocationOfferings != null && location.LocationOfferings.Count > 0)
+                        {
+                            var OfferingId = fetchLocationOfferingId();
+                            var locationOffering = location.LocationOfferings.Where(n => n.OfferingID == OfferingId).ToList();
+                            DataContext.LocationOfferings.RemoveRange(locationOffering);
+                        }
 
-
-                     location = await DataContext.Locations.Include(l => l.NetworkNode)
-                                                            .Include(l => l.NetworkNode.DeliveryPoint)
-                                                            .Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus)
-                                                            .Include(l => l.LocationOfferings)
-                                                            .Where(l => l.ID == id).SingleOrDefaultAsync();
-            }
-                if (location != null)
-                {
-                    DataContext.LocationOfferings.RemoveRange(location.LocationOfferings);
-                    DataContext.DeliveryPointStatus.RemoveRange(location.NetworkNode.DeliveryPoint.DeliveryPointStatus);
-                    DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
-                    //DataContext.NetworkNodes.Remove(location.NetworkNode);
-                    //DataContext.Locations.Remove(location);
-                    await DataContext.SaveChangesAsync();
-                    return true;
-                }
-                else
-                {
-                    return false;
+                        DataContext.DeliveryPointStatus.RemoveRange(location.NetworkNode.DeliveryPoint.DeliveryPointStatus);
+                        DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
+                        
+                        await DataContext.SaveChangesAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
             catch (Exception ex)

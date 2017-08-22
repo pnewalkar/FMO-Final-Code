@@ -5,7 +5,7 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
       "compile": {
-        "bin/Release/RM.CommonLibrary.dll": {}
+        "bin/Debug/RM.CommonLibrary.dll": {}
       },
       "runtime": {
         "../packages/Castle.Core.4.0.0/lib/net45/Castle.Core.dll": {},
@@ -28,33 +28,33 @@
         "../packages/System.Runtime.CompilerServices.Unsafe.4.3.0/lib/netstandard1.0/System.Runtime.CompilerServices.Unsafe.dll": {},
         "../packages/System.Runtime.InteropServices.RuntimeInformation.4.3.0/lib/net45/System.Runtime.InteropServices.RuntimeInformation.dll": {},
         "../packages/System.Text.Encodings.Web.4.3.0/lib/netstandard1.0/System.Text.Encodings.Web.dll": {},
-        "bin/Release/RM.CommonLibrary.dll": {}
+        "bin/Debug/RM.CommonLibrary.dll": {}
       },
       "contentFiles": {
-        "bin/Release/RM.CommonLibrary.pdb": {
+        "bin/Debug/RM.CommonLibrary.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
         },
-        "bin/Release/sqlservertypes/x64/msvcr120.dll": {
+        "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
           "copyToOutput": true,
           "outputPath": "sqlservertypes/x64/msvcr120.dll"
         },
-        "bin/Release/sqlservertypes/x64/sqlserverspatial140.dll": {
+        "bin/Debug/sqlservertypes/x64/sqlserverspatial140.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
           "copyToOutput": true,
           "outputPath": "sqlservertypes/x64/sqlserverspatial140.dll"
         },
-        "bin/Release/sqlservertypes/x86/msvcr120.dll": {
+        "bin/Debug/sqlservertypes/x86/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
           "copyToOutput": true,
           "outputPath": "sqlservertypes/x86/msvcr120.dll"
         },
-        "bin/Release/sqlservertypes/x86/sqlserverspatial140.dll": {
+        "bin/Debug/sqlservertypes/x86/sqlserverspatial140.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
           "copyToOutput": true,
