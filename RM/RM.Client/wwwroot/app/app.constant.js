@@ -157,6 +157,10 @@ GlobalSettings.getPdfreport = "/PDFGenerator/PDFReports/";
 GlobalSettings.generateReportWithMap = "/MapManager/MapImage/";
 GlobalSettings.generatePdf = "/MapManager/MapPDF/";
 
+//Delivery Group Factory
+GlobalSettings.CreateDeliveryGroup = "/DeliveryPointGroupManager/CreateDeliveryGroup";
+
+
 //--- Unit Area ---///
 GlobalSettings.BT = "BT";
 

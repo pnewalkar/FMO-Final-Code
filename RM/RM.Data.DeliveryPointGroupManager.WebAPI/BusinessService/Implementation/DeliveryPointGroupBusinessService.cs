@@ -159,7 +159,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                 deliveryPointGroupDto.ID = Guid.NewGuid();
                 deliveryPointGroupDto.GroupBoundaryGUID = Guid.NewGuid();
                 deliveryPointGroupDto.RelationshipTypeForCentroidToBoundaryGUID = Guid.NewGuid();
-                deliveryPointGroupDto.GroupBoundary = CreateGroupBoundary(deliveryPointGroupDto.GroupCoordinates);
+                //deliveryPointGroupDto.GroupBoundary = CreateGroupBoundary(deliveryPointGroupDto.GroupCoordinates);
                 deliveryPointGroupDto.GroupCentroid = deliveryPointGroupDto.GroupBoundary.Centroid;
 
                 deliveryPointGroupDataService.CreateDeliveryGroup(ConvertToDataDTO(deliveryPointGroupDto));

@@ -66,7 +66,6 @@ function mapService($http,
     vm.layerName = undefined;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
-    vm.onDrawEnd = onDrawEnd();
     vm.pointerMoveHandler = function (evt) {
         if (evt.dragging || vm.activeTool != 'measure') {
             return;
@@ -123,7 +122,8 @@ function mapService($http,
         deselectDP: deselectDP,
         setDeliveryPoint: setDeliveryPoint,
         deleteDeliveryPoint: deleteDeliveryPoint,
-       
+        onDrawEnd: onDrawEnd,
+        getFeaturesWithinFeature: getFeaturesWithinFeature
     }
 
     function deselectDP() {
@@ -566,16 +566,52 @@ function mapService($http,
             });
         vm.interactions.draw.on('drawend',
             function (evt) {
-                evt.feature.setId(0);
+                evt.feature.setId(createGuid());
                 $timeout(function () {
                     setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
-                    vm.onDrawEnd("group", evt.feature)
+                    onDrawEnd("group", evt.feature)
                 });
             });
     }
 
     function onDrawEnd(buttonName, feature) {
-        console.log(buttonName, feature);
+        // console.log(buttonName, feature);
+        $rootScope.$emit('setAssociatedDp', { "listOfAssociatedDP": feature });
+    }
+
+    function getFeaturesWithinFeature(layer, srcFeature) {
+
+        //   srcFeature = vm.interactions.select.getFeatures()[0];
+        var extent = srcFeature.getGeometry().getExtent();
+        var inside = [];
+        getFeaturesInExtent(layer, extent).forEach(function (feature) {
+            var format = new ol.format.GeoJSON();
+            var point = format.writeFeatureObject(feature, {
+                featureProjection: 'EPSG:3857',
+                dataProjection: 'EPSG:27700'
+            });
+
+            var feat = format.writeFeatureObject(srcFeature, {
+                featureProjection: 'EPSG:3857',
+                dataProjection: 'EPSG:27700'
+            });
+
+            if (turf.inside(point, feat)) {
+                inside.push(feature);
+            }
+        });
+        return inside;
+    }
+
+    function getFeaturesInExtent(layer, extent, filter) {
+        var inside = [];
+        filter = filter || function () { return true; };
+        layer.forEachFeatureInExtent(extent, function (feature) {
+            if (filter(feature)) {
+                inside.push(feature);
+            }
+        })
+        return inside;
     }
     function setDrawInteraction(button, style) {
         var draw = null;
