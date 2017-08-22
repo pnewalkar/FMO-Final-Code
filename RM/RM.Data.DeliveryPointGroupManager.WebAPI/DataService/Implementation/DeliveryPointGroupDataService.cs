@@ -32,7 +32,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
         {
             this.loggingHelper = loggingHelper;
         }
-        
+
         #region PublicMethods
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
                 string methodName = typeof(DeliveryPointGroupDataService) + "." + nameof(CreateDeliveryGroup);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                if (deliveryPointGroup != null && deliveryPointGroup.AddedDeliveryPoints!= null)
+                if (deliveryPointGroup != null && deliveryPointGroup.AddedDeliveryPoints != null)
                 {
                     ConfigureMapper();
 
@@ -69,7 +69,6 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
             }
         }
 
-        
         /// <summary>
         /// This Method is used to Access Link data for defined coordinates.
         /// </summary>
@@ -84,7 +83,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
                 string methodName = typeof(DeliveryPointGroupDataService) + "." + nameof(GetDeliveryGroups);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var resultValue = GetDeliveryGroupCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+                deliveryPointGroupdata = GetDeliveryGroupCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
             }
@@ -141,7 +140,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
 
         public DeliveryPointGroupDataDTO GetDeliveryGroup(Guid deliveryGroupId)
         {
-            DeliveryPointGroupDataDTO deliveryGroups = new DeliveryPointGroupDataDTO();
+            DeliveryPointGroupDataDTO deliveryGroup = new DeliveryPointGroupDataDTO();
 
             var groupDetails = (from location in DataContext.Locations
                                 from groupDetail in DataContext.SupportingDeliveryPoint
@@ -149,40 +148,39 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
                                 where location.ID == locationRelation.RelatedLocationID
                                 && groupDetail.DeliveryPoint.ID == locationRelation.LocationID
                                 && groupDetail.ID == deliveryGroupId
-                                select new
+                                select new DeliveryPointGroupData
                                 {
-                                    Location = location,
-                                    GroupDetail = groupDetail,
+                                    GroupBoundary = location,
+                                    DeliveryGroup = groupDetail,
                                     AddedDeliveryPoints = (from addedDeliveryPoints in DataContext.Locations
                                                            from groupDPLocationRelationships in DataContext.LocationRelationships
                                                            where addedDeliveryPoints.ID == groupDPLocationRelationships.LocationID
                                                            && groupDPLocationRelationships.RelatedLocationID == groupDetail.DeliveryPoint.ID
-                                                           select addedDeliveryPoints).AsEnumerable()
+                                                           select addedDeliveryPoints).ToList()
                                 }
                                ).Single();
 
-            ConfigureMapper();
-
-            deliveryGroups = Mapper.Map<DeliveryPointGroupDataDTO>(groupDetails);
-
-            return deliveryGroups;
-        }
-
-        #endregion PublicMethods
-
-        private static void ConfigureMapper()
-        {
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().ReverseMap();
-                cfg.CreateMap<Location, LocationDataDTO>().ReverseMap();
-                cfg.CreateMap<LocationOffering, LocationOfferingDataDTO>().ReverseMap();
-                cfg.CreateMap<LocationRelationship, LocationRelationshipDataDTO>().ReverseMap();
-                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().ReverseMap();
+                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().MaxDepth(1);
+                cfg.CreateMap<Location, LocationDataDTO>().MaxDepth(1);
+                cfg.CreateMap<LocationOffering, LocationOfferingDataDTO>().MaxDepth(1);
+                cfg.CreateMap<LocationRelationship, LocationRelationshipDataDTO>().MaxDepth(1);
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
+                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().MaxDepth(1);
+                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                cfg.CreateMap<DeliveryPointGroupData, DeliveryPointGroupDataDTO>().MaxDepth(1);
+                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().MaxDepth(1);
             });
 
             Mapper.Configuration.CreateMapper();
+
+            deliveryGroup = Mapper.Map<DeliveryPointGroupData, DeliveryPointGroupDataDTO>(groupDetails);
+
+            return deliveryGroup;
         }
+
+        #endregion PublicMethods
 
         private IEnumerable<DeliveryPointGroupDataDTO> GetDeliveryGroupCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
         {
@@ -193,27 +191,40 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
 
                 DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
 
-                var groupDetails = from location in DataContext.Locations
-                                   from groupDetail in DataContext.SupportingDeliveryPoint
-                                   from locationRelation in DataContext.LocationRelationships
-                                   where location.ID == locationRelation.RelatedLocationID
-                                   && groupDetail.DeliveryPoint.ID == locationRelation.LocationID
-                                   && location.Shape.Intersects(extent)
-                                   && location.Shape.Intersects(polygon)
-                                   select new
-                                   {
-                                       Location = location,
-                                       GroupDetail = groupDetail,
-                                       AddedDeliveryPoints = (from addedDeliveryPoints in DataContext.Locations
-                                                              from groupDPLocationRelationships in DataContext.LocationRelationships
-                                                              where addedDeliveryPoints.ID == groupDPLocationRelationships.LocationID
-                                                              && groupDPLocationRelationships.RelatedLocationID == groupDetail.DeliveryPoint.ID
-                                                              select addedDeliveryPoints).AsEnumerable()
-                                   };
+                var groupDetails = (from location in DataContext.Locations
+                                    from groupDetail in DataContext.SupportingDeliveryPoint
+                                    from locationRelation in DataContext.LocationRelationships
+                                    where location.ID == locationRelation.RelatedLocationID
+                                    && groupDetail.DeliveryPoint.ID == locationRelation.LocationID
+                                    && location.Shape.Intersects(extent)
+                                    && location.Shape.Intersects(polygon)
+                                    select new DeliveryPointGroupData
+                                    {
+                                        GroupBoundary = location,
+                                        DeliveryGroup = groupDetail,
+                                        AddedDeliveryPoints = (from addedDeliveryPoints in DataContext.Locations
+                                                               from groupDPLocationRelationships in DataContext.LocationRelationships
+                                                               where addedDeliveryPoints.ID == groupDPLocationRelationships.LocationID
+                                                               && groupDPLocationRelationships.RelatedLocationID == groupDetail.DeliveryPoint.ID
+                                                               select addedDeliveryPoints).ToList()
+                                    }).ToList();
 
-                ConfigureMapper();
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().MaxDepth(1);
+                    cfg.CreateMap<Location, LocationDataDTO>().MaxDepth(1);
+                    cfg.CreateMap<LocationOffering, LocationOfferingDataDTO>().MaxDepth(1);
+                    cfg.CreateMap<LocationRelationship, LocationRelationshipDataDTO>().MaxDepth(1);
+                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
+                    cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().MaxDepth(1);
+                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                    cfg.CreateMap<DeliveryPointGroupData, DeliveryPointGroupDataDTO>().MaxDepth(1);
+                    cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().MaxDepth(1);
+                });
 
-                deliveryGroups = groupDetails.Select(Mapper.Map<DeliveryPointGroupDataDTO>);
+                Mapper.Configuration.CreateMapper();
+
+                deliveryGroups = Mapper.Map<List<DeliveryPointGroupData>, List<DeliveryPointGroupDataDTO>>(groupDetails);
 
                 return deliveryGroups;
             }
@@ -221,27 +232,26 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.DataService
             return deliveryGroups;
         }
 
-
         #region PrivateMethods
 
         /// <summary>
         /// Automapper to convert DataDto to Entity
         /// </summary>
-        //private static void ConfigureMapper()
-        //{
-        //    Mapper.Initialize(cfg =>
-        //    {
-        //        cfg.CreateMap<Location, LocationDataDTO>().ReverseMap();
-        //        cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().ReverseMap();
-        //        cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().ReverseMap();
-        //        cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().ReverseMap();
-        //        cfg.CreateMap<LocationRelationship, LocationRelationshipDataDTO>().ReverseMap();
-        //        cfg.CreateMap<LocationOffering, LocationOfferingDataDTO>().ReverseMap();
-        //        cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().ReverseMap();                
-        //    });
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Location, LocationDataDTO>().ReverseMap();
+                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().ReverseMap();
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().ReverseMap();
+                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().ReverseMap();
+                cfg.CreateMap<LocationRelationship, LocationRelationshipDataDTO>().ReverseMap();
+                cfg.CreateMap<LocationOffering, LocationOfferingDataDTO>().ReverseMap();
+                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().ReverseMap();
+            });
 
-        //    Mapper.Configuration.CreateMapper();
-        //}
+            Mapper.Configuration.CreateMapper();
+        }
 
         #endregion PrivateMethods
     }

@@ -24,15 +24,11 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
         public string TimeOverrideReason { get; set; }
 
         public bool? TimeOverrideApproved { get; set; }
-
-        public bool? ServicePoint { get; set; }
-
+        
         public Guid? GroupTypeGUID { get; set; }
 
         public Guid? ServicePointTypeGUID { get; set; }
-
-        public Guid SupportDeliveryPointTypeGUID { get; set; }
-
+        
         public DateTime RowCreateDateTime { get; set; }
 
         public virtual DeliveryPoint DeliveryPoint { get; set; }

@@ -4,7 +4,6 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO
 {
     public class DeliveryPointGroupDataDTO
     {
-
         public NetworkNodeDataDTO GroupCentroidNetworkNode { get; set; }
 
         public DeliveryPointDataDTO GroupCentroidDeliveryPoint { get; set; }
