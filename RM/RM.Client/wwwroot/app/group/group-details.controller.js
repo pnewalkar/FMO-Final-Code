@@ -139,6 +139,27 @@ function GroupDetailsController(
         vm.addedPoints.push(deliveyPoint);
         var index = vm.availablePoints.indexOf(deliveyPoint);
         vm.availablePoints.splice(index, 1);
+
+        var addedPoints = vm.addedPoints;
+        vm.distinctPostcodes = {};
+        for (var pivot = 0; pivot < addedPoints.length; pivot++) {
+            var postcode = addedPoints[pivot].values_.postcode;
+            if (!(postcode in vm.distinctPostcodes)) {
+                vm.distinctPostcodes[postcode] = 1;
+            }
+            else if (postcode in vm.distinctPostcodes) {
+                vm.distinctPostcodes[postcode] += 1;
+            }
+        }
+        vm.summarizedCount = [];
+        for (var key in vm.distinctPostcodes) {
+            if (vm.distinctPostcodes.hasOwnProperty(key)) {
+                vm.summarizedCount.push({
+                    postcode: key,
+                    deliveyPoints: vm.distinctPostcodes[key]
+                });
+            }
+        }
     }
 
     function onSingleReject(deliveyPoint) {
