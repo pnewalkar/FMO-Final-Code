@@ -1,4 +1,5 @@
-$color_storm_dust_approx: #666;
+
+@import './app/variables';
 
 .group_checkbox {
     margin-top: 20px;
@@ -11,7 +12,7 @@ $color_storm_dust_approx: #666;
 }
 
 .dropdownComponent {
-    border: 1px solid $color_storm_dust_approx;
+    border: 1px solid $dark-grey;
     padding: 5px;
     position: relative;
 
