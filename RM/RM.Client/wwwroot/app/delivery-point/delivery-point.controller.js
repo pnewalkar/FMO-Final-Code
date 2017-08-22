@@ -222,10 +222,10 @@ function DeliveryPointController(
             }            
         }
 
-        if (vm.selectedItems && vm.selectedItems.length == 1) {
+        if (vm.selectedItems && vm.selectedItems.length === 1) {
             setDP();
         }
-        else if (vm.selectedItems && vm.selectedItems.length == 0) {
+        else if (vm.selectedItems && vm.selectedItems.length === 0) {
             resetDP();
         }
 

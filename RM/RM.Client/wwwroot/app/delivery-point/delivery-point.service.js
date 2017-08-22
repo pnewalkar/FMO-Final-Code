@@ -184,11 +184,12 @@ function deliveryPointService(
         var yCoordinate = undefined;
         vm.positionedDeliveryPointList = positionedDeliveryPointList;
         deliveryPointAPIService.UpdateDeliverypointForRange(positionedDeliveryPointList).then(function (result) {
+            result
             $rootScope.$broadcast('disablePrintMap', {
                 disable: false
             });
             mapFactory.setAccessLink();
-            if(result && result.length == 1){
+            if(result && result.length === 1){
                 isSingle = true;
                 xCoordinate = result[0].xCoordinate;
                 yCoordinate = result[0].yCoordinate;
@@ -196,6 +197,9 @@ function deliveryPointService(
             mapFactory.setDeliveryPointOnLoad(xCoordinate, yCoordinate, isSingle);
             mapFactory.setAccessLink();
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
+            deferred.resolve(result);
+        }).catch(function (err) {
+            deferred.reject(err);
         });
         return deferred.promise;
     }

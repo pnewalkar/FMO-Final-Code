@@ -5,7 +5,7 @@
             <i class="fa fa-plus" aria-hidden="true">
         </i>
         </md-button>
-        <md-button class="context-button" aria-label="Save" ng-show="(!vm.deliveryPointList || vm.deliveryPointList.length == 0) && vm.positionedDeliveryPointList" ng-disabled="vm.isOnceClicked" ng-click="vm.savePositionedDeliveryPoint()" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+        <md-button class="context-button" aria-label="Save" ng-if="(!vm.deliveryPointList || vm.deliveryPointList.length == 0) && vm.positionedDeliveryPointList" ng-disabled="vm.isOnceClicked" ng-click="vm.savePositionedDeliveryPoint()" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
         </md-button>
         <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
