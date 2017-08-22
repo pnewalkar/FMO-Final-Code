@@ -13,7 +13,7 @@ namespace RM.CommonLibrary.HelperMiddleware
         [Description("roadlink")]
         RoadLink,
 
-        [Description("grouplink")]
-        GroupLink
+        [Description("group")]
+        Group
     }
 }
