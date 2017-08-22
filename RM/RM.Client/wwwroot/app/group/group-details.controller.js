@@ -30,6 +30,10 @@ function GroupDetailsController(
     vm.onRejectAll = onRejectAll;
     vm.createGroup = createGroup;
     vm.isReadOnly = false;
+    vm.getSummarizedAddresses = getSummarizedAddresses;
+    vm.toggle = false;
+
+    // vm.ServicePointType = "Inside";
     vm.checkDeliveryGroupType = checkDeliveryGroupType;
     vm.groupType = "";
     vm.groupType.value = "Complex";
@@ -276,6 +280,30 @@ function GroupDetailsController(
 
     }
 
+    function getSummarizedAddresses() {
+        vm.toggle = !vm.toggle;
+        var addedPoints = vm.addedPoints;
+        vm.distinctPostcodes = {};
+        for (var index = 0; index < addedPoints.length; index++) {
+            var postcode = addedPoints[index].values_.postcode;
+            if (!(postcode in vm.distinctPostcodes)) {
+                vm.distinctPostcodes[postcode] = 1;
+            }
+            else if (postcode in vm.distinctPostcodes) {
+                vm.distinctPostcodes[postcode] += 1;
+            }
+        }
+        vm.summarizedCount = [];
+        for (var key in vm.distinctPostcodes) {
+            if (vm.distinctPostcodes.hasOwnProperty(key)) {
+                vm.summarizedCount.push({
+                    postcode: key,
+                    deliveyPoints: vm.distinctPostcodes[key]
+                });
+            }
+        }
+    }
+
     function getPostcode(point) {
         var subBuildingName = point.values_.subBuildingName ? point.values_.subBuildingName : '';
         var buildingName = point.values_.name ? point.values_.name : '';
@@ -285,5 +313,4 @@ function GroupDetailsController(
 
         return subBuildingName + " " + buildingName + " " + buildingNumber + " " + street + " " + postcode;
     }
-
 }

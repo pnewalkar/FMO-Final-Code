@@ -239,8 +239,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                     groupFeature.id = group.DeliveryGroup.ID.ToString();
                     groupFeature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken>
                     {
-                        { DeliveryPointGroupConstants.LayerType, Convert.ToString(OtherLayersType.GroupLink.GetDescription()) },
-                        { "type", "group" },
+                        { DeliveryPointGroupConstants.LayerType, Convert.ToString(OtherLayersType.Group.GetDescription()) },
                         { "groupType", group.DeliveryGroup.GroupTypeGUID },
                         { "groupName", group.DeliveryGroup.GroupName }
                     };
@@ -266,8 +265,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                         groupDPFeature.id = addedDeliveryPoint.ID.ToString();
                         groupDPFeature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken>
                     {
-                        { DeliveryPointGroupConstants.LayerType, Convert.ToString(OtherLayersType.GroupLink.GetDescription()) },
-                        { "type", "deliverypoint" }
+                        { DeliveryPointGroupConstants.LayerType, Convert.ToString(OtherLayersType.DeliveryPoint.GetDescription()) }
                     };
 
                         geoJson.features.Add(groupDPFeature);
@@ -357,18 +355,13 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                 // Not need these details as of now
                 // Get boundary Location
 
-
                 // Get centroid Location
                 if (deliveryPointGroupDataDTO.AddedDeliveryPoints != null)
                 {
                 }
                 // Get centroid Network Node
 
-
                 // Get centroid Delivery Point
-
-
-
 
                 // Get Delivery Point Group Details
                 if (deliveryPointGroupDataDTO.DeliveryGroup != null)

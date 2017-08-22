@@ -8,3 +8,12 @@
     margin-right: 5px;
     margin-top: 27px;
 }
+
+.dropdownComponent{ border: 1px solid #666; padding: 5px; }
+.dropdownComponent .fa.fa-chevron-up{ display: none; }
+.dropdowntoggleHead .fa{ position: absolute; right: 15px;  }
+.dropdowntoggleHead{ cursor: pointer; }
+#dropdownToggleCont{ display: none; height: 100px; }
+.dropdownComponent.dropdowntoggle  #dropdownToggleCont{ display: block; }
+.dropdownComponent.dropdowntoggle .fa.fa-chevron-down{ display: none; }
+.dropdownComponent.dropdowntoggle  .fa.fa-chevron-up{ display: inline; }
