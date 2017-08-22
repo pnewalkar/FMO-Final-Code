@@ -215,16 +215,14 @@ function GroupDetailsController(
             }
         }
     }
-}
 
     function getPostcode(point) {
-            var subBuildingName = point.values_.subBuildingName ? point.values_.subBuildingName : '';
-            var buildingName = point.values_.name ? point.values_.name : '';
-            var buildingNumber = point.values_.number ? point.values_.number : '';
-            var street = point.values_.street ? point.values_.street : '';
-            var postcode = point.values_.postcode ? point.values_.postcode : '';
+        var subBuildingName = point.values_.subBuildingName ? point.values_.subBuildingName : '';
+        var buildingName = point.values_.name ? point.values_.name : '';
+        var buildingNumber = point.values_.number ? point.values_.number : '';
+        var street = point.values_.street ? point.values_.street : '';
+        var postcode = point.values_.postcode ? point.values_.postcode : '';
 
-            return subBuildingName + " " + buildingName + " " + buildingNumber + " " + street + " " + postcode;
-        }
-
+        return subBuildingName + " " + buildingName + " " + buildingNumber + " " + street + " " + postcode;
+    }
 }
