@@ -3,11 +3,13 @@
     .controller("GroupDetailsController", GroupDetailsController);
 
 GroupDetailsController.$inject = [
-    'groupService'
+    'groupService',
+    'mapService'
 ];
 
 function GroupDetailsController(
-    groupService
+    groupService,
+    mapService
    ) {
 
     var vm = this;
@@ -17,6 +19,10 @@ function GroupDetailsController(
     vm.onSingleAccept = onSingleAccept;
     vm.createGroup = createGroup;
     vm.isReadOnly = false;
+    vm.checkDeliveryGroupType = checkDeliveryGroupType;
+    vm.groupType = "";
+    vm.groupType.value = "Complex";
+
    // vm.ServicePointType = "Inside";
 
     vm.initialize();
@@ -34,6 +40,15 @@ function GroupDetailsController(
 
     function createGroup() {
         vm.isReadOnly = true;
+    }
+
+    function checkDeliveryGroupType() {
+        if (vm.groupType === "Complex") {
+            vm.groupType.value = "Complex";
+            vm.floors = "Floor1";
+            vm.internalDistance = "InternalDist";
+        }
+
     }
 }
 

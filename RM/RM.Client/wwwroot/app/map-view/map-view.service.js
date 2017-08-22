@@ -58,12 +58,15 @@ function mapService($http,
     vm.selectionListeners = [];
     vm.features = null;
     vm.selectedDP = null;
+    vm.addGroup = function addGroup() {
+       
+    };
     vm.selectedLayer = null;
     vm.isObjectSelected = false;
     vm.layerName = undefined;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
-    vm.onDrawEnd = function (buttonName, feature) { };
+    vm.onDrawEnd = onDrawEnd();
     vm.pointerMoveHandler = function (evt) {
         if (evt.dragging || vm.activeTool != 'measure') {
             return;
@@ -119,7 +122,8 @@ function mapService($http,
         getLayerSummary: getLayerSummary,
         deselectDP: deselectDP,
         setDeliveryPoint: setDeliveryPoint,
-        deleteDeliveryPoint: deleteDeliveryPoint
+        deleteDeliveryPoint: deleteDeliveryPoint,
+       
     }
 
     function deselectDP() {
@@ -220,11 +224,12 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
+                layersAPIService.fetchGroupLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.groupLayerName;
-                   // mapFactory.LicenceInfo(layerName, accessLinkVector);
-                    loadFeatures(accessLinkVector, response);
-                });
+                   
+                    loadFeatures(groupLinkVector, response);
+            });
+      //  vm.addGroup();
             }
         });
 
@@ -242,7 +247,10 @@ function mapService($http,
                 });
             }
         });
-
+        function addGroup() {
+            $rootScope.$emit('resetMapToolbar', { "isGroupAction": true });
+            $state.go("deliveryPointGroupDetails");
+        }
         var roadLinkVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
@@ -256,6 +264,11 @@ function mapService($http,
                     loadFeatures(roadLinkVector, response);
                 });
             }
+        });
+        var groupLinkLayer = new ol.layer.Vector({
+            source: groupLinkVector,
+            minResolution: 0,
+            maxResolution: 2.1002842005684017
         });
 
         var unitBoundaryVector = new ol.source.Vector({
@@ -353,7 +366,7 @@ function mapService($http,
 
         var groupLayerSelector = new MapFactory.LayerSelector();
         groupLayerSelector.layerName = GlobalSettings.groupLayerName;
-        groupLayerSelector.layer = mockGroupsLayer;
+        groupLayerSelector.layer = groupLinkLayer;
         groupLayerSelector.group = "";
         groupLayerSelector.zIndex = 1;
         groupLayerSelector.selected = false;
@@ -504,6 +517,9 @@ function mapService($http,
                 var roadLinklayer = mapFactory.getLayer('Roads');
                 snapOnFeature(roadLinklayer);
                 setupAccessLink();
+            case "group":
+                setupGroup();
+                break;
             default:
                 break;
         }
@@ -541,6 +557,26 @@ function mapService($http,
         }
     }
 
+    function setupGroup() {
+        vm.interactions.draw.on('drawstart',
+            function (evt) {
+                removeInteraction("select");
+                clearDrawingLayer(true);
+                setSelections(null, []);
+            });
+        vm.interactions.draw.on('drawend',
+            function (evt) {
+                evt.feature.setId(0);
+                $timeout(function () {
+                    setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
+                    vm.onDrawEnd("group", evt.feature)
+                });
+            });
+    }
+
+    function onDrawEnd(buttonName, feature) {
+        console.log(buttonName, feature);
+    }
     function setDrawInteraction(button, style) {
         var draw = null;
 

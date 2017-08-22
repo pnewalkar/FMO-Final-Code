@@ -65,6 +65,78 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.Entities
                 .HasOptional(e => e.DeliveryPoint)
                 .WithRequired(e => e.NetworkNode);
 
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.PostcodeType)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.OrganisationName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DepartmentName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.BuildingName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.SubBuildingName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.Thoroughfare)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DependentThoroughfare)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DependentLocality)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DoubleDependentLocality)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.PostTown)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.Postcode)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DeliveryPointSuffix)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.SmallUserOrganisationIndicator)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.POBoxNumber)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+               .HasMany(e => e.DeliveryPoints)
+               .WithRequired(e => e.PostalAddress)
+               .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<SupportingDeliveryPoint>()
+                .Property(e => e.GroupName)
+                .IsUnicode(false);
+
+
             modelBuilder.Entity<SupportingDeliveryPoint>()
                .Property(e => e.GroupName)
                .IsUnicode(false);

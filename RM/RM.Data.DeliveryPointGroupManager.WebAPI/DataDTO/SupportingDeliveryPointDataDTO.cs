@@ -10,7 +10,6 @@ namespace RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO
 
         public byte? NumberOfFloors { get; set; }
 
-
         public double? InternalDistanceMeters { get; set; }
 
         public double? WorkloadTimeOverrideMinutes { get; set; }
