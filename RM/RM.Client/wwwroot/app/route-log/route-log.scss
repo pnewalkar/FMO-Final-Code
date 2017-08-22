@@ -93,6 +93,10 @@ span.closeRouteWindow {
   font-size: 16px; 
  }
 
+ #routLogTable table{
+  border-collapse: inherit;
+ }
+
  .routeDetailsTable{
   overflow: none;
 }

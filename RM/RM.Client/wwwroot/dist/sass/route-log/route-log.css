@@ -78,6 +78,9 @@ span.closeRouteWindow {
   font-family: PF_DIN;
   font-size: 16px; }
 
+#routLogTable table {
+  border-collapse: inherit; }
+
 .routeDetailsTable {
   overflow: none; }
 
