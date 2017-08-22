@@ -88,10 +88,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CreateAccessLink"))
             {
                 string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CreateAccessLink);
+                string accessLinkWebAPIUrl = string.Empty;
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                accessLinkWebAPIName = accessLinkWebAPIName + "AccessLink/" + operationalObjectId + "/" + operationObjectTypeId;
-                HttpResponseMessage result = httpHandler.GetAsync(accessLinkWebAPIName).Result;
+                accessLinkWebAPIUrl = accessLinkWebAPIName + "AccessLink/" + operationalObjectId + "/" + operationObjectTypeId;
+                HttpResponseMessage result = httpHandler.GetAsync(accessLinkWebAPIUrl).Result;
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode

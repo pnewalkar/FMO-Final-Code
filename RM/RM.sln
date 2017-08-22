@@ -121,8 +121,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RM.CommonLibrary.Reporting.
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RM.Data.DeliveryPointGroupManager.WebAPI", "RM.Data.DeliveryPointGroupManager.WebAPI\RM.Data.DeliveryPointGroupManager.WebAPI.xproj", "{8F4E2830-8DBE-4938-8824-251F52C8CEDD}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RM.Data.DeliveryPointGroupManager.WebAPI.Test", "RM.Data.DeliveryPointGroupManager.WebAPI.Test\RM.Data.DeliveryPointGroupManager.WebAPI.Test.xproj", "{CC337F23-D481-42DB-A676-FDEF361183EF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -561,16 +559,6 @@ Global
 		{8F4E2830-8DBE-4938-8824-251F52C8CEDD}.QA|Any CPU.Build.0 = Debug|Any CPU
 		{8F4E2830-8DBE-4938-8824-251F52C8CEDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F4E2830-8DBE-4938-8824-251F52C8CEDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.DEV|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.DEV|Any CPU.Build.0 = Debug|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.PROD|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.PROD|Any CPU.Build.0 = Debug|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.QA|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.QA|Any CPU.Build.0 = Debug|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC337F23-D481-42DB-A676-FDEF361183EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -624,14 +612,13 @@ Global
 		{82FF292E-71B4-4C05-90C0-BD76B00E6701} = {ADE174B3-D9C4-4527-ACAC-73209A11D5E0}
 		{7F7D9FBD-0EC8-4B35-968A-43DB7064A461} = {ADE174B3-D9C4-4527-ACAC-73209A11D5E0}
 		{105F522B-0633-4F94-A25B-2B205876FFE4} = {EE42B958-E3A7-4369-9B94-D2AD32DB37A3}
-		{8F4E2830-8DBE-4938-8824-251F52C8CEDD} = {EE42B958-E3A7-4369-9B94-D2AD32DB37A3}
-		{CC337F23-D481-42DB-A676-FDEF361183EF} = {FD1F7F70-E72E-45E5-B8C2-CD9486835A88}
 		{5BE30F2E-EE13-41A0-9526-59742571DAE1} = {1B79341F-1D3C-4EC5-A1F1-336C9A98D9E9}
 		{E062293A-7B68-4099-BBF5-F440900A735F} = {0B851597-2576-4E2B-A8C6-9D5572A38F61}
 		{F47BB332-F2E9-4654-BD8B-9BC0A8003534} = {E062293A-7B68-4099-BBF5-F440900A735F}
+		{8F4E2830-8DBE-4938-8824-251F52C8CEDD} = {EE42B958-E3A7-4369-9B94-D2AD32DB37A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
 	EndGlobalSection
 EndGlobal

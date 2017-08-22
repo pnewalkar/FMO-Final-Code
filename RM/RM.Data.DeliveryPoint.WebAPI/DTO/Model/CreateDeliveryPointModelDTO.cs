@@ -17,7 +17,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO.Model
 
         public double? YCoordinate { get; set; }
 
-        public List<PostalAddressDTO> PostalAddressDTOs { get; set; }
+        public PostalAddressDTO PostalAddressDTO { get; set; }
 
         public bool IsMultiple { get; set; } = false;
     }

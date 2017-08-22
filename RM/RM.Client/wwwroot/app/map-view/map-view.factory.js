@@ -482,8 +482,10 @@ function MapFactory($http,
         unitBoundaryLayer.layer.getSource().addFeatures((new ol.format.GeoJSON({ defaultDataProjection: BNGProjection })).readFeatures(unitBoundaryGeoJSONData));
     }
 
-    function setDeliveryPointOnLoad(long, lat) {
-        map.getView().setCenter([long, lat]);
+    function setDeliveryPointOnLoad(long, lat, isSingle) {
+        if (isSingle) {
+            map.getView().setCenter([long, lat]);
+        }
         map.getView().setResolution(0.5600011200022402);
         var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
         deliveryPointsLayer.layer.getSource().clear();

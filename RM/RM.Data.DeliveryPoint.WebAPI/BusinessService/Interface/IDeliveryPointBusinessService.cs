@@ -164,5 +164,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// <param name="userName">userName</param>
         /// <returns>bool</returns>
         Task<bool> DeleteDeliveryPointWithAssociatedLocations(Guid deliveryPointid, string reasonCode, string reasonText, string userName);
+
+        Task<List<UpdateDeliveryPointModelDTO>> UpdateDeliveryPointLocationForRange(List<DeliveryPointModelDTO> deliveryPointModelDTOs);
     }
 }

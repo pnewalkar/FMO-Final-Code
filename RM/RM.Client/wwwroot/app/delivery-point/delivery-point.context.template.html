@@ -5,7 +5,7 @@
             <i class="fa fa-plus" aria-hidden="true">
         </i>
         </md-button>
-        <md-button class="context-button" aria-label="Save" ng-show="vm.positionedDeliveryPointList" ng-disabled="vm.isOnceClicked" ng-click="vm.savePositionedDeliveryPoint()" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+        <md-button class="context-button" aria-label="Save" ng-if="(!vm.deliveryPointList || vm.deliveryPointList.length == 0) && vm.positionedDeliveryPointList" ng-disabled="vm.isOnceClicked" ng-click="vm.savePositionedDeliveryPoint()" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
         </md-button>
         <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
@@ -30,12 +30,18 @@
     </div>
     <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">
         <h1>Positioned points</h1>
-        <ul>
+        <ul class="deliveryPointAddPoints">
             <li ng-show="vm.positionedDeliveryPointList == null || vm.positionedDeliveryPointList == undefined || vm.positionedDeliveryPointList ==  [] || vm.positionedDeliveryPointList.length ==  0" class="initialCursor">
                 None positioned yet
             </li>
-            <li ng-repeat="item in vm.positionedDeliveryPointList">
+            <li ng-if="!vm.isMultiple" ng-repeat="item in vm.positionedDeliveryPointList">
                 {{item.locality}}
+            </li>
+            <li ng-if="vm.isMultiple" ng-repeat="item in vm.positionedDeliveryPointList" layout="row">
+                <span flex="85">{{item.locality}}</span>
+                <span ng-click="vm.toggle(item)" flex="15" class="centerAlign">
+                    <md-checkbox class="dpCheckBox" ng-model="item.isChecked"></md-checkbox>
+                </span>
             </li>
         </ul>
     </div>

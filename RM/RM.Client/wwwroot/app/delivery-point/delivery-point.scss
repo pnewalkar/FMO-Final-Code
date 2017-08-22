@@ -1,190 +1,207 @@
+//colors
+$color_silver_approx: rgb(189,189,189);
+$color_shady_lady_approx: rgb(169, 169, 169);
+$color_swirl_approx: #d0c9c9;
+
+//@extend-elements
+//original selectors
+//md-list-item .md-list-item-inner:before, md-list-item:before
+%extend_1 {
+	content: '';
+	min-height: 0;
+	visibility: hidden;
+	display: inline-block;
+}
+
+//original selectors
+//md-radio-button .md-off, md-radio-button .md-on
+%extend_2 {
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 15px;
+	height: 15px;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 50%;
+}
+
+
 @import './app/variables';
-
 .searchInputIcon {
-    height: height-percent(1);
-    @include margin(20px 0px 0px 5px);
+	height: height-percent(1);
+	@include margin(20px 0px 0px 5px): ;
 }
-
 .resultPanel {
-    @include margin(-23px 0px 0px 0px);
-    @include height(100px);
-    @include cursor(pointer);
+	@include margin(-23px 0px 0px 0px): ;
+	@include height(100px): ;
+	@include cursor(pointer): ;
+	@extend %body-content: ;
 }
-
-.resultPanel, legend {
-    @extend %body-content;
+legend {
+	@extend %body-content: ;
 }
-
 .dialogAction {
-    @include margin(100px 0px 0px 0px);
+	@include margin(100px 0px 0px 0px): ;
 }
-
 .dpCheckBox {
-    @include float(right);
+	@include float(right): ;
 }
-
 fieldset {
-    margin-top: 15px;
-    @include padding(5px 5px 5px 5px);
-    @include border(1px solid $fieldsetColor);
+	margin-top: 15px;
+	@include padding(5px 5px 5px 5px): ;
+	@include border(1px solid $fieldsetColor): ;
 }
-
 .contentHeight {
-    @include height(2000px);
+	@include height(2000px): ;
 }
-
 .aliasinput {
-    @include margin(0px 0px 5px 0px);
+	@include margin(0px 0px 5px 0px): ;
 }
-
 .aliasBox {
-    @include height(230px);
-    overflow-y: auto;
+	@include height(230px): ;
+	overflow-y: auto;
 }
-
 .aliasInputContainer {
-    width: width-percent(1.205);
+	width: width-percent(1.205);
 }
-
 .alertPopup {
-    @include height(165px);
-    @include padding(5px 5px 5px 5px);
-    @include border-radius(15px);
-    @include position(absolute);
-    @include background($white,none);
-    @include margin(-5% 0% 0% 13%);
-    z-index: 1;
-    text-align: center;
+	@include height(165px): ;
+	@include padding(5px 5px 5px 5px): ;
+	@include border-radius(15px): ;
+	@include position(absolute): ;
+	@include background($white,none): ;
+	@include margin(-5% 0% 0% 13%): ;
+	z-index: 1;
+	text-align: center;
 }
-
 .overlay {
-    background-color: rgb(189,189,189);
+	background-color: $color_silver_approx;
 }
-
 .disabledText {
-    color: rgb(169, 169, 169);
+	color: $color_shady_lady_approx;
 }
-
-.deliveryRoute .md-text {
-    color: rgb(169, 169, 169);
-}
-
 .DPAliasBox {
-    padding-left: 15px;
+	padding-left: 15px;
 }
-
 #DPAliasBoxBtn {
-    margin-left: 0px;
-    margin-top: 10px;
+	margin-left: 0;
+	margin-top: 10px;
 }
-
 .listAliasHeader {
-    padding-bottom: 5px;
-    padding-left: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
 }
-
 .listAliasStar {
-    float: right;
-    margin-right: 60px;
+	float: right;
+	margin-right: 60px;
 }
-
 .listAliasMdlist {
-    border: solid 1px #d0c9c9;
-    height: 145px;
-    overflow-y: scroll;
+	border: solid 1px $color_swirl_approx;
+	height: 145px;
+	overflow-y: scroll;
+	.md-button.md-icon-button {
+		margin: 0 6px;
+		height: 20px;
+		min-width: 0;
+		line-height: 16px;
+		padding: 2px 8px;
+		width: 40px;
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 50%;
+	}
 }
-
-.listAliasMdlist .md-button.md-icon-button {
-    margin: 0 6px;
-    height: 20px;
-    min-width: 0;
-    line-height: 16px;
-    padding: 2px 8px;
-    width: 40px;
-    border-radius: 50%;
-}
-
 .listAlias {
-    padding: 0 0 0 5px;
-    Margin: 0;
+	padding: 0 0 0 5px;
+	Margin: 0;
 }
-
 .listAliasRadioBtn {
-    margin-right: -10px;
+	margin-right: -10px;
 }
-
-.md-list-item, md-list-item .md-list-item-inner, md-list-item, .md-list-item .md-list-item-inner {
-    min-height: 10px;
+.md-list-item {
+	min-height: 10px;
+	.md-list-item-inner {
+		min-height: 10px;
+	}
 }
-
-md-list-item .md-list-item-inner:before, md-list-item:before {
-    content: '';
-    min-height: 0;
-    visibility: hidden;
-    display: inline-block;
+md-list-item {
+	min-height: 10px;
+	.md-list-item-inner {
+		min-height: 10px;
+		&:before {
+			@extend %extend_1;
+		}
+	}
+	&:before {
+		@extend %extend_1;
+	}
 }
-
-span.centerAlign.flex-20 {
-    margin: auto;
+md-radio-button {
+	.md-container {
+		position: absolute;
+		top: 50%;
+		//Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+		transform: translateY(-50%);
+		//Instead of the line below you could use @include box-sizing($bs)
+		box-sizing: border-box;
+		display: inline-block;
+		width: 20px;
+		height: 15px;
+		cursor: pointer;
+		left: 0;
+		right: auto;
+	}
+	.md-off {
+		@extend %extend_2;
+	}
+	.md-on {
+		@extend %extend_2;
+	}
+	.md-label {
+		//Instead of the line below you could use @include box-sizing($bs)
+		box-sizing: border-box;
+		position: relative;
+		display: inline-block;
+		margin-left: 20px;
+		margin-right: 0;
+		vertical-align: middle;
+		white-space: normal;
+		pointer-events: none;
+		width: auto;
+		font-size: 14px;
+	}
 }
-
-.map-panel li.initialCursor {
-    cursor: default;
-}
-
-md-radio-button .md-container {
-    position: absolute;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    box-sizing: border-box;
-    display: inline-block;
-    width: 20px;
-    height: 15px;
-    cursor: pointer;
-    left: 0;
-    right: auto;
-}
-
-md-radio-button .md-off, md-radio-button .md-on {
-    box-sizing: border-box;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-}
-
-md-radio-button .md-label {
-    box-sizing: border-box;
-    position: relative;
-    display: inline-block;
-    margin-left: 20px;
-    margin-right: 0;
-    vertical-align: middle;
-    white-space: normal;
-    pointer-events: none;
-    width: auto;
-    font-size: 14px;
-}
-
 .rangeOption {
-    margin-top: 10px;
+	margin-top: 10px;
 }
-
 .subBuildingtype {
-    margin-top: 45px;
+	margin-top: 45px;
+	md-select {
+		min-width: 220px;
+	}
 }
-
-.subBuildingtype md-select {
-    min-width: 220px;
-}
-
 .dp-range {
-    margin-top: 20px;
+	margin-top: 20px;
 }
+.del_delivery_point {
+	padding-left: 6px;
+}
+.deliveryPointAddPoints {
+	ul md-checkbox {
+		margin: 0;
+	}
+	md-checkbox.dpCheckBox {
+		margin: 0;
+	}
 
-.del_delivery_point{
-    padding-left: 6px;
+}
+.deliveryRoute .md-text {
+	color: $color_shady_lady_approx;
+}
+span.centerAlign.flex-20 {
+	margin: auto;
+}
+.map-panel li.initialCursor {
+	cursor: default;
 }

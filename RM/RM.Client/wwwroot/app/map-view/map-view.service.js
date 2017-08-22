@@ -64,6 +64,7 @@ function mapService($http,
     vm.selectedLayer = null;
     vm.isObjectSelected = false;
     vm.layerName = undefined;
+    vm.placedDP = undefined;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.pointerMoveHandler = function (evt) {
@@ -123,7 +124,10 @@ function mapService($http,
         setDeliveryPoint: setDeliveryPoint,
         deleteDeliveryPoint: deleteDeliveryPoint,
         onDrawEnd: onDrawEnd,
-        getFeaturesWithinFeature: getFeaturesWithinFeature
+        getFeaturesWithinFeature: getFeaturesWithinFeature,
+
+        removePlacedDP: removePlacedDP,
+        clearPlacedDP: clearPlacedDP
     }
 
     function deselectDP() {
@@ -802,8 +806,9 @@ function mapService($http,
         vm.interactions.draw.on('drawstart',
                          function (evt) {
                              removeInteraction("select");
-                             clearDrawingLayer(true);
                              setSelections(null, []);
+                             evt.feature.setId(createGuid());
+                             setPlacedDP(evt.feature);
                          });
         vm.interactions.draw.on('drawend',
 			function (evt) {
@@ -1136,5 +1141,19 @@ function showDeliveryPointDetails(deliveryPointDetails) {
         var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
         vm.interactions.select.getFeatures().clear();
         deliveryPointsLayer.layer.getSource().removeFeature(deliveryPointsLayer.layer.getSource().getFeatureById(featureId))
+    }
+
+    function setPlacedDP(selectedFeature) {
+        vm.placedDP = selectedFeature;
+    }
+    function removePlacedDP() {
+        if (vm.placedDP !== null) {
+            var feature = vm.drawingLayer.layer.getSource().getFeatureById(vm.placedDP.getId());
+            vm.drawingLayer.layer.getSource().removeFeature(feature);
+        }
+    }
+    function clearPlacedDP() {
+        if (vm.placedDP !== null)
+            vm.placedDP = null;
     }
 }

@@ -38,6 +38,7 @@ function deliveryPointService(
         setOrganisation: setOrganisation,
         isUndefinedOrNull: isUndefinedOrNull,
         UpdateDeliverypoint: UpdateDeliverypoint,
+        UpdateDeliverypointForRange: UpdateDeliverypointForRange,
         getSubBuildingTypes: getSubBuildingTypes,
         createDeliveryPointsRange: createDeliveryPointsRange,
         reasonCodeValues: reasonCodeValues,
@@ -169,9 +170,36 @@ function deliveryPointService(
                 disable: false
             });
             mapFactory.setAccessLink();
-            mapFactory.setDeliveryPointOnLoad(result.xCoordinate, result.yCoordinate);
+            mapFactory.setDeliveryPointOnLoad(result.xCoordinate, result.yCoordinate, true);
             guidService.setGuid(result.id);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
+        });
+        return deferred.promise;
+    }
+
+    function UpdateDeliverypointForRange(positionedDeliveryPointList) {
+        var deferred = $q.defer();
+        var isSingle = false;
+        var xCoordinate = undefined;
+        var yCoordinate = undefined;
+        vm.positionedDeliveryPointList = positionedDeliveryPointList;
+        deliveryPointAPIService.UpdateDeliverypointForRange(positionedDeliveryPointList).then(function (result) {
+            result
+            $rootScope.$broadcast('disablePrintMap', {
+                disable: false
+            });
+            mapFactory.setAccessLink();
+            if(result && result.length === 1){
+                isSingle = true;
+                xCoordinate = result[0].xCoordinate;
+                yCoordinate = result[0].yCoordinate;
+            }
+            mapFactory.setDeliveryPointOnLoad(xCoordinate, yCoordinate, isSingle);
+            mapFactory.setAccessLink();
+            $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
+            deferred.resolve(result);
+        }).catch(function (err) {
+            deferred.reject(err);
         });
         return deferred.promise;
     }
@@ -198,7 +226,9 @@ function deliveryPointService(
     function createDeliveryPointsRange(postalAddressDetails) {
         var deferred = $q.defer();
         deliveryPointAPIService.createDeliveryPointsRange(postalAddressDetails).then(function (result) {
-            deferred.resolve(response);
+            deferred.resolve(result);
+        }).catch(function (err) {
+            deferred.reject(err);
         });
         return deferred.promise;
     }
