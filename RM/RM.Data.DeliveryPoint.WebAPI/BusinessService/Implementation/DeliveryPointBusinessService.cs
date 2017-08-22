@@ -70,8 +70,9 @@
         /// </summary>
         /// <param name="boundaryBox">Boundarybox as string</param>
         /// <param name="unitGuid">Unit unique identifier.</param>
+        /// <param name="currentUserUnitType">current user unit type.</param>
         /// <returns>Object</returns>
-        public object GetDeliveryPoints(string boundaryBox, Guid unitGuid)
+        public object GetDeliveryPoints(string boundaryBox, Guid unitGuid, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPoints"))
             {
@@ -81,7 +82,7 @@
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
                     var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(DeliveryPointConstants.Comma[0]));
-                    List<DeliveryPointDTO> deliveryPointDtos = ConvertToDTO(deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid));
+                    List<DeliveryPointDTO> deliveryPointDtos = ConvertToDTO(deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid, currentUserUnitType));
 
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 

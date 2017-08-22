@@ -45,11 +45,13 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
        
 
 
+        private string currentUserUnitType = "Delivery Office";
+
         [Test]
         public void Test_GetDeliveryPoints_PositiveScenario()
         {
             string coordinates = "399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211";
-            var result = testCandidate.GetDeliveryPoints(coordinates, unitGuid);
+            var result = testCandidate.GetDeliveryPoints(coordinates, unitGuid, currentUserUnitType);
             Assert.IsNotNull(result);
         }
 
@@ -617,7 +619,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                 RouteNumber = "001"
             };
 
-            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(actualDeliveryPointDataDto);
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(actualDeliveryPointDataDto);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).Returns(actualDeliveryPointDTO);
             mockDeliveryPointsDataService.Setup(x => x.GetDetailDeliveryPointByUDPRN(It.IsAny<int>())).Returns(actualAddDeliveryPointDTO);
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsForBasicSearch(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<Guid>(), currentUserUnit)).ReturnsAsync(actualDeliveryPointDataDto);

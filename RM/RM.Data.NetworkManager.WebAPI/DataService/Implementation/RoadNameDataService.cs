@@ -46,15 +46,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="locationID">location unique identifier.</param>
+        /// <param name="currentUserUnitType">Current user unit type.</param>
         /// <returns>List of NetworkLinkDTO</returns>
-        public List<NetworkLinkDataDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public List<NetworkLinkDataDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRoadRoutes"))
             {
                 string methodName = typeof(RoadNameDataService) + "." + nameof(GetRoadRoutes);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<NetworkLink> result = GetRoadNameCoordinatesDatabyBoundingbox(boundingBoxCoordinates, locationID, referenceDataCategoryList).ToList();
+                List<NetworkLink> result = GetRoadNameCoordinatesDatabyBoundingbox(boundingBoxCoordinates, locationID, referenceDataCategoryList, currentUserUnitType).ToList();
                 var networkLink = GenericMapper.MapList<NetworkLink, NetworkLinkDataDTO>(result);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -71,8 +72,9 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="locationID">Location unique identifier.</param>
+        /// <param name="currentUserUnitType">Current user unit type.</param>
         /// <returns>List of Road Link entity</returns>
-        private IEnumerable<NetworkLink> GetRoadNameCoordinatesDatabyBoundingbox(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        private IEnumerable<NetworkLink> GetRoadNameCoordinatesDatabyBoundingbox(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList, string currentUserUnitType)
         {
             try
             {
@@ -80,14 +82,25 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
                 if (!string.IsNullOrEmpty(boundingBoxCoordinates))
                 {
-                    DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationID).Select(x => x.Shape).SingleOrDefault();
+                    DbGeometry polygon = null;
+                    if (!currentUserUnitType.Equals(UserUnit.National.GetDescription(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationID).Select(x => x.Shape).SingleOrDefault();
+                    }
 
                     var roadLinkTypeId = referenceDataCategoryList.Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.NetworkLinkType)
                                                                         .SelectMany(x => x.ReferenceDatas).Where(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkRoadLink).Select(x => x.ID).SingleOrDefault();
 
                     DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates, BNGCOORDINATESYSTEM);
 
-                    networkLink = DataContext.NetworkLinks.AsNoTracking().Where(x => (x.LinkGeometry != null && x.LinkGeometry.Intersects(extent) && x.LinkGeometry.Intersects(polygon)) && x.NetworkLinkTypeGUID == roadLinkTypeId).ToList();
+                    if (polygon != null)
+                    {
+                        networkLink = DataContext.NetworkLinks.AsNoTracking().Where(x => (x.LinkGeometry != null && x.LinkGeometry.Intersects(extent) && x.LinkGeometry.Intersects(polygon)) && x.NetworkLinkTypeGUID == roadLinkTypeId).ToList();
+                    }
+                    else
+                    {
+                        networkLink = DataContext.NetworkLinks.AsNoTracking().Where(x => (x.LinkGeometry != null && x.LinkGeometry.Intersects(extent)) && x.NetworkLinkTypeGUID == roadLinkTypeId).ToList();
+                    }
                 }
 
                 return networkLink;

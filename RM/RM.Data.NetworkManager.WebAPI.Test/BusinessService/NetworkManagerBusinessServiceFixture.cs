@@ -97,7 +97,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         [Test]
         public void Test_GetRoadRoutes()
         {
-            var result = testCandidate.GetRoadRoutes(coordinates, Guid.NewGuid());
+            var result = testCandidate.GetRoadRoutes(coordinates, Guid.NewGuid(), "Delivery Office");
             Assert.IsNotNull(result);
         }
 
@@ -141,7 +141,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         public void TestGetRoadName()
         {
             string coordinates = "399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211";
-            var result = testCandidate.GetRoadRoutes(coordinates, Guid.NewGuid());
+            var result = testCandidate.GetRoadRoutes(coordinates, Guid.NewGuid(), "Delivery Office");
             Assert.IsNotNull(result);
         }
 
@@ -194,7 +194,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
             mockStreetNetworkDataService.Setup(x => x.GetStreetNameCount(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Office")).ReturnsAsync(5);
             mockStreetNetworkDataService.Setup(x => x.GetStreetNamesForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Office")).ReturnsAsync(new List<StreetNameDataDTO>() { new StreetNameDataDTO() { LocalName = "abc" } });
             mockOsRoadLinkDataService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("abc");
-            mockRoadNameDataService.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(new List<NetworkLinkDataDTO>() { networkLink });
+            mockRoadNameDataService.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>(), It.IsAny<string>())).Returns(new List<NetworkLinkDataDTO>() { networkLink });
 
             // Setup for IRMTraceManager.
             var rmTraceManagerMock = new Mock<IRMTraceManager>();

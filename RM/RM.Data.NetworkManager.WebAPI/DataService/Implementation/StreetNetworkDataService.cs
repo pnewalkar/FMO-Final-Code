@@ -84,7 +84,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                         ID = l.ID,
                         NationalRoadCode = l.NationalRoadCode,
                         DesignatedName = l.DesignatedName
-                    }).ToListAsync();
+                    }).OrderBy(l => l.NationalRoadCode).ThenBy(l => l.DesignatedName).ToListAsync();
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                         ID = l.ID,
                         NationalRoadCode = l.NationalRoadCode,
                         DesignatedName = l.DesignatedName
-                    }).ToListAsync();
+                    }).OrderBy(l => l.NationalRoadCode).ThenBy(l => l.DesignatedName).ToListAsync();
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -142,7 +142,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                             ID = l.ID,
                             NationalRoadCode = l.NationalRoadCode,
                             DesignatedName = l.DesignatedName
-                        }).ToListAsync();
+                        }).OrderBy(l => l.NationalRoadCode).ThenBy(l => l.DesignatedName).ToListAsync();
                 }
                 else
                 {
@@ -155,7 +155,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                                 ID = l.ID,
                                 NationalRoadCode = l.NationalRoadCode,
                                 DesignatedName = l.DesignatedName
-                            }).ToListAsync();
+                            }).OrderBy(l => l.NationalRoadCode).ThenBy(l => l.DesignatedName).ToListAsync();
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);

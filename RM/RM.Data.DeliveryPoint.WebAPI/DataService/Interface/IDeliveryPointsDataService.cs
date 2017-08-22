@@ -62,8 +62,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="boundingBox">BoundingBox Coordinates</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="currentUserUnitType">current user unit type.</param>
         /// <returns>Collection of Delivery Points that matches the criteria.</returns>
-        List<DeliveryPointDataDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid);
+        List<DeliveryPointDataDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid, string currentUserUnitType);
 
         /// <summary>
         /// Get the list of delivery points by the UDPRN id

@@ -249,8 +249,9 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="boundarybox">boundaryBox as string.</param>
         /// <param name="locationID">location unique identifier.</param>
+        /// <param name="currentUserUnitType">Current user unit type.</param>
         /// <returns>RoadLink object</returns>
-        public string GetRoadRoutes(string boundarybox, Guid locationID)
+        public string GetRoadRoutes(string boundarybox, Guid locationID, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetRoadRoutes"))
             {
@@ -270,7 +271,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                     var boundingBoxCoordinates =
                         GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Comma[0]));
 
-                    List<NetworkLinkDataDTO> getRoadRoutes = roadNameDataService.GetRoadRoutes(boundingBoxCoordinates, locationID, referenceDataCategoryList);
+                    List<NetworkLinkDataDTO> getRoadRoutes = roadNameDataService.GetRoadRoutes(boundingBoxCoordinates, locationID, referenceDataCategoryList, currentUserUnitType);
                     List<NetworkLinkDTO> networkLinkList = getRoadRoutes.Select(x => new NetworkLinkDTO()
                     {
                         Id = x.ID,

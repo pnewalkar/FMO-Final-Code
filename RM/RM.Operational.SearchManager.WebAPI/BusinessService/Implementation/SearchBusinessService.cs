@@ -174,7 +174,9 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
             {
                 searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
                 {
-                    DisplayText = deliveryRoute.RouteName,
+                    DisplayText = Regex.Replace(string.Format("{0},{1}", deliveryRoute.RouteName, deliveryRoute.RouteNumber),
+                    ",+",
+                        ", ").Trim(','),
                     Type = SearchBusinessEntityType.Route
                 });
             }

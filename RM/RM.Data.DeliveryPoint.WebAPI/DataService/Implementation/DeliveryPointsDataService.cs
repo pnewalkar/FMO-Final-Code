@@ -340,9 +340,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             UDPRN = l.PostalAddress.UDPRN
                         }
                     })
-                    .Take(recordTakeCount)
                     .OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
                     .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
+                    .Take(recordTakeCount)
                     .ToListAsync();
             }
             else
@@ -373,9 +373,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             UDPRN = l.PostalAddress.UDPRN
                         }
                     })
-                    .Take(recordTakeCount)
                     .OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
                     .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
+                    .Take(recordTakeCount)
                     .ToListAsync();
             }
 
@@ -457,15 +457,16 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
+        /// <param name="currentUserUnitType">current user unit type.</param>
         /// <returns>List of Delivery Point Dto</returns>
-        public List<DeliveryPointDataDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid)
+        public List<DeliveryPointDataDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid, string currentUserUnitType)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Data.GetDeliveryPoints"))
             {
                 string methodName = typeof(DeliveryPointsDataService) + "." + nameof(GetDeliveryPoints);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<DeliveryPointDataDTO> deliveryPointDto = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid);
+                List<DeliveryPointDataDTO> deliveryPointDto = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid, currentUserUnitType);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
@@ -908,8 +909,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
+        /// <param name="currentUserUnitType">current user unit type.</param>
         /// <returns>List of Delivery Point Entity</returns>
-        private List<DeliveryPointDataDTO> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
+        private List<DeliveryPointDataDTO> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid, string currentUserUnitType)
         {
             List<DeliveryPointDataDTO> deliveryPointDTOs = default(List<DeliveryPointDataDTO>);
             using (loggingHelper.RMTraceManager.StartTrace("Data.GetDeliveryPointsCoordinatesDatabyBoundingBox"))
@@ -920,21 +922,34 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 DbGeometry polygon = default(DbGeometry);
                 if (!string.IsNullOrEmpty(boundingBoxCoordinates))
                 {
-                    polygon = DataContext.Locations.Where(u => u.ID == unitGuid).Select(x => x.Shape).SingleOrDefault();
+                    //polygon = DataContext.Locations.Where(u => u.ID == unitGuid).Select(x => x.Shape).SingleOrDefault();
+                    if (!currentUserUnitType.Equals(UserUnit.National.GetDescription(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.Shape).SingleOrDefault();
+                    }
+
 
                     DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates.ToString(), DeliveryPointConstants.BNGCOORDINATESYSTEM);
 
+                    List<DeliveryPoint> deliveryPoints = null;
                     if (polygon != null)
                     {
-                        var deliveryPoints = DataContext.DeliveryPoints.Include(x => x.PostalAddress)
+                        deliveryPoints = DataContext.DeliveryPoints.Include(x => x.PostalAddress)
                                        .Include(x => x.NetworkNode)
                                        .Include(x => x.NetworkNode.Location)
                                        .Where(dp => dp.NetworkNode.Location.Shape.Intersects(extent) && dp.NetworkNode.Location.Shape.Intersects(polygon)).ToList();
-
-                        ConfigureMapper();
-
-                        deliveryPointDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDataDTO>>(deliveryPoints);
                     }
+                    else
+                    {
+                        deliveryPoints = DataContext.DeliveryPoints.Include(x => x.PostalAddress)
+                                       .Include(x => x.NetworkNode)
+                                       .Include(x => x.NetworkNode.Location)
+                                       .Where(dp => dp.NetworkNode.Location.Shape.Intersects(extent)).ToList();
+                    }
+
+                    ConfigureMapper();
+
+                    deliveryPointDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDataDTO>>(deliveryPoints);
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);

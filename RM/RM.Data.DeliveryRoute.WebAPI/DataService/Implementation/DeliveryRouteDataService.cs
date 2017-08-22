@@ -77,6 +77,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                                     join sr in DataContext.ScenarioRoutes.AsNoTracking() on r.ID equals sr.RouteID
                                     join s in DataContext.Scenarios.AsNoTracking() on sr.ScenarioID equals s.ID
                                     where s.LocationID == locationId && (r.RouteName.StartsWith(searchText) || r.RouteNumber.StartsWith(searchText))
+                                    orderby r.RouteName, r.RouteNumber
                                     select r).ToListAsync();
 
                 List<RouteDataDTO> routedetails = GenericMapper.MapList<Route, RouteDataDTO>(routes);
@@ -106,6 +107,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                                     join sr in DataContext.ScenarioRoutes.AsNoTracking() on r.ID equals sr.RouteID
                                     join s in DataContext.Scenarios.AsNoTracking() on sr.ScenarioID equals s.ID
                                     where s.LocationID == locationId && (r.RouteName.StartsWith(searchText) || r.RouteNumber.StartsWith(searchText))
+                                    orderby r.RouteName, r.RouteNumber
                                     select r).Take(takeCount).ToListAsync();
 
                 List<RouteDataDTO> routedetails = GenericMapper.MapList<Route, RouteDataDTO>(routes);

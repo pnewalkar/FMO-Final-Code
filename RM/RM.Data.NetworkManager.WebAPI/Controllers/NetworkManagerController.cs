@@ -185,7 +185,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 string methodName = typeof(NetworkManagerController) + "." + nameof(GetRouteData);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                string route = networkManagerBusinessService.GetRoadRoutes(bbox, CurrentUserUnit);
+                string route = networkManagerBusinessService.GetRoadRoutes(bbox, this.CurrentUserUnit, this.CurrentUserUnitType);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(route);
             }

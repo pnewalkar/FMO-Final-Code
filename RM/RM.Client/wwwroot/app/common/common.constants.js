@@ -20,7 +20,7 @@ var CommonConstants = {
     DpUse: "DPUSE",
     PrintMapActionName: "Print Map",
     PrintMapmmPerInch: 25.4,
-    UserType: { DeliveryUser: "Delivery User", CollectionUser: "Collection User", ManagerUser: "Manager User" },
+    UserType: { DeliveryUser: "Delivery User", CollectionUser: "Collection User", ManagerUser: "Manager" },
     DpUseType: { Residential: "Residential", Organisation: "Organisation" },
     DefaultResultCountForSearch: "5",
     NoResultCountForSearch: "0",

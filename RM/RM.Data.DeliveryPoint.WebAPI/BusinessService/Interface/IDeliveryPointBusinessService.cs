@@ -17,8 +17,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// </summary>
         /// <param name="boundaryBox">Boundarybox as string</param>
         /// <param name="unitGuid">Unit unique identifier.</param>
+        /// <param name="currentUserUnitType">current user unit type.</param>
         /// <returns>delivery points data as object</returns>
-        object GetDeliveryPoints(string boundaryBox, Guid unitGuid);
+        object GetDeliveryPoints(string boundaryBox, Guid unitGuid, string currentUserUnitType);
 
         /// <summary>
         /// This method is used to fetch delivery points data on the basis of Guid.

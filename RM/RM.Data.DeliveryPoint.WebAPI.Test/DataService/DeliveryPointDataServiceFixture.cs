@@ -163,7 +163,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void Test_GetDeliveryPointsPositiveScenario()
         {
-            var result = testCandidate.GetDeliveryPoints("POINT (488938 197021)", new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"));
+            var result = testCandidate.GetDeliveryPoints("POINT (488938 197021)", new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"), currentUserUnitType);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count == 1);
         }
@@ -171,7 +171,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void Test_GetDeliveryPointsNegativeScenario()
         {
-            var result = testCandidate.GetDeliveryPoints("POINT (488938 197021)", new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"));
+            var result = testCandidate.GetDeliveryPoints("POINT (488938 197021)", new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"), currentUserUnitType);
             Assert.IsNull(result);
         }
 

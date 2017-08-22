@@ -37,7 +37,7 @@ namespace RM.DataServices.Tests.DataService
         public void Test_GetRoadRoutes()
         {
             coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
-            var actualResult = testCandidate.GetRoadRoutes(coordinates, unit1Guid, refDataCategotyDTO);
+            var actualResult = testCandidate.GetRoadRoutes(coordinates, unit1Guid, refDataCategotyDTO, "Delivery Office");
             Assert.IsNotNull(actualResult);
             Assert.AreEqual(actualResult[0].TOID, "osgb4000000023358315");
         }

@@ -55,7 +55,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 string methodName = typeof(DeliveryPointController) + "." + nameof(GetDeliveryPoints);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                object deliveryPoints = businessService.GetDeliveryPoints(bbox, CurrentUserUnit);
+                object deliveryPoints = businessService.GetDeliveryPoints(bbox, this.CurrentUserUnit, this.CurrentUserUnitType);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 

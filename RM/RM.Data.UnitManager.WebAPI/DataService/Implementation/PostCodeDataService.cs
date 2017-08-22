@@ -49,6 +49,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                              join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
                                              where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
                                               && l.ID == searchInputs.UserUnitLocationId
+                                             orderby p.Postcode
                                              select new PostcodeDataDTO
                                              {
                                                  PostcodeUnit = p.Postcode,
@@ -105,6 +106,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                              join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
                                              where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
                                               && l.ID == searchInputs.UserUnitLocationId
+                                             orderby p.Postcode
                                              select new PostcodeDataDTO
                                              {
                                                  PostcodeUnit = p.Postcode,
