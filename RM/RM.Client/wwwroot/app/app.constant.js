@@ -33,6 +33,7 @@ if (GlobalSettings.env === "localhost") {
     GlobalSettings.routeLogApiUrl = "http://localhost:50240/api";
     GlobalSettings.searchManagerApiUrl = "http://localhost:50243/api";
     GlobalSettings.mapManagerApiUrl = "http://localhost:1386/api";
+    GlobalSettings.deliveryPointGroupManagerApiUrl = "http://localhost:53944/api";
     GlobalSettings.indexUrl = "http://localhost:51978/app/index.html"
 }
 else if (GlobalSettings.env === "dev") {
@@ -88,7 +89,7 @@ GlobalSettings.range = "Range";
 GlobalSettings.subBuilding = "Sub building";
 GlobalSettings.numberInName = "Number in Name";
 GlobalSettings.defaultRangeOption = "Odds";
-
+GlobalSettings.groupLayerName = "Group";
 
 angular.module('RMApp')
 .constant("GlobalSettings", GlobalSettings);
@@ -124,7 +125,7 @@ GlobalSettings.deleteDeliveryPoint = "/DeliveryPointManager/deliverypoint/delete
 GlobalSettings.fetchDeliveryPointsByBoundingBox = "/deliverypointmanager/deliverypoints?bbox=";
 GlobalSettings.fetchAccessLinksByBoundingBox = "/accesslinkmanager/accessLinks?bbox=";
 GlobalSettings.fetchRouteLinksByBoundingBox = "/networkmanager/routelinks?bbox=";
-
+GlobalSettings.fetchGroupLinksByBoundingBox = "/DeliveryPointGroupManager/DeliveryPointGroups?bbox=";
 //-----Manage Access Factory---------------//
 GlobalSettings.getToken = "/token";
 
@@ -157,6 +158,10 @@ GlobalSettings.getPdfreport = "/PDFGenerator/PDFReports/";
 //-----Map manager Factory---------------//
 GlobalSettings.generateReportWithMap = "/MapManager/MapImage/";
 GlobalSettings.generatePdf = "/MapManager/MapPDF/";
+
+//Delivery Group Factory
+GlobalSettings.CreateDeliveryGroup = "/DeliveryPointGroupManager/CreateDeliveryGroup";
+
 
 //--- Unit Area ---///
 GlobalSettings.BT = "BT";

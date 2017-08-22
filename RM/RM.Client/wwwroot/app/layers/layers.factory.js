@@ -58,5 +58,23 @@ function layersAPIService($http, GlobalSettings, $q) {
         });
         return deferred.promise;
     };
+
+    layersAPIService.fetchGroupLinks = function (extent, authData) {
+        var deferred = $q.defer();
+        $http({
+            method: 'GET',
+            url: GlobalSettings.deliveryPointGroupManagerApiUrl + GlobalSettings.fetchGroupLinksByBoundingBox + extent.join(','),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + authData.token
+            }
+        }).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
     return layersAPIService;
 }

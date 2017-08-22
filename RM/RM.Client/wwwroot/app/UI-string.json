@@ -35,8 +35,8 @@
     "LINE": "Line",
     "MODIFY": "Modify",
     "DELETE": "Delete",
-    "AREA": "Area"
-     
+    "AREA": "Area",
+    "GROUP_MANAGEMENT": "Group Management"
   },
   "ERROR_DIALOG": {
     "TITLE": "Unable to process request"

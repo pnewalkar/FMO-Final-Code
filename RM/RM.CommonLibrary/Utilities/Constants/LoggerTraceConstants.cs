@@ -41,6 +41,7 @@
         public const int OSRoadLinkPriority = 8;
         public const int PostCodePriority = 8;
         public const int ActionManagerAPIPriority = 8;
+        public const int DeliveryPointGroupManagerAPIPriority = 8;
 
         public const int SavePostalAddressPriority = 8;
         public const int GetPostalAddressSearchDetailsPriority = 8;
@@ -214,6 +215,15 @@
 
         public const int BlockSequenceDataServiceMethodEntryEventId = 9865;
         public const int BlockSequenceDataServiceMethodExitEventId = 9866;
+
+        public const int DeliveryPointGroupControllerMethodEntryEventId = 9903;
+        public const int DeliveryPointGroupControllerMethodExitEventId = 9904;
+        public const int DeliveryPointGroupBusinessServiceMethodEntryEventId = 9913;
+        public const int DeliveryPointGroupBusinessServiceMethodExitEventId = 9914;
+        public const int DeliveryPointGroupDataServiceMethodEntryEventId = 9923;
+        public const int DeliveryPointGroupDataServiceMethodExitEventId = 9924;
+        public const int DeliveryPointGroupIntegrationServiceMethodEntryEventId = 9933;
+        public const int DeliveryPointGroupIntegrationServiceMethodExitEventId = 9934;
 
         #endregion EventId
 

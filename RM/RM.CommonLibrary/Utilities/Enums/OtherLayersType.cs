@@ -11,6 +11,9 @@ namespace RM.CommonLibrary.HelperMiddleware
         DeliveryPoint,
 
         [Description("roadlink")]
-        RoadLink
+        RoadLink,
+
+        [Description("group")]
+        Group
     }
 }
