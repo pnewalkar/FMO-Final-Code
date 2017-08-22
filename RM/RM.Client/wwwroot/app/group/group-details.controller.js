@@ -22,7 +22,7 @@ function GroupDetailsController(
 
     var vm = this;
     vm.addedPoints = [];
-    vm.availablePoints = []
+    vm.availablePoints = [];
     vm.initialize = initialize;
     vm.onSingleAccept = onSingleAccept;
     vm.onSingleReject = onSingleReject;
@@ -34,7 +34,7 @@ function GroupDetailsController(
     vm.groupType = "";
     vm.groupType.value = "Complex";
 
-   // vm.ServicePointType = "Inside";
+    // vm.ServicePointType = "Inside";
     vm.getPostcode = getPostcode;
 
     //vm.initialize();
@@ -59,7 +59,7 @@ function GroupDetailsController(
         //showModify();
         vm.editing = true;
         //$scope.editGroupsForm.$setPristine();
-       // onModify();
+        // onModify();
     }
 
     function onModify() {
@@ -68,7 +68,7 @@ function GroupDetailsController(
         var newIntersection = mapService.getFeaturesWithinFeature(layer.getSource(), feature);
         vm.newFeatures = [];
         vm.removedFeatures = [];
-       // var childIds = vm.newGroupData.children.map(function (child) { return child.id });
+        // var childIds = vm.newGroupData.children.map(function (child) { return child.id });
         vm.featureIntersection.forEach(function (feature) {
             if (newIntersection.indexOf(feature) == -1) {
                 vm.removedFeatures.push(feature);
@@ -102,16 +102,16 @@ function GroupDetailsController(
                 vm.selectedFeature = null;
                 vm.showInfo = false;
                 previousId = null;
-               /// hideModify();
-              //  vm.cancelEdit();
-              //  getGroupsOnScreen();
+                /// hideModify();
+                //  vm.cancelEdit();
+                //  getGroupsOnScreen();
             });
         } else {
             vm.selectedFeature = mapService.getActiveFeature();
             vm.showInfo = false;
             vm.loading = true;
             if (previousId != vm.selectedFeature.getId()) {
-               // vm.cancelEdit();
+                // vm.cancelEdit();
                 //getFeatureDetails(vm.selectedFeature.getId()).then(function () {
                 //    vm.loading = false;
                 //    vm.showInfo = vm.featureData != null || vm.adding;
@@ -155,12 +155,12 @@ function GroupDetailsController(
 
     function createGroup() {
         var groupDto = getGroupDto();
-        groupAPIService.CreateGroup().then(function () {
+        groupAPIService.CreateGroup(groupDto).then(function () {
             vm.isReadOnly = true;
         });
-        
+
     }
-    
+
     function getGroupDto() {
         var groupDto = {
             "GroupName": vm.groupName,
@@ -186,14 +186,16 @@ function GroupDetailsController(
             vm.internalDistance = "InternalDist";
         }
 
-    function getPostcode(point) {
-        var subBuildingName = point.values_.subBuildingName ? point.values_.subBuildingName : '';
-        var buildingName = point.values_.name ? point.values_.name : '';
-        var buildingNumber = point.values_.number ? point.values_.number : '';
-        var street = point.values_.street ? point.values_.street : '';
-        var postcode = point.values_.postcode ? point.values_.postcode : '';
-
-        return subBuildingName + " " + buildingName + " " + buildingNumber + " " + street + " " + postcode;
     }
-}
 
+    function getPostcode(point) {
+            var subBuildingName = point.values_.subBuildingName ? point.values_.subBuildingName : '';
+            var buildingName = point.values_.name ? point.values_.name : '';
+            var buildingNumber = point.values_.number ? point.values_.number : '';
+            var street = point.values_.street ? point.values_.street : '';
+            var postcode = point.values_.postcode ? point.values_.postcode : '';
+
+            return subBuildingName + " " + buildingName + " " + buildingNumber + " " + street + " " + postcode;
+        }
+
+}
