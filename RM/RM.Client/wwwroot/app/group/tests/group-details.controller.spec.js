@@ -3,10 +3,15 @@ describe('GroupDetails : Controller', function () {
     var vm;
     var $q;
     var groupService;
+    var mapService;
     
     beforeEach(function () {
         module('group');
         module(function ($provide) {
+            $provide.value('GlobalSettings', {});
+            $provide.factory('groupAPIService', function ($q) {
+                return {}
+            });
             $provide.factory('groupService', function ($q) {
                 return {
                     initialize: function () {
@@ -15,25 +20,39 @@ describe('GroupDetails : Controller', function () {
                     }
                 }
             });
+
+            $provide.factory('mapService', function ($q) {
+                function addSelectionListener(){}
+                return {
+                    addSelectionListener: addSelectionListener,
+                }
+            });
         });
 
-        inject(function (_$controller_, _groupService_) {
+        inject(function (_$controller_, _groupService_, _mapService_) {
             groupService = _groupService_;
+            mapService = _mapService_;
+
             vm = _$controller_('GroupDetailsController', {
                 groupService: groupService,
+                mapService: mapService
             });
 
         });
     });
 
-    it("Spec-1 : Get Summarized Addresses", function () {
+    it("Should return summarized count of addresses once getSummarizedAddresses() method is called", function () {
+        var addedPoints = {values_:[
+                {builing: 'Mars', postcode: 'PC1'},
+                {builing: 'Mars', postcode: 'PC2'}, 
+                {builing: 'Mars', postcode: 'PC1'},
+                {builing: 'Mars', postcode: 'PC4'}]};        
 
-        spyOn(vm, 'getSummarizedAddresses').and.callThrough();
         vm.getSummarizedAddresses();
         
-        expect(vm.getSummarizedAddresses).toHaveBeenCalled();
-        expect(vm.summarizedCount[0]).toBe("BN1 1HS");
-        expect(vm.summarizedCount[0].postcode).toBe("BN1 1HS");
-        expect(vm.summarizedCount[0].deliveyPoints).toBe(2);
+        expect(vm.toggle).toBe(true);
+        expect(vm.distinctPostcodes).not.toBe(null);
+        expect(vm.summarizedCount).not.toBe(null);
+        
     });
 });

@@ -73,17 +73,17 @@
             <span flex="5"></span>
             <div layout="column" flex="50">
                 <!--<div ng-if="!(vm.isReadOnly)">-->
-                <md-input-container ng-if="((vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType.value === 'Inside')) && !vm.isReadOnly">
-                    <label>Internal Distance</label>
-                    <!--Decimal upto 2 characters restrict pending-->
-                    <input name="internalDistance" type="text" ng-model="vm.internalDistance" ng-maxlength="7" ng-pattern="/^[0-9]*$/"
-                           ng-required="((vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType.value === 'Inside'))">
-                    <div ng-messages="vm.groupForm.internalDistance.$error">
-                        <div ng-message="required">This field is required*</div>
-                        <div ng-message="maxlength">Value entered is longer than 7</div>
-                        <div ng-message="pattern">Value entered is not valid</div>
-                    </div>
-                </md-input-container>
+                    <md-input-container ng-if="((vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType.value === 'Inside')) && !vm.isReadOnly">
+                        <label>Internal Distance</label>
+                        <!--Decimal upto 2 characters restrict pending-->
+                        <input name="internalDistance" type="text" ng-model="vm.internalDistance" ng-maxlength="7" ng-pattern="/^[0-9]*$/"
+                               ng-required="((vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block') || (vm.groupType.value === 'Service Point' && vm.ServicePointType.value === 'Inside'))">
+                        <div ng-messages="vm.groupForm.internalDistance.$error">
+                            <div ng-message="required">This field is required*</div>
+                            <div ng-message="maxlength">Value entered is longer than 7</div>
+                            <div ng-message="pattern">Value entered is not valid</div>
+                        </div>
+                    </md-input-container>
                 <!--</div>-->
             </div>
         </div>
@@ -98,7 +98,7 @@
                 <!--Time to be displayed in HH:MM pending-->
                 <md-input-container ng-if="vm.groupType.value === 'Complex' && vm.isOverrideTime">
                     <label>Time</label>
-                    <input name="overrideTime" type="text" ng-model="vm.overrideTime" ng-pattern="/^[0-9]*$/" ng-disabled="vm.isReadOnly">
+                    <input name="overrideTime" type="text" ng-model="vm.overrideTime" ng-pattern="/^([2][0-3]|[01]?[0-9])([.:][0-5][0-9])?$/" ng-disabled="vm.isReadOnly">
                     <div ng-messages="vm.groupForm.overrideTime.$error">
                         <div ng-message="pattern">Value entered is not valid</div>
                     </div>
@@ -149,8 +149,8 @@
                     </div>
                 </div>
             </div>
-
-
+          
+         
             <span flex="5"></span>
             <div layout="column" flex="40" ng-if="vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block'">
                 <md-checkbox ng-model="vm.isDeliveryToReception" ng-disabled="vm.isReadOnly">Delivery to reception</md-checkbox>
