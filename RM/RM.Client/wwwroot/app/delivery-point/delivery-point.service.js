@@ -227,6 +227,8 @@ function deliveryPointService(
         var deferred = $q.defer();
         deliveryPointAPIService.createDeliveryPointsRange(postalAddressDetails).then(function (result) {
             deferred.resolve(result);
+        }).catch(function (err) {
+            deferred.reject(err);
         });
         return deferred.promise;
     }
