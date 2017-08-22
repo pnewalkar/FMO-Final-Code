@@ -180,8 +180,8 @@ function deliveryPointService(
     function UpdateDeliverypointForRange(positionedDeliveryPointList) {
         var deferred = $q.defer();
         var isSingle = false;
-        var xCoordinate = null;
-        var yCoordinate = null;
+        var xCoordinate = undefined;
+        var yCoordinate = undefined;
         vm.positionedDeliveryPointList = positionedDeliveryPointList;
         deliveryPointAPIService.UpdateDeliverypointForRange(positionedDeliveryPointList).then(function (result) {
             $rootScope.$broadcast('disablePrintMap', {
@@ -195,7 +195,6 @@ function deliveryPointService(
             }
             mapFactory.setDeliveryPointOnLoad(xCoordinate, yCoordinate, isSingle);
             mapFactory.setAccessLink();
-            //guidService.setGuid(result.id);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
         });
         return deferred.promise;

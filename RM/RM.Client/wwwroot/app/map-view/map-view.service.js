@@ -61,7 +61,7 @@ function mapService($http,
     vm.selectedLayer = null;
     vm.isObjectSelected = false;
     vm.layerName = undefined;
-    vm.placedDP = null;
+    vm.placedDP = undefined;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -706,7 +706,6 @@ function mapService($http,
         vm.interactions.draw.on('drawstart',
                          function (evt) {
                              removeInteraction("select");
-                             //clearDrawingLayer(true);
                              setSelections(null, []);
                              evt.feature.setId(createGuid());
                              setPlacedDP(evt.feature);
