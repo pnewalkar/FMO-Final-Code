@@ -197,7 +197,7 @@ function GroupDetailsController(
         var addedPoints = vm.addedPoints;
         vm.distinctPostcodes = {};
         for (var index = 0; index < addedPoints.length; index++) {
-            var postcode = addedPoints[index].postcode;
+            var postcode = addedPoints[index].values_.postcode;
             if (!(postcode in vm.distinctPostcodes)) {
                 vm.distinctPostcodes[postcode] = 1;
             }
