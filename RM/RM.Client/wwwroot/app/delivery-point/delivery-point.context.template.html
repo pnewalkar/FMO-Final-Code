@@ -30,7 +30,7 @@
     </div>
     <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">
         <h1>Positioned points</h1>
-        <ul>
+        <ul class="deliveryPointAddPoints">
             <li ng-show="vm.positionedDeliveryPointList == null || vm.positionedDeliveryPointList == undefined || vm.positionedDeliveryPointList ==  [] || vm.positionedDeliveryPointList.length ==  0" class="initialCursor">
                 None positioned yet
             </li>
