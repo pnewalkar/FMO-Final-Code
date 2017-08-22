@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
+using System.Linq;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
+using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPointGroupManager.WebAPI.DataDTO;
@@ -132,9 +135,9 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
 
         /// <summary>
         /// /// <summary>
-        /// 
+        /// Create Delivery group
         /// </summary>
-        /// <param name="deliveryPointGroupDto">UI Dto to create Delivery group</param>
+        /// <param name="deliveryPointGroupDto">Public Dto to create Delivery group</param>
         /// <returns></returns>
         public DeliveryPointGroupDTO CreateDeliveryPointGroup(DeliveryPointGroupDTO deliveryPointGroupDto)
         {
@@ -148,14 +151,42 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                     throw new ArgumentNullException(nameof(deliveryPointGroupDto), string.Format(ErrorConstants.Err_ArgumentmentNullException, deliveryPointGroupDto));
                 }
 
+                // Get reference data related to Delivery group
+                List<string> categoryNamesSimpleLists = new List<string> { ReferenceDataCategoryNames.NetworkNodeType };
+                var referenceDataCategoryList = deliveryPointGroupIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
+                deliveryPointGroupDto.NetworkNodeType = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, DeliveryPointGroupConstants.DeliveryPointGroupDataProviderGUID, true);
+
+                deliveryPointGroupDto.ID = Guid.NewGuid();
+                deliveryPointGroupDto.GroupBoundaryGUID = Guid.NewGuid();
+                deliveryPointGroupDto.RelationshipTypeForCentroidToBoundaryGUID = Guid.NewGuid();
+                //deliveryPointGroupDto.GroupBoundary = CreateGroupBoundary(deliveryPointGroupDto.GroupCoordinates);
+                deliveryPointGroupDto.GroupCentroid = deliveryPointGroupDto.GroupBoundary.Centroid;
+
                 deliveryPointGroupDataService.CreateDeliveryGroup(ConvertToDataDTO(deliveryPointGroupDto));
-                throw new NotImplementedException();
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return null;
             }
         }
+
+        private DbGeometry CreateGroupBoundary(List<List<double[]>> coordinates)
+        {
+            string coordinate = string.Empty;
+            foreach (var coord in coordinates)
+            {
+                foreach (var co in coord)
+                {
+                    if (string.IsNullOrEmpty(coordinate))
+                        coordinate += co[0].ToString() + " " + co[1].ToString();
+                    else
+                        coordinate += ", " + co[0].ToString() + " " + co[1].ToString();
+                }
+            }
+
+            return DbGeometry.PolygonFromText(string.Format(DeliveryPointGroupConstants.PolygonWellKnownText, coordinate), DeliveryPointGroupConstants.BNGCOORDINATESYSTEM);
+        }
+
         /// This method fetches geojson data for groups.
         /// /// </summary>
         /// <param name="deliveryGroups"List of delivery groups.</param>
@@ -248,7 +279,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
             if (deliveryPointGroupDTO != null)
             {
                 // Construct boundary Location
-                deliveryPointGroupDataDTO.GroupBoundary.ID = deliveryPointGroupDTO.GroupBoundaryGUID; // TODO : change to New Guid
+                deliveryPointGroupDataDTO.GroupBoundary.ID = deliveryPointGroupDTO.GroupBoundaryGUID;
                 deliveryPointGroupDataDTO.GroupBoundary.Shape = deliveryPointGroupDTO.GroupBoundary;
                 deliveryPointGroupDataDTO.GroupBoundary.RowCreateDateTime = DateTime.UtcNow;
 
@@ -259,7 +290,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
 
                 // Construct centroid Network Node
                 deliveryPointGroupDataDTO.GroupCentroidNetworkNode.ID = deliveryPointGroupDTO.ID;
-                deliveryPointGroupDataDTO.GroupCentroidNetworkNode.NetworkNodeType_GUID = deliveryPointGroupDTO.NetworkNodeType; // TODO :
+                deliveryPointGroupDataDTO.GroupCentroidNetworkNode.NetworkNodeType_GUID = deliveryPointGroupDTO.NetworkNodeType;
                 deliveryPointGroupDataDTO.GroupCentroidNetworkNode.RowCreateDateTime = DateTime.UtcNow;
 
                 // Construct centroid Delivery Point
@@ -269,7 +300,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
 
                 // Construct centroid LocationRelationShip for relationship between boundary and centroid
                 LocationRelationshipDataDTO groupShapeToCentroidRelationship = new LocationRelationshipDataDTO();
-                groupShapeToCentroidRelationship.ID = deliveryPointGroupDTO.LocationRelationshipForCentroidToBoundaryGuid; // TODO : 
+                groupShapeToCentroidRelationship.ID = deliveryPointGroupDTO.LocationRelationshipForCentroidToBoundaryGuid;
                 groupShapeToCentroidRelationship.LocationID = deliveryPointGroupDTO.ID;
                 groupShapeToCentroidRelationship.RelatedLocationID = deliveryPointGroupDTO.GroupBoundaryGUID;
                 groupShapeToCentroidRelationship.RelationshipTypeGUID = deliveryPointGroupDTO.RelationshipTypeForCentroidToBoundaryGUID;
@@ -282,7 +313,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
                     foreach (var deliveryPoint in deliveryPointGroupDTO.AddedDeliveryPoints)
                     {
                         LocationRelationshipDataDTO deliveryPointToCentroidRelation = new LocationRelationshipDataDTO();
-                        deliveryPointToCentroidRelation.ID = Guid.NewGuid(); // TODOD : 
+                        deliveryPointToCentroidRelation.ID = Guid.NewGuid();
                         deliveryPointToCentroidRelation.LocationID = deliveryPoint.ID;
                         deliveryPointToCentroidRelation.RelatedLocationID = deliveryPointGroupDTO.ID;
                         deliveryPointToCentroidRelation.RelationshipTypeGUID = deliveryPointGroupDTO.RelationshipTypeForCentroidToDeliveryPointGUID;
@@ -381,6 +412,44 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
             }
 
             return deliveryPointGroupDTO;
+        }
+
+        /// <summary>
+        /// Get the Reference data for the categorynames based on the referencedata value
+        /// </summary>
+        /// <param name="categoryNamesSimpleLists">list of category names</param>
+        /// <param name="categoryName">category name</param>
+        /// <param name="referenceDataValue">reference data value</param>
+        /// <param name="isWithSpace"> whether </param>
+        /// <returns></returns>
+        private Guid GetReferenceData(List<ReferenceDataCategoryDTO> referenceDataCategoryList, string categoryName, string referenceDataValue, bool isWithSpace = false)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetReferenceData"))
+            {
+                string methodName = typeof(DeliveryPointGroupBusinessService) + "." + nameof(GetReferenceData);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                Guid referenceDataGuid = Guid.Empty;
+                if (isWithSpace)
+                {
+                    referenceDataGuid = referenceDataCategoryList
+                                       .Where(list => list.CategoryName.Replace(" ", string.Empty) == categoryName)
+                                       .SelectMany(list => list.ReferenceDatas)
+                                       .Where(item => item.ReferenceDataValue.Equals(referenceDataValue, StringComparison.OrdinalIgnoreCase))
+                                       .Select(s => s.ID).SingleOrDefault();
+                }
+                else
+                {
+                    referenceDataGuid = referenceDataCategoryList
+                                    .Where(list => list.CategoryName.Equals(categoryName, StringComparison.OrdinalIgnoreCase))
+                                    .SelectMany(list => list.ReferenceDatas)
+                                    .Where(item => item.ReferenceDataValue.Equals(referenceDataValue, StringComparison.OrdinalIgnoreCase))
+                                    .Select(s => s.ID).SingleOrDefault();
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return referenceDataGuid;
+            }
         }
     }
 }
