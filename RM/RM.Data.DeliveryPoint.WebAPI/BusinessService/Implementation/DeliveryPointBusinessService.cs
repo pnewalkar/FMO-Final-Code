@@ -977,7 +977,7 @@
                         {
                             deliveryRouteId = postalAddressDTO.DeliveryRoute_Guid;
                         }
-                    }
+                    }                    
                 }
 
                 // Call Route log integration API
