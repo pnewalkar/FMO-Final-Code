@@ -187,22 +187,8 @@ function GroupDetailsController(
     }
 
     function getGroupDto() {
-        //var groupDto = {
-        //    "GroupName": vm.groupName,
-        //    "NumberOfFloors": vm.floors,
-        //    "InternalDistanceMeters": vm.internalDistance,
-        //    "WorkloadTimeOverrideMinutes": vm.overrideTime,
-        //    "TimeOverrideReason": vm.timeReason,
-        //    "TimeOverrideApproved": vm.isOverrideTime,
-        //    "GroupTypeGUID": vm.groupType,
-        //    "ServicePointTypeGUID": vm.ServicePointType,
-        //    "DeliverToReception": vm.isDeliveryToReception,
-        //    "GroupBoundary": null,
-        //    "AddedDeliveryPoints": getDeliveryPointDetails(vm.addedPoints),
-        //    "GroupCoordinates": vm.polygonCoordinates
-        //}
+        
         var groupDto = {
-            "ID": "00000000-0000-0000-0000-000000000000",
             "GroupName": vm.groupName,
             "NumberOfFloors": vm.floors,
             "InternalDistanceMeters": vm.internalDistance,
@@ -210,20 +196,9 @@ function GroupDetailsController(
             "TimeOverrideReason": vm.timeReason,
             "TimeOverrideApproved": vm.isOverrideTime,
             "GroupTypeGUID": vm.groupType.id,
-            "ServicePointTypeGUID": "00000000-0000-0000-0000-000000000000", // vm.ServicePointType.id,
             "DeliverToReception": vm.isDeliveryToReception,
-            "NetworkNodeType": "00000000-0000-0000-0000-000000000000",
-            "DeliveryPointUseIndicatorGUID": "00000000-0000-0000-0000-000000000000",
-            "GroupCentroid": null,
-            "GroupBoundary": null,
             "GroupCoordinates": vm.initialCoordinates,
-            "LocationRelationshipForCentroidToBoundaryGuid": "00000000-0000-0000-0000-000000000000",
-            "RelationshipTypeForCentroidToBoundaryGUID": "00000000-0000-0000-0000-000000000000",
-            "RelationshipTypeForCentroidToDeliveryPointGUID": "00000000-0000-0000-0000-000000000000",
-            "GroupBoundaryGUID": "00000000-0000-0000-0000-000000000000",
-            "AddedDeliveryPoints": getDeliveryPointDetails(vm.addedPoints),
-            "PolygonLocationId": "00000000-0000-0000-0000-000000000000",
-            "GroupPolygon": null
+            "AddedDeliveryPoints": getDeliveryPointDetails(vm.addedPoints)
         }
         return groupDto;
     }
@@ -233,58 +208,12 @@ function GroupDetailsController(
         angular.forEach(addedPoints, function (value, key) {
             var details = {
                 "ID": value.values_.deliveryPointId,
-                //"AccessLinkPresent": false,
-                //"MultipleOccupancyCount": null,
-                //"MailVolume": null,
-                //"IsUnit": false,
-                //"Address_GUID": "00000000-0000-0000-0000-000000000000",
-                //"DeliveryPointUseIndicator_GUID": "00000000-0000-0000-0000-000000000000",
-                //"RowVersion": null,
-                //"RowCreateDateTime": "\/Date(-62135596800000)\/",
                 "PostalAddress": {
-                    //"PostcodeType": null,
                     "OrganisationName": value.values_.organisationName,
-                    //"DepartmentName": null,
                     "BuildingName": value.values_.name,
-                    //"BuildingNumber": null,
                     "SubBuildingName": value.values_.subBuildingName,
-                    //"Thoroughfare": null,
-                    //"DependentThoroughfare": null,
-                    //"DependentLocality": null,
-                    //"DoubleDependentLocality": null,
-                    //"PostTown": null,
-                    "Postcode": value.values_.postcode,
-                    //"DeliveryPointSuffix": null,
-                    //"SmallUserOrganisationIndicator": null,
-                    //"UDPRN": null,
-                    //"AMUApproved": null,
-                    //"POBoxNumber": null,
-                    //"ID": "00000000-0000-0000-0000-000000000000",
-                    //"PostCodeGUID": "00000000-0000-0000-0000-000000000000",
-                    //"AddressType_GUID": "00000000-0000-0000-0000-000000000000",
-                    //"AddressStatus_GUID": null,
-                    //"IsValidData": false,
-                    //"InValidRemarks": null,
-                    //"Date": null,
-                    //"Time": null,
-                    //"AmendmentType": null,
-                    //"AmendmentDesc": null,
-                    //"FileName": null,
-                    //"DeliveryPointUseIndicator_GUID": "00000000-0000-0000-0000-000000000000",
-                    //"DeliveryRoute_Guid": "00000000-0000-0000-0000-000000000000"
-                },
-                //"NetworkNodeType_GUID": "00000000-0000-0000-0000-000000000000",
-                //"LocationProvider": null,
-                //"OperationalStatus": null,
-                //"LocationXY": null,
-                //"Positioned": false,
-                //"RMGDeliveryPointPresent": false,
-                //"UDPRN": null,
-                //"DeliveryPointUseIndicator": null,
-                //"LocationProvider_GUID": null,
-                //"OperationalStatus_GUID": null,
-                //"DeliveryGroup_GUID": null,
-                //"DeliveryRoute_Guid": "00000000-0000-0000-0000-000000000000"
+                    "Postcode": value.values_.postcode
+                }
             }
             deliveryPointDetails.push(details);
         });

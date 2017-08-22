@@ -161,7 +161,7 @@ namespace RM.DataManagement.DeliveryPointGroupManager.WebAPI.BusinessService
 
                 };
                 var referenceDataCategoryList = deliveryPointGroupIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
-                deliveryPointGroupDto.NetworkNodeType = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, DeliveryPointGroupConstants.DeliveryPointGroupDataProviderGUID);
+                deliveryPointGroupDto.NetworkNodeType = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, DeliveryPointGroupConstants.DeliveryPointGroupDataProviderGUID, true);
                 deliveryPointGroupDto.DeliveryGroupStatus = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DeliveryPointOperationalStatus, DeliveryPointGroupConstants.OperationalStatusGUIDLive, true);
                 deliveryPointGroupDto.DeliveryPointUseIndicatorGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DeliveryPointUseIndicator, DeliveryPointGroupConstants.Residential, true);
                 deliveryPointGroupDto.RelationshipTypeForCentroidToBoundaryGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.LocationRelationshipType, DeliveryPointGroupConstants.RelationshipTypeForCentroidToBoundary, true);
