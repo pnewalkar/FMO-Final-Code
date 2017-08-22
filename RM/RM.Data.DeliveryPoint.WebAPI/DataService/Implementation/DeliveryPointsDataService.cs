@@ -340,9 +340,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             UDPRN = l.PostalAddress.UDPRN
                         }
                     })
-                    .Take(recordTakeCount)
                     .OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
                     .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
+                    .Take(recordTakeCount)
                     .ToListAsync();
             }
             else
@@ -373,9 +373,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                             UDPRN = l.PostalAddress.UDPRN
                         }
                     })
-                    .Take(recordTakeCount)
                     .OrderBy(x => x.PostalAddress.Thoroughfare).ThenBy(x => x.PostalAddress.BuildingNumber).ThenBy(x => x.PostalAddress.BuildingName).ThenBy(x => x.PostalAddress.SubBuildingName)
                     .ThenBy(x => x.PostalAddress.OrganisationName).ThenBy(x => x.PostalAddress.DependentLocality)
+                    .Take(recordTakeCount)
                     .ToListAsync();
             }
 
