@@ -113,6 +113,7 @@ GlobalSettings.getAddressByPostCode = "/UnitManager/postaladdress/filter?selecte
 GlobalSettings.getAddressLocation = "/thirdpartyaddresslocationmanager/addresslocation/geojson/udprn:";
 GlobalSettings.getPostalAddressByGuid = "/postaladdressmanager/postaladdress/filter/addressguid:{0}";
 GlobalSettings.createDeliveryPoint = "/DeliveryPointManager/deliverypoint/newdeliverypoint";
+GlobalSettings.updateDeliverypoint = "/DeliveryPointManager/deliverypoint/"
 GlobalSettings.updateDeliverypointForRange = "/DeliveryPointManager/deliverypoint/range";
 GlobalSettings.createDeliveryPointsRange = "/DeliveryPointManager/deliverypoint/newdeliverypoint/range";
 GlobalSettings.validateDeliveryPoints = "/DeliveryPointManager/deliverypoint/newdeliverypoint/range/check";
