@@ -133,17 +133,16 @@
         <!--Delivery Points & Delivery to reception-->
         <div layout="row">
             <div layout="column" flex="40">
-                <md-input-container>
-                    <label>Delivery Point</label>
-                    <input type="text" ng-model="vm.addedPoints.length" ng-disabled="true">
-                </md-input-container>
+                <div class="dropdownComponent" ng-class="{'dropdowntoggle' : vm.toggle }">
+                    <div class="dropdowntoggleHead" ng-click="vm.getSummarizedAddresses()"> {{vm.addedPoints.length}}
+                    <i class="fa fa-chevron-up" aria-hidden="true"></i> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
+                    <div class="container" id="dropdownToggleCont" ng-repeat="address in vm.summarizedCount | orderBy:'postcode'">
+                        {{ address.postcode }} - {{ address.deliveyPoints }} Points
+                    </div>
+                </div>
             </div>
-            <span flex="5"></span>
-            <div layout="column" flex="10">
-                <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
-                    <i class="fa fa-chevron-up" aria-hidden="true"></i>
-                </md-button>
-            </div>
+          
+         
             <span flex="5"></span>
             <div layout="column" flex="40" ng-if="vm.groupType.value === 'Complex' || vm.groupType.value === 'Tenement Block'">
                 <md-checkbox ng-model="vm.isDeliveryToReception" ng-disabled="vm.isReadOnly">Delivery to reception</md-checkbox>

@@ -90,7 +90,7 @@
     SubBuildingType: { DBCategoryName: "Sub Building Type", AppCategoryName: "SubBuildingType", ReferenceDataNames: [] },
 
     DeliveryGroupType: { DBCategoryName: "Delivery Group Type", AppCategoryName: "DeliveryGroupType", ReferenceDataNames: [] },
-    ServicePointType: { DBCategoryName: "Service Point Type", AppCategoryName: "ServicePointType", ReferenceDataNames: [] }
+    ServicePointType: { DBCategoryName: "Service Point Type", AppCategoryName: "ServicePointType", ReferenceDataNames: [] },
     UI_Range_Options: { DBCategoryName: "UI_Range_Options", AppCategoryName: "UI_Range_Options", ReferenceDataNames: [] },
 UI_Delete_DP_ReasonCode: { DBCategoryName: "UI_Delete_DP_ReasonCode", AppCategoryName: "UIDeleteDPReasonCode", ReferenceDataNames: [] }
 };
