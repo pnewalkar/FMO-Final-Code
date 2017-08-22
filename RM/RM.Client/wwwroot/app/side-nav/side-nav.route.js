@@ -47,11 +47,21 @@ angular.module('RMApp')
             templateUrl: "./reference-data/reference-data.template.html",
             controller: "ReferenceDataController as vm"
         })
-      .state("accessLink", {
-          url: "/accessLink",
-          templateUrl: "./access-link/acccess-link.template.html",
-          controller: 'AccessLinkController as vm',
-          params: { accessLinkFeature: null }
-      });
+          .state("accessLink", {
+              url: "/accessLink",
+              templateUrl: "./access-link/acccess-link.template.html",
+              controller: 'AccessLinkController as vm',
+              params: { accessLinkFeature: null }
+          })
+          .state("deliveryPointGroup", {
+              url: "/group",
+              templateUrl: "./group/group.template.html",
+              controller: 'GroupController as vm'
+          })    
+          .state("deliveryPointGroupDetails", {
+                url: "/groupdetails",
+                templateUrl: "./group/group-details.template.html",
+                controller: 'GroupDetailsController as vm'
+    });
 
 });

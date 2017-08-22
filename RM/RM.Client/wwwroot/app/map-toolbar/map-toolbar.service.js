@@ -27,12 +27,20 @@ function mapToolbarService(
         return vm.mapButtons;
     }
 
-    function getMapButtons(isObjectSelected) {
-        if (isObjectSelected === false && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) > -1) {
-            deleteButton(CommonConstants.ButtonShapeType.del);
+    function getMapButtons(isObjectSelected, isGroupAction) {
+        if (angular.isDefined(isObjectSelected)) {
+            if (isObjectSelected === false && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) > -1) {
+                deleteButton(CommonConstants.ButtonShapeType.del);
+            }
+            else if (isObjectSelected === true && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) === -1) {
+                addButton(CommonConstants.ButtonShapeType.del);
+            }
         }
-        else if (isObjectSelected === true && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) === -1) {
-            addButton(CommonConstants.ButtonShapeType.del);
+
+        if (angular.isDefined(isGroupAction)) {
+            if (isGroupAction) {
+                vm.mapButtons = vm.mapButtons.map(function (x) { return x.replace('area', 'group'); });
+            }
         }
         return vm.mapButtons;
     }
@@ -77,6 +85,7 @@ function mapToolbarService(
             case CommonConstants.ButtonShapeType.accesslink:
                 return CommonConstants.GeometryType.LineString;
             case CommonConstants.ButtonShapeType.area:
+            case CommonConstants.ButtonShapeType.group:
                 return CommonConstants.GeometryType.Polygon;
             default:
                 return undefined;

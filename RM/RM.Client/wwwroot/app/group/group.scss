@@ -1,0 +1,68 @@
+
+@import './app/variables';
+
+.group_checkbox {
+    margin-top: 20px;
+}
+
+.group_radio_btn {
+    float: left;
+    margin-right: 5px;
+    margin-top: 27px;
+}
+
+.dropdownComponent {
+    border: 1px solid $dark-grey;
+    padding: 5px;
+    position: relative;
+
+    &.dropdowntoggle {
+        #dropdownToggleCont {
+            display: block;
+        }
+
+        .fa {
+            &.fa-chevron-down {
+                display: none;
+            }
+
+            &.fa-chevron-up {
+                display: inline;
+            }
+        }
+
+        .dropdowntoggleHead {
+            padding: 2px 10px 10px;
+        }
+    }
+
+    .fa.fa-chevron-up {
+        display: none;
+    }
+}
+
+.dropdowntoggleHead {
+    cursor: pointer;
+    display: block;
+
+    .fa {
+        position: absolute;
+        right: 5px;
+    }
+}
+
+#dropdownToggleCont {
+    display: none;
+    height: 100px;
+    overflow-y: auto;
+    outline: 0;
+    border: 0;
+}
+
+i.fa.fa-check.fa-stack-1x, i.fa.fa-close.fa-stack-1x {
+    position: absolute;
+    left: 5px;
+    height: 80%;
+    font-size: 80%;
+    top: 2px;
+}

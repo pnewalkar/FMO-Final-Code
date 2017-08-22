@@ -35,5 +35,6 @@
         public const string TASKNOTIFICATION = "Notification Type";
         public const string NETWORKLINKDATAPROVIDER = "Data Provider";
         public const string DeliveryPointUseIndicator = "DeliveryPointUseIndicator";
+        public const string LocationRelationshipType = "LocationRelationshipType";
     }
 }

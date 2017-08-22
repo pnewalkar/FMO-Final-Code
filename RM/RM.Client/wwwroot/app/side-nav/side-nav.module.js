@@ -1,5 +1,6 @@
 angular.module('sideNav',['simulation',
                           'routeLog',
                           'deliveryPoint',
-                          'accessLink'
+                          'accessLink',
+                          'group'
                          ]);

@@ -24,6 +24,7 @@
     "karma-coverage": "^1.1.1",
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.4",
-    "openlayers": "^3.20.0"
+    "openlayers": "^3.20.0",
+    "turf": "^3.0.14"
   }
 }

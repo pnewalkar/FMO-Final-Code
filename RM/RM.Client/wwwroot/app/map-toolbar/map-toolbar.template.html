@@ -8,7 +8,7 @@
         <i class="fa fa-arrows-h pad-icon" ng-if="button === 'accesslink'" title="{{ 'GENERAL.ACCESS_LINK' | translate }}"></i>
         <i class="fa fa-pencil pad-icon" ng-if="button === 'modify'" title="{{ 'GENERAL.MODIFY' | translate }}"></i>
         <i class="fa fa-trash pad-icon" ng-if="button === 'delete'" title="{{ 'GENERAL.DELETE' | translate }}"></i>       
-        <i class="fa fa-square pad-icon" ng-if="button === 'area'" title="{{ 'GENERAL.AREA' | translate }}"></i>
+        <i class="fa fa-square pad-icon" ng-if="button === 'area' || button === 'group'" title="{{ 'GENERAL.AREA' | translate }}"></i>
         <span flex></span><span class="maptoolBarText" ng-hide="button === 'delete'">{{button}}</span>
     </md-button>
 </div>
