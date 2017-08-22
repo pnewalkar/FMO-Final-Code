@@ -56,38 +56,10 @@ span.closeRouteWindow {
     @include margin(0px 0px 0px 20px);
 }
 
-.routeDetailstable table {
-    @extend %body-content;
-    width: width-percent(1);
-    border-collapse: collapse;
-}
-
-.routeDetailstable {
-
-    td {
-    @include border(1px solid $black);
-    @include padding(8px 8px 8px 8px);
-    text-align: left;
-    }
-
-    th {
-    @include border(1px solid $black);
-    @include padding(8px 8px 8px 8px);
-    text-align: left;
-    }
-
-
-}
-
-.routeDetailstable tr:nth-child(even) {
-    @include background($white-smoke,none);
-}
-
 .routeLogList  md-list-item, md-list-item .md-list-item-inner{
     @include height(28px);
     min-height: 28px;
 }
-
 
 .routeLogDialog{
   width: 855px;
@@ -120,3 +92,15 @@ span.closeRouteWindow {
   font-family: PF_DIN;
   font-size: 16px; 
  }
+
+ #routLogTable table{
+  border-collapse: inherit;
+ }
+
+ .routeDetailsTable{
+  overflow: none;
+}
+
+.routeDetailsTableInfo.md-text{
+  margin-bottom: 7px;
+}
